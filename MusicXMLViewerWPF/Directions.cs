@@ -40,6 +40,6 @@ namespace MusicXMLTestViewerWPF
         other,
         wedge,
         dynamics,
-       // words, later
+       // words, not now
     }
 }
