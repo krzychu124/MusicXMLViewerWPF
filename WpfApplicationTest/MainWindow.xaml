@@ -1,0 +1,65 @@
+﻿<Window x:Class="MusicXMLTestViewerWPF.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MusicXMLTestViewerWPF"
+        mc:Ignorable="d"
+        
+        Title="MainWindow" Height="491" Width="1240.5">
+    <Grid>
+        <Grid Margin="0,0,4,40">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="250" MaxWidth="450" MinWidth="200"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Label Grid.Column="0" />
+            <ScrollViewer HorizontalScrollBarVisibility="Auto"  VerticalScrollBarVisibility="Auto" Margin="0,5">
+                <StackPanel Width="450">
+                    <Grid HorizontalAlignment="Left" Width="441" Height="150" VerticalAlignment="Top" Margin="5,0,0,0">
+                        <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Margin="10,0">
+                            <local:Window1 x:Name="viewer" HorizontalAlignment="Left" VerticalAlignment="Top" Width="233" Visibility="Visible" Height="Auto"/>
+                        </ScrollViewer>
+                    </Grid>
+                    <Grid HorizontalAlignment="Left" Width="441" Margin="5,0,0,0" Height="190">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto"  HorizontalScrollBarVisibility="Auto" Margin="0,0,10,-52" >
+                            <TextBlock x:Name="LogBox" HorizontalAlignment="Left" TextWrapping="Wrap" Text="&#x1d11e;" VerticalAlignment="Top" Height="Auto" MinHeight="240" Width="421" FontSize="20" FontFamily="/WpfMusTestViewer;component/resources/Fonts/#BravuraText"  />
+                        </ScrollViewer>
+                    </Grid>
+
+                </StackPanel>
+            </ScrollViewer>
+            <GridSplitter HorizontalAlignment="Right" 
+                  VerticalAlignment="Stretch" 
+                  Grid.Column="1" ResizeBehavior="PreviousAndNext"
+                  Width="5" Background="#FFBCBCBC"/>
+            <Label  Grid.Column="2" >
+
+                <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Height="Auto">
+                    <Grid x:Name="TestGrid" Width="Auto" ScrollViewer.CanContentScroll="True" ScrollViewer.HorizontalScrollBarVisibility="Visible" ClipToBounds="True">
+
+                        <local:CanvasList Width="Auto" x:Name="drawingSurface"  Background="White" ClipToBounds="True" Margin="10,10,17,10" MinWidth="1500" MinHeight="2100" ScrollViewer.CanContentScroll="True"/>
+                        <!-- <local:testview   /> -->
+
+                    </Grid>
+                </ScrollViewer>
+
+            </Label>
+        </Grid>
+        <!--<local:Prototype x:Name="prototype"/> -->
+        <Button x:Name="addclef" Content="Add Clef" HorizontalAlignment="Left" Margin="364,0,0,10" Width="96" Click="addclef_Click" Height="24" VerticalAlignment="Bottom"/>
+        <Button x:Name="addkey" Content="Add Key" HorizontalAlignment="Left" Margin="465,0,0,10" Width="96" Click="addkey_Click" Height="24" VerticalAlignment="Bottom"/>
+        <Button x:Name="addtimesig" Content="Add TimeSig" HorizontalAlignment="Left" Margin="566,0,0,10" Width="94" Click="addtimesig_Click" Height="24" VerticalAlignment="Bottom" />
+        <Button x:Name="addnote" Content="AddMeasures" HorizontalAlignment="Left" Margin="263,0,0,10" Width="96" Click="addnote_Click" Height="24" VerticalAlignment="Bottom"/>
+        <Button Content="Otwórz PLik" Margin="10,0,0,10" Click="Button_Click" HorizontalAlignment="Left" Width="100" Height="24" VerticalAlignment="Bottom" />
+        <Button Content="Load to Program" Margin="115,0,0,10" Panel.ZIndex="0" Click="Button_Click_1" HorizontalAlignment="Left" Width="100" Height="24" VerticalAlignment="Bottom"/>
+        <Button x:Name="button" Content="Add Rests" HorizontalAlignment="Left" Margin="665,0,0,10" Width="96" Click="addRests_Click" Height="24" VerticalAlignment="Bottom"/>
+        <Button x:Name="button1" Content="AddNotes" HorizontalAlignment="Left" Margin="766,0,0,10" Width="96" Click="addNotes_Click" Height="25" VerticalAlignment="Bottom"/>
+        <Button x:Name="button2" Content="Experimen..." HorizontalAlignment="Left" Margin="1110,0,0,10" Width="97" Click="button2_Click" Height="25" VerticalAlignment="Bottom"/>
+
+
+        <!-- <Button x:Name="load_M" Content="Load Measure" HorizontalAlignment="Left" Height="24" Margin="665,426,0,0" VerticalAlignment="Top" Width="103" Click="load_M_Click"/>
+        <TextBox x:Name="textBox_nr_m" HorizontalAlignment="Left" Height="24" Margin="587,426,0,0" TextWrapping="Wrap" Text="{Binding Path=Meas_num}" VerticalAlignment="Top" Width="73"/> -->
+    </Grid>
+</Window>
