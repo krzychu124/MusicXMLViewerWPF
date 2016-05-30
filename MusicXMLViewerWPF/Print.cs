@@ -61,12 +61,12 @@ namespace MusicXMLTestViewerWPF
 
     class PartAbbreviationDisplay : Print
     {
-        private string displaytext;
         private AccidentalText atext;
         private string accidentalsymbol;
-        public string DisplayText { get { return displaytext; } }
+        private string displaytext;
         public AccidentalText AccText { get { return atext; } }
         public string AccidentalSymbol { get { return accidentalsymbol; } }
+        public string DisplayText { get { return displaytext; } }
 
         public PartAbbreviationDisplay(XElement x)
         {
