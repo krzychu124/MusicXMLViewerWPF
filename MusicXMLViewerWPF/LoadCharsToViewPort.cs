@@ -9,7 +9,7 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Shapes;
 
-namespace MusicXMLTestViewerWPF
+namespace MusicXMLViewerWPF
 {
 
     class LoadCharsToViewPort  // temporary class for drawing on canvas but thinking about making interface to do this and attach to each class object could be drawn eg. note, measure, key etc... // that could be useful when i want to add any mouse action on drawn object

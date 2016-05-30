@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace MusicXMLTestViewerWPF
+namespace MusicXMLViewerWPF
 {
     class Articulations : Notations
     {

@@ -12,9 +12,9 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Globalization;
 
-namespace MusicXMLTestViewerWPF
+namespace MusicXMLViewerWPF
 {
-    class Measures : LoadCharsToViewPort,INotifyPropertyChanged
+    class Measures : LoadCharsToViewPort, INotifyPropertyChanged
     {
         
         

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Shapes;
 
-namespace MusicXMLTestViewerWPF
+namespace MusicXMLViewerWPF
 {
     class Note : MusicalChars
     { //Need to be reworked !! 1)little improvements done

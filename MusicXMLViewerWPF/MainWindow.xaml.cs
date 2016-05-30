@@ -16,7 +16,7 @@ using System.Windows.Shapes;
 using System.Windows.Threading;
 using System.Xml.Linq;
 
-namespace MusicXMLTestViewerWPF
+namespace MusicXMLViewerWPF
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
