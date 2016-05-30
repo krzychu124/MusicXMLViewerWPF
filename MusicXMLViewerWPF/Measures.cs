@@ -92,7 +92,7 @@ namespace MusicXMLTestViewerWPF
                
             }
             else
-            { tblock tb =new tblock();
+            { 
                 Console.WriteLine(" No measures !!!");
             //    tb.writeLineToTextBlock(" No measures !!!");
             }
@@ -193,8 +193,7 @@ namespace MusicXMLTestViewerWPF
         {
             if (measure_id != 0)
             {
-                tblock x = new tblock();
-                x.writeLineToTextBlock(measure_id.ToString());
+                Logger.Log(measure_id.ToString());
             }
             else
             {

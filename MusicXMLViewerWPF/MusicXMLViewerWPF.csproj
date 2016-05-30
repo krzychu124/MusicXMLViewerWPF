@@ -81,7 +81,7 @@
     <Compile Include="Note.cs" />
     <Compile Include="Page.cs" />
     <Compile Include="Pitch.cs" />
-    <Compile Include="tblock.cs" />
+    <Compile Include="Logger.cs" />
     <Compile Include="TimeSignature.cs" />
     <Compile Include="XmlRead.cs" />
     <Compile Include="TypeFaces.cs" />

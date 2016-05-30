@@ -77,7 +77,7 @@ namespace MusicXMLTestViewerWPF
         }
         public static List<MusicalChars> LoadCharsFromMeasures()
         {
-            tblock tb = new tblock();
+            
             //list = new List<MusicalChars>();
             if (Measures.measuresOfXel != null)
             {

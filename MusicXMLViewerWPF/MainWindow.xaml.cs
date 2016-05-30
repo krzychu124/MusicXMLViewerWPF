@@ -28,12 +28,12 @@ namespace MusicXMLTestViewerWPF
         {
             InitializeComponent();
           //  LogBox.FontFamily = new FontFamily("BravuraText,FreeSerif");
-            LogBox.FontSize = 40;
-            Console.WriteLine("\U0001D122");
-            LogBox.Text += "-> \uE050 <-";
-            LogBox.DataContext = new tblock();
-            tblock t = new tblock();
-            t.writeLineToTextBlock("check");
+            //LogBox.FontSize = 40;
+            // Console.WriteLine("\U0001D122");
+            // LogBox.Text += "-> \uE050 <-";
+            //LogBox.DataContext = Logger.Text;
+            Logger.LogAdded += new EventHandler(MyLogger_LogAdded);
+            Logger.Log("check");
             Measures m = new Measures();
             m.MeasureList_Loaded = true;
             LoadCharsToViewPort l = new LoadCharsToViewPort(drawingSurface);
@@ -242,6 +242,7 @@ y += (glyphTypeface.Height* size);
 
         private void button2_Click(object sender, RoutedEventArgs e)
         {
+            Logger.Log("test log string");
             DrawingVisual visual = new DrawingVisual();
             using (DrawingContext dc = visual.RenderOpen())
             {
@@ -296,6 +297,11 @@ y += (glyphTypeface.Height* size);
         {
             float dist = (float)Math.Sqrt( Math.Pow((p1.X-p2.X),2) + Math.Pow((p1.Y - p2.Y),2));
             return dist;
+        }
+
+        void MyLogger_LogAdded(object sender, EventArgs e)
+        {
+            LogBox.Text = LogBox.Text + Environment.NewLine + Logger.GetLastLog();
         }
         //public void CreateALine()
         //{

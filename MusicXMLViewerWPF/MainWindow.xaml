@@ -24,7 +24,7 @@
                     </Grid>
                     <Grid HorizontalAlignment="Left" Width="441" Margin="5,0,0,0" Height="190">
                         <ScrollViewer VerticalScrollBarVisibility="Auto"  HorizontalScrollBarVisibility="Auto" Margin="0,0,10,-52" >
-                            <TextBlock x:Name="LogBox" HorizontalAlignment="Left" TextWrapping="Wrap" Text="&#x1d11e;" VerticalAlignment="Top" Height="Auto" MinHeight="240" Width="421" FontSize="20" FontFamily="/WpfMusTestViewer;component/resources/Fonts/#BravuraText"  />
+                            <TextBlock x:Name="LogBox" HorizontalAlignment="Left" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Height="Auto" MinHeight="240" Width="421" FontSize="14" FontFamily="/WpfMusTestViewer;component/resources/Fonts/#BravuraText"  />
                         </ScrollViewer>
                     </Grid>
 
