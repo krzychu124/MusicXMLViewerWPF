@@ -7,7 +7,7 @@ using System.Windows.Controls;
 using System.Xml;
 using System.Xml.Linq;
 
-namespace MusicXMLTestViewerWPF
+namespace MusicXMLViewerWPF
 {
     class XmlRead :MainWindow
     {

@@ -7,7 +7,7 @@ using System.Windows;
 using System.Windows.Media;
 using System.Xml.Linq;
 
-namespace MusicXMLTestViewerWPF
+namespace MusicXMLViewerWPF
 {
     class ScorePart : MusicScore // first idea :/ // can be hard to read, rework possible
     {

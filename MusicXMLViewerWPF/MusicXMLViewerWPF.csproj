@@ -56,10 +56,12 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Attributes.cs" />
+    <Compile Include="Barline.cs" />
     <Compile Include="Calc.cs" />
     <Compile Include="CanvasList.cs" />
     <Compile Include="ClefType.cs" />
     <Compile Include="Directions.cs" />
+    <Compile Include="IDrawable.cs" />
     <Compile Include="Key.cs" />
     <Compile Include="LoadCharsToViewPort.cs" />
     <Compile Include="LoadDocToClasses.cs" />
