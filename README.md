@@ -1,5 +1,5 @@
 # MusicXMLViewerWPF
-MusicXMLViewerWPF: First project in C#, bigger than calculator ;)
+First project in C#, bigger than calculator ;)
 
 I read somewhere that when you want to code, just start doing that.
 
