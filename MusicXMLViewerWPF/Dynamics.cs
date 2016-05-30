@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MusicXMLViewerWPF
 {
-    class Dynamics
+    class Dynamics // need rework
     {
         public int posX;
         public int posY;

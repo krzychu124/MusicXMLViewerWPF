@@ -9,21 +9,30 @@ namespace MusicXMLViewerWPF
 {
     public class Print
     {
-        private float staff_spacing;
-        private bool new_system;
         private bool new_page;
+        private bool new_system;
+        private float staff_spacing;
         private int blank_page;
         private int page_number;
+
+        public bool NewPage { get { return new_page; } }
+        public bool NewSystem { get { return new_system; } }
+        public float StaffSpacing { get { return staff_spacing; } }
+        public int BlankPage { get { return blank_page; } }
+        public int PageNumber { get { return page_number; } }
     }
     class MeasureNumbering : Print
     {
         private MeasureNumberingType type;
+
         public MeasureNumberingType NumberingType { get { return type; } }
+
         public MeasureNumbering(XElement x)
         {
             var temp = x.Element("measure-numbering");
             type = temp.Value == "measure"? MeasureNumberingType.measure : temp.Value == "system"? MeasureNumberingType.system : MeasureNumberingType.none;
         }
+
         internal enum MeasureNumberingType
         {
             none,
@@ -34,7 +43,9 @@ namespace MusicXMLViewerWPF
     class MeasureDistance : Print
     {
         private float distance;
+
         public float Distance {  get { return distance; } }
+
         public MeasureDistance(float dist)
         {
             distance = dist;
@@ -46,6 +57,7 @@ namespace MusicXMLViewerWPF
         private AccidentalText atext;
         private string accidentalsymbol;
         private string displaytext;
+
         public AccidentalText AccText { get { return atext; } }
         public string AccidentalSymbol { get { return accidentalsymbol; } }
         public string DisplayText { get { return displaytext; } }
@@ -64,6 +76,7 @@ namespace MusicXMLViewerWPF
         private AccidentalText atext;
         private string accidentalsymbol;
         private string displaytext;
+
         public AccidentalText AccText { get { return atext; } }
         public string AccidentalSymbol { get { return accidentalsymbol; } }
         public string DisplayText { get { return displaytext; } }
