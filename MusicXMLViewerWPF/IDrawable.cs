@@ -3,15 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace MusicXMLViewerWPF
 {
-    class Attributes
+    interface IDrawable
     {
-        //public static string name;
-        public Attributes()
-        {
-            
-        }
+        void Draw(CanvasList surface);
+        //void DeleteDraw();
+        //void ReDraw();
     }
 }

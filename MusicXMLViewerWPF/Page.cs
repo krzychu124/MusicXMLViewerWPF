@@ -8,7 +8,7 @@ using System.Windows;
 using System.Windows.Media;
 using System.Xml.Linq;
 
-namespace MusicXMLTestViewerWPF
+namespace MusicXMLViewerWPF
 {
     public class Page : Print // Need to be reworked // Currently not used(maybe partial but not as good as it should be)// Should be the base of Page layout :/ // missing logic for pages, parts, scores, voices layouts
     {
