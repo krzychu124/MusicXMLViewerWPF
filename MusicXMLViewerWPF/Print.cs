@@ -61,10 +61,20 @@ namespace MusicXMLTestViewerWPF
 
     class PartAbbreviationDisplay : Print
     {
-        //private string displaytext;
-        //private AccidentalText atext;
-        //public string DisplayText { get { return displaytext; } }
-        //public AccidentalText AccText { get { return atext; } }
+        private string displaytext;
+        private AccidentalText atext;
+        private string accidentalsymbol;
+        public string DisplayText { get { return displaytext; } }
+        public AccidentalText AccText { get { return atext; } }
+        public string AccidentalSymbol { get { return accidentalsymbol; } }
+
+        public PartAbbreviationDisplay(XElement x)
+        {
+            var temp = x.Element("part-abbreviation-display");
+            displaytext = temp.Element("display-text").Value;
+            atext = temp.Element("accidental-text").Value == "flat" ? AccidentalText.flat : temp.Element("accidental-text").Value == "sharp" ? AccidentalText.sharp : AccidentalText.natural;
+            accidentalsymbol = atext == AccidentalText.flat ? MusChar.Flat : atext == AccidentalText.sharp ? MusChar.Sharp : MusChar.Natural;
+        }
     }
     class StaffLayout : Print
     {
