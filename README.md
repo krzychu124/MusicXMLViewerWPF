@@ -3,7 +3,7 @@ First project in C#, bigger than calculator ;)
 
 I read somewhere that when you want to code, just start doing that.
 
-_Learning C# and WPF... Might be highly unreadable sometimes ;)_
+_I started this for Learning C# and WPF... Might be highly unreadable sometimes(sometimes whole page) ;)_
 
 A lot of commented lines, test methods, ideas and even more problems and issues, but that's the key if you want to learn something, I think :)
 
