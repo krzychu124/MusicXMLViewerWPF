@@ -10,5 +10,7 @@ namespace MusicXMLViewerWPF
     interface IDrawable
     {
         void Draw(CanvasList surface);
+        //void DeleteDraw();
+        //void ReDraw();
     }
 }

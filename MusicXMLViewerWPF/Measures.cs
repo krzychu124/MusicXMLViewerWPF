@@ -14,7 +14,7 @@ using System.Globalization;
 
 namespace MusicXMLViewerWPF
 {
-    class Measures : LoadCharsToViewPort,INotifyPropertyChanged
+    class Measures : LoadCharsToViewPort, INotifyPropertyChanged
     {
         
         

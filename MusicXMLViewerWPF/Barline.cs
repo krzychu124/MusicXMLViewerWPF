@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace MusicXMLViewerWPF
 {
-    class Barline
+    class Barline : Measures
     {
+        
         private BarlineLocation location;
         private BarStyle style;
         private bool coda;
@@ -15,7 +17,14 @@ namespace MusicXMLViewerWPF
         private bool segno;
         private MeasureEnding ending;
 
-        enum BarStyle
+        public BarlineLocation Location {  get { return location; } } 
+        public BarStyle Style { get { return style; } }
+        public bool IsCoda { get { return coda; } }
+        public bool IsFermata { get { return fermata; } }
+        public bool IsSegno { get { return segno; } }
+        public MeasureEnding Ending { get { return ending; } }
+
+        internal enum BarStyle
         {
             regular,
             dotted,
@@ -28,7 +37,8 @@ namespace MusicXMLViewerWPF
             tick,
             shortened,
         }
-        enum BarlineLocation
+
+        internal enum BarlineLocation
         {
             left,
             middle,
@@ -37,18 +47,37 @@ namespace MusicXMLViewerWPF
 
     }
 
-    class MeasureEnding
+    class MeasureEnding : Barline
     {
         private EndingType type;
         private float end_length;
         private float text_x;
         private float text_y;
-        private float x;
-        private float y;
+        private float x_shift;
+        private float y_shift;
         private int[] number;
         private string ending_val; //for now // not tested //
 
-        enum EndingType 
+        public EndingType Type { get { return type; } }
+        public float EndLength { get { return end_length; } }
+        public float TextX { get { return text_x; } }
+        public float TextY { get { return text_y; } }
+        public float X { get { return x_shift; } }
+        public float Y { get { return y_shift; } }
+        public int[] Number {  get { return number; } }
+        public string Ending_val {  get { return ending_val; } }
+
+        public MeasureEnding(XElement x)
+        {
+
+        }
+
+        private void getEndingType (string s)
+        {
+            type = s == "start" ? EndingType.start : s == "stop" ? EndingType.stop : EndingType.discontinue; 
+        }
+
+        internal enum EndingType 
         {
             start,
             stop,
@@ -57,22 +86,33 @@ namespace MusicXMLViewerWPF
     }
     
     
-    class Repeat
+    class Repeat : Barline, IDrawable
     {
         private int times;
         private RepeatDirection direction;
         private Winged winged;
 
-        enum RepeatDirection
+        public int Times { get { return times; } }
+        public RepeatDirection Direction { get { return direction; } }
+        public Winged Winged { get { return winged; } }
+
+        public void Draw(CanvasList surface)
+        {
+
+        }
+
+        internal enum RepeatDirection
         {
             backward,
             forward
         }
     }
-    class Winged
+    class Winged : Barline, IDrawable, IXMLExtract
     {
         private WingType type;
+
         public WingType Type { get { return type; } }
+
         public Winged(string s)
         {
             switch (s)
@@ -91,10 +131,36 @@ namespace MusicXMLViewerWPF
                 case "double-curved": type = WingType.double_curved;
                     break;
             }
-           
-           
         }
-        public enum WingType
+
+        public Winged()
+        {
+            XDocument Doc = LoadDocToClasses.Document;
+            var xel =  XMLExtractor(Doc);
+            foreach (var item in xel)
+            {
+                XMLFiller(item);
+            }
+            
+        }
+
+        public IEnumerable<XElement> XMLExtractor(XDocument x)
+        {
+            var z = from item in x.Elements() select item;
+            return z;
+        }
+
+        public void XMLFiller(XElement x)
+        {
+
+        }
+
+        public void Draw(CanvasList surface)
+        {
+
+        }
+
+        internal enum WingType
         {
             none,
             straight,
