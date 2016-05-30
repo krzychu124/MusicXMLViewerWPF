@@ -7,7 +7,7 @@ using System.Xml.Linq;
 
 namespace MusicXMLViewerWPF
 {
-    public class Print // not usage for now 
+    public class Print //test
     {
         private bool new_page;
         private bool new_system;
