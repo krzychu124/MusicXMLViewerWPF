@@ -61,6 +61,7 @@
     <Compile Include="CanvasList.cs" />
     <Compile Include="ClefType.cs" />
     <Compile Include="Defaults\Appearance.cs" />
+    <Compile Include="Defaults\Scale.cs" />
     <Compile Include="Directions.cs" />
     <Compile Include="IDrawable.cs" />
     <Compile Include="IXMLExtract.cs" />
@@ -152,6 +153,12 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Credit\" />
+    <Folder Include="Identyfication\" />
+    <Folder Include="Measures\" />
+    <Folder Include="PartList\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
