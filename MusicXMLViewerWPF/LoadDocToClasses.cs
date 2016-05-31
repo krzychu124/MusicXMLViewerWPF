@@ -29,7 +29,18 @@ namespace MusicXMLViewerWPF
             CharListLoaded = false;
             MListLoaded = false;
         }
-        public static XDocument Document { get { return doc; } set { if (value != null) doc = value; } }
+        public static XDocument Document {
+            get
+            {
+                return doc; 
+                
+            }
+            set
+            {
+                if (value != null)
+                { doc = value; }
+            }
+        }
 
         public static List<List<int>> AddMeasuresToXList(XDocument Doc)
         {

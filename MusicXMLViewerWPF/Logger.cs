@@ -29,6 +29,11 @@ namespace MusicXMLViewerWPF
             else
                 return null;
         }
+        public static void EmptyXDocument(string s)
+        {
+            System.Windows.MessageBox.Show($"XDocument in: <{s}> is Empty, Load XML file again ");
+            Log($"XDocument in: <{s}> is Empty, Load XML file again ");
+        }
     }
 }
 //{
