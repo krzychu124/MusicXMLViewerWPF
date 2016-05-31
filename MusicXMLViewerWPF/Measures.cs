@@ -20,7 +20,8 @@ namespace MusicXMLViewerWPF
         
         public static List<XElement> measuresOfXel = new List<XElement>();
         public static List<Measures> MeasureList = new List<Measures>();
-        
+        public static List<Barline> barlineList = new List<Barline>(); // list of defined balines
+
         private static List<MeasuresLines> helperList = new List< MeasuresLines>();
         private int measure_id;
         private float width;

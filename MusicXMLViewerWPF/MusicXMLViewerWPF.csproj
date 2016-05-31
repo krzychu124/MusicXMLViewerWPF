@@ -60,6 +60,7 @@
     <Compile Include="Calc.cs" />
     <Compile Include="CanvasList.cs" />
     <Compile Include="ClefType.cs" />
+    <Compile Include="Defaults\Appearance.cs" />
     <Compile Include="Directions.cs" />
     <Compile Include="IDrawable.cs" />
     <Compile Include="IXMLExtract.cs" />

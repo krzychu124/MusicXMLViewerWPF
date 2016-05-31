@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MusicXMLViewerWPF
 {
-    class Key :MusicalChars
+    class Key : MusicalChars
     {
         private int measure_num;
         private bool isSharp;

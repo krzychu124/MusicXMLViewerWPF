@@ -7,7 +7,7 @@ using System.Xml.Linq;
 
 namespace MusicXMLViewerWPF
 {
-    class Barline : Measures
+    class Barline : Measures, IDrawable
     {
         
         private BarlineLocation location;
@@ -23,6 +23,11 @@ namespace MusicXMLViewerWPF
         public bool IsFermata { get { return fermata; } }
         public bool IsSegno { get { return segno; } }
         public MeasureEnding Ending { get { return ending; } }
+
+        public void Draw(CanvasList surface)
+        {
+
+        }
 
         internal enum BarStyle
         {
@@ -47,7 +52,7 @@ namespace MusicXMLViewerWPF
 
     }
 
-    class MeasureEnding : Barline
+    class MeasureEnding : Barline, IDrawable
     {
         private EndingType type;
         private float end_length;
@@ -77,6 +82,11 @@ namespace MusicXMLViewerWPF
             type = s == "start" ? EndingType.start : s == "stop" ? EndingType.stop : EndingType.discontinue; 
         }
 
+        public new void Draw(CanvasList surface)
+        {
+
+        }
+
         internal enum EndingType 
         {
             start,
@@ -96,7 +106,7 @@ namespace MusicXMLViewerWPF
         public RepeatDirection Direction { get { return direction; } }
         public Winged Winged { get { return winged; } }
 
-        public void Draw(CanvasList surface)
+        public new void Draw(CanvasList surface)
         {
 
         }
@@ -110,10 +120,14 @@ namespace MusicXMLViewerWPF
     class Winged : Barline, IDrawable, IXMLExtract
     {
         private WingType type;
-
+        private string s_type;
         public WingType Type { get { return type; } }
-
+        public string Type_s { get { return s_type; } }
         public Winged(string s)
+        {
+            s_type = s;
+        }
+        private void getWingType(string s)
         {
             switch (s)
             {
@@ -126,13 +140,14 @@ namespace MusicXMLViewerWPF
                 case "curved":
                     type = WingType.curved;
                     break;
-                case "double-straight": type = WingType.double_straight;
+                case "double-straight":
+                    type = WingType.double_straight;
                     break;
-                case "double-curved": type = WingType.double_curved;
+                case "double-curved":
+                    type = WingType.double_curved;
                     break;
             }
         }
-
         public Winged()
         {
             XDocument Doc = LoadDocToClasses.Document;
@@ -155,7 +170,7 @@ namespace MusicXMLViewerWPF
 
         }
 
-        public void Draw(CanvasList surface)
+        public new void Draw(CanvasList surface)
         {
 
         }
