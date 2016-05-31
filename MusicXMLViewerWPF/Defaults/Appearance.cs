@@ -12,24 +12,56 @@ namespace MusicXMLViewerWPF.Defaults
 {
     class Appearance
     {
-        private Dictionary<string, float> distances = new Dictionary<string, float>() { };
-        private Dictionary<string, float> lineWidths = new Dictionary<string, float>() { };
-        private Dictionary<string, float> noteSizes = new Dictionary<string, float>() { };
+        private static Dictionary<string, float> distances = new Dictionary<string, float>() { };
+        private static Dictionary<string, float> lineWidths = new Dictionary<string, float>() { };
+        private static Dictionary<string, float> noteSizes = new Dictionary<string, float>() { };
 
-        public Dictionary<string, float> Distances { get { return distances; } }
-        public Dictionary<string, float> NoteSizes { get { return noteSizes; } }
-        public Dictionary<string, float> LineWidths { get { return lineWidths; } }
+        public static Dictionary<string, float> Distances { get { return distances; } }
+        public static Dictionary<string, float> NoteSizes { get { return noteSizes; } }
+        public static Dictionary<string, float> LineWidths { get { return lineWidths; } }
 
         public Appearance()
         {
-            initLineWidths(LoadDocToClasses.Document);
+            initLineWidths();
         }
-        public void initLineWidths(XDocument x)
+
+        public static float GetDistance(string type)
         {
+            float x = 0f;
+            if (distances.ContainsKey(type))
+            {
+                x = distances[type]; 
+            }
+            return x;
+        }
+        public static float GetLineWidth(string type)
+        {
+            float x = 0f;
+            if (lineWidths.ContainsKey(type))
+            {
+                x = lineWidths[type];
+            }
+            return x;
+        }
+
+        public static float GetNoteSize(string type)
+        {
+            float x = 0f;
+            if (noteSizes.ContainsKey(type))
+            {
+                x = noteSizes[type];
+            }
+            return x;
+        }
+
+        public void initLineWidths()
+        {
+            var x = Misc.LoadFile.Document;
             if (x == null)
             {
-                string s = MethodBase.GetCurrentMethod().Name;
-                Logger.EmptyXDocument(s);
+                //string s = MethodBase.GetCurrentMethod().Name;
+                //Logger.EmptyXDocument(s);
+                Logger.Log("XDocument is empty");
             }
             else
             {
