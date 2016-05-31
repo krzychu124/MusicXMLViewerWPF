@@ -243,7 +243,8 @@ y += (glyphTypeface.Height* size);
         private void button2_Click(object sender, RoutedEventArgs e)
         {
             Defaults.Appearance app = new Defaults.Appearance();
-            app.initLineWidths(LoadDocToClasses.Document);
+            //app.initLineWidths(LoadDocToClasses.Document);
+            
             Logger.Log("test log string");
             DrawingVisual visual = new DrawingVisual();
             using (DrawingContext dc = visual.RenderOpen())
