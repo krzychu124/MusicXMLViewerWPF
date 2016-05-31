@@ -9,7 +9,7 @@ using System.Xml.Linq;
 
 namespace MusicXMLViewerWPF
 {
-    class XmlRead :MainWindow
+    class XmlRead : MainWindow
     {
         private static string file_path;
         private static XDocument Doc;
