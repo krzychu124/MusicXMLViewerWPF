@@ -150,8 +150,8 @@ namespace MusicXMLViewerWPF
         }
         public Winged()
         {
-            XDocument Doc = LoadDocToClasses.Document;
-            var xel =  XMLExtractor(Doc);
+            
+            var xel =  XMLExtractor();
             foreach (var item in xel)
             {
                 XMLFiller(item);
@@ -159,8 +159,9 @@ namespace MusicXMLViewerWPF
             
         }
 
-        public IEnumerable<XElement> XMLExtractor(XDocument x)
+        public IEnumerable<XElement> XMLExtractor()
         {
+            XDocument x = LoadDocToClasses.Document;
             var z = from item in x.Elements() select item;
             return z;
         }

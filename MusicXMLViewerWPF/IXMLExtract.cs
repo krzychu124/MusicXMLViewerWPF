@@ -9,7 +9,7 @@ namespace MusicXMLViewerWPF
 {
     interface IXMLExtract
     {
-        IEnumerable<XElement> XMLExtractor(XDocument x); //extract xelement from xml
+        IEnumerable<XElement> XMLExtractor(); //extract xelement from xml
         void XMLFiller(XElement x);     //extract values,attributes // make and fill class instance with them
     }
 }
