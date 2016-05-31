@@ -76,6 +76,7 @@
     <Compile Include="PartList\Part.cs" />
     <Compile Include="Defaults\Print.cs" />
     <Compile Include="Misc\NoUsage\Prototype.cs" />
+    <Compile Include="PartList\Part\Measures\Notes\Lyrics.cs" />
     <Compile Include="PartList\Part\Measures\Notes\Rest.cs" />
     <Compile Include="PartList\ScoreParts.cs" />
     <Compile Include="PartList\Part\Measures\SymbolDuration.cs" />
