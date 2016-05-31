@@ -17,14 +17,16 @@
             <Label Grid.Column="0" />
             <ScrollViewer HorizontalScrollBarVisibility="Auto"  VerticalScrollBarVisibility="Auto" Margin="0,5">
                 <StackPanel Width="450">
-                    <Grid HorizontalAlignment="Left" Width="441" Height="150" VerticalAlignment="Top" Margin="5,0,0,0">
+                     <!--<Grid HorizontalAlignment="Left" Width="441" Height="150" VerticalAlignment="Top" Margin="5,0,0,0">
                         <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Margin="10,0">
-                            <!-- <local:Window1 x:Name="viewer" HorizontalAlignment="Left" VerticalAlignment="Top" Width="233" Visibility="Visible" Height="Auto"/> -->
+                            <local:Window1 x:Name="viewer" HorizontalAlignment="Left" VerticalAlignment="Top" Width="233" Visibility="Visible" Height="Auto"/>
                         </ScrollViewer>
-                    </Grid>
-                    <Grid HorizontalAlignment="Left" Width="441" Margin="5,0,0,0" Height="190">
-                        <ScrollViewer VerticalScrollBarVisibility="Auto"  HorizontalScrollBarVisibility="Auto" Margin="0,0,10,-52" >
-                            <TextBlock x:Name="LogBox" HorizontalAlignment="Left" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Height="Auto" MinHeight="240" Width="421" FontSize="14" FontFamily="/WpfMusTestViewer;component/resources/Fonts/#BravuraText"  />
+                    </Grid> -->
+                    <Grid HorizontalAlignment="Left" Width="441" Margin="5,0,0,0" Height="389">
+                        <Label Padding="1">Logger:</Label>
+                        <ScrollViewer VerticalScrollBarVisibility="Auto"  HorizontalScrollBarVisibility="Auto" Margin="0,2,10,-52" >
+                            
+                            <TextBlock x:Name="LogBox" HorizontalAlignment="Left" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Height="372" MinHeight="240" Width="421" FontSize="12" FontFamily="/WpfMusTestViewer;component/resources/Fonts/#BravuraText" />
                         </ScrollViewer>
                     </Grid>
 

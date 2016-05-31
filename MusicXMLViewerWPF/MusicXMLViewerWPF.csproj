@@ -55,6 +55,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Misc\LoadFile.cs" />
     <Compile Include="PartList\Part\Measures\Attributes.cs" />
     <Compile Include="PartList\Part\Measures\Barline.cs" />
     <Compile Include="Defaults\SystemLayout.cs" />

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media;
 
 namespace MusicXMLViewerWPF
 {
@@ -14,9 +15,9 @@ namespace MusicXMLViewerWPF
 
         public static event EventHandler LogAdded;
 
-        public static void Log(string message)
+        public static void Log(string message, [CallerMemberName] string memberName = "")
         {
-            log.Add(message);
+            log.Add(memberName+": "+message);
 
             if (LogAdded != null)
                 LogAdded(null, EventArgs.Empty);
@@ -29,10 +30,14 @@ namespace MusicXMLViewerWPF
             else
                 return null;
         }
-        public static void EmptyXDocument(string s)
+        public static void EmptyXDocument(string s, [CallerMemberName] string memberName = "")
         {
             System.Windows.MessageBox.Show($"XDocument in: <{s}> is Empty, Load XML file again ");
             Log($"XDocument in: <{s}> is Empty, Load XML file again ");
+        }
+        public static void Loaded( string message,[CallerMemberName] string memberName="")
+        {
+            Log(memberName+": "+message);
         }
     }
 }
