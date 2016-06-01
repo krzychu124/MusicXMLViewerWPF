@@ -10,7 +10,7 @@ using System.Xml.Linq;
 
 namespace MusicXMLViewerWPF
 {
-    public class Page : Print // Need to be reworked // Currently not used(maybe partial but not as good as it should be)// Should be the base of Page layout :/ // missing logic for pages, parts, scores, voices layouts
+    public class Page  // Need to be reworked // Currently not used(maybe partial but not as good as it should be)// Should be the base of Page layout :/ // missing logic for pages, parts, scores, voices layouts
     {
 
         //public string part_id;
@@ -36,11 +36,15 @@ namespace MusicXMLViewerWPF
                 num_lines = value;
             }
         }
-        public Page()
-        {
-            GetPageInfo();
-        }
+        //public Page()
+        //{
+        //    GetPageInfo();
+        //}
 
+        public Page(XElement x)
+        {
+
+        }
         public Page(float h, float w, PageMargins p)
         {
             page_margins = p;
@@ -59,11 +63,11 @@ namespace MusicXMLViewerWPF
             
             line.Add(m);
         }
-        public void GetPageInfo() //not tested
+        public void GetPageInfo(XElement xele) // TODO test, slight rework //not tested // first rewok maight need improvements // not tested
         {
-            XDocument doc = LoadDocToClasses.Document;
-            var p = from z in doc.Descendants("defaults") select z;
-            var pg = from x in p.Elements("page-layout") select x;
+            //XDocument doc = LoadDocToClasses.Document;
+            //var p = from z in doc.Descendants("defaults") select z;
+            var pg = from x in xele.Elements("page-layout") select x;
 
             foreach (var item in pg)
             {
