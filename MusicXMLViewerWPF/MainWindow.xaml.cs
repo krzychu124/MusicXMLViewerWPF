@@ -108,16 +108,19 @@ y += (glyphTypeface.Height* size);
                 XmlRead xmlReader = new XmlRead();
                 //viewer.LoadFile(dialog.FileName);
                 xmlReader.File_path = dialog.FileName;
+                Logger.Log("Loading: "+dialog.FileName);
                 Console.WriteLine("asd: "+ dialog.FileName);
            //     textBlock.Text += "\n Loadind file ... Processing  ";
                 
                 XDocument Doc = XmlRead.GetXmlInventory(dialog.FileName);
                 LoadDocToClasses.Document = Doc;
+                Misc.LoadFile.LoadDocument(Doc);
                 LoadDocToClasses.AddMeasuresToXListV(Doc);
                 //   textBlock.Text += "\n File imported to measures list \n Press Load button to process";
                 List<MusicalChars> list;
                 LoadDocToClasses.LoadCharsFromMeasures();
                 list = LoadDocToClasses.list;
+                Logger.Log("XML Loaded");
             }
         }
 

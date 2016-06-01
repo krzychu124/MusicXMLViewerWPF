@@ -11,13 +11,14 @@ using System.Windows.Shapes;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Globalization;
+using MusicXMLViewerWPF.PartList.Part.Measures;
 
 namespace MusicXMLViewerWPF
 {
-    class Measures : LoadCharsToViewPort, INotifyPropertyChanged
+    class Measures : LoadCharsToViewPort, INotifyPropertyChanged // TODO Hard rework
     {
-        
-        
+
+        public static List<Measure> MeasuresList = new List<Measure>(); // list of measures
         public static List<XElement> measuresOfXel = new List<XElement>();
         public static List<Measures> MeasureList = new List<Measures>();
         public static List<Barline> barlineList = new List<Barline>(); // list of defined balines
@@ -40,18 +41,11 @@ namespace MusicXMLViewerWPF
         public Point End { get { return e; } }
         public bool FirstInLine { get { return isFirstInLine; } }
         public bool LastInLine { get { return isLastInLine; } }
-        public static float Scale
-                {
-                    get { return scale; }
-                    set { if (value != 0) { scale = value; } else { scale = 40; } }
-                }
-        public float Linespacing
-        {
-            get { return linespacing;  }
-            set { linespacing = scale * 1.5f; }
-        }
+        public static float Scale { get { return scale; } set { if (value != 0) { scale = value; } else { scale = 40; } } }
+        public float Linespacing { get { return linespacing;  } set { linespacing = scale * 1.5f; } }
         public event PropertyChangedEventHandler PropertyChanged;
-        
+        public bool MeasureList_Loaded { get { return m_list_l; } set { if (value != m_list_l) { m_list_l = value; NotifyPropertyChanged(); }  } }
+
         private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
         {
             if (PropertyChanged != null)
@@ -59,23 +53,6 @@ namespace MusicXMLViewerWPF
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
-        
-        public bool MeasureList_Loaded
-        {
-            get { return m_list_l; }
-            set
-            {
-                if (value != m_list_l)
-                {
-                    m_list_l = value;
-                    NotifyPropertyChanged();
-                }
-                
-            }
-        }
-        
-        
-        
         
         public object DrawVisual { get; private set; }
 
@@ -112,12 +89,26 @@ namespace MusicXMLViewerWPF
             isLastInLine = end;
 
         }
+
+        public void GetMeasures() // temporary // need reworking if score has more that 1 part //
+        {
+            //Measure m = new Measure();
+            XDocument x = Misc.LoadFile.Document;
+            var extr = from measure in x.Descendants("measure") select measure;
+            foreach (var item in extr)
+            {
+                Measure m = new Measure(item);
+                MeasuresList.Add(m);
+            }
+        }
+
         public static void CoordedMeasures()
         {
             bool st = false;
             bool ed = false;
             GetMeasureLines();
-           Measures measure;
+            Measures measure;
+
             for (int i = 0; i < helperList.Count; i++)
             {
                 if (i == 0)

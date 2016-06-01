@@ -17,9 +17,9 @@ namespace MusicXMLViewerWPF
         private static float page_height;
         private static float page_width;
         private static PageMargins page_margins;
+
         public static int num_lines;
         public static List<Margins> line = new List<Margins>();
-
         public float Width {  get { return page_width; } }
         public float Height {  get { return page_height; } }
         public PageMargins Margins {  get { return page_margins; } }
@@ -38,8 +38,9 @@ namespace MusicXMLViewerWPF
         }
         public Page()
         {
-            getPageInfo();
+            GetPageInfo();
         }
+
         public Page(float h, float w, PageMargins p)
         {
             page_margins = p;
@@ -58,7 +59,7 @@ namespace MusicXMLViewerWPF
             
             line.Add(m);
         }
-        public void getPageInfo() //not tested
+        public void GetPageInfo() //not tested
         {
             XDocument doc = LoadDocToClasses.Document;
             var p = from z in doc.Descendants("defaults") select z;
@@ -165,60 +166,5 @@ namespace MusicXMLViewerWPF
             even
         }
         
-    }
-    class SystemLayout : Print// looks good //
-    {
-        private float left_margin;
-        private float right_margin;
-        private float system_distance;
-        private float top_system_distance;
-        private SystemDivider system_dividers;
-
-        public float LeftRelative { get { return left_margin; } }
-        public float RightRelative { get { return right_margin; } }
-        public float SystemDistance { get { return system_distance; } }
-        public float TopSystemDistance { get { return top_system_distance; } }
-        public SystemDivider Dividers { get { return system_dividers; } }
-        public SystemLayout()
-        {
-            getSystemLayout();
-        }
-        public SystemLayout(float l, float r, float s, float t, SystemDivider d)
-        {
-            left_margin = l;
-            right_margin = r;
-            system_distance = s;
-            top_system_distance = t;
-            system_dividers = d;
-        }
-        private void getSystemLayout()
-        {
-            XDocument doc = LoadDocToClasses.Document;
-            var s = from z in doc.Descendants("defaults") select z;
-            var sl = from x in s.Elements("system-layout") select x;
-            foreach (var item in sl)
-            {
-                left_margin = (float) Convert.ToDouble(item.Element("system-margins").Element("left-margin").Value);
-                right_margin = (float)Convert.ToDouble(item.Element("system-margins").Element("right-margin").Value);
-                system_distance = (float)Convert.ToDouble(item.Element("system-distance").Value);
-                top_system_distance = (float)Convert.ToDouble(item.Element("top-system-distance").Value);
-            }
-        }
-
-        public class SystemDivider // implemented but no use curently // visible object which represent point where group of measures are divided //
-        {
-            private float left_divider;
-            private float right_divider;
-
-            public float Left {  get { return left_divider; } }
-            public float Right { get { return right_divider; } }
-
-            public SystemDivider(float l, float r)
-            {
-                left_divider = l;
-                right_divider = r;
-            }
-        }
-
     }
 }
