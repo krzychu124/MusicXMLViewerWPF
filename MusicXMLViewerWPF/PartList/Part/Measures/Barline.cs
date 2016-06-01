@@ -13,38 +13,65 @@ namespace MusicXMLViewerWPF
         
         private BarlineLocation location;
         private BarStyle style;
-        private bool coda;
-        private bool fermata;
+        private Coda coda;
+        private Fermata fermata;
         private Segno segno;
-        private MeasureEnding ending;
+        private Ending ending;
         private Repeat repeat;
-        private Winged winged;
 
-        public BarlineLocation Location {  get { return location; } } 
+        public BarlineLocation Location { get { return location; } } 
         public BarStyle Style { get { return style; } }
-        public bool IsCoda { get { return coda; } }
-        public bool IsFermata { get { return fermata; } }
-        public Segno Segno{ get { return segno; } }
-        public MeasureEnding Ending { get { return ending; } }
+        public Coda Coda { get { return coda; } }
+        public Fermata Fermata { get { return fermata; } }
+        public Segno Segno  { get { return segno; } }
+        public Ending Ending { get { return ending; } }
         public Repeat Repeat { get { return repeat; } }
-        public Winged Winged { get { return winged; } }
 
         public Barline(XElement x)
         {
+            coda = null;
+            fermata = null;
+            segno = null;
+            ending = null;
+            repeat = null;
             XMLFiller(x);
         }
 
         public void XMLFiller(XElement x)
         {
-            location = x.Attribute("location").Value == "left" ? BarlineLocation.left : x.Attribute("location").Value == "middle" ? BarlineLocation.middle : BarlineLocation.right;
-            if (x.Element("bar-style") != null)
+            x = x.Element("barline") != null ? x.Element("barline") : null;
+            if (x != null)
             {
-                getStyle(x.Element("bar-style").Value);
-            }
-            if (x.Element("segno") != null)
-            {
-                var attr = from at in x.Element("segno").Attributes() select at;
-                segno = new Segno(attr);
+                location = x.Attribute("location").Value == "left" ? BarlineLocation.left : x.Attribute("location").Value == "middle" ? BarlineLocation.middle : BarlineLocation.right;
+                if (x.Element("bar-style") != null)
+                {
+                    getStyle(x.Element("bar-style").Value);
+                }
+                if (x.Element("segno") != null)
+                {
+                    var attr = from at in x.Element("segno").Attributes() select at;
+                    segno = new Segno(attr);
+                }
+                if (x.Element("coda") != null)
+                {
+                    var attr = from at in x.Element("coda").Attributes() select at;
+                    coda = new Coda(attr);
+                }
+                if (x.Element("fermata") != null)
+                {
+                    var attr = from at in x.Element("fermata").Attributes() select at;
+                    fermata = new Fermata(attr);
+                }
+                if (x.Element("ending") != null)
+                {
+                    var el = x.Element("ending");
+                    ending = new Ending(el);
+                }
+                if (x.Element("repeat") != null)
+                {
+                    var attr = from at in x.Element("repeat").Attributes() select at;
+                    repeat = new Repeat(attr);
+                }
             }
         }
         public void Draw(CanvasList surface)
@@ -105,14 +132,37 @@ namespace MusicXMLViewerWPF
             
         }
     }
-    class MeasureEnding : IDrawable
+
+    class Coda : EmptyPrintStyle
+    {
+        private string name = "coda";
+        public string Name { get { return name; } }
+        public Coda(IEnumerable<XAttribute> x) : base(x)
+        {
+
+        }
+    }
+    class Fermata : EmptyPrintStyle
+    {
+        private string name = "fermata";
+        private UprightInverted type;
+        public string Name { get { return name; } }
+        public Fermata(IEnumerable<XAttribute> x) : base(x)
+        {
+            
+            foreach (var item in x)
+            {
+                string t = item.Value;
+                type = t == "upright" ? UprightInverted.upright : UprightInverted.inverted;
+            }
+        }
+    }
+    class Ending : EmptyPrintStyle, IDrawable
     {
         private EndingType type;
         private float end_length;
         private float text_x;
         private float text_y;
-        private float x_shift;
-        private float y_shift;
         private int[] number;
         private string ending_val; //for now // not tested //
 
@@ -120,17 +170,41 @@ namespace MusicXMLViewerWPF
         public float EndLength { get { return end_length; } }
         public float TextX { get { return text_x; } }
         public float TextY { get { return text_y; } }
-        public float X { get { return x_shift; } }
-        public float Y { get { return y_shift; } }
         public int[] Number {  get { return number; } }
         public string Ending_val {  get { return ending_val; } }
 
-        public MeasureEnding(XElement x)
+        public Ending(XElement z): base(z.Attributes())
         {
-
+            var x = z.Attributes();
+            ending_val = z.Value;
+            foreach (var item in x)
+            {
+                string s = item.Name.LocalName;
+                switch (s)
+                {
+                    case "type":
+                        GetEndingType(item.Value);
+                        break;
+                    case "end-length":
+                        end_length = float.Parse(item.Value, CultureInfo.InvariantCulture);
+                        break;
+                    case "text-x":
+                        text_x = float.Parse(item.Value, CultureInfo.InvariantCulture);
+                        break;
+                    case "text-y":
+                        text_y = float.Parse(item.Value, CultureInfo.InvariantCulture);
+                        break;
+                    case "number":
+                        number = GetNumbersArray(item.Value); // string value to array: "1, 2, 3" to  []{1,2,3}
+                        break;
+                    default:
+                        break;
+                }
+                
+            }
         }
 
-        private void getEndingType (string s)
+        private void GetEndingType (string s)
         {
             type = s == "start" ? EndingType.start : s == "stop" ? EndingType.stop : EndingType.discontinue; 
         }
@@ -138,6 +212,12 @@ namespace MusicXMLViewerWPF
         public new void Draw(CanvasList surface)
         {
 
+        }
+
+        private int[] GetNumbersArray(string s)
+        {
+            int[] temp = s.Split(',').Select(n => Convert.ToInt32(n)).ToArray(); // s.Split(',').Select(int.Parse).ToArray();
+            return temp;
         }
 
         internal enum EndingType 
@@ -159,6 +239,25 @@ namespace MusicXMLViewerWPF
         public RepeatDirection Direction { get { return direction; } }
         public Winged Winged { get { return winged; } }
 
+        public Repeat(IEnumerable<XAttribute> x)
+        {
+            foreach (var item in x)
+            {
+                string s = item.Name.LocalName;
+                switch (s)
+                {
+                    case "direction":
+                        direction = item.Value == "backward" ? RepeatDirection.backward : RepeatDirection.forward;
+                        break;
+                    case "winged":
+                        winged = new Winged(item.Value);
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+
         public new void Draw(CanvasList surface)
         {
 
@@ -174,8 +273,10 @@ namespace MusicXMLViewerWPF
     {
         private WingType type;
         private string s_type;
+
         public WingType Type { get { return type; } }
         public string Type_s { get { return s_type; } }
+
         public Winged(string s)
         {
             s_type = s;
@@ -240,13 +341,22 @@ namespace MusicXMLViewerWPF
     }
     class EmptyPrintStyle // TODO test class
     {
-        float def_x;
-        float def_y;
-        float rel_x;
-        float rel_y;
-        Halign h_align;
-        Valign v_align;
-        string color;
+        private float def_x;
+        private float def_y;
+        private float rel_x;
+        private float rel_y;
+        private Halign h_align;
+        private Valign v_align;
+        private string color;
+
+        public float DefX { get { return def_x; } }
+        public float DefY { get { return def_y; } }
+        public float RelX { get { return rel_x; } }
+        public float RelY { get { return rel_y; } }
+        public Halign HAlign { get { return h_align; } }
+        public Valign VAlign { get { return v_align; } }
+        public string Color { get { return color; } }
+
         public EmptyPrintStyle()
         {
 
@@ -285,7 +395,7 @@ namespace MusicXMLViewerWPF
                     case "color":
                         color = item.Value;
                         break;
-
+                    
                 }
             }
         }
@@ -302,5 +412,10 @@ namespace MusicXMLViewerWPF
         middle,
         bottom,
         baseline
+    }
+    enum UprightInverted
+    {
+        upright,
+        inverted
     }
 }
