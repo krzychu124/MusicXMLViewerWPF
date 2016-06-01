@@ -8,7 +8,7 @@ using System.Xml.Linq;
 
 namespace MusicXMLViewerWPF
 {
-    class Barline :  IDrawable, IXMLExtract // TODO test class
+    class Barline :  IDrawable, IXMLExtract // TODO_L test class
     {
         
         private BarlineLocation location;
@@ -339,7 +339,7 @@ namespace MusicXMLViewerWPF
             double_curved
         }
     }
-    class EmptyPrintStyle // TODO test class
+    class EmptyPrintStyle // TODO_L test class
     {
         private float def_x;
         private float def_y;
@@ -365,7 +365,7 @@ namespace MusicXMLViewerWPF
         {
             FillAttributes(x);
         }
-        private void FillAttributes(IEnumerable<XAttribute> x) // TODO check if it's working
+        private void FillAttributes(IEnumerable<XAttribute> x) // TODO_L check if it's working
         {
             foreach (var item in x)
             {

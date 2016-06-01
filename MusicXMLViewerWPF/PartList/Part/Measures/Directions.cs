@@ -14,7 +14,7 @@ namespace MusicXMLViewerWPF
         private string directive;
         //additional settings//
         private Dynamics dynamics;
-        private DirectionType typ; // TODO rework to class, then add all attributes
+        private DirectionType typ; // TODO_H rework to class, then add all attributes
         private int posY;
         private int relX;
         private float offset;

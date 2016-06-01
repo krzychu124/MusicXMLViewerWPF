@@ -29,7 +29,7 @@ namespace MusicXMLViewerWPF.PartList.Part.Measures
             XMLFiller(x);
             Barline = new Barline(x); // seems to be done for now
             PrintProperties = new Print(x); // seems to be done for now
-            Direction = new Directions(x);
+            Direction = new Directions(x); // TODO_H missing logic
             Attributes = new Attributes(x); //UNDONE incorrect/missing implementation 
         }
         public IEnumerable<XElement> XMLExtractor()
@@ -42,7 +42,7 @@ namespace MusicXMLViewerWPF.PartList.Part.Measures
         {
             width = float.Parse(x.Attribute("width").Value, CultureInfo.InvariantCulture);
             number = Convert.ToInt32(x.Attribute("number").Value);
-            hasNumberInvisible = x.Attribute("implicit") != null ? x.Attribute("implicit").Value == "yes" ? true : false : false; // _NOTE not sure if itll work - very rare usage
+            hasNumberInvisible = x.Attribute("implicit") != null ? x.Attribute("implicit").Value == "yes" ? true : false : false; // TODO_L not sure if itll work - very rare usage
         }
         public void Draw(CanvasList surface)
         {
