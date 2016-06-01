@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace MusicXMLViewerWPF
 {
-    class Key : MusicalChars
+    class Key : MusicalChars //TODO_H implement XElement ctor
     {
         private int measure_num;
         private bool isSharp;
@@ -31,6 +32,11 @@ namespace MusicXMLViewerWPF
             }
             this.type = MusSymbolType.Key;
             this.measure_num = num;
+        }
+
+        public Key(XElement x)
+        {
+
         }
         private void setFifths(int i)
         {
