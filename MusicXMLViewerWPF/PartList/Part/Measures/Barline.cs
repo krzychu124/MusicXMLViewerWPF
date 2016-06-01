@@ -209,7 +209,7 @@ namespace MusicXMLViewerWPF
             type = s == "start" ? EndingType.start : s == "stop" ? EndingType.stop : EndingType.discontinue; 
         }
 
-        public new void Draw(CanvasList surface)
+        public void Draw(CanvasList surface)
         {
 
         }
@@ -258,7 +258,7 @@ namespace MusicXMLViewerWPF
             }
         }
 
-        public new void Draw(CanvasList surface)
+        public void Draw(CanvasList surface)
         {
 
         }
@@ -325,7 +325,7 @@ namespace MusicXMLViewerWPF
 
         }
 
-        public new void Draw(CanvasList surface)
+        public void Draw(CanvasList surface)
         {
 
         }
