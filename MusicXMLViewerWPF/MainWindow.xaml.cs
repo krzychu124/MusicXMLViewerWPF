@@ -127,7 +127,7 @@ y += (glyphTypeface.Height* size);
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
 
-            Page p = new Page();
+            //Page p = new Page();
             ScorePart s = new ScorePart();
            // textBlock.Text += "\n Characters added to program";
           //  list = LoadDocToClasses.list;

@@ -48,7 +48,7 @@ namespace MusicXMLViewerWPF
         }
         public ScorePart()
         {
-            page = new Page();
+            //page = new Page(); //TODO test, possible rework :/
             systemlayout = new SystemLayout();
             getPartList();
         }
