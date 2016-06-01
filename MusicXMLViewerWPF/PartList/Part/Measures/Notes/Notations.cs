@@ -126,7 +126,7 @@ namespace MusicXMLViewerWPF
         }
     }
 
-    class Fermata : Notations // not tested //
+    class FermataTest : Notations // not tested //
     {
         bool placement;
         string symbol;
@@ -134,7 +134,7 @@ namespace MusicXMLViewerWPF
         public bool Placement { get { return placement; } }
         public string Symbol { get { return symbol; } }
         
-        public Fermata(string placement)
+        public FermataTest(string placement)
         {
 
             setNotationType("fermata");

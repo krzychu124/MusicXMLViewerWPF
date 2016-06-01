@@ -8,7 +8,7 @@ using System.Xml.Linq;
 namespace MusicXMLViewerWPF.Defaults
 {
 
-    class SystemLayout : Print// looks good //
+    public class SystemLayout // looks good //
     {
         private float left_margin;
         private float right_margin;
@@ -25,6 +25,12 @@ namespace MusicXMLViewerWPF.Defaults
         {
             getSystemLayout();
         }
+
+        public SystemLayout(XElement x)
+        {
+            
+        }
+
         public SystemLayout(float l, float r, float s, float t, SystemDivider d)
         {
             left_margin = l;
