@@ -255,7 +255,7 @@ namespace MusicXMLViewerWPF
                                             }
                                             break;
 
-                                        case "fermata" : Fermata f = new Fermata(n.Attribute("placement").Value);
+                                        case "fermata" : FermataTest f = new FermataTest(n.Attribute("placement").Value);
                                             n_list.Add(f);
                                             break;
 

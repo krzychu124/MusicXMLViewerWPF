@@ -3,17 +3,38 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace MusicXMLViewerWPF
 {
     class Directions : MusicalChars
     {
-        public Dynamics dynamics;
-        public DirectionType typ;
-        public string placement;
-        public int posY;
-        public int relX;
+        //attributes//
+        private string placement;
+        private string directive;
+        //additional settings//
+        private Dynamics dynamics;
+        private DirectionType typ; // TODO_H rework to class, then add all attributes
+        private int posY;
+        private int relX;
+        private float offset;
+        private int staff;
 
+        public Directions(XElement x)
+        {
+            var directions = x.Element("direction");
+            placement = null;
+            directive = null;
+            if (directions.HasAttributes)
+            {
+                placement = directions.Attribute("placement") != null ? directions.Attribute("placement").Value : null;
+                directive = directions.Attribute("directive") != null ? directions.Attribute("directive").Value : null;
+            }
+            if (directions.HasElements)
+            {
+
+            }
+        }
         public Directions(Dynamics dynamic, string placement)
         {
             typ = DirectionType.dynamics;

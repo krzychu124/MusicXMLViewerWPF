@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace MusicXMLViewerWPF
 {
-    public class TimeSignature : MusicalChars
+    public class TimeSignature : MusicalChars //TODO implement Xelement ctor
     {
         private SignatureType sigType;
         private int beats;
@@ -14,6 +15,12 @@ namespace MusicXMLViewerWPF
         private int measure_num;
         private string beats_str;
         private string beats_type_str;
+
+        public TimeSignature(XElement x)
+        {
+
+        }
+
         public TimeSignature(int beats, int beats_type,string symbol, int num)
         {
 
@@ -33,6 +40,7 @@ namespace MusicXMLViewerWPF
             setBeatTime(beats_type);
             setBeat(beats);
         }
+        
         public int Beats
         {
             get { return beats; }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -7,21 +8,93 @@ using System.Xml.Linq;
 
 namespace MusicXMLViewerWPF
 {
-    public class Print 
+    public class Print //TODO_L test, looks good
     {
-        private bool new_page;
-        private bool new_system;
+        //attributes //
         private float staff_spacing;
         private int blank_page;
         private int page_number;
+        private YesNo new_page = YesNo.no;
+        private YesNo new_system = YesNo.no;
+        //additional settings //
+        private Page page;
+        private Defaults.SystemLayout sys_layout;
+        private MeasureNumbering measure_numbering;
+        private List<StaffLayout> staff_layout_list = new List<StaffLayout>();
 
-        public bool NewPage { get { return new_page; } }
-        public bool NewSystem { get { return new_system; } }
+        public bool NewPage { get { return new_page.GetTypeCode() == 0? false : true; } }
+        public bool NewSystem { get { return new_system.GetTypeCode() == 0 ? false : true; } }
         public float StaffSpacing { get { return staff_spacing; } }
         public int BlankPage { get { return blank_page; } }
         public int PageNumber { get { return page_number; } }
+        public Page Page { get { return page; } }
+        public Defaults.SystemLayout SystemLayout { get { return sys_layout; } }
+        public MeasureNumbering MeasureNumbering { get { return measure_numbering; } }
+        public List<StaffLayout> StaffLayoutList { get { return staff_layout_list; } }
+
+        public Print(XElement x)
+        {
+            if (x.Element("print") != null)
+            {
+                var print = x.Element("print");
+                if (print.HasAttributes)
+                {
+                    var attributes = from z in print.Attributes() select z;
+                    foreach (var item in attributes)
+                    {
+                        string name = item.Name.LocalName;
+                        switch (name)
+                        {
+                            case "new-page":
+                                new_page = item.Value == "yes" ? YesNo.yes : YesNo.no;
+                                break;
+                            case "new-system":
+                                new_system = item.Value == "yes" ? YesNo.yes : YesNo.no;
+                                break;
+                            case "staff-spacing":
+                                staff_spacing = float.Parse(item.Value, CultureInfo.InvariantCulture);
+                                break;
+                            case "blank-page":
+                                blank_page = int.Parse(item.Value);
+                                break;
+                            case "page-number":
+                                page_number = int.Parse(item.Value);
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                }
+                if (print.HasElements)
+                {
+                    var elements = from el in print.Elements() select el;
+                    foreach (var item in elements)
+                    {
+                        string name = item.Name.LocalName;
+                        switch (name)
+                        {
+                            case "system-layout":
+                                sys_layout = new Defaults.SystemLayout(item);
+                                break;
+                            case "measure-numbering":
+                                measure_numbering = new MeasureNumbering(item);
+                                break;
+                            case "staff-layout":
+                                StaffLayout s = new StaffLayout(item);
+                                staff_layout_list.Add(s);
+                                break;
+                            case "page-layout":
+                                page = new Page(item);
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                }
+            }
+        }
     }
-    class MeasureNumbering : Print
+    public class MeasureNumbering
     {
         private MeasureNumberingType type;
 
@@ -33,14 +106,14 @@ namespace MusicXMLViewerWPF
             type = temp.Value == "measure"? MeasureNumberingType.measure : temp.Value == "system"? MeasureNumberingType.system : MeasureNumberingType.none;
         }
 
-        internal enum MeasureNumberingType
+        public enum MeasureNumberingType
         {
             none,
             measure,
             system
         }
     }
-    class MeasureDistance : Print
+    class MeasureDistance
     {
         private float distance;
 
@@ -52,7 +125,7 @@ namespace MusicXMLViewerWPF
         }
     }
 
-    class PartNameDisplay : Print
+    class PartNameDisplay 
     {
         private AccidentalText atext;
         private string accidentalsymbol;
@@ -71,7 +144,7 @@ namespace MusicXMLViewerWPF
         }
     }
 
-    class PartAbbreviationDisplay : Print
+    class PartAbbreviationDisplay 
     {
         private AccidentalText atext;
         private string accidentalsymbol;
@@ -89,10 +162,13 @@ namespace MusicXMLViewerWPF
             accidentalsymbol = atext == AccidentalText.flat ? MusChar.Flat : atext == AccidentalText.sharp ? MusChar.Sharp : MusChar.Natural;
         }
     }
-    class StaffLayout : Print
+    public class StaffLayout 
     {
         private float distance;
+        private int number;
+
         public float Distance { get { return distance; } }
+        public int Number { get { return number; } }
 
         public StaffLayout(float distance)
         {
@@ -101,6 +177,7 @@ namespace MusicXMLViewerWPF
         public StaffLayout(XElement x)
         {
             var stafflayout = x.Element("staff-layout");
+            number = stafflayout.Attributes() != null ? int.Parse(stafflayout.Attribute("number").Value) : 1;
             distance = (float)Convert.ToDouble(stafflayout.Element("staff-distance").Value);
         }
     }
@@ -109,5 +186,10 @@ namespace MusicXMLViewerWPF
         natural,
         flat,
         sharp
+    }
+    public enum YesNo
+    {
+        no,
+        yes
     }
 }
