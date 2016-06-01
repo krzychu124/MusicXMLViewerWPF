@@ -17,9 +17,9 @@ namespace MusicXMLViewerWPF
         private static float page_height;
         private static float page_width;
         private static PageMargins page_margins;
+
         public static int num_lines;
         public static List<Margins> line = new List<Margins>();
-
         public float Width {  get { return page_width; } }
         public float Height {  get { return page_height; } }
         public PageMargins Margins {  get { return page_margins; } }
@@ -38,8 +38,9 @@ namespace MusicXMLViewerWPF
         }
         public Page()
         {
-            getPageInfo();
+            GetPageInfo();
         }
+
         public Page(float h, float w, PageMargins p)
         {
             page_margins = p;
@@ -58,7 +59,7 @@ namespace MusicXMLViewerWPF
             
             line.Add(m);
         }
-        public void getPageInfo() //not tested
+        public void GetPageInfo() //not tested
         {
             XDocument doc = LoadDocToClasses.Document;
             var p = from z in doc.Descendants("defaults") select z;

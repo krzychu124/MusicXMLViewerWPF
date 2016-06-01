@@ -72,6 +72,7 @@
     <Compile Include="Misc\LoadDocToClasses.cs" />
     <Compile Include="Misc\MusChar.cs" />
     <Compile Include="MusicScore.cs" />
+    <Compile Include="PartList\Part\Measures\Measure.cs" />
     <Compile Include="PartList\Part\Measures\MusSymbolType.cs" />
     <Compile Include="PartList\Part.cs" />
     <Compile Include="Defaults\Print.cs" />
@@ -160,6 +161,11 @@
   <ItemGroup>
     <Folder Include="Credit\" />
     <Folder Include="Identyfication\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="TestXML\Saltarello.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
