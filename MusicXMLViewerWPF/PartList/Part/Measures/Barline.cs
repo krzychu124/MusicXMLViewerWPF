@@ -339,7 +339,7 @@ namespace MusicXMLViewerWPF
             double_curved
         }
     }
-    class EmptyPrintStyle // TODO_L test class
+    public class EmptyPrintStyle // TODO_L test class
     {
         private float def_x;
         private float def_y;
@@ -400,20 +400,20 @@ namespace MusicXMLViewerWPF
             }
         }
     }
-    enum Halign
+    public enum Halign
     {
         left,
         center,
         right
     }
-    enum Valign
+    public enum Valign
     {
         top,
         middle,
         bottom,
         baseline
     }
-    enum UprightInverted
+    public enum UprightInverted
     {
         upright,
         inverted
