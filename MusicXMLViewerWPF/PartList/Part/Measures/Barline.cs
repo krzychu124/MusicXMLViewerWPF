@@ -123,7 +123,7 @@ namespace MusicXMLViewerWPF
         }
 
     }
-    class Segno : EmptyPrintStyle
+    public class Segno : EmptyPrintStyle
     {
         private string name = "segno";
         public string Name { get { return name; } }
@@ -133,7 +133,7 @@ namespace MusicXMLViewerWPF
         }
     }
 
-    class Coda : EmptyPrintStyle
+    public class Coda : EmptyPrintStyle
     {
         private string name = "coda";
         public string Name { get { return name; } }
@@ -142,7 +142,7 @@ namespace MusicXMLViewerWPF
 
         }
     }
-    class Fermata : EmptyPrintStyle
+    public class Fermata : EmptyPrintStyle
     {
         private string name = "fermata";
         private UprightInverted type;
@@ -341,13 +341,15 @@ namespace MusicXMLViewerWPF
     }
     public class EmptyPrintStyle // TODO_L test class
     {
-        private float def_x;
-        private float def_y;
-        private float rel_x;
-        private float rel_y;
-        private Halign h_align;
-        private Valign v_align;
-        private string color;
+        protected float def_x;
+        protected float def_y;
+        protected float rel_x;
+        protected float rel_y;
+        protected float font_size;
+        protected string font_weight;
+        protected Halign h_align;
+        protected Valign v_align;
+        protected string color;
 
         public float DefX { get { return def_x; } }
         public float DefY { get { return def_y; } }
@@ -383,6 +385,12 @@ namespace MusicXMLViewerWPF
                         break;
                     case "relative-y":
                         rel_y = float.Parse(item.Value, CultureInfo.InvariantCulture);
+                        break;
+                    case "font-size":
+                        font_size = float.Parse(item.Value, CultureInfo.InvariantCulture);
+                        break;
+                    case "font-weight":
+                        font_weight = item.Value;
                         break;
                     case "valign":
                         string vval = item.Value;

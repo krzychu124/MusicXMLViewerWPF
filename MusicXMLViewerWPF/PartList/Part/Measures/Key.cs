@@ -7,7 +7,7 @@ using System.Xml.Linq;
 
 namespace MusicXMLViewerWPF
 {
-    class Key : EmptyPrintStyle//  MusicalChars //TODO_H implement XElement ctor
+    class Key : EmptyPrintStyle//  MusicalChars //TODO_L implement missing properties 
     {
         private int measure_num;
         private bool isSharp;
