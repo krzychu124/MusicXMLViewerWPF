@@ -7,7 +7,7 @@ using System.Xml.Linq;
 
 namespace MusicXMLViewerWPF
 {
-    class Key : MusicalChars //TODO_H implement XElement ctor
+    class Key : EmptyPrintStyle//  MusicalChars //TODO_H implement XElement ctor
     {
         private int measure_num;
         private bool isSharp;
@@ -16,29 +16,56 @@ namespace MusicXMLViewerWPF
         private Mode mode;
         public Key( int fifths, string mode, int num)
         {
-            this.musicalcharacter = fifths < 0 ? "b" : fifths > 0 ? "#" : " ";
+            //this.musicalcharacter = fifths < 0 ? "b" : fifths > 0 ? "#" : " ";
             isNatural = false;
             isSharp = false;
             isSharp = fifths > 0 ? true : fifths < 0 ? false : isNatural = true;
-            setFifths(fifths);
-            switch (mode)
-            {
-                case "minor": this.mode = Mode.minor;
-                    break;
-                case "major": this.mode = Mode.major;
-                    break;
-                default: this.mode = Mode.unknown;
-                    break;
-            }
-            this.type = MusSymbolType.Key;
+            SetFifths(fifths);
+            SetMode(mode);
+            //this.type = MusSymbolType.Key;
             this.measure_num = num;
         }
 
-        public Key(XElement x)
+        public Key(XElement x):base(x.Attributes())
         {
-
+            var ele = x.Elements();
+            foreach (var item in ele)
+            {
+                string name = item.Name.LocalName;
+                switch (name)
+                {
+                    case "fifths":
+                        SetFifths(int.Parse(item.Value));
+                        break;
+                    case "mode":
+                        SetMode(item.Value);
+                        break;
+                    default:
+                        break;
+                }
+            }
+            isNatural = false;
+            isSharp = false;
+            isSharp = fifths > 0 ? true : fifths < 0 ? false : isNatural = true;
         }
-        private void setFifths(int i)
+
+        private void SetMode(string s)
+        {
+            switch (s)
+            {
+                case "minor":
+                    this.mode = Mode.minor;
+                    break;
+                case "major":
+                    this.mode = Mode.major;
+                    break;
+                default:
+                    this.mode = Mode.unknown;
+                    break;
+            }
+        }
+
+        private void SetFifths(int i)
         {
             if(FifthDic.ContainsKey(i))
             {
