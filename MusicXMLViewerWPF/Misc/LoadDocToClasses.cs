@@ -118,7 +118,7 @@ namespace MusicXMLViewerWPF
                         }
                     }
 
-
+                    //NEEDIMPROVEMENTS messy as hell
 
                     //int measure_number = Convert.ToInt32(i.Attribute("number").Value);
                     if (i.Element("attributes") != null)
@@ -141,7 +141,7 @@ namespace MusicXMLViewerWPF
                         {
                             attr = attr.Element("clef");
                             Clef cl = new Clef(attr.Element("sign").Value, Convert.ToInt32(attr.Element("line").Value), measure_number);
-                            list.Add(cl);
+                            //list.Add(cl);
                         }
                     }
                     if (i.Element("attributes") != null)
