@@ -130,7 +130,8 @@ namespace MusicXMLViewerWPF
                             attr = attr.Element("key");
                             string mode = attr.Element("mode") != null ? attr.Element("mode").Value : "major";
                             Key k = new Key(Convert.ToInt32(attr.Element("fifths").Value), mode, measure_number);
-                            list.Add(k);
+                            Logger.Log(" 'key class' missing addition to list");
+                           // list.Add(k);
                         }
                     }
                     if (i.Element("attributes") != null)
@@ -142,6 +143,7 @@ namespace MusicXMLViewerWPF
                             attr = attr.Element("clef");
                             Clef cl = new Clef(attr.Element("sign").Value, Convert.ToInt32(attr.Element("line").Value), measure_number);
                             //list.Add(cl);
+                            Logger.Log(" 'clef class' missing addition to list");
                         }
                     }
                     if (i.Element("attributes") != null)
@@ -153,7 +155,8 @@ namespace MusicXMLViewerWPF
                             XElement time = attr.Element("time");
                             string symbol = time.HasAttributes ? time.FirstAttribute.ToString() : "number";
                             TimeSignature t = new TimeSignature(Convert.ToInt32(time.Element("beats").Value), Convert.ToInt32(time.Element("beat-type").Value), symbol, measure_number);
-                            list.Add(t);
+                            // list.Add(t);
+                            Logger.Log(" 'sigtime class' missing addition to list");
                         }
                     }
                             
