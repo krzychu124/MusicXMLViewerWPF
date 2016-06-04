@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
-namespace MusicXMLViewerWPF.PartList.Part.Measures
+namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
 {
     class Measure : IXMLExtract, IDrawable // UNDONE finish reworking class
     {
@@ -17,7 +17,7 @@ namespace MusicXMLViewerWPF.PartList.Part.Measures
         public List<Note> NotesList = new List<Note>(); // experimental
         public Barline Barline;
         public Print PrintProperties;
-        public Directions Direction;
+        public Direction Direction;
         public Attributes Attributes;
 
         public int Number { get { return number; } }
@@ -29,8 +29,8 @@ namespace MusicXMLViewerWPF.PartList.Part.Measures
             XMLFiller(x);
             Barline = new Barline(x); // seems to be done for now
             PrintProperties = new Print(x); // seems to be done for now
-            Direction = new Directions(x); // TODO_H missing logic
-            Attributes = new Attributes(x); //UNDONE incorrect/missing implementation 
+            Direction = new Direction(x); // TODO_H missing logic
+            Attributes = new Attributes(x);  // seems to be done for now
         }
         public IEnumerable<XElement> XMLExtractor()
         {
