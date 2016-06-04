@@ -8,8 +8,8 @@ namespace MusicXMLViewerWPF
 {
     class MusicScore
     {
-        protected static List<ScorePart> scoreparts = new List<ScorePart>();
+        protected static List<PartList> musicscoreparts = new List<PartList>();
 
-        public static List<ScorePart> ScoreParts { get { return scoreparts; } }
+        public static List<PartList> ScoreParts { get { return musicscoreparts; } }
     }
 }
