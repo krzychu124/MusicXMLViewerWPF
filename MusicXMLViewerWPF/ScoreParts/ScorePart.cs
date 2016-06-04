@@ -7,21 +7,27 @@ using System.Xml.Linq;
 
 namespace MusicXMLViewerWPF
 {
-    class Part 
+    class ScorePart 
     {
         private string part_name;
         private string part_name_display;
         private string part_abbreviation;
         private string part_abbreviation_display;
         
-        private ScoreInstrument instrument;
-        public Part(XElement x)
+        private Dictionary<string,ScoreInstrument> score_instruments = new Dictionary<string, ScoreInstrument>() { };
+        public ScorePart(XElement x)
         {
             var temp = x;//.Element("score-part");
             part_name = temp.Element("part-name").Value;
             part_name_display = temp.Element("part-name-display") != null ? temp.Element("part-name-display").Value : string.Empty;
             part_abbreviation = temp.Element("part-abbreviation") != null ? temp.Element("part-abbreviation").Value : string.Empty;
             part_abbreviation_display = temp.Element("part-abbreviation-display") != null ? temp.Element("part-abbreviation-display").Value : string.Empty;
+            var instruments = x.Elements("score-instrument");
+            foreach (var item in instruments)
+            {
+                score_instruments.Add(item.Attribute("id").Value, new ScoreInstrument(item));
+            }
+            
         }
 
     }
@@ -43,10 +49,10 @@ namespace MusicXMLViewerWPF
         }
         private void getScoreInstrument(XElement x)
         {
-            id = x.Element("score-instrument").Attribute("id").Value;
-            instrument_name = x.Element("score-instrument").Element("instrument-name").Value;
-            instrument_abbreviation = x.Element("score-instrument").Element("instrument-abbreviation") != null? x.Element("score-instrument").Element("instrument-abbreviation").Value : string.Empty ;
-            instrument_sound = x.Element("score-instrument").Element("instrument-sound") != null ? x.Element("score-instrument").Element("instrument-sound").Value : string.Empty;
+            id = x.Attribute("id").Value;
+            instrument_name = x.Element("instrument-name").Value;
+            instrument_abbreviation = x.Element("instrument-abbreviation") != null? x.Element("instrument-abbreviation").Value : string.Empty ;
+            instrument_sound = x.Element("instrument-sound") != null ? x.Element("instrument-sound").Value : string.Empty;
         }
     }
 }
