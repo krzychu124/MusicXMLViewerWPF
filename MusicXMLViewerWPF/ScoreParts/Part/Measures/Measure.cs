@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
-namespace MusicXMLViewerWPF.PartList.Part.Measures
+namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
 {
     class Measure : IXMLExtract, IDrawable // UNDONE finish reworking class
     {

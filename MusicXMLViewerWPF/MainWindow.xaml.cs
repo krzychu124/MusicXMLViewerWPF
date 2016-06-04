@@ -128,7 +128,7 @@ y += (glyphTypeface.Height* size);
         {
 
             //Page p = new Page();
-            ScorePart s = new ScorePart();
+            PartList s = new PartList();
            // textBlock.Text += "\n Characters added to program";
           //  list = LoadDocToClasses.list;
            // textBlock.Text += "\n Added: " +list.Count.ToString();
