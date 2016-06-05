@@ -27,7 +27,7 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
         public Measure(XElement x)
         {
             XMLFiller(x);
-            Barline = x.Element("barline") != null ? new Barline(x) : null; // seems to be done for now
+            Barline = x.Element("barline") != null ? new Barline(x) : new Barline() { Style = Barline.BarStyle.regular }; // seems to be done for now // set default barline style to regular if not present other
             PrintProperties = x.Element("print") != null ? new Print(x) : null; // seems to be done for now
             Direction = x.Element("direction") != null ? new Direction(x) : null; // TODO_H missing logic
             Attributes = x.Element("attributes") != null ? new Attributes(x) : null;  // seems to be done for now
