@@ -18,17 +18,17 @@ namespace MusicXMLViewerWPF
         public List<PartGroup> PartGroup { get { return part_group_list; } }
         
         // private Identyfication_Class;
-        public PartList()
+        public PartList(XElement x)
         {
             //page = new Page(); //TODO test, possible rework :/
             systemlayout = new SystemLayout();
-            getPartList();
+            getPartList(x);
         }
 
-        public void getPartList()
+        public void getPartList(XElement x )
         {
-            XDocument doc = LoadDocToClasses.Document; // TODO_H edit Xdoc replace with Xelement parameter // only temp 
-            var partlist = doc.Element("part-list").Elements();
+            //XDocument doc = LoadDocToClasses.Document; // TODO_H edit Xdoc replace with Xelement parameter // only temp 
+            var partlist = x.Element("part-list").Elements();
            
             foreach (var item in partlist)
             {
