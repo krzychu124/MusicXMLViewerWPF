@@ -55,6 +55,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Credit\Credit.cs" />
+    <Compile Include="Defaults\Defaults.cs" />
+    <Compile Include="Identyfication\Identification.cs" />
     <Compile Include="Misc\LoadFile.cs" />
     <Compile Include="ScoreParts\Part\Measures\Attributes.cs" />
     <Compile Include="ScoreParts\Part\Measures\Barline.cs" />
@@ -74,6 +77,7 @@
     <Compile Include="MusicScore.cs" />
     <Compile Include="ScoreParts\Part\Measures\Measure.cs" />
     <Compile Include="ScoreParts\Part\Measures\MusSymbolType.cs" />
+    <Compile Include="ScoreParts\Part\Part.cs" />
     <Compile Include="ScoreParts\ScorePart.cs" />
     <Compile Include="Defaults\Print.cs" />
     <Compile Include="Misc\NoUsage\Prototype.cs" />
@@ -97,6 +101,7 @@
     <Compile Include="Misc\NoUsage\Window1.xaml.cs">
       <DependentUpon>Window1.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Work\Work.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -158,10 +163,7 @@
       <SubType>Designer</SubType>
     </Resource>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Credit\" />
-    <Folder Include="Identyfication\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Resource Include="TestXML\Saltarello.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
