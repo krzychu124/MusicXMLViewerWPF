@@ -43,7 +43,7 @@ namespace MusicXMLViewerWPF
 
         public Page(XElement x)
         {
-
+            GetPageInfo(x);
         }
         public Page(float h, float w, PageMargins p)
         {

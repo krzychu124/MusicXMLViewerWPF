@@ -8,5 +8,9 @@ namespace MusicXMLViewerWPF.Identyfication
 {
     class Identification
     {
+        public Identification(System.Xml.Linq.XElement x)
+        {
+
+        }
     }
 }
