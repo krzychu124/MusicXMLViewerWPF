@@ -52,6 +52,18 @@ namespace MusicXMLViewerWPF.Defaults
                 top_system_distance = (float)Convert.ToDouble(item.Element("top-system-distance").Value);
             }
         }
+        private void getSystemLayout(XElement x)
+        {
+
+            var sl = x.Elements();
+            foreach (var item in sl)
+            {
+                left_margin = (float)Convert.ToDouble(item.Element("system-margins").Element("left-margin").Value);
+                right_margin = (float)Convert.ToDouble(item.Element("system-margins").Element("right-margin").Value);
+                system_distance = (float)Convert.ToDouble(item.Element("system-distance").Value);
+                top_system_distance = (float)Convert.ToDouble(item.Element("top-system-distance").Value);
+            }
+        }
 
         public class SystemDivider // implemented but no use curently // visible object which represent point where group of measures are divided //
         {

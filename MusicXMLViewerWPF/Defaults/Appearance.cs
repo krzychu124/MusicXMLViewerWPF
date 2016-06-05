@@ -10,7 +10,7 @@ using System.Xml.Linq;
 
 namespace MusicXMLViewerWPF.Defaults
 {
-    class Appearance
+    class Appearance // rework, minor changes 
     {
         private static Dictionary<string, float> distances = new Dictionary<string, float>() { };
         private static Dictionary<string, float> lineWidths = new Dictionary<string, float>() { };
@@ -23,6 +23,11 @@ namespace MusicXMLViewerWPF.Defaults
         public Appearance()
         {
             initLineWidths();
+        }
+
+        public Appearance(XElement x)
+        {
+            initLineWidths(x);
         }
 
         public static float GetDistance(string type)
@@ -90,6 +95,35 @@ namespace MusicXMLViewerWPF.Defaults
 
                 }
             }
+        }
+
+        public void initLineWidths(XElement x)
+        {
+            var appearance = x.Elements(); 
+                                           
+            foreach (var item in appearance)
+            {
+                if (item.Name.LocalName == "line-width") //search for <line-width>
+                {
+                    string s = item.Attribute("type").Value;
+                    float v = float.Parse(item.Value, CultureInfo.InvariantCulture);
+                    lineWidths.Add(s, v);
+                }
+                if (item.Name.LocalName == "note-size") //search for <note-size>
+                {
+                    string s = item.Attribute("type").Value;
+                    float v = float.Parse(item.Value, CultureInfo.InvariantCulture);
+                    noteSizes.Add(s, v);
+                }
+                if (item.Name.LocalName == "distance") //search for <ldistance>
+                {
+                    string s = item.Attribute("type").Value;
+                    float v = float.Parse(item.Value, CultureInfo.InvariantCulture);
+                    distances.Add(s, v);
+                }
+
+            }
+
         }
     }
     

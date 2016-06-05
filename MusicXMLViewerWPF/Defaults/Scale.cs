@@ -25,6 +25,11 @@ namespace MusicXMLViewerWPF.Defaults
             }
             
         }
+
+        public Scale(XElement x)
+        {
+            XMLFiller(x);
+        }
         public IEnumerable<XElement> XMLExtractor()
         {
             var x = LoadDocToClasses.Document;

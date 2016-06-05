@@ -32,11 +32,16 @@ namespace MusicXMLViewerWPF
         }
         private void LoadToClasses()
         {
-            var parts_to_load = from z in file.Descendants("part") select z;
-            foreach (var item in parts_to_load)
+            work = new Work.Work(file.Element("work"));
+            defaults = new Defaults.Defaults(file.Element("defaults")); //TODO_H missing implementation
+            identyfication = new Identyfication.Identification(file.Element("identificatino")); // TODO_H missing implementation
+            foreach (var item in file.Elements("credit"))
             {
-
-                parts.Add(item.Attribute("id").Value, new ScoreParts.Part.Part(item));
+                credits.Add(new Credit.Credit(item));
+            }
+            foreach (var item in file.Elements("part"))
+            {
+                 parts.Add(item.Attribute("id").Value, new ScoreParts.Part.Part(item));
             }
         }
     }
