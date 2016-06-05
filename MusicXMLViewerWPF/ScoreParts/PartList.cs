@@ -10,7 +10,7 @@ using MusicXMLViewerWPF.Defaults;
 
 namespace MusicXMLViewerWPF
 {
-    class PartList : MusicScore // first idea :/ // can be hard to read, rework possible
+    class PartList // first idea :/ // can be hard to read, rework possible
     {
         private static Dictionary<string, ScorePart> score_parts = new Dictionary<string, ScorePart>() { };
         private List<PartGroup> part_group_list = new List<PartGroup>();public static Page page;
