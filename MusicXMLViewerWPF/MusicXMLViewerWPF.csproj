@@ -57,7 +57,7 @@
     </ApplicationDefinition>
     <Compile Include="Credit\Credit.cs" />
     <Compile Include="Defaults\Defaults.cs" />
-    <Compile Include="Identyfication\Identification.cs" />
+    <Compile Include="Identification\Identification.cs" />
     <Compile Include="Misc\LoadFile.cs" />
     <Compile Include="ScoreParts\Part\Measures\Attributes.cs" />
     <Compile Include="ScoreParts\Part\Measures\Barline.cs" />

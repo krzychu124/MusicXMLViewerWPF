@@ -11,7 +11,7 @@ namespace MusicXMLViewerWPF
     {
         protected static Defaults.Defaults defaults; // TODO not implemented
         protected static Dictionary<string, ScoreParts.Part.Part> parts = new Dictionary<string, ScoreParts.Part.Part>() { };
-        protected static Identyfication.Identification identyfication; // TODO not implemented
+        protected static Identification.Identification identyfication; // TODO not implemented
         protected static List<Credit.Credit> credits = new List<Credit.Credit>(); // TODO not implemented class
         protected static List<PartList> musicscoreparts = new List<PartList>(); // TODO tests
         protected static Work.Work work; // TODO not implemented
@@ -19,7 +19,7 @@ namespace MusicXMLViewerWPF
 
         public static Defaults.Defaults Defaults { get { return defaults; } }
         public static Dictionary<string, ScoreParts.Part.Part> Parts { get { return parts; } }
-        public static Identyfication.Identification Identification { get { return identyfication; } }
+        public static Identification.Identification Identification { get { return identyfication; } }
         public static List<Credit.Credit> CreditList { get { return credits; } }
         public static List<PartList> ScoreParts { get { return musicscoreparts; } }
         public static Work.Work Work { get { return work; } }
@@ -34,7 +34,7 @@ namespace MusicXMLViewerWPF
         {
             work = new Work.Work(file.Element("work"));
             defaults = new Defaults.Defaults(file.Element("defaults")); //TODO_H missing implementation
-            identyfication = new Identyfication.Identification(file.Element("identificatino")); // TODO_H missing implementation
+            identyfication = new Identification.Identification(file.Element("identificatino")); // TODO_H missing implementation
             foreach (var item in file.Elements("credit"))
             {
                 credits.Add(new Credit.Credit(item));
