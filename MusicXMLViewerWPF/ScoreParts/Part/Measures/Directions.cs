@@ -136,7 +136,7 @@ namespace MusicXMLViewerWPF
 
     public class OtherDirection : EmptyPrintStyle, IDirections
     {
-        private string id;
+        private string id = "other-direction";
         private string value;
 
         public string Id { get { return id; } }

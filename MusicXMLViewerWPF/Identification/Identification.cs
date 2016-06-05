@@ -67,6 +67,7 @@ namespace MusicXMLViewerWPF.Identification
             encoding_descryption= x.Element("encoding-descryption") != null ? x.Element("encoding-descryption").Value : null;
             software = x.Element("software") != null ? x.Element("software").Value : null;
             var temp_support = x.Elements("supports");
+            if (temp_support != null) supports = new List<Supports>();
             foreach (var item in temp_support)
             {
                 supports.Add(new Supports(item));

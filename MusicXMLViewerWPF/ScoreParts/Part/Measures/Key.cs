@@ -11,13 +11,12 @@ namespace MusicXMLViewerWPF
     {
         private int measure_num;
         private bool isSharp;
-        private bool isNatural;
+        private bool isNatural = false;
         private Fifths fifths;
         private Mode mode;
         public Key( int fifths, string mode, int num)
         {
             //this.musicalcharacter = fifths < 0 ? "b" : fifths > 0 ? "#" : " ";
-            isNatural = false;
             isSharp = false;
             isSharp = fifths > 0 ? true : fifths < 0 ? false : isNatural = true;
             SetFifths(fifths);
