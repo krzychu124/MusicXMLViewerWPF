@@ -15,7 +15,7 @@ namespace MusicXMLViewerWPF
         protected static List<Credit.Credit> credits = new List<Credit.Credit>();
         protected static List<PartList> musicscoreparts = new List<PartList>(); // TODO tests
         protected static Work.Work work; 
-        protected static XDocument file; // <<Loaded file>>
+        protected static XElement file; // <<Loaded file>>
 
         public static Defaults.Defaults Defaults { get { return defaults; } }
         public static Dictionary<string, ScoreParts.Part.Part> Parts { get { return parts; } }
@@ -23,18 +23,19 @@ namespace MusicXMLViewerWPF
         public static List<Credit.Credit> CreditList { get { return credits; } }
         public static List<PartList> ScoreParts { get { return musicscoreparts; } }
         public static Work.Work Work { get { return work; } }
-        public static XDocument File { get { return file; } }
+        public static XElement File { get { return file; } }
 
         public MusicScore(XDocument x)
         {
-            file = x;
+            file = x.Element("score-partwise");
+            if (file != null) { Logger.Log("File Loaded"); } else { Logger.Log("Problem with loading file"); }
             LoadToClasses();
         }
         private void LoadToClasses()
         {
-            work = new Work.Work(file.Element("work"));
+            work = file.Element("work") != null ? new Work.Work(file.Element("work")) : null;
             defaults = new Defaults.Defaults(file.Element("defaults")); 
-            identification = new Identification.Identification(file.Element("identificatino")); 
+            identification = new Identification.Identification(file.Element("identification")); 
             foreach (var item in file.Elements("credit"))
             {
                 credits.Add(new Credit.Credit(item));

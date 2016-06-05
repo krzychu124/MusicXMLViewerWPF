@@ -88,7 +88,7 @@ namespace MusicXMLViewerWPF
                     case "group-barline":
                         groupbarline = item.Value == "yes" ? GroupBarline.yes : item.Value == "Mensurstrich" ? GroupBarline.mensurstrinch : GroupBarline.no;
                         break;
-                    default: Logger.Log(" not implemented exc. in switch");
+                    default: Logger.Log("[part-group] not implemented exc. in switch");
                         break;
                 }
             }

@@ -115,12 +115,15 @@ y += (glyphTypeface.Height* size);
                 XDocument Doc = XmlRead.GetXmlInventory(dialog.FileName);
                 LoadDocToClasses.Document = Doc;
                 Misc.LoadFile.LoadDocument(Doc);
+                MusicScore mus_score = new MusicScore(Doc);
+                /*
                 LoadDocToClasses.AddMeasuresToXListV(Doc);
                 //   textBlock.Text += "\n File imported to measures list \n Press Load button to process";
                 List<MusicalChars> list;
                 LoadDocToClasses.LoadCharsFromMeasures();
                 list = LoadDocToClasses.list;
                 Logger.Log("XML Loaded");
+                */
             }
         }
 
@@ -128,7 +131,7 @@ y += (glyphTypeface.Height* size);
         {
 
             //Page p = new Page();
-            PartList s = new PartList();
+            //PartList s = new PartList(); // tests
            // textBlock.Text += "\n Characters added to program";
           //  list = LoadDocToClasses.list;
            // textBlock.Text += "\n Added: " +list.Count.ToString();

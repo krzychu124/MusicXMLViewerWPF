@@ -20,7 +20,7 @@ namespace MusicXMLViewerWPF
         public Dynamics(XElement x) : base (x.Attributes())
         {
             placement = x.Attribute("placement") != null ?  x.Attribute("placement").Value : "below";
-            SetDynType(x.Value);
+            SetDynType(x.Elements().ToList());
         }
         public Dynamics( int y, string align, string t, int x=0)//TODO_L improve, currently temp, only for compatibility while reworking
         {
@@ -30,6 +30,24 @@ namespace MusicXMLViewerWPF
             h_align = align == "left" ? Halign.left : align == "center" ? Halign.center : Halign.right; 
             SetDynType(t);
         }
+        public void SetDynType(List<XElement> x)
+        {
+            foreach (var item in x.Elements())
+            {
+                string t = item.Name.LocalName;
+                if (dynType_dict.ContainsKey(t))
+                {
+                    other = null;
+                    type = dynType_dict[t];
+                }
+                else
+                {
+                    type = DynamicType.other;
+                    other = t;
+                }
+            }
+        }
+
         public void SetDynType(string t)
         {
             if (dynType_dict.ContainsKey(t))
@@ -43,6 +61,7 @@ namespace MusicXMLViewerWPF
                 other = t;
             }
         }
+
         public Dictionary<string, DynamicType> dynType_dict = new Dictionary<string, DynamicType> {
             {"other",DynamicType.other },
             {"p", DynamicType.p },

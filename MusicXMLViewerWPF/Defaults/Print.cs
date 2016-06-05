@@ -102,7 +102,7 @@ namespace MusicXMLViewerWPF
 
         public MeasureNumbering(XElement x)
         {
-            var temp = x.Element("measure-numbering");
+            var temp = x; //.Element("measure-numbering");
             type = temp.Value == "measure"? MeasureNumberingType.measure : temp.Value == "system"? MeasureNumberingType.system : MeasureNumberingType.none;
         }
 

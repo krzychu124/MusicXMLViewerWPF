@@ -26,8 +26,8 @@ namespace MusicXMLViewerWPF.Identification
         public Identification(XElement x)
         {
             encoding = new Encode(x);
-            miscellaneous = x.Element("miscellaneous").Value;
-            source = x.Element("source").Value;
+            miscellaneous = x.Element("miscellaneous") != null ? x.Element("miscellaneous").Value : null;
+            source = x.Element("source") != null ? x.Element("source").Value : null;
             var creators = x.Elements("creator");
             foreach (var item in creators)
             {

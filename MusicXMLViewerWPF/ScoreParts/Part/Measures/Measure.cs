@@ -27,10 +27,10 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
         public Measure(XElement x)
         {
             XMLFiller(x);
-            Barline = new Barline(x); // seems to be done for now
-            PrintProperties = new Print(x); // seems to be done for now
-            Direction = new Direction(x); // TODO_H missing logic
-            Attributes = new Attributes(x);  // seems to be done for now
+            Barline = x.Element("barline") != null ? new Barline(x) : null; // seems to be done for now
+            PrintProperties = x.Element("print") != null ? new Print(x) : null; // seems to be done for now
+            Direction = x.Element("direction") != null ? new Direction(x) : null; // TODO_H missing logic
+            Attributes = x.Element("attributes") != null ? new Attributes(x) : null;  // seems to be done for now
         }
         public IEnumerable<XElement> XMLExtractor()
         {
