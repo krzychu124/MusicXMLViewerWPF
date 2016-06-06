@@ -40,8 +40,11 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
         }
         public void XMLFiller(XElement x)
         {
-            width = float.Parse(x.Attribute("width").Value, CultureInfo.InvariantCulture);
-            number = Convert.ToInt32(x.Attribute("number").Value);
+            width = x.Attribute("width") != null ? float.Parse(x.Attribute("width").Value, CultureInfo.InvariantCulture) : 0f;
+            if (width == 0f) Logger.Log($"Measure has no width: {width}");
+            bool t = int.TryParse(x.Attribute("number").Value, out number);
+            if (t == false) Logger.Log($"Measure number is: {x.Attribute("number").Value}");
+            //number = Convert.ToInt32(x.Attribute("number").Value);
             hasNumberInvisible = x.Attribute("implicit") != null ? x.Attribute("implicit").Value == "yes" ? true : false : false; // TODO_L not sure if itll work - very rare usage
         }
         public void Draw(CanvasList surface)

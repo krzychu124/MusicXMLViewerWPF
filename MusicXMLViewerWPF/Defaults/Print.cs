@@ -177,7 +177,7 @@ namespace MusicXMLViewerWPF
         public StaffLayout(XElement x)
         {
             var stafflayout = x;//.Element("staff-layout"); //TODO_H need test may crash here
-            number = stafflayout.Attributes() != null ? int.Parse(stafflayout.Attribute("number").Value) : 1;
+            number = stafflayout.HasAttributes ? int.Parse(stafflayout.Attribute("number").Value) : 1;
             distance = (float)Convert.ToDouble(stafflayout.Element("staff-distance").Value);
         }
     }

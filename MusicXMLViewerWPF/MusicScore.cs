@@ -9,6 +9,7 @@ namespace MusicXMLViewerWPF
 {
     class MusicScore
     {
+        protected static string title;
         protected static Defaults.Defaults defaults; 
         protected static Dictionary<string, ScoreParts.Part.Part> parts = new Dictionary<string, ScoreParts.Part.Part>() { };
         protected static Identification.Identification identification; // TODO not implemented
@@ -17,6 +18,7 @@ namespace MusicXMLViewerWPF
         protected static Work.Work work; 
         protected static XElement file; // <<Loaded file>>
 
+        public static string Title { get { return title; } }
         public static Defaults.Defaults Defaults { get { return defaults; } }
         public static Dictionary<string, ScoreParts.Part.Part> Parts { get { return parts; } }
         public static Identification.Identification Identification { get { return identification; } }
@@ -28,11 +30,21 @@ namespace MusicXMLViewerWPF
         public MusicScore(XDocument x)
         {
             file = x.Element("score-partwise");
-            if (file != null) { Logger.Log("File Loaded"); } else { Logger.Log("Problem with loading file"); }
-            LoadToClasses();
+            if (file != null)
+            {
+                Logger.Log("File Loaded");
+                LoadToClasses();
+            }
+            else
+            {
+                Logger.Log("Problem with loading file");
+            }
+
+            
         }
         private void LoadToClasses()
         {
+            title = file.Element("movement-title") != null ? file.Element("movement-title").Value : "No title" ;
             work = file.Element("work") != null ? new Work.Work(file.Element("work")) : null;
             defaults = new Defaults.Defaults(file.Element("defaults")); 
             identification = new Identification.Identification(file.Element("identification")); 

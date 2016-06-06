@@ -31,9 +31,18 @@ namespace MusicXMLViewerWPF.Defaults
             system_layout = new SystemLayout(x.Element("system-layout"));
             staff_layout = x.Element("staff-layout") != null ? new StaffLayout(x.Element("staff-layout")) : null;
             appearance = new Appearance(x.Element("appearance"));
-            fonts.Add(new ScoreFonts(x.Element("music-font")));
-            fonts.Add(new ScoreFonts(x.Element("word-font")));
-            fonts.Add(new ScoreFonts(x.Element("lyric-font")));
+            if (x.Element("music-font") != null)
+            {
+                fonts.Add(new ScoreFonts(x.Element("music-font")));
+            }
+            if (x.Element("word-font") != null)
+            {
+                fonts.Add(new ScoreFonts(x.Element("word-font")));
+            }
+            if (x.Element("lyric-font") != null)
+            {
+                fonts.Add(new ScoreFonts(x.Element("lyric-font")));
+            }
         }
     }
 
