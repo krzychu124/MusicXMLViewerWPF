@@ -29,7 +29,7 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
         public Measure(XElement x)
         {
             XMLFiller(x);
-            Barline = x.Element("barline") != null ? new Barline(x) : new Barline() { Style = Barline.BarStyle.regular }; // seems to be done for now // set default barline style to regular if not present other
+            Barline = x.Element("barline") != null ? new Barline(x) : new Barline() { Style = Barline.BarStyle.regular, Location = Barline.BarlineLocation.right }; // seems to be done for now // set default barline style to regular if not present other
             PrintProperties = x.Element("print") != null ? new Print(x) : null; // seems to be done for now
             Direction = x.Element("direction") != null ? new Direction(x) : null; // TODO_H missing logic
             Attributes = x.Element("attributes") != null ? new Attributes(x) : null;  // seems to be done for now
@@ -65,44 +65,57 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
         private void DrawMeasure(DrawingContext dc, Point StartPoint)
         {
             float Scale = MusicScore.Defaults.Scale.Tenths;
-            float length = GetMeasureLength(Width);
+            float num = GetMeasureLength(Width);
             float filling = GetStaffLinesFilling(Width);
             float X = (float)StartPoint.X;
+            float Y = (float)StartPoint.Y;
             int s = 0;
-            /*
+
             for (int i = 0; i < num; i++)
             {
-                DrawString(dc, MusChar.Staff5L, TypeFaces.NotesFont, Brushes.Black, x, y, Scale);
-                x += 32;
+                Misc.DrawingHelpers.DrawString(dc, MusChar.Staff5L, TypeFaces.NotesFont, Brushes.Black, X + s, Y, Scale);
+                s += 24;
             }
 
-            if (fill != 0)
+            if (filling != 0)
             {
-                DrawString(dc, MusChar.Staff5L, TypeFaces.NotesFont, Brushes.Black, -32 + x + fill, y, scale);
+                Misc.DrawingHelpers.DrawString(dc, MusChar.Staff5L, TypeFaces.NotesFont, Brushes.Black, X + (Width-24), Y, Scale);
             }
-            //for (int i = 0; i < length; i++)
-            //{
-            //    Misc.DrawingHelpers.DrawString(dc, MusChar.Staff5L, TypeFaces.MeasuresFont, Brushes.Black, X + s, (float)StartPoint.Y, Scale);
-            //    Misc.DrawingHelpers.DrawString(dc, MusChar.Staff5Ls, TypeFaces.MeasuresFont, Brushes.Black, X + s + 24, (float)StartPoint.Y, Scale);
-            //    s += 32;
-            //}
-            //if (filling != 0)
-            //{
-            //    Misc.DrawingHelpers.DrawString(dc, MusChar.Staff5L, TypeFaces.MeasuresFont, Brushes.Black, Width - 32, (float)StartPoint.Y, Scale);
-            //    Misc.DrawingHelpers.DrawString(dc, MusChar.Staff5Ls, TypeFaces.MeasuresFont, Brushes.Black, Width - 8, (float)StartPoint.Y, Scale);
-            //}
-            */
+            if (Barline != null)
+            {
+                if(Barline.Style == Barline.BarStyle.regular)
+                {
+                    if( Barline.Location == Barline.BarlineLocation.right)
+                    {
+                        Misc.DrawingHelpers.DrawString(dc, MusChar.SingleBar, TypeFaces.NotesFont, Brushes.Black, X + Width, Y, Scale);
+                        Logger.Log($"Regular barline: right at {X + Width} {Y}");
+                    }
+                    if( Barline.Location == Barline.BarlineLocation.left)
+                    {
+                        Misc.DrawingHelpers.DrawString(dc, MusChar.SingleBar, TypeFaces.NotesFont, Brushes.Black, X, Y, Scale);
+                        Logger.Log($"Regular barline: left at {X} {Y}");
+                    }
+                }
+                if(Barline.Style == Barline.BarStyle.light_heavy)
+                {
+                    if ( Barline.Location == Barline.BarlineLocation.right)
+                    {
+                        Misc.DrawingHelpers.DrawString(dc, MusChar.FinalBar, TypeFaces.NotesFont, Brushes.Black, X + Width -5, Y, Scale);
+                        Logger.Log($"Light-heavy barline: left at {X + Width - 5} {Y}");
+                    }
+                }
+            }
         }
 
         private float GetMeasureLength(float length)
         {
-            float num = Convert.ToInt32(Math.Floor(length / 32));
+            float num = Convert.ToInt32(Math.Floor(length / 24));
             return num;
         }
 
         private float GetStaffLinesFilling(float l)
         {
-            float fill = l % 32;
+            float fill = l % 24;
             return fill;
         }
     }

@@ -20,7 +20,7 @@ namespace MusicXMLViewerWPF
         private Ending ending;
         private Repeat repeat;
 
-        public BarlineLocation Location { get { return location; } } 
+        public BarlineLocation Location { get { return location; } set { location = value; } } 
         public BarStyle Style { get { return style; } set { style = value; } }
         public Coda Coda { get { return coda; } }
         public Fermata Fermata { get { return fermata; } }

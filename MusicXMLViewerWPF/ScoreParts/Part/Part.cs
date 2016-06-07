@@ -22,6 +22,8 @@ namespace MusicXMLViewerWPF.ScoreParts.Part
         {
             part_id = x.Attribute("id").Value;
             Point tempPoint = new Point();
+            Point tempMargins = new Point(MusicScore.Defaults.Page.Margins.Left, MusicScore.Defaults.Page.Margins.Top + MusicScore.Defaults.SystemLayout.TopSystemDistance);
+            float sysdist = 0f;
             var measures = x.Elements();
             for (int i = 0; i < measures.Count(); i++)
             {
@@ -30,8 +32,11 @@ namespace MusicXMLViewerWPF.ScoreParts.Part
 
                 if (i == 0)
                 {
-                    measure_margin_helper.Add(i, new Point(MusicScore.Defaults.Page.Margins.Left, MusicScore.Defaults.Page.Margins.Top));
-                    Logger.Log($"helper_dict measure-page margins {MusicScore.Defaults.Page.Margins.Left}  {MusicScore.Defaults.Page.Margins.Top}");
+                    tempPoint = new Point(tempMargins.X + measure_list.ElementAt(i).PrintProperties.SystemLayout.LeftRelative, tempMargins.Y + measure_list.ElementAt(i).PrintProperties.SystemLayout.SystemDistance);
+                    Logger.Log($"Margins {tempMargins.X} {tempMargins.Y}");
+                    Logger.Log($"First point {tempPoint.X} {tempPoint.Y}");
+                    measure_margin_helper.Add(i, tempPoint);
+                    //Logger.Log($"helper_dict measure-page margins {MusicScore.Defaults.Page.Margins.Left}  {MusicScore.Defaults.Page.Margins.Top}");
                 }
                 else
                 {
@@ -41,25 +46,30 @@ namespace MusicXMLViewerWPF.ScoreParts.Part
                         {
                             if (measure_list.ElementAt(i).PrintProperties.SystemLayout != null)
                             {
-                                tempPoint.X += measure_list.ElementAt(i).PrintProperties.SystemLayout.LeftRelative;
-                                tempPoint.Y += measure_list.ElementAt(i).PrintProperties.SystemLayout.RightRelative;
-                                measure_margin_helper.Add(i, tempPoint);
-                                Logger.Log($"helper_dict measure nr. {i} added point {tempPoint.X} {tempPoint.Y} ");
+                                tempPoint.X = measure_list.ElementAt(i).PrintProperties.SystemLayout.LeftRelative + tempMargins.X;
+                                tempPoint.Y += measure_list.ElementAt(i).PrintProperties.SystemLayout.SystemDistance;
+                                sysdist = measure_list.ElementAt(i).PrintProperties.SystemLayout.SystemDistance;
+                                measure_margin_helper.Add(measure_list.ElementAt(i).Number, tempPoint);
+                                //Logger.Log($"helper_dict measure nr. {i+1} added point {tempPoint.X} {tempPoint.Y} ");
                             }
-
+                            else
+                            {
+                                measure_margin_helper.Add(measure_list.ElementAt(i).Number, new Point( measure_margin_helper.ElementAt(measure_margin_helper.Count - 1).Value.X, measure_margin_helper.ElementAt(measure_margin_helper.Count - 1).Value.Y +sysdist));
+                            }
                             //measure_margin_helper.Add(i, new Point(measure_margin_helper.ElementAt(measure_margin_helper.Count).Value.X, measure_margin_helper.ElementAt(measure_margin_helper.Count).Value.Y));
                         }
                         else
                         {
-                            Logger.Log($"helper_dict measure nr. {i + 1}");
+                            Logger.Log($"helper_dict other than NewSystem in measure nr. {i + 1}");
                         }
-                        measure_margin_helper.Add(measure_list.ElementAt(i).Number, measure_margin_helper.ElementAt(measure_margin_helper.Count - 1).Value);
-                        Logger.Log($"helper_dict measure nr. {measure_margin_helper.ElementAt(measure_margin_helper.Count -1).Value.X} {measure_margin_helper.ElementAt(measure_margin_helper.Count -1).Value.Y}");
+                        //measure_margin_helper.Add(measure_list.ElementAt(i).Number, measure_margin_helper.ElementAt(measure_margin_helper.Count - 1).Value);
+                        //Logger.Log($"helper_dict measure nr. {measure_margin_helper.ElementAt(measure_margin_helper.Count -1).Value.X} {measure_margin_helper.ElementAt(measure_margin_helper.Count -1).Value.Y}");
 
                     }
                 }
             }
-            foreach (var item in measure_margin_helper)
+
+            foreach (var item in measure_margin_helper) // Only to check if list was filled correctly
             {
                 Logger.Log($"helper_dict measure nr. {item.Key} X: {item.Value.X} Y: {item.Value.Y} "); 
             }
@@ -73,23 +83,23 @@ namespace MusicXMLViewerWPF.ScoreParts.Part
         public void DrawMeasures(CanvasList surface)
         {
             Point start = new Point();
-            start.X = MusicScore.Defaults.Page.Margins.Left;
-            start.Y = MusicScore.Defaults.Page.Margins.Top;
-            start.X += MeasureList[0].PrintProperties.SystemLayout.LeftRelative != 0f ? MeasureList[0].PrintProperties.SystemLayout.LeftRelative : 0f ;
-            start.Y += MeasureList[0].PrintProperties.SystemLayout.LeftRelative != 0f ? MeasureList[0].PrintProperties.SystemLayout.SystemDistance : 0f;
-            Point current = new Point();
+            start.X = measure_margin_helper.ElementAt(0).Value.X;
+            start.Y = measure_margin_helper.ElementAt(0).Value.Y;
+            //Point current = new Point();
             foreach ( var measure in measure_list)
             {
-                current.X = measure.PrintProperties != null ? measure.PrintProperties.SystemLayout != null? measure.PrintProperties.SystemLayout.LeftRelative : current.X : current.X;
-                current.Y = measure.PrintProperties != null ? measure.PrintProperties.SystemLayout != null ? measure.PrintProperties.SystemLayout.SystemDistance : current.Y : current.Y;
-                if (measure.PrintProperties != null)
+                if (measure_margin_helper.ContainsKey(measure.Number))
                 {
-                    if (measure.PrintProperties.NewPage)
-                    {
-                        start.X = current.X;
-                        start.Y += current.Y;
-                    }
+                    start = measure_margin_helper[measure.Number];
                 }
+                //if (measure.PrintProperties != null)
+                //{
+                //    if (measure.PrintProperties.NewPage)
+                //    {
+                //        start.X = current.X;
+                //        start.Y = current.Y;
+                //    }
+                //}
                 measure.Draw(surface, start);
                 start.X += measure.Width;
             }

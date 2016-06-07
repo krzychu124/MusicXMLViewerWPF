@@ -15,30 +15,30 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <Label Grid.Column="0" />
-            <ScrollViewer HorizontalScrollBarVisibility="Auto"  VerticalScrollBarVisibility="Auto" Margin="0,5">
-                <StackPanel Width="450">
+          <!--  <ScrollViewer HorizontalScrollBarVisibility="Auto"  VerticalScrollBarVisibility="Auto" Margin="0,5">
+                <StackPanel Width="450">-->
                      <!--<Grid HorizontalAlignment="Left" Width="441" Height="150" VerticalAlignment="Top" Margin="5,0,0,0">
                         <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Margin="10,0">
                             <local:Window1 x:Name="viewer" HorizontalAlignment="Left" VerticalAlignment="Top" Width="233" Visibility="Visible" Height="Auto"/>
                         </ScrollViewer>
                     </Grid> -->
-                    <Grid HorizontalAlignment="Left" Width="441" Margin="5,0,0,0" Height="389">
+                   <!-- <Grid HorizontalAlignment="Left" Width="441" Margin="5,0,0,0" Height="500" > -->
                         <Label Padding="1">Logger:</Label>
-                        <ScrollViewer VerticalScrollBarVisibility="Auto"  HorizontalScrollBarVisibility="Auto" Margin="0,2,10,-52" >
+                        <ScrollViewer VerticalScrollBarVisibility="Auto"  HorizontalScrollBarVisibility="Auto" Margin="0,20,0,0" >
                             
-                            <TextBlock x:Name="LogBox" HorizontalAlignment="Left" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Height="372" MinHeight="240" Width="421" FontSize="12" FontFamily="/WpfMusTestViewer;component/resources/Fonts/#BravuraText" />
+                            <TextBlock x:Name="LogBox" HorizontalAlignment="Left" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Height="Auto" MinHeight="12" Width="421" FontSize="12" FontFamily="/WpfMusTestViewer;component/resources/Fonts/#BravuraText" />
                         </ScrollViewer>
-                    </Grid>
+                <!-- </Grid> -->
 
-                </StackPanel>
-            </ScrollViewer>
+                <!-- </StackPanel>
+            </ScrollViewer>-->
             <GridSplitter HorizontalAlignment="Right" 
                   VerticalAlignment="Stretch" 
                   Grid.Column="1" ResizeBehavior="PreviousAndNext"
                   Width="5" Background="#FFBCBCBC"/>
             <Label  Grid.Column="2" >
 
-                <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Height="Auto">
+                <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" >
                     <Grid x:Name="TestGrid" Width="Auto" ScrollViewer.CanContentScroll="True" ScrollViewer.HorizontalScrollBarVisibility="Visible" ClipToBounds="True">
 
                         <local:CanvasList Width="Auto" x:Name="drawingSurface"  Background="White" ClipToBounds="True" Margin="10,10,17,10" MinWidth="1500" MinHeight="2100" ScrollViewer.CanContentScroll="True"/>
