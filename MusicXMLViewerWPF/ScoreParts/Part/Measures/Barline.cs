@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Xml.Linq;
 
 namespace MusicXMLViewerWPF
@@ -84,7 +85,7 @@ namespace MusicXMLViewerWPF
                 }
             }
         }
-        public void Draw(CanvasList surface)
+        public void Draw(CanvasList surface, Point p)
         {
             
         }
@@ -219,7 +220,7 @@ namespace MusicXMLViewerWPF
             type = s == "start" ? EndingType.start : s == "stop" ? EndingType.stop : EndingType.discontinue; 
         }
 
-        public void Draw(CanvasList surface)
+        public void Draw(CanvasList surface, Point p)
         {
 
         }
@@ -268,7 +269,7 @@ namespace MusicXMLViewerWPF
             }
         }
 
-        public void Draw(CanvasList surface)
+        public void Draw(CanvasList surface, Point p)
         {
 
         }
@@ -335,7 +336,7 @@ namespace MusicXMLViewerWPF
 
         }
 
-        public void Draw(CanvasList surface)
+        public void Draw(CanvasList surface, Point p)
         {
 
         }

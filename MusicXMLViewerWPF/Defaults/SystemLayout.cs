@@ -28,7 +28,7 @@ namespace MusicXMLViewerWPF.Defaults
 
         public SystemLayout(XElement x)
         {
-            
+            getSystemLayout(x);
         }
 
         public SystemLayout(float l, float r, float s, float t, SystemDivider d)
@@ -58,10 +58,19 @@ namespace MusicXMLViewerWPF.Defaults
             var sl = x.Elements();
             foreach (var item in sl)
             {
-                left_margin = (float)Convert.ToDouble(item.Element("system-margins").Element("left-margin").Value);
-                right_margin = (float)Convert.ToDouble(item.Element("system-margins").Element("right-margin").Value);
-                system_distance = (float)Convert.ToDouble(item.Element("system-distance").Value);
-                top_system_distance = (float)Convert.ToDouble(item.Element("top-system-distance").Value);
+                if (item.Name.LocalName == "system-margins")
+                {
+                    left_margin = (float)Convert.ToDouble(item.Element("left-margin").Value);
+                    right_margin = (float)Convert.ToDouble(item.Element("right-margin").Value);
+                }
+                if (item.Name.LocalName == "system-distance")
+                {
+                    system_distance = (float)Convert.ToDouble(item.Value);
+                }
+                if (item.Name.LocalName == "top-system-distance")
+                {
+                    top_system_distance = (float)Convert.ToDouble(item.Value);
+                }
             }
         }
 

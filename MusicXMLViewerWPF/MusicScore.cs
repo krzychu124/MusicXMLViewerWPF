@@ -3,12 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Media;
 using System.Xml.Linq;
 
 namespace MusicXMLViewerWPF
 {
-    class MusicScore
+    class MusicScore 
     {
+        protected static CanvasList Surface;
         protected static string title;
         protected static Defaults.Defaults defaults; 
         protected static Dictionary<string, ScoreParts.Part.Part> parts = new Dictionary<string, ScoreParts.Part.Part>() { };
@@ -42,6 +45,7 @@ namespace MusicXMLViewerWPF
 
             
         }
+
         private void LoadToClasses()
         {
             title = file.Element("movement-title") != null ? file.Element("movement-title").Value : "No title" ;
@@ -56,6 +60,17 @@ namespace MusicXMLViewerWPF
             {
                  parts.Add(item.Attribute("id").Value, new ScoreParts.Part.Part(item));
             }
+        }
+        
+        public static void GetSurfce (CanvasList s)
+        {
+            Surface = s;
+        }
+        public static void Draw(CanvasList surface)
+        {
+            // DrawingVisual visual = new DrawingVisual();
+            Parts.ElementAt(0).Value.DrawMeasures(surface);
+            
         }
     }
 }

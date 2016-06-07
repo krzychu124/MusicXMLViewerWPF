@@ -54,8 +54,8 @@
         <Button x:Name="addkey" Content="Add Key" HorizontalAlignment="Left" Margin="465,0,0,10" Width="96" Click="addkey_Click" Height="24" VerticalAlignment="Bottom"/>
         <Button x:Name="addtimesig" Content="Add TimeSig" HorizontalAlignment="Left" Margin="566,0,0,10" Width="94" Click="addtimesig_Click" Height="24" VerticalAlignment="Bottom" />
         <Button x:Name="addnote" Content="AddMeasures" HorizontalAlignment="Left" Margin="263,0,0,10" Width="96" Click="addnote_Click" Height="24" VerticalAlignment="Bottom"/>
-        <Button Content="Otwórz PLik" Margin="10,0,0,10" Click="Button_Click" HorizontalAlignment="Left" Width="100" Height="24" VerticalAlignment="Bottom" />
-        <Button Content="Load to Program" Margin="115,0,0,10" Panel.ZIndex="0" Click="Button_Click_1" HorizontalAlignment="Left" Width="100" Height="24" VerticalAlignment="Bottom"/>
+        <Button Content="Open File" Margin="10,0,0,10" Click="Button_Click" HorizontalAlignment="Left" Width="100" Height="24" VerticalAlignment="Bottom" />
+        <Button Content="Reworked Draw" Margin="115,0,0,10" Panel.ZIndex="0" Click="Button_Click_1" HorizontalAlignment="Left" Width="100" Height="24" VerticalAlignment="Bottom"/>
         <Button x:Name="button" Content="Add Rests" HorizontalAlignment="Left" Margin="665,0,0,10" Width="96" Click="addRests_Click" Height="24" VerticalAlignment="Bottom"/>
         <Button x:Name="button1" Content="AddNotes" HorizontalAlignment="Left" Margin="766,0,0,10" Width="96" Click="addNotes_Click" Height="25" VerticalAlignment="Bottom"/>
         <Button x:Name="button2" Content="Experimen..." HorizontalAlignment="Left" Margin="1110,0,0,10" Width="97" Click="button2_Click" Height="25" VerticalAlignment="Bottom"/>

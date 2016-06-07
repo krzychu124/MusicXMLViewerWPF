@@ -129,7 +129,7 @@ y += (glyphTypeface.Height* size);
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-
+            MusicScore.Draw(drawingSurface);
             //Page p = new Page();
             //PartList s = new PartList(); // tests
            // textBlock.Text += "\n Characters added to program";

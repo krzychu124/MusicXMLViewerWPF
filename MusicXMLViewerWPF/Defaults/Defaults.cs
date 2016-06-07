@@ -27,7 +27,7 @@ namespace MusicXMLViewerWPF.Defaults
         {
             var temp = x;
             scale = new Scale(x.Element("scaling"));
-            page = new Page(x.Element("page-layout"));
+            page = new Page(x);
             system_layout = new SystemLayout(x.Element("system-layout"));
             staff_layout = x.Element("staff-layout") != null ? new StaffLayout(x.Element("staff-layout")) : null;
             appearance = new Appearance(x.Element("appearance"));
