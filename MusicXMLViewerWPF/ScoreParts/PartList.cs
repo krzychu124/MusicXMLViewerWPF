@@ -12,11 +12,12 @@ namespace MusicXMLViewerWPF
 {
     class PartList // first idea :/ // can be hard to read, rework possible
     {
+        private static SystemLayout systemlayout;
         private static Dictionary<string, ScorePart> score_parts = new Dictionary<string, ScorePart>() { };
         private List<PartGroup> part_group_list = new List<PartGroup>();
 
-        public static Page page;
-        public static SystemLayout systemlayout;
+        //public static Page page;
+        public static SystemLayout Systemlayout { get { return systemlayout; } }
         public List<PartGroup> PartGroup { get { return part_group_list; } }
         
         // private Identyfication_Class;

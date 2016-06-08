@@ -15,5 +15,9 @@ namespace MusicXMLViewerWPF.Misc
         {
             dc.DrawText(new FormattedText(text, System.Threading.Thread.CurrentThread.CurrentUICulture, FlowDirection.LeftToRight, t_f, element_size, brush), new Point(xPos, yPos));
         }
+        public static void DrawBarline(Barline.BarStyle style, Barline.BarlineLocation location)
+        {
+
+        }
     }
 }

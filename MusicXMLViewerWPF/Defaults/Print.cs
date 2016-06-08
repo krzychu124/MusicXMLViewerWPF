@@ -22,8 +22,8 @@ namespace MusicXMLViewerWPF
         private MeasureNumbering measure_numbering;
         private List<StaffLayout> staff_layout_list = new List<StaffLayout>();
 
-        public bool NewPage { get { return new_page.GetTypeCode() == 0? false : true; } }
-        public bool NewSystem { get { return new_system.GetTypeCode() == 0 ? false : true; } }
+        public bool NewPage { get { return (int)new_page == 0 ? false : true; } }
+        public bool NewSystem { get { return (int)new_system == 0 ? false : true; } }
         public float StaffSpacing { get { return staff_spacing; } }
         public int BlankPage { get { return blank_page; } }
         public int PageNumber { get { return page_number; } }

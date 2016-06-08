@@ -23,7 +23,7 @@ namespace MusicXMLViewerWPF.ScoreParts.Part
             part_id = x.Attribute("id").Value;
             Point tempPoint = new Point();
             Point tempMargins = new Point(MusicScore.Defaults.Page.Margins.Left, MusicScore.Defaults.Page.Margins.Top + MusicScore.Defaults.SystemLayout.TopSystemDistance);
-            float sysdist = 0f;
+            float sysdist = MusicScore.Defaults.SystemLayout.SystemDistance;
             var measures = x.Elements();
             for (int i = 0; i < measures.Count(); i++)
             {
@@ -35,7 +35,7 @@ namespace MusicXMLViewerWPF.ScoreParts.Part
                     tempPoint = new Point(tempMargins.X + measure_list.ElementAt(i).PrintProperties.SystemLayout.LeftRelative, tempMargins.Y + measure_list.ElementAt(i).PrintProperties.SystemLayout.SystemDistance);
                     Logger.Log($"Margins {tempMargins.X} {tempMargins.Y}");
                     Logger.Log($"First point {tempPoint.X} {tempPoint.Y}");
-                    measure_margin_helper.Add(i, tempPoint);
+                    measure_margin_helper.Add(measure_list.ElementAt(i).Number, tempPoint);
                     //Logger.Log($"helper_dict measure-page margins {MusicScore.Defaults.Page.Margins.Left}  {MusicScore.Defaults.Page.Margins.Top}");
                 }
                 else
@@ -50,17 +50,19 @@ namespace MusicXMLViewerWPF.ScoreParts.Part
                                 tempPoint.Y += measure_list.ElementAt(i).PrintProperties.SystemLayout.SystemDistance;
                                 sysdist = measure_list.ElementAt(i).PrintProperties.SystemLayout.SystemDistance;
                                 measure_margin_helper.Add(measure_list.ElementAt(i).Number, tempPoint);
-                                //Logger.Log($"helper_dict measure nr. {i+1} added point {tempPoint.X} {tempPoint.Y} ");
+                                Logger.Log($"helper_dict measure nr. {i+1}  changed system layout");
                             }
                             else
                             {
+                                Logger.Log($"helper_dict NewSystem in measure nr. {i + 1}");
                                 measure_margin_helper.Add(measure_list.ElementAt(i).Number, new Point( measure_margin_helper.ElementAt(measure_margin_helper.Count - 1).Value.X, measure_margin_helper.ElementAt(measure_margin_helper.Count - 1).Value.Y +sysdist));
                             }
                             //measure_margin_helper.Add(i, new Point(measure_margin_helper.ElementAt(measure_margin_helper.Count).Value.X, measure_margin_helper.ElementAt(measure_margin_helper.Count).Value.Y));
                         }
                         else
                         {
-                            Logger.Log($"helper_dict other than NewSystem in measure nr. {i + 1}");
+                            //measure_margin_helper.Add(measure_list.ElementAt(i).Number, new Point(measure_margin_helper.ElementAt(measure_margin_helper.Count - 1).Value.X, measure_margin_helper.ElementAt(measure_margin_helper.Count - 1).Value.Y ));
+                            Logger.Log($"helper_dict NewSystem value: no in measure nr. {i + 1}");
                         }
                         //measure_margin_helper.Add(measure_list.ElementAt(i).Number, measure_margin_helper.ElementAt(measure_margin_helper.Count - 1).Value);
                         //Logger.Log($"helper_dict measure nr. {measure_margin_helper.ElementAt(measure_margin_helper.Count -1).Value.X} {measure_margin_helper.ElementAt(measure_margin_helper.Count -1).Value.Y}");

@@ -57,12 +57,35 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
             DrawingVisual visual = new DrawingVisual();
             using (DrawingContext dc = visual.RenderOpen())
             {
-                DrawMeasure(dc, p);
+                Draw_Measure(dc, p);
+                
+                DrawingVisual barline_visual = new DrawingVisual();
+                barline_visual =Barline.DrawBarline(barline_visual, p,Width);
+                visual.Children.Add(barline_visual);
+                DrawingVisual visual2 = new DrawingVisual();
+                using (DrawingContext dc2 = visual2.RenderOpen())
+                {
+                    Draw_Barlines(dc2, p);
+                    //Draw_Attributes(dc2, p);
+                    //Draw_Directions(dc2, p);
+                }
+                visual.Children.Add(visual2);
             }
             surface.AddVisual(visual);
+
         }
 
-        private void DrawMeasure(DrawingContext dc, Point StartPoint)
+        private void Draw_Directions(DrawingContext dc2, Point p)
+        {
+            
+        }
+
+        private void Draw_Attributes(DrawingContext dc2, Point p)
+        {
+            
+        }
+
+        private void Draw_Measure(DrawingContext dc, Point StartPoint)
         {
             float Scale = MusicScore.Defaults.Scale.Tenths;
             float num = GetMeasureLength(Width);
@@ -81,27 +104,65 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
             {
                 Misc.DrawingHelpers.DrawString(dc, MusChar.Staff5L, TypeFaces.NotesFont, Brushes.Black, X + (Width-24), Y, Scale);
             }
+        }
+
+        private void Draw_Barlines(DrawingContext dc, Point StartPoint)
+        {
+            float Scale = MusicScore.Defaults.Scale.Tenths;
+            float X = (float)StartPoint.X;
+            float Y = (float)StartPoint.Y;
             if (Barline != null)
             {
-                if(Barline.Style == Barline.BarStyle.regular)
+                if (Barline.Style == Barline.BarStyle.regular)
                 {
-                    if( Barline.Location == Barline.BarlineLocation.right)
+                    if (Barline.Location == Barline.BarlineLocation.right)
                     {
-                        Misc.DrawingHelpers.DrawString(dc, MusChar.SingleBar, TypeFaces.NotesFont, Brushes.Black, X + Width, Y, Scale);
-                        Logger.Log($"Regular barline: right at {X + Width} {Y}");
+                        Misc.DrawingHelpers.DrawString(dc, Number.ToString()+"BR", TypeFaces.TextFont, Brushes.Black, X + Width, Y-12, Scale / 4); // debug numbers
+                        Misc.DrawingHelpers.DrawString(dc, MusChar.RegularBar, TypeFaces.NotesFont, Brushes.Black, X + Width, Y, Scale);
+                        Logger.Log($"Regular barline: right in {Number} at {X + Width} {Y}");
                     }
-                    if( Barline.Location == Barline.BarlineLocation.left)
+                    if (Barline.Location == Barline.BarlineLocation.left)
                     {
-                        Misc.DrawingHelpers.DrawString(dc, MusChar.SingleBar, TypeFaces.NotesFont, Brushes.Black, X, Y, Scale);
-                        Logger.Log($"Regular barline: left at {X} {Y}");
+                        Misc.DrawingHelpers.DrawString(dc, Number.ToString()+"BL", TypeFaces.TextFont, Brushes.Black, X + Width, Y-12, Scale / 4); // debug numbers
+                        Misc.DrawingHelpers.DrawString(dc, MusChar.RegularBar, TypeFaces.NotesFont, Brushes.Black, X + Width, Y, Scale);
+                        Logger.Log($"Regular barline: left in {Number} at {X} {Y}");
                     }
                 }
-                if(Barline.Style == Barline.BarStyle.light_heavy)
+                if (Barline.Style == Barline.BarStyle.light_heavy)
                 {
-                    if ( Barline.Location == Barline.BarlineLocation.right)
+                    if (Barline.Location == Barline.BarlineLocation.right)
                     {
-                        Misc.DrawingHelpers.DrawString(dc, MusChar.FinalBar, TypeFaces.NotesFont, Brushes.Black, X + Width -5, Y, Scale);
-                        Logger.Log($"Light-heavy barline: left at {X + Width - 5} {Y}");
+                        if (Barline.Repeat != null)
+                        {
+                            if (Barline.Repeat.Direction == Repeat.RepeatDirection.backward)
+                            {
+                                Misc.DrawingHelpers.DrawString(dc, Number.ToString()+"RB", TypeFaces.TextFont, Brushes.Black, X + Width, Y+48, Scale / 4); // debug numbers
+                                Misc.DrawingHelpers.DrawString(dc, MusChar.RightRepeatBar, TypeFaces.NotesFont, Brushes.Black, X + Width - 11, Y, Scale);
+                            }
+                            if (Barline.Repeat.Direction == Repeat.RepeatDirection.forward)
+                            {
+                                Misc.DrawingHelpers.DrawString(dc, Number.ToString()+"RF", TypeFaces.TextFont, Brushes.Black, X + Width, Y+48, Scale / 4); // debug numbers
+                                Misc.DrawingHelpers.DrawString(dc, MusChar.LeftRepeatBar, TypeFaces.NotesFont, Brushes.Black, X + Width - 5, Y, Scale);
+                            }
+                        }
+                        else
+                        {
+                            Misc.DrawingHelpers.DrawString(dc, Number.ToString() + "F", TypeFaces.TextFont, Brushes.Black, X + Width, Y+48, Scale / 4); // debug numbers
+                            Misc.DrawingHelpers.DrawString(dc, MusChar.LightHeavyBar, TypeFaces.NotesFont, Brushes.Black, X + Width - 5, Y, Scale);
+                            Logger.Log($"Light-heavy barline: left in {Number} at {X + Width - 5} {Y}");
+                        }
+                        //Misc.DrawingHelpers.DrawString(dc, MusChar.FinalBar, TypeFaces.NotesFont, Brushes.Black, X + Width - 5, Y, Scale);
+                    }
+                }
+                if (Barline.Style == Barline.BarStyle.heavy_light)
+                {
+                    if (Barline.Location == Barline.BarlineLocation.left)
+                    {
+                        Misc.DrawingHelpers.DrawString(dc, Number.ToString() + "HL", TypeFaces.TextFont, Brushes.Black, X, Y+48, Scale / 4); // debug numbers
+                        Misc.DrawingHelpers.DrawString(dc, MusChar.LeftRepeatBar, TypeFaces.NotesFont, Brushes.Black, X, Y, Scale);
+                        Misc.DrawingHelpers.DrawString(dc, Number.ToString() + "BR", TypeFaces.TextFont, Brushes.Black, X + Width, Y - 12, Scale / 4); // debug numbers
+                        Misc.DrawingHelpers.DrawString(dc, MusChar.RegularBar, TypeFaces.NotesFont, Brushes.Black, X + Width, Y, Scale);
+                        Logger.Log($"Heavy-light barline: left in {Number} at {X} {Y}");
                     }
                 }
             }

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media;
 using System.Xml.Linq;
 
 namespace MusicXMLViewerWPF
@@ -90,6 +91,10 @@ namespace MusicXMLViewerWPF
             
         }
 
+        public void Draw(DrawingContext dc, Point p, float Width)
+        {
+
+        }
         private void getStyle(string s)
         {
             style = BarStyle.regular;
@@ -97,6 +102,51 @@ namespace MusicXMLViewerWPF
             {
                 style = styleDictionary[s];
             }
+        }
+
+        public DrawingVisual DrawBarline(DrawingVisual visual, Point p, float width)
+        {
+            float scale = MusicScore.Defaults.Scale.Tenths;
+            using (DrawingContext dc = visual.RenderOpen())
+            {
+                float loc = location == BarlineLocation.left ? (float)p.X : (float)p.X + width;
+                switch (style)
+                {
+                    case BarStyle.regular:
+                        Misc.DrawingHelpers.DrawString(dc, MusChar.RegularBar, TypeFaces.MeasuresFont, Brushes.Black, loc, (float)p.Y, scale);
+                        break;
+                    case BarStyle.dotted:
+                        Misc.DrawingHelpers.DrawString(dc, MusChar.DottedBar, TypeFaces.MeasuresFont, Brushes.Black, loc, (float)p.Y, scale);
+                        break;
+                    case BarStyle.dashed:
+                        Misc.DrawingHelpers.DrawString(dc, MusChar.DashedBar, TypeFaces.MeasuresFont, Brushes.Black, loc, (float)p.Y, scale);
+                        break;
+                    case BarStyle.heavy:
+                        Misc.DrawingHelpers.DrawString(dc, MusChar.HeavyBar, TypeFaces.MeasuresFont, Brushes.Black, loc, (float)p.Y, scale);
+                        break;
+                    case BarStyle.light_light:
+                        Misc.DrawingHelpers.DrawString(dc, MusChar.LightLightBar, TypeFaces.MeasuresFont, Brushes.Black, loc, (float)p.Y, scale);
+                        break;
+                    case BarStyle.light_heavy:
+                        Misc.DrawingHelpers.DrawString(dc, MusChar.LightHeavyBar, TypeFaces.MeasuresFont, Brushes.Black, loc - 6, (float)p.Y, scale);
+                        break;
+                    case BarStyle.heavy_light:
+                        Misc.DrawingHelpers.DrawString(dc, MusChar.HeavyLightBar, TypeFaces.MeasuresFont, Brushes.Black, loc, (float)p.Y, scale);
+                        break;
+                    case BarStyle.heavy_heavy:
+                        Misc.DrawingHelpers.DrawString(dc, MusChar.HeavyHeavyBar, TypeFaces.MeasuresFont, Brushes.Black, loc, (float)p.Y, scale);
+                        break;
+                    case BarStyle.tick:
+                        Misc.DrawingHelpers.DrawString(dc, MusChar.TickBar, TypeFaces.MeasuresFont, Brushes.Black, loc, (float)p.Y-4, scale);
+                        break;
+                    case BarStyle.shortened:
+                        Misc.DrawingHelpers.DrawString(dc, MusChar.ShortBar, TypeFaces.MeasuresFont, Brushes.Black, loc, (float)p.Y+12, scale);
+                        break;
+                    default:
+                        break;
+                }
+            }
+            return visual;
         }
         private Dictionary<string, BarStyle> styleDictionary = new Dictionary<string, BarStyle>()
         {

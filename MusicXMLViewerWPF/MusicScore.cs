@@ -40,7 +40,7 @@ namespace MusicXMLViewerWPF
             }
             else
             {
-                Logger.Log("Problem with loading file");
+                Logger.Log("Error while loading file");
             }
 
             

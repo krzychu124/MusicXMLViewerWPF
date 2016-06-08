@@ -41,7 +41,7 @@
                 <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" >
                     <Grid x:Name="TestGrid" Width="Auto" ScrollViewer.CanContentScroll="True" ScrollViewer.HorizontalScrollBarVisibility="Visible" ClipToBounds="True">
 
-                        <local:CanvasList Width="Auto" x:Name="drawingSurface"  Background="White" ClipToBounds="True" Margin="10,10,17,10" MinWidth="1500" MinHeight="2100" ScrollViewer.CanContentScroll="True"/>
+                        <local:CanvasList Width="Auto" x:Name="drawingSurface"  Background="White" ClipToBounds="True" Margin="10,10,17,10" MinWidth="2100" MinHeight="2500" ScrollViewer.CanContentScroll="True"/> <!-- Temporary A4 dimensions to make scrolling working-->
                         <!-- <local:testview   /> -->
 
                     </Grid>
