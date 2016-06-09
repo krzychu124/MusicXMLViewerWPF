@@ -11,10 +11,10 @@ A lot of commented lines, test methods, ideas and even more problems and issues,
 
 It's good to have any goals of project so main is to learn C# and WPF better and make something which will work and look like simple music score editor.
 
-**Currently (partialy) implemented (under developenent):**       50-60% Done.  Works quite good but that's not enough for me. 
-   - [x] MusicXML reader // quite time consuming to implement // Absolute minimum to represent notes done // 
+**Currently under developement:**       60-70% Done.  ~~Works quite good but that's not enough for me.~~ Draw Rework 
+   - [x] ~~MusicXML reader // quite time consuming to implement // Absolute minimum to represent notes done //~~ **Done**
 
-   - [x] Methods for drawing  //surprisingly good, taking into account my experience // I have few improvement ideas // 
+   - [ ] **Under Developement** Methods for drawing  // Complete rework, adding compatibility with reader
  
 **Ideas to implement at first place (have to learn that first):**  0% only ideas for now :/
 
