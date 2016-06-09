@@ -10,7 +10,7 @@ using System.Xml.Linq;
 
 namespace MusicXMLViewerWPF
 {
-    class Barline :  IDrawable, IXMLExtract // TODO_L test class
+    class Barline : IDrawable, IXMLExtract // TODO_L test class
     {
         
         private BarlineLocation location;
@@ -28,10 +28,11 @@ namespace MusicXMLViewerWPF
         public Segno Segno  { get { return segno; } }
         public Ending Ending { get { return ending; } }
         public Repeat Repeat { get { return repeat; } }
+        
 
         public Barline()
         {
-            location = BarlineLocation.left;
+            location = BarlineLocation.right;
             coda = null;
             fermata = null;
             segno = null;
@@ -218,7 +219,7 @@ namespace MusicXMLViewerWPF
             }
         }
     }
-    class Ending : EmptyPrintStyle, IDrawable
+    class Ending : EmptyPrintStyle
     {
         private EndingType type;
         private float end_length;
@@ -226,6 +227,8 @@ namespace MusicXMLViewerWPF
         private float text_y;
         private int[] number;
         private string ending_val; //for now // not tested //
+        private static List<Ending> ending_helper = new List<Ending>();
+        public static Dictionary<Point, float> temp_ending = new Dictionary<Point, float>();
 
         public EndingType Type { get { return type; } }
         public float EndLength { get { return end_length; } }
@@ -233,6 +236,7 @@ namespace MusicXMLViewerWPF
         public float TextY { get { return text_y; } }
         public int[] Number {  get { return number; } }
         public string Ending_val {  get { return ending_val; } }
+        public static List<Ending> EndingHelper { get { return ending_helper; } }
 
         public Ending(XElement z): base(z.Attributes())
         {
@@ -269,10 +273,44 @@ namespace MusicXMLViewerWPF
         {
             type = s == "start" ? EndingType.start : s == "stop" ? EndingType.stop : EndingType.discontinue; 
         }
-
-        public void Draw(CanvasList surface, Point p)
+        public void Draw(Point p, float width, CanvasList surface)
         {
+            
+            
+        }
+        public DrawingVisual DrawEnding(DrawingVisual visual, Point p, float width)
+        {
+            temp_ending.Add(p, width);
+            ending_helper.Add(this);
+            if (this.Type != EndingType.start)
+            {
+                
+                float ending_length = ending_helper[ending_helper.Count-2].EndLength *0.6f;
+                
+                Pen pen = new Pen(Brushes.Black, 1.5);
+                for (int i = 0; i < ending_helper.Count; i++)
+                {
+                    float temp = ending_length;
+                    if (ending_helper.ElementAt(i).Type != EndingType.start)
+                    {
+                        DrawingVisual visualEnding = new DrawingVisual();
+                        using (DrawingContext dc = visualEnding.RenderOpen())
+                        {
+                            dc.DrawLine(pen, new Point(temp_ending.ElementAt(i-1).Key.X, temp_ending.ElementAt(i - 1).Key.Y + ending_length), temp_ending.ElementAt(i - 1).Key);
+                            dc.DrawLine(pen, temp_ending.ElementAt(i - 1).Key, new Point(temp_ending.ElementAt(i).Key.X + temp_ending.ElementAt(i).Value, temp_ending.ElementAt(i).Key.Y));
+                            if (ending_helper.ElementAt(i).Type == EndingType.discontinue)
+                            {
+                                ending_length = 0f;
+                            }
+                            dc.DrawLine(pen, temp_ending.ElementAt(i - 1).Key, new Point(temp_ending.ElementAt(i - 1).Key.X + ending_length, temp_ending.ElementAt(i - 1).Key.Y));
+                            ending_length = temp;
+                        }
+                        visual.Children.Add(visualEnding);
+                    }
 
+                }
+            }
+            return visual;
         }
 
         private int[] GetNumbersArray(string s)

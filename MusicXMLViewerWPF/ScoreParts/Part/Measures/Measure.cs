@@ -62,14 +62,17 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
                 DrawingVisual barline_visual = new DrawingVisual();
                 barline_visual =Barline.DrawBarline(barline_visual, p,Width);
                 visual.Children.Add(barline_visual);
-                DrawingVisual visual2 = new DrawingVisual();
-                using (DrawingContext dc2 = visual2.RenderOpen())
+                DrawingVisual ending_visual = new DrawingVisual();
+                if (Barline.Ending != null)
                 {
-                    Draw_Barlines(dc2, p);
+                    ending_visual = Barline.Ending.DrawEnding(ending_visual, p, Width);
+                    visual.Children.Add(ending_visual);
+                }
+                Draw_Barlines(dc, p);
+                    
                     //Draw_Attributes(dc2, p);
                     //Draw_Directions(dc2, p);
-                }
-                visual.Children.Add(visual2);
+               
             }
             surface.AddVisual(visual);
 
