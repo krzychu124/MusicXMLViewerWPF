@@ -10,7 +10,7 @@ using System.Xml.Linq;
 
 namespace MusicXMLViewerWPF
 {
-    class Barline : IDrawable, IXMLExtract // TODO_L test class
+    class Barline :  IDrawable, IXMLExtract // TODO_L test class
     {
         
         private BarlineLocation location;
@@ -52,40 +52,39 @@ namespace MusicXMLViewerWPF
 
         public void XMLFiller(XElement x)
         {
-            x = x.Element("barline") != null ? x.Element("barline") : null;
-            if (x != null)
+            //x = x.Element("barline") != null ? x.Element("barline") : null;
+
+            location = x.Attribute("location").Value == "left" ? BarlineLocation.left : x.Attribute("location").Value == "middle" ? BarlineLocation.middle : BarlineLocation.right;
+            if (x.Element("bar-style") != null)
             {
-                location = x.Attribute("location").Value == "left" ? BarlineLocation.left : x.Attribute("location").Value == "middle" ? BarlineLocation.middle : BarlineLocation.right;
-                if (x.Element("bar-style") != null)
-                {
-                    getStyle(x.Element("bar-style").Value);
-                }
-                if (x.Element("segno") != null)
-                {
-                    var attr = from at in x.Element("segno").Attributes() select at;
-                    segno = new Segno(attr);
-                }
-                if (x.Element("coda") != null)
-                {
-                    var attr = from at in x.Element("coda").Attributes() select at;
-                    coda = new Coda(attr);
-                }
-                if (x.Element("fermata") != null)
-                {
-                    var attr = from at in x.Element("fermata").Attributes() select at;
-                    fermata = new Fermata(attr);
-                }
-                if (x.Element("ending") != null)
-                {
-                    var el = x.Element("ending");
-                    ending = new Ending(el);
-                }
-                if (x.Element("repeat") != null)
-                {
-                    var attr = from at in x.Element("repeat").Attributes() select at;
-                    repeat = new Repeat(attr);
-                }
+                getStyle(x.Element("bar-style").Value);
             }
+            if (x.Element("segno") != null)
+            {
+                var attr = from at in x.Element("segno").Attributes() select at;
+                segno = new Segno(attr);
+            }
+            if (x.Element("coda") != null)
+            {
+                var attr = from at in x.Element("coda").Attributes() select at;
+                coda = new Coda(attr);
+            }
+            if (x.Element("fermata") != null)
+            {
+                var attr = from at in x.Element("fermata").Attributes() select at;
+                fermata = new Fermata(attr);
+            }
+            if (x.Element("ending") != null)
+            {
+                var el = x.Element("ending");
+                ending = new Ending(el);
+            }
+            if (x.Element("repeat") != null)
+            {
+                var attr = from at in x.Element("repeat").Attributes() select at;
+                repeat = new Repeat(attr);
+            }
+        
         }
         public void Draw(CanvasList surface, Point p)
         {
@@ -221,27 +220,28 @@ namespace MusicXMLViewerWPF
     }
     class Ending : EmptyPrintStyle
     {
+        private int measure_number;
         private EndingType type;
         private float end_length;
         private float text_x;
         private float text_y;
-        private int[] number;
+        private int number;
         private string ending_val; //for now // not tested //
-        private static List<Ending> ending_helper = new List<Ending>();
-        public static Dictionary<Point, float> temp_ending = new Dictionary<Point, float>();
 
+        public int MeasureNumber { get { return measure_number; } }
         public EndingType Type { get { return type; } }
         public float EndLength { get { return end_length; } }
         public float TextX { get { return text_x; } }
         public float TextY { get { return text_y; } }
-        public int[] Number {  get { return number; } }
+        public int Number {  get { return number; } }
         public string Ending_val {  get { return ending_val; } }
-        public static List<Ending> EndingHelper { get { return ending_helper; } }
+        public static List<Endingtemp> EndingTempList = new List<Endingtemp>();
 
         public Ending(XElement z): base(z.Attributes())
         {
             var x = z.Attributes();
             ending_val = z.Value;
+            measure_number = int.Parse(z.Parent.Parent.Attribute("number").Value);
             foreach (var item in x)
             {
                 string s = item.Name.LocalName;
@@ -260,7 +260,7 @@ namespace MusicXMLViewerWPF
                         text_y = float.Parse(item.Value, CultureInfo.InvariantCulture);
                         break;
                     case "number":
-                        number = GetNumbersArray(item.Value); // string value to array: "1, 2, 3" to  []{1,2,3}
+                        number = int.Parse(item.Value); // string value to array: "1, 2, 3" to  []{1,2,3}
                         break;
                     default:
                         break;
@@ -280,32 +280,41 @@ namespace MusicXMLViewerWPF
         }
         public DrawingVisual DrawEnding(DrawingVisual visual, Point p, float width)
         {
-            temp_ending.Add(p, width);
-            ending_helper.Add(this);
-            if (this.Type != EndingType.start)
+            EndingTempList.Add(new Endingtemp(p,this,width));
+            
+            if (EndingTempList[EndingTempList.Count-1].t != EndingType.start)
             {
-                
-                float ending_length = ending_helper[ending_helper.Count-2].EndLength *0.6f;
-                
-                Pen pen = new Pen(Brushes.Black, 1.5);
-                for (int i = 0; i < ending_helper.Count; i++)
+               
+                int current_ending_nr = this.Number;
+                var extr = EndingTempList.Select( i => i).Where(i => i.Num == current_ending_nr).ToList();
+                if (extr.Count != 1)
                 {
-                    float temp = ending_length;
-                    if (ending_helper.ElementAt(i).Type != EndingType.start)
+                    for (int i = 0; i < extr.Count; i++)
                     {
-                        DrawingVisual visualEnding = new DrawingVisual();
-                        using (DrawingContext dc = visualEnding.RenderOpen())
+                        if (extr.ElementAt(i).Ending.Type != EndingType.start)
                         {
-                            dc.DrawLine(pen, new Point(temp_ending.ElementAt(i-1).Key.X, temp_ending.ElementAt(i - 1).Key.Y + ending_length), temp_ending.ElementAt(i - 1).Key);
-                            dc.DrawLine(pen, temp_ending.ElementAt(i - 1).Key, new Point(temp_ending.ElementAt(i).Key.X + temp_ending.ElementAt(i).Value, temp_ending.ElementAt(i).Key.Y));
-                            if (ending_helper.ElementAt(i).Type == EndingType.discontinue)
+                            float ending_length = extr.ElementAt(i-1).Ending.EndLength * 0.6f;
+                            Pen pen = new Pen(Brushes.Black, 1.5);
+                            float temp = ending_length;
+                            DrawingVisual visualEnding = new DrawingVisual();
+                            using (DrawingContext dc = visualEnding.RenderOpen())
                             {
-                                ending_length = 0f;
+                                float txtX = (float)extr.ElementAt(i - 1).P.X + 4;
+                                float txtY = (float)extr.ElementAt(i - 1).P.Y - 2;
+                                dc.DrawLine(pen, new Point(extr.ElementAt(i-1).P.X, extr.ElementAt(i-1).P.Y + ending_length), new Point(extr.ElementAt(i-1).P.X, extr.ElementAt(i -1).P.Y - 6));
+                                Misc.DrawingHelpers.DrawString(dc, extr.ElementAt(i - 1).Ending.Number + ".", TypeFaces.TextFont, Brushes.Black, txtX, txtY, 12f);
+                                dc.DrawLine(pen, new Point(extr.ElementAt(i - 1).P.X, extr.ElementAt(i - 1).P.Y - 6), new Point(extr.ElementAt(i).P.X + extr.ElementAt(i).Width, extr.ElementAt(i).P.Y - 6));
+                                if (extr.ElementAt(i).Ending.Type == EndingType.discontinue)
+                                {
+                                    ending_length = 0f;
+                                }
+                                dc.DrawLine(pen, new Point(extr.ElementAt(i - 1).P.X, extr.ElementAt(i - 1).P.Y - 6), new Point(extr.ElementAt(i - 1).P.X, extr.ElementAt(i - 1).P.Y + ending_length));
+                                ending_length = temp;
+                                extr.RemoveAll( r => r.Num == current_ending_nr);
+                                EndingTempList.RemoveAll(r => r.Num == current_ending_nr);
                             }
-                            dc.DrawLine(pen, temp_ending.ElementAt(i - 1).Key, new Point(temp_ending.ElementAt(i - 1).Key.X + ending_length, temp_ending.ElementAt(i - 1).Key.Y));
-                            ending_length = temp;
+                            visual.Children.Add(visualEnding);
                         }
-                        visual.Children.Add(visualEnding);
                     }
 
                 }
@@ -324,6 +333,23 @@ namespace MusicXMLViewerWPF
             start,
             stop,
             discontinue
+        }
+        internal class Endingtemp
+        {
+            public Ending Ending;
+            public float Width;
+            public int Num;
+            public Point P;
+            public EndingType t;
+
+            public Endingtemp(Point p, Ending ending, float width)
+            {
+                P = p;
+                t = ending.Type;
+                Num = ending.Number;
+                Ending = ending;
+                Width = width;
+            }
         }
     }
     
