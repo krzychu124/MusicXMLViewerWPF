@@ -10,7 +10,7 @@ using System.Xml.Linq;
 
 namespace MusicXMLViewerWPF
 {
-    class Barline :  IDrawable, IXMLExtract // TODO_L test class
+    class Barline :  IDrawable, IXMLExtract // TODO_L add drawing for coda fermata segno
     {
         
         private BarlineLocation location;

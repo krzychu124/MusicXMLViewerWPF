@@ -34,7 +34,7 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
         {
             XMLFiller(x);
             Barlines = new List<Barline>();
-            Barlines.Add(new Barline() { Style = Barline.BarStyle.regular, Location = Barline.BarlineLocation.right });
+            Barlines.Add(new Barline() { Style = Barline.BarStyle.regular, Location = Barline.BarlineLocation.right }); // << add default barline for drawing later
             if (x.Element("barline") != null)
             {
                 
@@ -42,12 +42,12 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
 
                 foreach (var item in bars)
                 {
-                    Barlines.Add(new Barline(item));
-                } // seems to be done for now // set default barline style to regular if not present other
+                    Barlines.Add(new Barline(item)); // add irregular barline object like coda,segno, fermata, repeats or endings
+                } 
             }
-            PrintProperties = x.Element("print") != null ? new Print(x) : null; // seems to be done for now
-            Direction = x.Element("direction") != null ? new Direction(x) : null; // TODO_H missing logic
-            Attributes = x.Element("attributes") != null ? new Attributes(x) : null;  // seems to be done for now
+            PrintProperties = x.Element("print") != null ? new Print(x) : null; // TODO_L test, partialy done
+            Direction = x.Element("direction") != null ? new Direction(x) : null; // TODO_L tests
+            Attributes = x.Element("attributes") != null ? new Attributes(x) : null;  // TODO_L tests
         }
 
         public IEnumerable<XElement> XMLExtractor()
@@ -75,7 +75,7 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
                 Draw_Measure(dc, p);
                 
                 
-                foreach (var item in Barlines)
+                foreach (var item in Barlines)// works quite good, need deep tests later
                 {
                     DrawingVisual barline_visual = new DrawingVisual();
                     barline_visual = item.DrawBarline(barline_visual, p,Width);
@@ -84,18 +84,18 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
                 
                 
                 var ending = Barlines.Select(i => i).Where(i => i.Ending != null);
-                foreach (var item in ending)
+                foreach (var item in ending) // works quite good, need deep tests later
                 {
                     DrawingVisual ending_visual = new DrawingVisual();
                     ending_visual = item.Ending.DrawEnding(ending_visual, p, Width);
                     visual.Children.Add(ending_visual);
 
                 }
-                //Draw_Barlines(dc, p);
-                    
-                    //Draw_Attributes(dc2, p);
-                    //Draw_Directions(dc2, p);
-               
+                //Draw_Barlines(dc, p); replaced with different
+
+                //Draw_Attributes(dc2, p); // TODO_H missing implementation
+                //Draw_Directions(dc2, p); // TODO_H missing implementation
+
             }
             surface.AddVisual(visual);
 
