@@ -99,6 +99,7 @@ namespace MusicXMLViewerWPF
         public const string Flat = "\uE260";
         public const string DoubleSharp = "\uE263";
         public const string DoubleFlat = "\uE264";
+        public const string RepeatDots = "\uE043";
         //ornaments
         public const string trillmark = "\uE566";
         public const string turn = "\uE567";

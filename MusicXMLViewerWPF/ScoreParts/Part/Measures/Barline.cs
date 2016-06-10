@@ -145,6 +145,20 @@ namespace MusicXMLViewerWPF
                     default:
                         break;
                 }
+                if (Repeat != null)
+                {
+                    DrawingVisual visualForRepeats = new DrawingVisual();
+                    using (DrawingContext dc2 = visualForRepeats.RenderOpen())
+                    {
+                        float location = Repeat.Direction == Repeat.RepeatDirection.forward ? 10f : -12f;
+                        if (Repeat.Winged.Type == Winged.WingType.none)
+                        {
+                            Misc.DrawingHelpers.DrawString(dc, MusChar.RepeatDots, TypeFaces.MeasuresFont, Brushes.Black, loc + location, (float)p.Y, scale);
+                        }
+                    }
+                    visual.Children.Add(visualForRepeats);
+                }
+                
             }
             return visual;
         }
@@ -294,7 +308,7 @@ namespace MusicXMLViewerWPF
                         if (extr.ElementAt(i).Ending.Type != EndingType.start)
                         {
                             float ending_length = extr.ElementAt(i-1).Ending.EndLength * 0.6f;
-                            Pen pen = new Pen(Brushes.Black, 1.5);
+                            Pen pen = new Pen(Brushes.Black, 1);
                             float temp = ending_length;
                             DrawingVisual visualEnding = new DrawingVisual();
                             using (DrawingContext dc = visualEnding.RenderOpen())
@@ -354,7 +368,7 @@ namespace MusicXMLViewerWPF
     }
     
     
-    class Repeat : IDrawable
+    class Repeat 
     {
         private int times;
         private RepeatDirection direction;
@@ -383,7 +397,7 @@ namespace MusicXMLViewerWPF
             }
         }
 
-        public void Draw(CanvasList surface, Point p)
+        public void Draw(DrawingVisual visual, Point p)
         {
 
         }

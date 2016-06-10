@@ -91,10 +91,7 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
                     visual.Children.Add(ending_visual);
 
                 }
-                {
-                   
-                }
-                Draw_Barlines(dc, p);
+                //Draw_Barlines(dc, p);
                     
                     //Draw_Attributes(dc2, p);
                     //Draw_Directions(dc2, p);
