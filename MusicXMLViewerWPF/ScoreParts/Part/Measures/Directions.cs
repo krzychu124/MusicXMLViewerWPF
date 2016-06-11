@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media;
 using System.Xml.Linq;
 
 namespace MusicXMLViewerWPF
@@ -23,6 +24,11 @@ namespace MusicXMLViewerWPF
         private float offset;
         private int staff;
         #endregion
+
+        public Dynamics Dynamics { get { return dynamics; } }
+        public List<Directions> DirectionList { get { return directionList; } }
+        public int Staff { get { return staff; } }
+
         public Direction(XElement x)
         {
             var directions = x.Element("direction");
@@ -76,6 +82,11 @@ namespace MusicXMLViewerWPF
                 default: typ = DirectionType.other;
                     break;
             }
+        }
+
+        public void Draw(DrawingVisual visual, System.Windows.Point p)
+        {
+            if (Dy != null)
         }
     }
 

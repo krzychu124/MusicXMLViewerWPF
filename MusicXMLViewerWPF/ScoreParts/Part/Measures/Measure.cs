@@ -101,9 +101,12 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
 
             if (Attributes != null) // works quite good, need deep tests later
             {
-                Attributes.Draw(visual,p); 
+                Attributes.Draw(visual,p); // visual will be opened inside, good results, maybe changed in the future
             }
-               // Draw_Attributes(dc2, p); // TODO_H missing implementation
+            if (Direction != null)
+            {
+                Direction.Draw(visual, p);
+            }   
                 //Draw_Directions(dc2, p); // TODO_H missing implementation
 
             
