@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Media;
 using System.Xml.Linq;
 
 namespace MusicXMLViewerWPF
@@ -63,6 +65,42 @@ namespace MusicXMLViewerWPF
                     break;
             }
         }
+
+        public void Draw(DrawingVisual visual, Point p, ClefType sign)
+        {
+            using (DrawingContext dc = visual.RenderOpen())
+            {
+                Draw_Key(dc,p,sign,(int)Fifths);
+            }
+            
+        }
+
+        public static void Draw_Key(DrawingContext dc, Point p, ClefType sign, int num = 1)
+        {
+            // num = 4;// test
+
+            if (num == 0)
+            {
+                // do nothing if key is sharp/flat-less
+            }
+            else
+            {
+                int alt = sign.Sign == ClefType.Clef.GClef ? -16 : sign.Sign == ClefType.Clef.CClef ? -12 : -8; // 0= Gclef 4= Cclef 8= Fclef
+                bool isSharp = num > 0 ? true : false;  //check if sharp or flat key
+                float x = (float)p.X; // x pos of measure
+                float y = (float)p.Y; // y pos of measure
+                float[] sharp = new float[] { 2, 12, -2, 8, 20, 4, 16 }; // y pos of each sharp symbol
+                float[] flat = new float[] { 16, 4, 20, 8, 24, 12, 28 }; // y pos of each flat symbol
+                int padding = isSharp ? 8 : 6; // different padding // difference in width of symbol
+                float[] test = isSharp ? sharp : flat; // assign table o possitions
+                string key = isSharp ? MusChar.Sharp : MusChar.Flat; // assign unicode symbol
+                for (int i = 0; i < Math.Abs(num); i++)
+                {
+                    Misc.DrawingHelpers.DrawString(dc, key, TypeFaces.NotesFont, Brushes.Black, x + padding * i, y + (test[i] + alt), MusicScore.Defaults.Scale.Tenths); // draw
+                }
+            }
+        }
+    
 
         private void SetFifths(int i)
         {

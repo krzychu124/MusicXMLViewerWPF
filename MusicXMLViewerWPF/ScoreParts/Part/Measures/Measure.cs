@@ -16,15 +16,21 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
         private float width;
         private bool hasNumberInvisible;
 
-        public List<Note> NotesList = new List<Note>(); // experimental
-        public List<Barline> Barlines;
-        public Print PrintProperties;
-        public Direction Direction;
-        public Attributes Attributes;
+        private List<Note> notes_list = new List<Note>(); // experimental
+        private List<Barline> barlines;
+        private Print print_properties;
+        private Direction direction;
+        private Attributes attributes;
 
         public int Number { get { return number; } }
         public float Width { get { return width; } }
         public bool NumberVisible { get { return hasNumberInvisible; } }
+
+        public List<Note> NotesList { get { return notes_list; } } // Not complete
+        public List<Barline> Barlines { get { return barlines; } }
+        public Print PrintProperties { get { return print_properties; } }
+        public Direction Direction { get { return direction; } }
+        public Attributes Attributes { get { return attributes; } }
 
         public Measure()
         {
@@ -33,8 +39,8 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
         public Measure(XElement x)
         {
             XMLFiller(x);
-            Barlines = new List<Barline>();
-            Barlines.Add(new Barline() { Style = Barline.BarStyle.regular, Location = Barline.BarlineLocation.right }); // << add default barline for drawing later
+            barlines = new List<Barline>();
+            barlines.Add(new Barline() { Style = Barline.BarStyle.regular, Location = Barline.BarlineLocation.right }); // adding default barline for drawing later
             if (x.Element("barline") != null)
             {
                 
@@ -42,12 +48,12 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
 
                 foreach (var item in bars)
                 {
-                    Barlines.Add(new Barline(item)); // add irregular barline object like coda,segno, fermata, repeats or endings
+                    barlines.Add(new Barline(item)); // << adding irregular barline object like coda,segno, fermata, repeats or endings
                 } 
             }
-            PrintProperties = x.Element("print") != null ? new Print(x) : null; // TODO_L test, partialy done
-            Direction = x.Element("direction") != null ? new Direction(x) : null; // TODO_L tests
-            Attributes = x.Element("attributes") != null ? new Attributes(x) : null;  // TODO_L tests
+            print_properties = x.Element("print") != null ? new Print(x) : null; // TODO_H test, need deep tests !!!
+            direction = x.Element("direction") != null ? new Direction(x) : null; // TODO_L tests
+            attributes = x.Element("attributes") != null ? new Attributes(x) : null;  // TODO_L tests
         }
 
         public IEnumerable<XElement> XMLExtractor()
@@ -67,38 +73,47 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
             hasNumberInvisible = x.Attribute("implicit") != null ? x.Attribute("implicit").Value == "yes" ? true : false : false; // TODO_L not sure if itll work - very rare usage
         }
 
-        public void Draw(CanvasList surface,Point p)
+        public void Draw(CanvasList surface,Point p) // drawing method
         {
             DrawingVisual visual = new DrawingVisual();
-            using (DrawingContext dc = visual.RenderOpen())
+            DrawingVisual visualMeasure = new DrawingVisual();
+            using (DrawingContext dc = visualMeasure.RenderOpen())
             {
                 Draw_Measure(dc, p);
-                
-                
-                foreach (var item in Barlines)// works quite good, need deep tests later
-                {
-                    DrawingVisual barline_visual = new DrawingVisual();
-                    barline_visual = item.DrawBarline(barline_visual, p,Width);
-                    visual.Children.Add(barline_visual);
-                }
-                
-                
-                var ending = Barlines.Select(i => i).Where(i => i.Ending != null);
-                foreach (var item in ending) // works quite good, need deep tests later
-                {
-                    DrawingVisual ending_visual = new DrawingVisual();
-                    ending_visual = item.Ending.DrawEnding(ending_visual, p, Width);
-                    visual.Children.Add(ending_visual);
+            }
+            visual.Children.Add(visualMeasure);
 
-                }
-                //Draw_Barlines(dc, p); replaced with different
+            foreach (var item in Barlines)// works quite good, need deep tests later
+            {
+                DrawingVisual barline_visual = new DrawingVisual();
+                barline_visual = item.DrawBarline(barline_visual, p, Width);
+                visual.Children.Add(barline_visual);
+            }
 
-                //Draw_Attributes(dc2, p); // TODO_H missing implementation
+            var ending = Barlines.Select(i => i).Where(i => i.Ending != null);
+            foreach (var item in ending) // works quite good, need deep tests later
+            {
+                DrawingVisual ending_visual = new DrawingVisual();
+                ending_visual = item.Ending.DrawEnding(ending_visual, p, Width);
+                visual.Children.Add(ending_visual);
+
+            }//Draw_Barlines(dc, p); replaced with different
+
+            if (Attributes != null) // works quite good, need deep tests later
+            {
+                Attributes.Draw(visual,p); 
+            }
+               // Draw_Attributes(dc2, p); // TODO_H missing implementation
                 //Draw_Directions(dc2, p); // TODO_H missing implementation
 
-            }
+            
             surface.AddVisual(visual);
 
+        }
+
+        public void Draw(DrawingVisual visual, Point p)
+        {
+            // maybe rework to use that approach
         }
 
         private void Draw_Directions(DrawingContext dc2, Point p)

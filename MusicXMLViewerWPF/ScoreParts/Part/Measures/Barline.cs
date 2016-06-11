@@ -91,6 +91,11 @@ namespace MusicXMLViewerWPF
             
         }
 
+        public void Draw(DrawingVisual visual, Point p)
+        {
+
+        }
+
         public void Draw(DrawingContext dc, Point p, float Width)
         {
 
@@ -464,7 +469,7 @@ namespace MusicXMLViewerWPF
 
         }
 
-        public void Draw(CanvasList surface, Point p)
+        public void Draw(DrawingVisual visual, Point p)
         {
 
         }

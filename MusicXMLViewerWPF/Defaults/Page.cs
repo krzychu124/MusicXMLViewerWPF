@@ -63,7 +63,7 @@ namespace MusicXMLViewerWPF
             
             line.Add(m);
         }
-        public void GetPageInfo(XElement xele) // TODO_L test, slight rework //not tested // first rewok maight need improvements // not tested
+        public void GetPageInfo(XElement xele) // TODO_L more indepth test
         {
             //XDocument doc = LoadDocToClasses.Document;
             //var p = from z in doc.Descendants("defaults") select z;

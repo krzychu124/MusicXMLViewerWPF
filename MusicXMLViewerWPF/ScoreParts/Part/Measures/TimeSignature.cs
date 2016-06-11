@@ -35,7 +35,7 @@ namespace MusicXMLViewerWPF
                     case "beats":
                         beats = int.Parse(item.Value);
                         break;
-                    case "beats-type":
+                    case "beat-type":
                         beats_type = int.Parse(item.Value);
                         break;
                     default:
