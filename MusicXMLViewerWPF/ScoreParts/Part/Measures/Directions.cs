@@ -31,7 +31,7 @@ namespace MusicXMLViewerWPF
 
         public Direction(XElement x)
         {
-            var directions = x.Element("direction");
+            var directions = x;
             placement = null;
             directive = null;
             if (directions.HasAttributes) // seems to be done for now
@@ -41,7 +41,7 @@ namespace MusicXMLViewerWPF
             }
             if (directions.HasElements)
             {
-                var elements = x.Element("direction").Elements();
+                var elements = x.Elements();
                 foreach (var item in elements)
                 {
                     string name = item.Name.LocalName;
@@ -56,8 +56,9 @@ namespace MusicXMLViewerWPF
                             break;
                         case "offset":
                             offset = float.Parse(item.Value);
-                            break; 
-                        default: Logger.Log($"[direcion-element] not implemented switch {"'"+name+"'"} element");
+                            break;
+                        default:
+                            Logger.Log($"[direcion-element] not implemented switch {"'" + name + "'"} element");
                             break;
                     }
                 }
@@ -71,25 +72,35 @@ namespace MusicXMLViewerWPF
         }
         public Direction(string placement, string direct_type, int posY, string type)
         {
-            this.placement= placement;
+            this.placement = placement;
             this.posY = posY;
             switch (direct_type)
             {
-                case "wedge": typ = DirectionType.wedge;
+                case "wedge":
+                    typ = DirectionType.wedge;
                     break;
-                case "dynamics": typ = DirectionType.dynamics;
+                case "dynamics":
+                    typ = DirectionType.dynamics;
                     break;
-                default: typ = DirectionType.other;
+                default:
+                    typ = DirectionType.other;
                     break;
             }
         }
 
         public void Draw(DrawingVisual visual, System.Windows.Point p)
         {
-            if (Dy != null)
+            foreach (var item in directionList)
+            {
+                if (item.Dynamics != null)
+                {
+                    DrawingVisual dynamicsVisual = new DrawingVisual();
+                    item.Dynamics.Draw(dynamicsVisual, p);
+                    visual.Children.Add(dynamicsVisual);
+                }
+            }
         }
     }
-
     public class Directions
     {
         private Wedge wedge = null;

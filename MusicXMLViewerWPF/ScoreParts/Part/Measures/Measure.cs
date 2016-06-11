@@ -19,7 +19,7 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
         private List<Note> notes_list = new List<Note>(); // experimental
         private List<Barline> barlines;
         private Print print_properties;
-        private Direction direction;
+        private List<Direction> direction;
         private Attributes attributes;
 
         public int Number { get { return number; } }
@@ -29,7 +29,7 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
         public List<Note> NotesList { get { return notes_list; } } // Not complete
         public List<Barline> Barlines { get { return barlines; } }
         public Print PrintProperties { get { return print_properties; } }
-        public Direction Direction { get { return direction; } }
+        public List<Direction> Direction { get { return direction; } }
         public Attributes Attributes { get { return attributes; } }
 
         public Measure()
@@ -52,7 +52,17 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
                 } 
             }
             print_properties = x.Element("print") != null ? new Print(x) : null; // TODO_H test, need deep tests !!!
-            direction = x.Element("direction") != null ? new Direction(x) : null; // TODO_L tests
+            direction = null;
+            if (x.Element("direction") != null)
+            {
+                direction = new List<MusicXMLViewerWPF.Direction>();
+                var directions = x.Elements("direction");
+                foreach (var item in directions)
+                {
+                    direction.Add(new Direction(item));// TODO_L tests
+                }
+            }
+            
             attributes = x.Element("attributes") != null ? new Attributes(x) : null;  // TODO_L tests
         }
 
@@ -105,8 +115,21 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
             }
             if (Direction != null)
             {
-                Direction.Draw(visual, p);
-            }   
+                foreach (var item in Direction)
+                {
+                    if (item.DirectionList != null)
+                    {
+                        foreach (var item2 in item.DirectionList)
+                        {
+                            if (item2.Dynamics != null)
+                            {
+                                item2.Dynamics.Draw(visual, p);
+                            }
+                        }
+                       
+                    }
+                }
+            } 
                 //Draw_Directions(dc2, p); // TODO_H missing implementation
 
             
