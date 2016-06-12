@@ -72,5 +72,16 @@ namespace MusicXMLViewerWPF
             Parts.ElementAt(0).Value.DrawMeasures(surface);
             
         }
+        public static void Clear()
+        {
+            title = null;
+            defaults = null;
+            parts.Clear();
+            identification = null;
+            credits.Clear();
+            work = null;
+            file = null;
+            MusicXMLViewerWPF.Defaults.Appearance.Clear();
+        }
     }
 }

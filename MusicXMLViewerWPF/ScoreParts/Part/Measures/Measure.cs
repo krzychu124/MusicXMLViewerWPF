@@ -123,6 +123,10 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
                         {
                             if (item2.Dynamics != null)
                             {
+                                if (Attributes != null && Attributes.Key != null)
+                                {
+                                    p.X =  p.X + 50f;
+                                }
                                 item2.Dynamics.Draw(visual, p);
                             }
                         }

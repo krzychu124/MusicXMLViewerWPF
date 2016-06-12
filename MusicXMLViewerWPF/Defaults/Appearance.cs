@@ -125,6 +125,15 @@ namespace MusicXMLViewerWPF.Defaults
             }
 
         }
+        public static void Clear()
+        {
+            distances = null;
+            distances = new Dictionary<string, float>();
+            lineWidths = null;
+            lineWidths = new Dictionary<string, float>();
+            noteSizes = null;
+            noteSizes = new Dictionary<string, float>();
+        }
     }
     
 }
