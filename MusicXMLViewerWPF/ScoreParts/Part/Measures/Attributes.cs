@@ -9,7 +9,7 @@ using System.Xml.Linq;
 
 namespace MusicXMLViewerWPF
 {
-    class Attributes //TODO_H finish
+    class Attributes //TODO_L working basics, missing features
     {
         // TODO_L private Divisions divisions;
         // TODO_L private PartSymbol part_symbol;

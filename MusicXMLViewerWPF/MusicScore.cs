@@ -8,7 +8,9 @@ using System.Windows.Media;
 using System.Xml.Linq;
 
 namespace MusicXMLViewerWPF
-{
+{   /// <summary>
+    /// Main class, storage for everything which needs to be drawn
+    /// </summary>
     class MusicScore 
     {
         protected static CanvasList Surface;
@@ -19,7 +21,7 @@ namespace MusicXMLViewerWPF
         protected static List<Credit.Credit> credits = new List<Credit.Credit>();
         protected static List<PartList> musicscoreparts;// = new List<PartList>(); // TODO_L replaced for tests
         protected static Work.Work work; 
-        protected static XElement file; // <<Loaded file>>
+        protected static XElement file; // <<Loaded XML file>>
 
         public static string Title { get { return title; } }
         public static Defaults.Defaults Defaults { get { return defaults; } }

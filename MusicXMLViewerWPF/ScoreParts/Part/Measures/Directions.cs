@@ -16,11 +16,11 @@ namespace MusicXMLViewerWPF
         private string directive;
         #endregion
         #region Elements
-        private Dynamics dynamics; // TODO_L will be moved to directions;
+        private Dynamics dynamics; // TODO_L will be moved to directions; // Done
         private List<Directions> directionList = new List<Directions>();
-        private DirectionType typ; // TODO_H rework to class, then add all attributes
-        private int posY; // may be not usable, during rework...
-        private int relX; // may be not usable, during rework...
+        private DirectionType typ; // TODO_L rework to class, then add all attributes
+        private int posY; //  unusable, during rework...
+        private int relX; //  unusable, during rework...
         private float offset;
         private int staff;
         #endregion

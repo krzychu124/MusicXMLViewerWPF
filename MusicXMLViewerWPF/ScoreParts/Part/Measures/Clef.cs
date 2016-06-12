@@ -7,7 +7,7 @@ using System.Xml.Linq;
 
 namespace MusicXMLViewerWPF
 {
-    public class Clef : EmptyPrintStyle//MusicalChars //TODO_H implement XElement ctor
+    public class Clef : EmptyPrintStyle
     {
         private ClefType sign;
         private int line;
@@ -21,7 +21,7 @@ namespace MusicXMLViewerWPF
 
         public Clef(XElement x):base(x.Attributes())
         {
-            //TODO_H check if possible to go to parenet of parent to get measure number and other info...
+            //TODO_L more indepth tests
             var ele = x.Elements();
             foreach (var item in ele)
             {
