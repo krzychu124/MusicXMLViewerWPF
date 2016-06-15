@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using System.Xml.Linq;
-using System.Drawing;
 using System.Windows.Shapes;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
