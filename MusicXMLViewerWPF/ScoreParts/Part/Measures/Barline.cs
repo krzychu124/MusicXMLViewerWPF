@@ -130,7 +130,7 @@ namespace MusicXMLViewerWPF
                         Misc.DrawingHelpers.DrawString(dc, MusChar.HeavyBar, TypeFaces.MeasuresFont, Brushes.Black, loc, (float)p.Y, scale);
                         break;
                     case BarStyle.light_light:
-                        Misc.DrawingHelpers.DrawString(dc, MusChar.LightLightBar, TypeFaces.MeasuresFont, Brushes.Black, loc, (float)p.Y, scale);
+                        Misc.DrawingHelpers.DrawString(dc, MusChar.LightLightBar, TypeFaces.MeasuresFont, Brushes.Black, loc - 3.5f, (float)p.Y, scale);
                         break;
                     case BarStyle.light_heavy:
                         Misc.DrawingHelpers.DrawString(dc, MusChar.LightHeavyBar, TypeFaces.MeasuresFont, Brushes.Black, loc - 6, (float)p.Y, scale);
