@@ -70,9 +70,22 @@ namespace MusicXMLViewerWPF
         }
         public static void Draw(CanvasList surface)
         {
+            DrawingVisual credits = new DrawingVisual();
+            DrawCredits(credits);
+            surface.AddVisual(credits);
             // DrawingVisual visual = new DrawingVisual();
             Parts.ElementAt(0).Value.DrawMeasures(surface);
+
             
+        }
+        public static void DrawCredits(DrawingVisual visual)
+        {
+            foreach (var item in credits)
+            {
+                DrawingVisual credit = new DrawingVisual();
+                item.Draw(credit);
+                visual.Children.Add(credit);
+            }
         }
         public static void Clear()
         {

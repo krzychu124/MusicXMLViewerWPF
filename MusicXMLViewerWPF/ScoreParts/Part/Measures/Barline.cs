@@ -499,6 +499,8 @@ namespace MusicXMLViewerWPF
         public float DefY { get { return def_y; } }
         public float RelX { get { return rel_x; } }
         public float RelY { get { return rel_y; } }
+        public float FontSize { get { return font_size; } }
+        public string FontWeight { get { return font_weight; } }
         public Halign HAlign { get { return h_align; } }
         public Valign VAlign { get { return v_align; } }
         public string Color { get { return color; } }

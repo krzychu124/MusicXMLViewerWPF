@@ -228,6 +228,15 @@ namespace MusicXMLViewerWPF
             stop,
             next
         }
+        public void Draw(DrawingVisual visual)
+        {
+            DrawingVisual wedge = new DrawingVisual();
+            using(DrawingContext dc = wedge.RenderOpen())
+            {
+
+            }
+            visual.Children.Add(wedge);
+        }
         
     }
     public class Rehearsal : EmptyPrintStyle, IDirections

@@ -34,7 +34,7 @@ namespace MusicXMLViewerWPF.ScoreParts.Part
 
                 if (i == 0)
                 {
-                    tempPoint = new Point(tempMargins.X + measure_list.ElementAt(i).PrintProperties.SystemLayout.LeftRelative, tempMargins.Y + measure_list.ElementAt(i).PrintProperties.SystemLayout.SystemDistance);
+                    tempPoint = measure_list.ElementAt(i).PrintProperties.SystemLayout.LeftRelative != 0f? new Point(tempMargins.X + measure_list.ElementAt(i).PrintProperties.SystemLayout.LeftRelative, tempMargins.Y + measure_list.ElementAt(i).PrintProperties.SystemLayout.SystemDistance) : new Point(0,0);
                     Logger.Log($"Margins {tempMargins.X} {tempMargins.Y}");
                     Logger.Log($"First point {tempPoint.X} {tempPoint.Y}");
                     measure_margin_helper.Add(measure_list.ElementAt(i).Number, tempPoint);

@@ -15,14 +15,14 @@ namespace MusicXMLViewerWPF.Defaults
         private SystemLayout system_layout;
         private StaffLayout staff_layout;
         private Appearance appearance;
-        private List<ScoreFonts> fonts = new List<ScoreFonts>();
+        private Dictionary<string,ScoreFonts> fonts = new Dictionary<string,ScoreFonts>();
         
         public Scale Scale { get { return scale; } }
         public Page Page { get { return page; } }
         public SystemLayout SystemLayout { get { return system_layout; } }    
         public StaffLayout StaffLayout { get { return staff_layout; } }
         public Appearance Appearance { get { return appearance; } }
-        public List<ScoreFonts> Fonts { get { return fonts; } }
+        public Dictionary<string,ScoreFonts> Fonts { get { return fonts; } }
         public Defaults(System.Xml.Linq.XElement x)
         {
             var temp = x;
@@ -33,15 +33,15 @@ namespace MusicXMLViewerWPF.Defaults
             appearance = new Appearance(x.Element("appearance"));
             if (x.Element("music-font") != null)
             {
-                fonts.Add(new ScoreFonts(x.Element("music-font")));
+                fonts.Add("m",new ScoreFonts(x.Element("music-font")));
             }
             if (x.Element("word-font") != null)
             {
-                fonts.Add(new ScoreFonts(x.Element("word-font")));
+                fonts.Add("w",new ScoreFonts(x.Element("word-font")));
             }
             if (x.Element("lyric-font") != null)
             {
-                fonts.Add(new ScoreFonts(x.Element("lyric-font")));
+                fonts.Add("l",new ScoreFonts(x.Element("lyric-font")));
             }
         }
     }
