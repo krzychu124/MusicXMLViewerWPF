@@ -109,7 +109,7 @@ y += (glyphTypeface.Height* size);
                 //viewer.LoadFile(dialog.FileName);
                 xmlReader.File_path = dialog.FileName;
                 Logger.Log("Loading: "+dialog.FileName);
-                Console.WriteLine("asd: "+ dialog.FileName);
+                Console.WriteLine("Loaded file>> "+ dialog.FileName);
            //     textBlock.Text += "\n Loadind file ... Processing  ";
                 
                 XDocument Doc = XmlRead.GetXmlInventory(dialog.FileName);
