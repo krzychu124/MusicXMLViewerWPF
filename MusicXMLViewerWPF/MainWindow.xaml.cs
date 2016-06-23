@@ -189,7 +189,7 @@ y += (glyphTypeface.Height* size);
             m.DisplayMeasure();
         }
 
-        private void addclef_Click(object sender, RoutedEventArgs e)
+        private void test2_Click(object sender, RoutedEventArgs e)
         {
             DrawingVisual visual = new DrawingVisual();
             //...
@@ -198,7 +198,7 @@ y += (glyphTypeface.Height* size);
             drawingSurface.AddVisual(visual);
         }
 
-        private void addkey_Click(object sender, RoutedEventArgs e)
+        private void test3_Click(object sender, RoutedEventArgs e)
         {
             DrawingVisual visual = new DrawingVisual();
             //...
@@ -207,7 +207,7 @@ y += (glyphTypeface.Height* size);
             drawingSurface.AddVisual(visual);
         }
 
-        private void addtimesig_Click(object sender, RoutedEventArgs e)
+        private void test4_Click(object sender, RoutedEventArgs e)
         {
             DrawingVisual visual = new DrawingVisual();
             //...
@@ -216,13 +216,16 @@ y += (glyphTypeface.Height* size);
             drawingSurface.AddVisual(visual);
         }
 
-        private void addnote_Click(object sender, RoutedEventArgs e)
+        private void test1_Click(object sender, RoutedEventArgs e)
         {
-            LoadCharsToViewPort sur = new LoadCharsToViewPort(drawingSurface);
+            DrawingVisual visual = new DrawingVisual();
+            MusicScore.DrawPageRectangle(visual);
+            drawingSurface.AddVisual(visual);
+            //LoadCharsToViewPort sur = new LoadCharsToViewPort(drawingSurface);
            // LoadCharsToViewPort l = new LoadCharsToViewPort();
            // Measures m = new Measures();
-            sur.AddMeasures(Measures.MeasureList.Count);
-            Console.WriteLine(drawingSurface.Count_());
+           // sur.AddMeasures(Measures.MeasureList.Count);
+           // Console.WriteLine(drawingSurface.Count_());
             //DrawingVisual visual = new DrawingVisual();
             ////...
             //LoadCharsToViewPort c = new LoadCharsToViewPort();
@@ -234,20 +237,20 @@ y += (glyphTypeface.Height* size);
             //MainWindow.drawingSurface
         }
 
-        private void addRests_Click(object sender, RoutedEventArgs e)
+        private void test5_Click(object sender, RoutedEventArgs e)
         {
             LoadCharsToViewPort sur = new LoadCharsToViewPort(drawingSurface);
             sur.AddRests();
 
         }
 
-        private void addNotes_Click(object sender, RoutedEventArgs e)
+        private void test6_Click(object sender, RoutedEventArgs e)
         {
             LoadCharsToViewPort sur = new LoadCharsToViewPort(drawingSurface);
             sur.AddNotes();
         }
 
-        private void button2_Click(object sender, RoutedEventArgs e)
+        private void clearAll_Click(object sender, RoutedEventArgs e)
         {
             MusicScore.Clear();
             drawingSurface.ClearVisuals();
