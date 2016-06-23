@@ -98,5 +98,9 @@ namespace MusicXMLViewerWPF
             file = null;
             MusicXMLViewerWPF.Defaults.Appearance.Clear();
         }
+        public static void DrawPageRectangle(DrawingVisual visual)
+        {
+            Misc.DrawingHelpers.DrawRectangle(visual, new Point(0, 0), new Point(Defaults.Page.Width, Defaults.Page.Height));
+        }
     }
 }

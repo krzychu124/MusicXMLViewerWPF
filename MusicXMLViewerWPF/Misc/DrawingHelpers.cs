@@ -22,7 +22,7 @@ namespace MusicXMLViewerWPF.Misc
         public static void DrawText(DrawingContext dc, string text, Point position, float font_size, Halign align = Halign.left, string font_weight = null)
         {
             Point page = new Point(MusicScore.Defaults.Page.Width, MusicScore.Defaults.Page.Height);
-            position = SubstractPoint(page, position);
+            position = SubstractPoint(page, new Point(page.X - position.X,position.Y));
             FormattedText ft = new FormattedText(text, System.Threading.Thread.CurrentThread.CurrentUICulture, FlowDirection.LeftToRight, TypeFaces.TextFont, font_size, Brushes.Black);
             if (font_weight != null)
             {
@@ -51,6 +51,18 @@ namespace MusicXMLViewerWPF.Misc
             Point result = new Point();
             result = new Point(one.X - two.X, one.Y - two.Y);
             return result;
+        }
+
+        public static void DrawRectangle(DrawingVisual visual, Point one, Point two)
+        {
+            DrawingVisual rectangle = new DrawingVisual();
+            using (DrawingContext dc = rectangle.RenderOpen())
+            {
+                Pen pen = new Pen(Brushes.Black, 1);
+                pen.DashStyle = DashStyles.DashDot;
+                dc.DrawRectangle(Brushes.Transparent, pen, new Rect(one, two));
+            }
+            visual.Children.Add(rectangle);
         }
     }
 }
