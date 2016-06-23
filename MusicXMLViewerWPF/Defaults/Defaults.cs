@@ -28,9 +28,9 @@ namespace MusicXMLViewerWPF.Defaults
             var temp = x;
             scale = new Scale(x.Element("scaling"));
             page = new Page(x);
-            system_layout = new SystemLayout(x.Element("system-layout"));
+            system_layout = x.Element("system-layout") != null ? new SystemLayout(x.Element("system-layout")) : new SystemLayout();
             staff_layout = x.Element("staff-layout") != null ? new StaffLayout(x.Element("staff-layout")) : null;
-            appearance = new Appearance(x.Element("appearance"));
+            appearance = x.Element("appearance") != null ? new Appearance(x.Element("appearance")) : new Appearance();
             if (x.Element("music-font") != null)
             {
                 fonts.Add("m",new ScoreFonts(x.Element("music-font")));

@@ -22,12 +22,12 @@ namespace MusicXMLViewerWPF.Defaults
 
         public Appearance()
         {
-            initLineWidths();
+            initFromDefaults();
         }
 
         public Appearance(XElement x)
         {
-            initLineWidths(x);
+            initFromXElement(x);
         }
 
         public static float GetDistance(string type)
@@ -59,7 +59,7 @@ namespace MusicXMLViewerWPF.Defaults
             return x;
         }
 
-        public void initLineWidths()
+        public void init()
         {
             var x = Misc.LoadFile.Document;
             if (x == null)
@@ -97,7 +97,7 @@ namespace MusicXMLViewerWPF.Defaults
             }
         }
 
-        public void initLineWidths(XElement x)
+        public void initFromXElement(XElement x)
         {
             var appearance = x.Elements(); 
                                            
@@ -125,6 +125,39 @@ namespace MusicXMLViewerWPF.Defaults
             }
 
         }
+
+        private void initFromDefaults()
+        {
+            initDefaultDistances();
+            initDefaultLineWidths();
+            initDefaultNoteSizes();
+        }
+        private void initDefaultDistances()
+        {
+            distances.Add("hyphen", 60f);
+            distances.Add("beam", 8f);
+        }
+
+        private void initDefaultNoteSizes()
+        {
+            noteSizes.Add("grace", 60f);
+            noteSizes.Add("cue", 60f);
+        }
+
+        private void initDefaultLineWidths()
+        {
+            lineWidths.Add("stem", 1.4583f);
+            lineWidths.Add("beam", 5f);
+            lineWidths.Add("staff", 1.4583f);
+            lineWidths.Add("light barline", 1.4583f);
+            lineWidths.Add("heavy barline", 5f);
+            lineWidths.Add("leger", 1.4583f);
+            lineWidths.Add("ending", 1.4583f);
+            lineWidths.Add("wedge", 1.4583f);
+            lineWidths.Add("enclosure", 1.4583f);
+            lineWidths.Add("tuplet bracket", 1.4583f);
+        }
+
         public static void Clear()
         {
             distances = null;
