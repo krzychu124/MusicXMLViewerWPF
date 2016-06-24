@@ -1,7 +1,7 @@
 # MusicXMLViewerWPF
-If you want to do something, just DO IT! ;)
+If you want to do something, just **_DO IT!_** ;)
 
-First project in C#, bigger than calculator ;)
+First project in _C#_, bigger than calculator ;)
 
 Maybe too ambitious and quite challenging but I like challenges :)
 
@@ -15,9 +15,9 @@ If you are brave, you can check it, but first make sure if you are ready to see:
 
 **_Everything here is an experiment here so everything could be changed in the future and will be for sure._**
 
-Main goal of project is to learn/improve C# and WPF by programming something which:
+Main goal of project is to learn/improve _C#_ and _WPF_ by programming something which:
 -  should work
--  hopefully look like "simple" music score editor
+-  hopefully look like "_simple_" music score editor
 -  and of course be useful somehow 
 
 **Currently under developement:**       60-70% Done.  ~~Works quite good but that's not enough for me.~~ 
