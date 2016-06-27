@@ -1,30 +1,41 @@
 # MusicXMLViewerWPF
-First project in C#, bigger than calculator ;)
 
-I read somewhere that when you want to code, just start doing that.
+**Hello Stranger,**
 
-_I started this for Learning C# and WPF... Might be highly unreadable sometimes(sometimes whole page) :/_
+I don't know how did you find this but if you are brave, you can check it out.
 
-A lot of commented lines, test methods, ideas and even more problems and issues, but that's the key if you want to learn something, I think :)
+First make sure if you are ready to see:
+*   tons of commented lines
+*   ideas and test methods without any sense or usage
+*   not intuitive and complicated parts of
 
-**_Everything here is an experiment so everything could be changed in the future and will be for sure._**
+===
+**_Everything here is an experiment here so everything could be changed in the future and will be for sure._**
+#### Main goal of this project is learn/improve _C#_ by programming something bigger than calculator.
+---
+I hope this program:
+-  will work
+-  hopefully look like "_simple_" music score editor
+-  and of course be useful somehow 
 
-It's good to have any goals of project so main is to learn C# and WPF better and make something which will work and look like simple music score editor.
 
-**Currently under developement:**       60-70% Done.  ~~Works quite good but that's not enough for me.~~ Draw Rework 
-   - [x] ~~MusicXML reader // quite time consuming to implement // Absolute minimum to represent notes done //~~ **Done**
+___
 
-   - [ ] **Under Developement** Methods for drawing  // Complete rework, adding compatibility with reader
+
+**Currently under developement:**       60-70% Done.  ~~Works quite good but that's not enough for me.~~ 
+   - [x] ~~MusicXML reader // quite time consuming to implement // Absolute minimum to represent notes //~~ **Done**
+
+   - [ ] **Under Developement** Methods for drawing  // Complete refactoring // A lot more complicated than i thought :)
  
-**Ideas to implement at first place (have to learn that first):**  0% only ideas for now :/
+**Next: (have to learn this first):**  0% only ideas for now :/
 
-   - [ ] Basic interaction with drawn objects
+   - [ ] Basic interaction with drawn/loaded Music Score
 
-**Next:**                                               
-  - [ ] Saving things which were edited back to MusicXML file // Serialization?? I have to check it later ;) 
+**Then:**                                               
+  - [ ] Saving changes made on loaded Music Score back to MusicXML file // Serialization?? I have to check it later ;) 
     
-**Hardest for now:**  
+**At the end:**  
   - [ ] Add each object using only mouse 
   - [ ] Maybe simple printing to PDF, XPS or something else
  
-**Sorry for my English if someting is not understandable** // It's not as good as I want:)
+**Sorry for my English if someting is not understandable**
