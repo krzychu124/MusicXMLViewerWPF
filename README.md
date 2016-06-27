@@ -1,23 +1,24 @@
 # MusicXMLViewerWPF
 
-Hello Stranger,
+**Hello Stranger,**
 
 I don't know how did you find this but if you are brave, you can check it out.
 
 First make sure if you are ready to see:
 *   tons of commented lines
 *   ideas and test methods without any sense or usage
-*   not intuitive and complicated parts of code
+*   not intuitive and complicated parts of
 
+===
 **_Everything here is an experiment here so everything could be changed in the future and will be for sure._**
-
-Main goal of this project is learn/improve _C#_ by programming something bigger than calculator.
-
+#### Main goal of this project is learn/improve _C#_ by programming something bigger than calculator.
+===
 I hope this program:
 -  will work
 -  hopefully look like "_simple_" music score editor
 -  and of course be useful somehow 
 
+---
 **Currently under developement:**       60-70% Done.  ~~Works quite good but that's not enough for me.~~ 
    - [x] ~~MusicXML reader // quite time consuming to implement // Absolute minimum to represent notes //~~ **Done**
 
