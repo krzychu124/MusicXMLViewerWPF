@@ -218,9 +218,16 @@ y += (glyphTypeface.Height* size);
 
         private void test1_Click(object sender, RoutedEventArgs e)
         {
-            DrawingVisual visual = new DrawingVisual();
-            MusicScore.DrawPageRectangle(visual);
-            drawingSurface.AddVisual(visual);
+            if (MusicScore.isLoaded)
+            {
+                DrawingVisual visual = new DrawingVisual();
+                MusicScore.DrawPageRectangle(visual);
+                drawingSurface.AddVisual(visual);
+            }
+            else
+            {
+                Logger.Log("Please load XML file first");
+            }
             //LoadCharsToViewPort sur = new LoadCharsToViewPort(drawingSurface);
            // LoadCharsToViewPort l = new LoadCharsToViewPort();
            // Measures m = new Measures();

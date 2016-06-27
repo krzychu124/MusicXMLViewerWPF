@@ -22,6 +22,7 @@ namespace MusicXMLViewerWPF
         protected static List<PartList> musicscoreparts;// = new List<PartList>(); // TODO_L replaced for tests
         protected static Work.Work work; 
         protected static XElement file; // <<Loaded XML file>>
+        protected static bool loaded = false;
 
         public static string Title { get { return title; } }
         public static Defaults.Defaults Defaults { get { return defaults; } }
@@ -31,6 +32,7 @@ namespace MusicXMLViewerWPF
         public static List<PartList> ScoreParts { get { return musicscoreparts; } }
         public static Work.Work Work { get { return work; } }
         public static XElement File { get { return file; } }
+        public static bool isLoaded { get { return loaded; } }
 
         public MusicScore(XDocument x)
         {
@@ -39,6 +41,7 @@ namespace MusicXMLViewerWPF
             {
                 Logger.Log("File Loaded");
                 LoadToClasses();
+                loaded = true;
             }
             else
             {
