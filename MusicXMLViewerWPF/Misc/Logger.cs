@@ -19,9 +19,7 @@ namespace MusicXMLViewerWPF
         public static void Log(string message, [CallerMemberName] string memberName = "")
         {
             log.Add("["+memberName+"]"+": "+message);
-
-            if (LogAdded != null)
-                LogAdded(null, EventArgs.Empty);
+            LogAdded?.Invoke(null, EventArgs.Empty);
         }
 
         public static string GetLastLog()
@@ -43,10 +41,7 @@ namespace MusicXMLViewerWPF
         public static string ClearLog()
         {
             log.Clear();
-            if (LogCleared != null)
-            {
-                LogCleared(null, EventArgs.Empty);
-            }
+            LogCleared?.Invoke(null, EventArgs.Empty);
             System.Windows.MessageBox.Show("Log cleared.");
             return string.Empty;
         }

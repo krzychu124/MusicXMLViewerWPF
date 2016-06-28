@@ -35,9 +35,9 @@ namespace MusicXMLViewerWPF
             Logger.LogAdded += new EventHandler(MyLogger_LogAdded);
             Logger.LogCleared += new EventHandler(MyLogger_LogClear);
             //Logger.Log("check");
-            Measures m = new Measures();
-            m.MeasureList_Loaded = true;
-            LoadCharsToViewPort l = new LoadCharsToViewPort(drawingSurface);
+           // Measures m = new Measures();
+           // m.MeasureList_Loaded = true;
+           // LoadCharsToViewPort l = new LoadCharsToViewPort(drawingSurface);
         }
     /*    public void test()
         {
