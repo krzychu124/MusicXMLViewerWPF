@@ -14,6 +14,7 @@ namespace MusicXMLViewerWPF
         private static List<string> log = new List<string>();
 
         public static event EventHandler LogAdded;
+        public static event EventHandler LogCleared;
 
         public static void Log(string message, [CallerMemberName] string memberName = "")
         {
@@ -38,6 +39,16 @@ namespace MusicXMLViewerWPF
         public static void Loaded( string message,[CallerMemberName] string memberName="")
         {
             Log(memberName+": "+message);
+        }
+        public static string ClearLog()
+        {
+            log.Clear();
+            if (LogCleared != null)
+            {
+                LogCleared(null, EventArgs.Empty);
+            }
+            System.Windows.MessageBox.Show("Log cleared.");
+            return string.Empty;
         }
     }
 }
