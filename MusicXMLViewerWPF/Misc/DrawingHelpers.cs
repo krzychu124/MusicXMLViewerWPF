@@ -53,13 +53,17 @@ namespace MusicXMLViewerWPF.Misc
             return result;
         }
 
-        public static void DrawRectangle(DrawingVisual visual, Point one, Point two)
+        public static void DrawRectangle(DrawingVisual visual, Point one, Point two, Brush color = null )
         {
+            if (color == null)
+            {
+                color = Brushes.Black;
+            }
             DrawingVisual rectangle = new DrawingVisual();
             using (DrawingContext dc = rectangle.RenderOpen())
             {
-                Pen pen = new Pen(Brushes.Black, 1);
-                pen.DashStyle = DashStyles.DashDot;
+                Pen pen = new Pen(color, 1);
+                pen.DashStyle = DashStyles.DashDotDot;
                 dc.DrawRectangle(Brushes.Transparent, pen, new Rect(one, two));
             }
             visual.Children.Add(rectangle);
