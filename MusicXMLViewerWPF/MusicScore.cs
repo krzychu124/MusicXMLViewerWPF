@@ -71,6 +71,7 @@ namespace MusicXMLViewerWPF
         {
             Surface = s;
         }
+
         public static void Draw(CanvasList surface)
         {
             DrawingVisual credits = new DrawingVisual();
@@ -81,6 +82,7 @@ namespace MusicXMLViewerWPF
 
             
         }
+
         public static void DrawCredits(DrawingVisual visual)
         {
             foreach (var item in credits)
@@ -90,6 +92,7 @@ namespace MusicXMLViewerWPF
                 visual.Children.Add(credit);
             }
         }
+
         public static void Clear()
         {
             loaded = false;
@@ -102,9 +105,16 @@ namespace MusicXMLViewerWPF
             file = null;
             MusicXMLViewerWPF.Defaults.Appearance.Clear();
         }
+
         public static void DrawPageRectangle(DrawingVisual visual)
         {
             Misc.DrawingHelpers.DrawRectangle(visual, new Point(0, 0), new Point(Defaults.Page.Width, Defaults.Page.Height));
+        }
+
+        public static void DrawMusicScoreMargins(DrawingVisual visual)
+        {
+            Point right_down_margin_corner = new Point(Defaults.Page.Width - Defaults.Page.Margins.Right, Defaults.Page.Height - Defaults.Page.Margins.Bottom);
+            Misc.DrawingHelpers.DrawRectangle(visual, new Point(Defaults.Page.Margins.Left, Defaults.Page.Margins.Top), right_down_margin_corner, Brushes.Blue);
         }
     }
 }

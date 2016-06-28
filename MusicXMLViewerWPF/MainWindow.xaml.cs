@@ -217,10 +217,12 @@ y += (glyphTypeface.Height* size);
             if (MusicScore.isLoaded)
             {
                 DrawingVisual visual = new DrawingVisual();
-            //...
-                LoadCharsToViewPort c = new LoadCharsToViewPort();
-                c.AddClef(visual);
+                MusicScore.DrawMusicScoreMargins(visual);
                 drawingSurface.AddVisual(visual);
+                //...
+                //LoadCharsToViewPort c = new LoadCharsToViewPort();
+                //c.AddClef(visual);
+                //drawingSurface.AddVisual(visual);
             }
             else
             {

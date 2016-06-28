@@ -53,7 +53,7 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
                     barlines.Add(new Barline(item)); // << adding irregular barline object like coda,segno, fermata, repeats or endings
                 } 
             }
-            print_properties = x.Element("print") != null ? new Print(x) : null; // TODO_H test, need deep tests !!!
+            print_properties = x.Element("print") != null ? new Print(x) : null; // TODO_H needs more tests :)
             direction = null;
             if (x.Element("direction") != null)
             {

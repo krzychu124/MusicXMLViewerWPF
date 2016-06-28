@@ -63,7 +63,7 @@
         <Button x:Name="test6" Content="6" HorizontalAlignment="Left" Margin="766,0,0,10" Width="96" Click="test6_Click" Height="25" VerticalAlignment="Bottom"/>
         <Button Content="Open File" Margin="10,0,0,10" Click="Button_Click" HorizontalAlignment="Left" Width="100" Height="24" VerticalAlignment="Bottom" />
         <Button Content="Reworked Draw" Margin="115,0,0,10" Panel.ZIndex="0" Click="Button_Click_1" HorizontalAlignment="Left" Width="100" Height="24" VerticalAlignment="Bottom"/>
-        <Button x:Name="clearAll" Content="Clear All" HorizontalAlignment="Left" Margin="1110,0,0,10" Width="97" Click="clearAll_Click" Height="25" VerticalAlignment="Bottom"/>
+        <Button x:Name="clearAll" Content="Clear View" HorizontalAlignment="Left" Margin="1110,0,0,10" Width="97" Click="clearAll_Click" Height="25" VerticalAlignment="Bottom"/>
 
 
         <!-- <Button x:Name="load_M" Content="Load Measure" HorizontalAlignment="Left" Height="24" Margin="665,426,0,0" VerticalAlignment="Top" Width="103" Click="load_M_Click"/>

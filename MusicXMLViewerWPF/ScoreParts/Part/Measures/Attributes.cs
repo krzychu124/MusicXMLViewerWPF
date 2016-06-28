@@ -230,7 +230,7 @@ namespace MusicXMLViewerWPF
 
         public MeasureRepeat(XElement x)
         {
-            val = int.Parse(x.Value); // TODO_H need tests
+            val = int.Parse(x.Value); // TODO need tests
             var attr = x.Attributes();
             foreach (var item in attr)
             {
