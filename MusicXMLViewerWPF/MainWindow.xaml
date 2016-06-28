@@ -25,8 +25,13 @@
                    <!-- <Grid HorizontalAlignment="Left" Width="441" Margin="5,0,0,0" Height="500" > -->
                         <Label Padding="1">Logger:</Label>
                         <ScrollViewer VerticalScrollBarVisibility="Auto"  HorizontalScrollBarVisibility="Auto" Margin="0,20,0,0" >
-                            
+                            <ScrollViewer.ContextMenu>
+                                <ContextMenu>
+                                 <MenuItem Header="Clear Log" Click="MenuItem_Click" ></MenuItem>
+                                </ContextMenu>
+                            </ScrollViewer.ContextMenu>
                             <TextBlock x:Name="LogBox" HorizontalAlignment="Left" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Height="Auto" MinHeight="12" Width="421" FontSize="12" FontFamily="/WpfMusTestViewer;component/resources/Fonts/#BravuraText" />
+                           
                         </ScrollViewer>
                 <!-- </Grid> -->
 

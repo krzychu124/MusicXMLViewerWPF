@@ -92,6 +92,7 @@ namespace MusicXMLViewerWPF
         }
         public static void Clear()
         {
+            loaded = false;
             title = null;
             defaults = null;
             parts.Clear();
