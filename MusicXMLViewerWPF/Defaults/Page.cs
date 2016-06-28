@@ -164,10 +164,10 @@ namespace MusicXMLViewerWPF
 
         private void SetDefaultMargins()
         {
-            bottom_margin = 40f;
-            left_margin = 30f;
-            right_margin = 30f;
-            top_margin = 40f;
+            bottom_margin = 25f;
+            left_margin = 20f;
+            right_margin = 20f;
+            top_margin = 25f;
             type = MarginType.both;
         }
 
