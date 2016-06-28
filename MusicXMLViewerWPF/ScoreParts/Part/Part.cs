@@ -34,7 +34,7 @@ namespace MusicXMLViewerWPF.ScoreParts.Part
 
                 if (i == 0)
                 {
-                    tempPoint = measure_list.ElementAt(i).PrintProperties.SystemLayout.LeftRelative != 0f? new Point(tempMargins.X + measure_list.ElementAt(i).PrintProperties.SystemLayout.LeftRelative, tempMargins.Y + measure_list.ElementAt(i).PrintProperties.SystemLayout.SystemDistance) : new Point(0,0);
+                    tempPoint = measure_list.ElementAt(i).PrintProperties.SystemLayout.LeftRelative != 0f? new Point(tempMargins.X + measure_list.ElementAt(i).PrintProperties.SystemLayout.LeftRelative, tempMargins.Y + measure_list.ElementAt(i).PrintProperties.SystemLayout.SystemDistance + MusicScore.Defaults.SystemLayout.TopSystemDistance) : new Point(0,0);
                     Logger.Log($"Margins {tempMargins.X} {tempMargins.Y}");
                     Logger.Log($"First point {tempPoint.X} {tempPoint.Y}");
                     measure_margin_helper.Add(measure_list.ElementAt(i).Number, tempPoint);
@@ -63,7 +63,7 @@ namespace MusicXMLViewerWPF.ScoreParts.Part
                         }
                         else
                         {
-                            //measure_margin_helper.Add(measure_list.ElementAt(i).Number, new Point(measure_margin_helper.ElementAt(measure_margin_helper.Count - 1).Value.X, measure_margin_helper.ElementAt(measure_margin_helper.Count - 1).Value.Y ));
+                            //measure_margin_helper.Add(measure_list.ElementAt(i).Number, new Point(measure_margin_helper.ElementAt(measure_margin_helper.Count - 1).Value.X, measure_margin_helper.ElementAt(measure_margin_helper.Count - 1).Value.Y));
                             Logger.Log($"helper_dict NewSystem value: no in measure nr. {i + 1}");
                         }
                         //measure_margin_helper.Add(measure_list.ElementAt(i).Number, measure_margin_helper.ElementAt(measure_margin_helper.Count - 1).Value);

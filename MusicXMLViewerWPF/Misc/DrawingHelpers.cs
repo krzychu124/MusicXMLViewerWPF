@@ -22,7 +22,9 @@ namespace MusicXMLViewerWPF.Misc
         public static void DrawText(DrawingContext dc, string text, Point position, float font_size, Halign align = Halign.left, string font_weight = null)
         {
             Point page = new Point(MusicScore.Defaults.Page.Width, MusicScore.Defaults.Page.Height);
-            position = SubstractPoint(page, new Point(page.X - position.X,position.Y));
+            
+            position = CalculatePosition(page, new Point(page.X - position.X ,position.Y));
+            Logger.Log($"Added \"{text}\" at position {position.X}, {position.Y}");
             FormattedText ft = new FormattedText(text, System.Threading.Thread.CurrentThread.CurrentUICulture, FlowDirection.LeftToRight, TypeFaces.TextFont, font_size, Brushes.Black);
             if (font_weight != null)
             {
@@ -31,7 +33,7 @@ namespace MusicXMLViewerWPF.Misc
                     ft.SetFontWeight(FontWeights.Bold);
                 }
             }
-            
+
             switch (align)
             {
                 case Halign.center:
@@ -46,7 +48,7 @@ namespace MusicXMLViewerWPF.Misc
             }
             dc.DrawText(ft, position);
         }
-        public static Point SubstractPoint(Point one, Point two)
+        public static Point CalculatePosition(Point one, Point two)
         {
             Point result = new Point();
             result = new Point(one.X - two.X, one.Y - two.Y);

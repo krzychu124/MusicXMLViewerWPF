@@ -150,12 +150,12 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
 
         private void Draw_Directions(DrawingContext dc2, Point p)
         {
-            
+            //TODO_L missing implementation
         }
 
         private void Draw_Attributes(DrawingContext dc2, Point p)
         {
-            
+            //TODO_L missing implementation
         }
 
         private void Draw_Measure(DrawingContext dc, Point StartPoint)
