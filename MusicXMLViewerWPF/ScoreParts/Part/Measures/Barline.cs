@@ -549,7 +549,10 @@ namespace MusicXMLViewerWPF
                     case "color":
                         color = item.Value;
                         break;
-                    
+                    case "justify":
+                        string hval2 = item.Value;
+                        h_align = hval2 == "left" ? Halign.left : hval2 == "center" ? Halign.center : Halign.right;
+                        break;
                 }
             }
         }
