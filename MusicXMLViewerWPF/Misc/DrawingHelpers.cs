@@ -19,19 +19,37 @@ namespace MusicXMLViewerWPF.Misc
         {
 
         }
-        public static void DrawText(DrawingContext dc, string text, Point position, float font_size, Halign align = Halign.left, string font_weight = null)
+        public static void DrawText(DrawingContext dc, string text, Point position, float font_size, Halign align = Halign.right, Valign valign = Valign.middle, string font_weight = null)
         {
             Point page = new Point(MusicScore.Defaults.Page.Width, MusicScore.Defaults.Page.Height);
             
             position = CalculatePosition(page, new Point(page.X - position.X ,position.Y));
-            Logger.Log($"Added \"{text}\" at position {position.X}, {position.Y}");
-            FormattedText ft = new FormattedText(text, System.Threading.Thread.CurrentThread.CurrentUICulture, FlowDirection.LeftToRight, TypeFaces.TextFont, font_size, Brushes.Black);
+            Logger.Log($"Added \"{text}\" at position {position.X}, {position.Y}, {align}");
+            FormattedText ft = new FormattedText(text, System.Threading.Thread.CurrentThread.CurrentUICulture, FlowDirection.LeftToRight, TypeFaces.TextFont, font_size * 1.4, Brushes.Black);
+            DrawString(dc, "||", TypeFaces.TextFont, Brushes.Black, (float)position.X, (float)position.Y, 18); // visual debug position helper
             if (font_weight != null)
             {
                 if (font_weight == "bold")
                 {
                     ft.SetFontWeight(FontWeights.Bold);
                 }
+            }
+
+            switch (valign)
+            {
+                case Valign.top:
+                    position.Y = position.Y - (ft.Height/2);
+                    break;
+                case Valign.middle:
+                    break;
+                case Valign.bottom:
+                    position.Y = position.Y + (ft.Height / 2);
+                    break;
+                case Valign.baseline:
+                    position.Y = position.Y + (ft.Height / 2);
+                    break;
+                default:
+                    break;
             }
 
             switch (align)

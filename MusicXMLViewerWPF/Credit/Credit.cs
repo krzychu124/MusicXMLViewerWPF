@@ -75,8 +75,9 @@ namespace MusicXMLViewerWPF.Credit
                 Halign align = CreditWords.HAlign;
                 float size = CreditWords.FontSize;
                 string weight = CreditWords.FontWeight;
+                Valign valign = CreditWords.VAlign;
                 //string style = CreditWords.
-                Misc.DrawingHelpers.DrawText(dc, text, pos, size, align, weight);
+                Misc.DrawingHelpers.DrawText(dc, text, pos, size, align, valign, weight);
             }
             
         }
