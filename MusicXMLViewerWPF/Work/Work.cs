@@ -16,7 +16,7 @@ namespace MusicXMLViewerWPF.Work
 
         public Work(System.Xml.Linq.XElement x)
         {
-            work_number = x.Element("work-number").Value;
+            work_number = x.Element("work-number") != null ? x.Element("work-number").Value : "0" ;
             work_title = x.Element("work-title").Value;
         }
     }
