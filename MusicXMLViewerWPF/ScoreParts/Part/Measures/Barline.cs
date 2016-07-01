@@ -221,6 +221,7 @@ namespace MusicXMLViewerWPF
         {
 
         }
+        
     }
     public class Fermata : EmptyPrintStyle
     {
@@ -515,6 +516,7 @@ namespace MusicXMLViewerWPF
         }
         private void FillAttributes(IEnumerable<XAttribute> x) // TODO_L check if it's working
         {
+            h_align = Halign.none;
             foreach (var item in x)
             {
                 string name = item.Name.LocalName;
@@ -551,7 +553,11 @@ namespace MusicXMLViewerWPF
                         break;
                     case "justify":
                         string hval2 = item.Value;
-                        h_align = hval2 == "left" ? Halign.left : hval2 == "center" ? Halign.center : Halign.right;
+                        if (h_align == Halign.none)
+                        {
+                            h_align = hval2 == "left" ? Halign.left : hval2 == "center" ? Halign.center : Halign.right;
+                        }
+                        
                         break;
                 }
             }
@@ -559,6 +565,7 @@ namespace MusicXMLViewerWPF
     }
     public enum Halign
     {
+        none,
         left,
         center,
         right

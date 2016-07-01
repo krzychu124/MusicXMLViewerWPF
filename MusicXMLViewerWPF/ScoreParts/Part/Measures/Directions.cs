@@ -58,7 +58,7 @@ namespace MusicXMLViewerWPF
                             offset = float.Parse(item.Value);
                             break;
                         default:
-                            Logger.Log($"[direcion-element] not implemented switch {"'" + name + "'"} element");
+                            Logger.Log($"[direcion-element] not implemented switch '{name}' element");
                             break;
                     }
                 }
