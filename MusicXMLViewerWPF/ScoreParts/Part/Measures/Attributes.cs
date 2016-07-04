@@ -85,7 +85,14 @@ namespace MusicXMLViewerWPF
             if (Key != null) // basic drawing done
             {
                 DrawingVisual keyVisual = new DrawingVisual();
-                Key.Draw(keyVisual, new Point(currentX, currentY),Clef.Sign);
+                if (Clef != null)
+                {
+                    Key.Draw(keyVisual, new Point(currentX, currentY), Clef.Sign);
+                }
+                else
+                {
+                    Key.Draw(keyVisual, new Point(currentX, currentY), Clef.Sign_static);
+                }
                 visual.Children.Add(keyVisual);
                 currentX += Math.Abs((int)key.Fifths) *8;
             }

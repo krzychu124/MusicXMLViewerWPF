@@ -29,6 +29,7 @@ namespace MusicXMLViewerWPF
 
         public Key(XElement x):base(x.Attributes())
         {
+            this.mode = Mode.major;
             var ele = x.Elements();
             foreach (var item in ele)
             {
@@ -61,7 +62,7 @@ namespace MusicXMLViewerWPF
                     this.mode = Mode.major;
                     break;
                 default:
-                    this.mode = Mode.unknown;
+                    this.mode = Mode.major;
                     break;
             }
         }

@@ -156,7 +156,7 @@ namespace MusicXMLViewerWPF
                     using (DrawingContext dc2 = visualForRepeats.RenderOpen())
                     {
                         float location = Repeat.Direction == Repeat.RepeatDirection.forward ? 10f : -12f;
-                        if (Repeat.Winged.Type == Winged.WingType.none)
+                        if (Repeat.Winged == null) //Repeat.Winged.Type == Winged.WingType.none || 
                         {
                             Misc.DrawingHelpers.DrawString(dc, MusChar.RepeatDots, TypeFaces.MeasuresFont, Brushes.Black, loc + location, (float)p.Y, scale);
                         }
