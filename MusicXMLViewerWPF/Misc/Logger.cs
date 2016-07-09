@@ -14,13 +14,12 @@ namespace MusicXMLViewerWPF
         private static List<string> log = new List<string>();
 
         public static event EventHandler LogAdded;
+        public static event EventHandler LogCleared;
 
         public static void Log(string message, [CallerMemberName] string memberName = "")
         {
-            log.Add(memberName+": "+message);
-
-            if (LogAdded != null)
-                LogAdded(null, EventArgs.Empty);
+            log.Add("["+memberName+"]"+": "+message);
+            LogAdded?.Invoke(null, EventArgs.Empty);
         }
 
         public static string GetLastLog()
@@ -38,6 +37,13 @@ namespace MusicXMLViewerWPF
         public static void Loaded( string message,[CallerMemberName] string memberName="")
         {
             Log(memberName+": "+message);
+        }
+        public static string ClearLog()
+        {
+            log.Clear();
+            LogCleared?.Invoke(null, EventArgs.Empty);
+            System.Windows.MessageBox.Show("Log cleared.");
+            return string.Empty;
         }
     }
 }

@@ -22,8 +22,8 @@ namespace MusicXMLViewerWPF
         private MeasureNumbering measure_numbering;
         private List<StaffLayout> staff_layout_list = new List<StaffLayout>();
 
-        public bool NewPage { get { return new_page.GetTypeCode() == 0? false : true; } }
-        public bool NewSystem { get { return new_system.GetTypeCode() == 0 ? false : true; } }
+        public bool NewPage { get { return (int)new_page == 0 ? false : true; } }
+        public bool NewSystem { get { return (int)new_system == 0 ? false : true; } }
         public float StaffSpacing { get { return staff_spacing; } }
         public int BlankPage { get { return blank_page; } }
         public int PageNumber { get { return page_number; } }
@@ -102,7 +102,7 @@ namespace MusicXMLViewerWPF
 
         public MeasureNumbering(XElement x)
         {
-            var temp = x.Element("measure-numbering");
+            var temp = x; //.Element("measure-numbering");
             type = temp.Value == "measure"? MeasureNumberingType.measure : temp.Value == "system"? MeasureNumberingType.system : MeasureNumberingType.none;
         }
 
@@ -176,8 +176,8 @@ namespace MusicXMLViewerWPF
         }
         public StaffLayout(XElement x)
         {
-            var stafflayout = x.Element("staff-layout");
-            number = stafflayout.Attributes() != null ? int.Parse(stafflayout.Attribute("number").Value) : 1;
+            var stafflayout = x;//.Element("staff-layout"); //TODO_H need test may crash here
+            number = stafflayout.HasAttributes ? int.Parse(stafflayout.Attribute("number").Value) : 1;
             distance = (float)Convert.ToDouble(stafflayout.Element("staff-distance").Value);
         }
     }

@@ -26,13 +26,19 @@ namespace MusicXMLViewerWPF
         public const string Staff5Ls = "\uE020";
         public const string Staff6L = "\uE01B";
         //bars
-        public const string SingleBar = "\uE030";
-        public const string DoubleBar = "\uE031";
-        public const string FinalBar = "\uE032";
-        public const string BeginBar = "\uE033";
-        public const string LeftRepeatBar = "\uE040";
-        public const string RightRepeatBar = "\uE041";
+        public const string DashedBar = "\uE036";
+        public const string DottedBar = "\uE037";
         public const string DoubleRepeatBar = "\uE042";
+        public const string HeavyBar = "\uE034";
+        public const string HeavyHeavyBar = "\uE035";
+        public const string HeavyLightBar = "\uE033";
+        public const string LeftRepeatBar = "\uE040";
+        public const string LightHeavyBar = "\uE032";
+        public const string LightLightBar = "\uE031";
+        public const string RegularBar = "\uE030";
+        public const string RightRepeatBar = "\uE041";
+        public const string ShortBar = "\uE038";
+        public const string TickBar = "\uE039";
         //repeats
         public const string RepeatFigure = "\U0001D10D";
         public const string RepeatMeasure = "\uE500";
@@ -93,6 +99,7 @@ namespace MusicXMLViewerWPF
         public const string Flat = "\uE260";
         public const string DoubleSharp = "\uE263";
         public const string DoubleFlat = "\uE264";
+        public const string RepeatDots = "\uE043";
         //ornaments
         public const string trillmark = "\uE566";
         public const string turn = "\uE567";

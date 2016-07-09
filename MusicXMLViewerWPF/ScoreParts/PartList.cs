@@ -12,23 +12,26 @@ namespace MusicXMLViewerWPF
 {
     class PartList // first idea :/ // can be hard to read, rework possible
     {
+        private static SystemLayout systemlayout;
         private static Dictionary<string, ScorePart> score_parts = new Dictionary<string, ScorePart>() { };
-        private List<PartGroup> part_group_list = new List<PartGroup>();public static Page page;
-        public static SystemLayout systemlayout;
+        private List<PartGroup> part_group_list = new List<PartGroup>();
+
+        //public static Page page;
+        public static SystemLayout Systemlayout { get { return systemlayout; } }
         public List<PartGroup> PartGroup { get { return part_group_list; } }
         
         // private Identyfication_Class;
-        public PartList()
+        public PartList(XElement x)
         {
             //page = new Page(); //TODO test, possible rework :/
             systemlayout = new SystemLayout();
-            getPartList();
+            getPartList(x);
         }
 
-        public void getPartList()
+        public void getPartList(XElement x )
         {
-            XDocument doc = LoadDocToClasses.Document; // TODO_H edit Xdoc replace with Xelement parameter // only temp 
-            var partlist = doc.Element("part-list").Elements();
+            //XDocument doc = LoadDocToClasses.Document; // TODO_H edit Xdoc replace with Xelement parameter // only temp 
+            var partlist = x.Element("part-list").Elements();
            
             foreach (var item in partlist)
             {
@@ -88,7 +91,7 @@ namespace MusicXMLViewerWPF
                     case "group-barline":
                         groupbarline = item.Value == "yes" ? GroupBarline.yes : item.Value == "Mensurstrich" ? GroupBarline.mensurstrinch : GroupBarline.no;
                         break;
-                    default: Logger.Log(" not implemented exc. in switch");
+                    default: Logger.Log("[part-group] not implemented exc. in switch");
                         break;
                 }
             }

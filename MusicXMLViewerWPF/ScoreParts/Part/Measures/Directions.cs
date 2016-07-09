@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media;
 using System.Xml.Linq;
 
 namespace MusicXMLViewerWPF
@@ -15,17 +16,22 @@ namespace MusicXMLViewerWPF
         private string directive;
         #endregion
         #region Elements
-        private Dynamics dynamics; // TODO_L will be moved to directions;
+        private Dynamics dynamics; // TODO_L will be moved to directions; // Done
         private List<Directions> directionList = new List<Directions>();
-        private DirectionType typ; // TODO_H rework to class, then add all attributes
-        private int posY; // may be not usable, during rework...
-        private int relX; // may be not usable, during rework...
+        private DirectionType typ; // TODO_L rework to class, then add all attributes
+        private int posY; //  unusable, during rework...
+        private int relX; //  unusable, during rework...
         private float offset;
         private int staff;
         #endregion
+
+        public Dynamics Dynamics { get { return dynamics; } }
+        public List<Directions> DirectionList { get { return directionList; } }
+        public int Staff { get { return staff; } }
+
         public Direction(XElement x)
         {
-            var directions = x.Element("direction");
+            var directions = x;
             placement = null;
             directive = null;
             if (directions.HasAttributes) // seems to be done for now
@@ -38,6 +44,7 @@ namespace MusicXMLViewerWPF
                 var elements = x.Elements();
                 foreach (var item in elements)
                 {
+                    string name = item.Name.LocalName;
                     switch (name)
                     {
                         case "staff":
@@ -49,8 +56,9 @@ namespace MusicXMLViewerWPF
                             break;
                         case "offset":
                             offset = float.Parse(item.Value);
-                            break; 
-                        default: Logger.Log("not implemented switch element");
+                            break;
+                        default:
+                            Logger.Log($"[direcion-element] not implemented switch '{name}' element");
                             break;
                     }
                 }
@@ -64,20 +72,35 @@ namespace MusicXMLViewerWPF
         }
         public Direction(string placement, string direct_type, int posY, string type)
         {
-            this.placement= placement;
+            this.placement = placement;
             this.posY = posY;
             switch (direct_type)
             {
-                case "wedge": typ = DirectionType.wedge;
+                case "wedge":
+                    typ = DirectionType.wedge;
                     break;
-                case "dynamics": typ = DirectionType.dynamics;
+                case "dynamics":
+                    typ = DirectionType.dynamics;
                     break;
-                default: typ = DirectionType.other;
+                default:
+                    typ = DirectionType.other;
                     break;
             }
         }
-    }
 
+        public void Draw(DrawingVisual visual, System.Windows.Point p)
+        {
+            foreach (var item in directionList)
+            {
+                if (item.Dynamics != null)
+                {
+                    DrawingVisual dynamicsVisual = new DrawingVisual();
+                    item.Dynamics.Draw(dynamicsVisual, p);
+                    visual.Children.Add(dynamicsVisual);
+                }
+            }
+        }
+    }
     public class Directions
     {
         private Wedge wedge = null;
@@ -86,6 +109,7 @@ namespace MusicXMLViewerWPF
         private Coda coda = null;
         private Dynamics dynamics = null;
         private OtherDirection other = null;
+        private Words words = null;
 
         public Wedge Wedge { get { return wedge; } }
         public Segno Segno { get { return segno; } }
@@ -96,29 +120,37 @@ namespace MusicXMLViewerWPF
 
         public Directions(XElement x)
         {
-            string name = x.Name.LocalName;
-            switch (name)
+            var dir = x.Elements();
+            foreach (var item in dir)
             {
-                case "wedge":
-                    wedge = new Wedge(x);
-                    break;
-                case "rehearsal":
-                    rehearsal = new Rehearsal(x);
-                    break;
-                case "segno":
-                    segno = new Segno(x.Attributes());
-                    break;
-                case "coda":
-                    coda = new Coda(x.Attributes());
-                    break;
-                case "dymnamics":
-                    dynamics = new Dynamics(x);
-                    break;
-                case "other-direction":
-                    other = new OtherDirection(x);
-                    break;
-                default:
-                    break;
+
+                string name = item.Name.LocalName;
+                switch (name)
+                {
+                    case "wedge":
+                        wedge = new Wedge(x);
+                        break;
+                    case "rehearsal":
+                        rehearsal = new Rehearsal(x);
+                        break;
+                    case "segno":
+                        segno = new Segno(x.Attributes());
+                        break;
+                    case "coda":
+                        coda = new Coda(x.Attributes());
+                        break;
+                    case "dynamics":
+                        dynamics = new Dynamics(x);
+                        break;
+                    case "words":
+                        words = new Words(x);
+                        break;
+                    case "other-direction":
+                        other = new OtherDirection(x);
+                        break;
+                    default:
+                        break;
+                }
             }
         }
         
@@ -126,7 +158,7 @@ namespace MusicXMLViewerWPF
 
     public class OtherDirection : EmptyPrintStyle, IDirections
     {
-        private string id;
+        private string id = "other-direction";
         private string value;
 
         public string Id { get { return id; } }
@@ -196,6 +228,15 @@ namespace MusicXMLViewerWPF
             stop,
             next
         }
+        public void Draw(DrawingVisual visual)
+        {
+            DrawingVisual wedge = new DrawingVisual();
+            using(DrawingContext dc = wedge.RenderOpen())
+            {
+
+            }
+            visual.Children.Add(wedge);
+        }
         
     }
     public class Rehearsal : EmptyPrintStyle, IDirections
@@ -223,6 +264,17 @@ namespace MusicXMLViewerWPF
         dashed,
         dotted,
         wavy
+    }
+    public class Words : EmptyPrintStyle
+    {
+        private string name = "words";
+        
+        public string Name { get { return name; } }
+
+        public Words(XElement x): base(x.Attributes())
+        {
+
+        }
     }
 
     public class PositionHelper

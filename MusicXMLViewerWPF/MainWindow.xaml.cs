@@ -33,10 +33,11 @@ namespace MusicXMLViewerWPF
             // LogBox.Text += "-> \uE050 <-";
             //LogBox.DataContext = Logger.Text;
             Logger.LogAdded += new EventHandler(MyLogger_LogAdded);
-            Logger.Log("check");
-            Measures m = new Measures();
-            m.MeasureList_Loaded = true;
-            LoadCharsToViewPort l = new LoadCharsToViewPort(drawingSurface);
+            Logger.LogCleared += new EventHandler(MyLogger_LogClear);
+            //Logger.Log("check");
+           // Measures m = new Measures();
+           // m.MeasureList_Loaded = true;
+           // LoadCharsToViewPort l = new LoadCharsToViewPort(drawingSurface);
         }
     /*    public void test()
         {
@@ -102,37 +103,49 @@ y += (glyphTypeface.Height* size);
             dialog.Filter = "MusicXML files|*.xml";
             if (dialog.ShowDialog() == true)
             {
-                LoadDocToClasses.list.Clear();
-                LoadDocToClasses.MeasuresList.Clear();
-                LoadCharsToViewPort.x.Clear();
+                //LoadDocToClasses.list.Clear();
+                //LoadDocToClasses.MeasuresList.Clear();
+                //LoadCharsToViewPort.x.Clear();
                 XmlRead xmlReader = new XmlRead();
                 //viewer.LoadFile(dialog.FileName);
                 xmlReader.File_path = dialog.FileName;
                 Logger.Log("Loading: "+dialog.FileName);
-                Console.WriteLine("asd: "+ dialog.FileName);
+                Console.WriteLine("Loaded file>> "+ dialog.FileName);
            //     textBlock.Text += "\n Loadind file ... Processing  ";
                 
                 XDocument Doc = XmlRead.GetXmlInventory(dialog.FileName);
-                LoadDocToClasses.Document = Doc;
-                Misc.LoadFile.LoadDocument(Doc);
+                //LoadDocToClasses.Document = Doc;
+                //Misc.LoadFile.LoadDocument(Doc);
+                MusicScore mus_score = new MusicScore(Doc);
+                /*
                 LoadDocToClasses.AddMeasuresToXListV(Doc);
                 //   textBlock.Text += "\n File imported to measures list \n Press Load button to process";
                 List<MusicalChars> list;
                 LoadDocToClasses.LoadCharsFromMeasures();
                 list = LoadDocToClasses.list;
                 Logger.Log("XML Loaded");
+                */
             }
         }
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-
+            if (MusicScore.isLoaded)
+            {
+                MusicScore.Draw(drawingSurface);
+                Logger.Log($"Drawn {drawingSurface.Count_()} visuals");
+            }
+            else
+            {
+                Logger.Log("Please load XML file first");
+            }
+            
             //Page p = new Page();
-            PartList s = new PartList();
-           // textBlock.Text += "\n Characters added to program";
-          //  list = LoadDocToClasses.list;
-           // textBlock.Text += "\n Added: " +list.Count.ToString();
-           
+            //PartList s = new PartList(); // tests
+            // textBlock.Text += "\n Characters added to program";
+            //  list = LoadDocToClasses.list;
+            // textBlock.Text += "\n Added: " +list.Count.ToString();
+
         }
         protected override void OnClosed(EventArgs e)
         {
@@ -147,7 +160,7 @@ y += (glyphTypeface.Height* size);
             DrawingVisual visual = new DrawingVisual();
             m.DrawMeasures(visual);
             drawingSurface.AddVisual(visual);
-            Console.WriteLine(drawingSurface.Count_());
+            Logger.Log($"Drawn {drawingSurface.Count_()} visuals");
             //m.DrawMeasures(visual,4,8);
 
             //m.DrawMeasure(visual, new Point(10, 40), 200);
@@ -185,98 +198,135 @@ y += (glyphTypeface.Height* size);
             m.DisplayMeasure();
         }
 
-        private void addclef_Click(object sender, RoutedEventArgs e)
+        private void test1_Click(object sender, RoutedEventArgs e)
         {
-            DrawingVisual visual = new DrawingVisual();
-            //...
-            LoadCharsToViewPort c = new LoadCharsToViewPort();
-            c.AddClef(visual);
-            drawingSurface.AddVisual(visual);
-        }
-
-        private void addkey_Click(object sender, RoutedEventArgs e)
-        {
-            DrawingVisual visual = new DrawingVisual();
-            //...
-            LoadCharsToViewPort c = new LoadCharsToViewPort();
-            c.AddKey(visual);
-            drawingSurface.AddVisual(visual);
-        }
-
-        private void addtimesig_Click(object sender, RoutedEventArgs e)
-        {
-            DrawingVisual visual = new DrawingVisual();
-            //...
-            LoadCharsToViewPort c = new LoadCharsToViewPort();
-            c.AddTimeSig(visual);
-            drawingSurface.AddVisual(visual);
-        }
-
-        private void addnote_Click(object sender, RoutedEventArgs e)
-        {
-            LoadCharsToViewPort sur = new LoadCharsToViewPort(drawingSurface);
-           // LoadCharsToViewPort l = new LoadCharsToViewPort();
-           // Measures m = new Measures();
-            sur.AddMeasures(Measures.MeasureList.Count);
-            Console.WriteLine(drawingSurface.Count_());
-            //DrawingVisual visual = new DrawingVisual();
-            ////...
-            //LoadCharsToViewPort c = new LoadCharsToViewPort();
-           // l.AddNote();
-            //drawingSurface.AddVisual(visual);
-        }
-        public static void addtoSurface()
-        {
-            //MainWindow.drawingSurface
-        }
-
-        private void addRests_Click(object sender, RoutedEventArgs e)
-        {
-            LoadCharsToViewPort sur = new LoadCharsToViewPort(drawingSurface);
-            sur.AddRests();
-
-        }
-
-        private void addNotes_Click(object sender, RoutedEventArgs e)
-        {
-            LoadCharsToViewPort sur = new LoadCharsToViewPort(drawingSurface);
-            sur.AddNotes();
-        }
-
-        private void button2_Click(object sender, RoutedEventArgs e)
-        {
-            Defaults.Appearance app = new Defaults.Appearance();
-            //app.initLineWidths(LoadDocToClasses.Document);
-            
-            Logger.Log("test log string");
-            DrawingVisual visual = new DrawingVisual();
-            using (DrawingContext dc = visual.RenderOpen())
+            if (MusicScore.isLoaded)
             {
-                Pen pen = new Pen(Brushes.Black, 4);
-                List<double> dots = new List<double>() {0.3,4};
-                List<double> dashes = new List<double>() { 3, 2.5 };
-                DashStyle d = new DashStyle(dashes, 0);
-
-                pen.DashStyle = d;
-                StreamGeometry sg = new StreamGeometry();
-                using(StreamGeometryContext sgc = sg.Open())
-                {
-                    
-                    float offset = 4f;
-                    Point s = new Point(100,100);
-                    Point p2 = new Point(100,150);
-                    float distance = Calc.Distance(s, p2);
-                    Point p1 = Calc.PerpendicularOffset(s, p2, -distance/(offset * 0.6f));
-                    Point p3 = Calc.PerpendicularOffset(s, p2, -distance/(offset * 0.9f));                  //new Point(250,50);
-                    sgc.BeginFigure(s, false, false);
-                    sgc.QuadraticBezierTo(p1, p2, true, true);
-                   // sgc.QuadraticBezierTo(p3, s, true, true);
-                }
-                sg.Freeze();
-                dc.DrawGeometry(Brushes.Black, pen, sg);
+                DrawingVisual visual = new DrawingVisual();
+                MusicScore.DrawPageRectangle(visual);
+                drawingSurface.AddVisual(visual);
             }
-            drawingSurface.AddVisual(visual);
+            else
+            {
+                Logger.Log("Please load XML file first");
+            }
         }
+
+        private void test2_Click(object sender, RoutedEventArgs e)
+        {
+            if (MusicScore.isLoaded)
+            {
+                DrawingVisual visual = new DrawingVisual();
+                MusicScore.DrawMusicScoreMargins(visual);
+                drawingSurface.AddVisual(visual);
+                //...
+                //LoadCharsToViewPort c = new LoadCharsToViewPort();
+                //c.AddClef(visual);
+                //drawingSurface.AddVisual(visual);
+            }
+            else
+            {
+                Logger.Log("Please load XML file first");
+            }
+            
+        }
+
+        private void test3_Click(object sender, RoutedEventArgs e)
+        {
+            if (MusicScore.isLoaded)
+            {
+                DrawingVisual visual = new DrawingVisual();
+                //...
+                LoadCharsToViewPort c = new LoadCharsToViewPort();
+                c.AddKey(visual);
+                drawingSurface.AddVisual(visual);
+            }
+            else
+            {
+                Logger.Log("Please load XML file first");
+            }
+        }
+
+        private void test4_Click(object sender, RoutedEventArgs e)
+        {
+            if (MusicScore.isLoaded)
+            {
+                DrawingVisual visual = new DrawingVisual();
+                //...
+                LoadCharsToViewPort c = new LoadCharsToViewPort();
+                c.AddTimeSig(visual);
+                drawingSurface.AddVisual(visual);
+            }
+            else
+            {
+                Logger.Log("Please load XML file first");
+            }
+        }
+
+        private void test5_Click(object sender, RoutedEventArgs e)
+        {
+            if (MusicScore.isLoaded)
+            {
+                LoadCharsToViewPort sur = new LoadCharsToViewPort(drawingSurface);
+                sur.AddRests();
+            }
+            else
+            {
+                Logger.Log("Please load XML file first");
+            }
+
+        }
+
+        private void test6_Click(object sender, RoutedEventArgs e)
+        {
+            if (MusicScore.isLoaded)
+            {
+                LoadCharsToViewPort sur = new LoadCharsToViewPort(drawingSurface);
+                sur.AddNotes();
+            }
+            else
+            {
+                Logger.Log("Please load XML file first");
+            }
+        }
+
+        private void clearAll_Click(object sender, RoutedEventArgs e)
+        {
+            MusicScore.Clear();
+            drawingSurface.ClearVisuals();
+        }
+            //Defaults.Appearance app = new Defaults.Appearance();
+            ////app.initLineWidths(LoadDocToClasses.Document);
+
+            //Logger.Log("test log string");
+            //DrawingVisual visual = new DrawingVisual();
+            //using (DrawingContext dc = visual.RenderOpen())
+            //{
+            //    Pen pen = new Pen(Brushes.Black, 4);
+            //    List<double> dots = new List<double>() {0.3,4};
+            //    List<double> dashes = new List<double>() { 3, 2.5 };
+            //    DashStyle d = new DashStyle(dashes, 0);
+
+            //    pen.DashStyle = d;
+            //    StreamGeometry sg = new StreamGeometry();
+            //    using(StreamGeometryContext sgc = sg.Open())
+            //    {
+
+            //        float offset = 4f;
+            //        Point s = new Point(100,100);
+            //        Point p2 = new Point(100,150);
+            //        float distance = Calc.Distance(s, p2);
+            //        Point p1 = Calc.PerpendicularOffset(s, p2, -distance/(offset * 0.6f));
+            //        Point p3 = Calc.PerpendicularOffset(s, p2, -distance/(offset * 0.9f));                  //new Point(250,50);
+            //        sgc.BeginFigure(s, false, false);
+            //        sgc.QuadraticBezierTo(p1, p2, true, true);
+            //       // sgc.QuadraticBezierTo(p3, s, true, true);
+            //    }
+            //    sg.Freeze();
+            //    dc.DrawGeometry(Brushes.Black, pen, sg);
+            //}
+            //drawingSurface.AddVisual(visual);
+        
         private Point MidPoint(Point p1, Point p2)
         {
             Point Mid;
@@ -308,6 +358,16 @@ y += (glyphTypeface.Height* size);
         void MyLogger_LogAdded(object sender, EventArgs e)
         {
             LogBox.Text = LogBox.Text + Environment.NewLine + Logger.GetLastLog();
+        }
+
+        void MyLogger_LogClear(object sender, EventArgs e)
+        {
+            LogBox.Text = "";
+        }
+
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            Logger.ClearLog();
         }
         //public void CreateALine()
         //{

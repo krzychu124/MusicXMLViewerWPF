@@ -7,21 +7,23 @@ using System.Xml.Linq;
 
 namespace MusicXMLViewerWPF
 {
-    public class Clef : EmptyPrintStyle//MusicalChars //TODO_H implement XElement ctor
+    public class Clef : EmptyPrintStyle
     {
         private ClefType sign;
         private int line;
         private int measure_num;
         private static int clef_alter;
+        private static ClefType sign_static;
 
         public ClefType Sign { get { return sign; } }
         public int Line { get { return line; } }
         public int MeasureId { get { return measure_num; } }
         public static int ClefAlter { get { return clef_alter; } }
+        public static ClefType Sign_static { get { return sign_static; } }
 
         public Clef(XElement x):base(x.Attributes())
         {
-            //TODO_H check if possible to go to parenet of parent to get measure number and other info...
+            //TODO_L more indepth tests
             var ele = x.Elements();
             foreach (var item in ele)
             {
@@ -30,6 +32,7 @@ namespace MusicXMLViewerWPF
                 {
                     case "sign":
                         sign = new ClefType(item.Value);
+                        sign_static = Sign;
                         clef_alter = sign.Sign == ClefType.Clef.GClef ? 0 : sign.Sign == ClefType.Clef.FClef ? -12 : -6;
                         break;
                     case "line":

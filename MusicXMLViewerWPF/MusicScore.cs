@@ -3,41 +3,118 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Media;
 using System.Xml.Linq;
 
 namespace MusicXMLViewerWPF
-{
-    class MusicScore
+{   /// <summary>
+    /// Main class, storage for everything which needs to be drawn
+    /// </summary>
+    class MusicScore 
     {
-        protected static Defaults.Defaults defaults; // TODO not implemented
+        protected static CanvasList Surface;
+        protected static string title;
+        protected static Defaults.Defaults defaults; 
         protected static Dictionary<string, ScoreParts.Part.Part> parts = new Dictionary<string, ScoreParts.Part.Part>() { };
-        protected static Identyfication.Identification identyfication; // TODO not implemented
-        protected static List<Credit.Credit> credits = new List<Credit.Credit>(); // TODO not implemented class
-        protected static List<PartList> musicscoreparts = new List<PartList>(); // TODO tests
-        protected static Work.Work work; // TODO not implemented
-        protected static XDocument file; // <<Loaded file>>
+        protected static Identification.Identification identification; // TODO_L tests
+        protected static List<Credit.Credit> credits = new List<Credit.Credit>();
+        protected static List<PartList> musicscoreparts;// = new List<PartList>(); // TODO_L replaced for tests
+        protected static Work.Work work; 
+        protected static XElement file; // <<Loaded XML file>>
+        protected static bool loaded = false;
 
+        public static string Title { get { return title; } }
         public static Defaults.Defaults Defaults { get { return defaults; } }
         public static Dictionary<string, ScoreParts.Part.Part> Parts { get { return parts; } }
-        public static Identyfication.Identification Identification { get { return identyfication; } }
+        public static Identification.Identification Identification { get { return identification; } }
         public static List<Credit.Credit> CreditList { get { return credits; } }
         public static List<PartList> ScoreParts { get { return musicscoreparts; } }
         public static Work.Work Work { get { return work; } }
-        public static XDocument File { get { return file; } }
+        public static XElement File { get { return file; } }
+        public static bool isLoaded { get { return loaded; } }
 
         public MusicScore(XDocument x)
         {
-            file = x;
-            LoadToClasses();
+            file = x.Element("score-partwise");
+            if (file != null)
+            {
+                Logger.Log("File Loaded");
+                LoadToClasses();
+                loaded = true;
+            }
+            else
+            {
+                Logger.Log("Error while loading file");
+            }
+
+            
         }
+
         private void LoadToClasses()
         {
-            var parts_to_load = from z in file.Descendants("part") select z;
-            foreach (var item in parts_to_load)
+            title = file.Element("movement-title") != null ? file.Element("movement-title").Value : "No title" ;
+            work = file.Element("work") != null ? new Work.Work(file.Element("work")) : null;
+            defaults = new Defaults.Defaults(file.Element("defaults")); 
+            identification = new Identification.Identification(file.Element("identification")); 
+            foreach (var item in file.Elements("credit"))
             {
-
-                parts.Add(item.Attribute("id").Value, new ScoreParts.Part.Part(item));
+                credits.Add(new Credit.Credit(item));
             }
+            foreach (var item in file.Elements("part"))
+            {
+                 parts.Add(item.Attribute("id").Value, new ScoreParts.Part.Part(item));
+            }
+        }
+        
+        public static void GetSurfce (CanvasList s)
+        {
+            Surface = s;
+        }
+
+        public static void Draw(CanvasList surface)
+        {
+            DrawingVisual credits = new DrawingVisual();
+            DrawCredits(credits);
+            surface.AddVisual(credits);
+            // DrawingVisual visual = new DrawingVisual();
+            Parts.ElementAt(0).Value.DrawMeasures(surface);
+
+            
+        }
+
+        public static void DrawCredits(DrawingVisual visual)
+        {
+            foreach (var item in credits)
+            {
+                DrawingVisual credit = new DrawingVisual();
+                item.Draw(credit);
+                visual.Children.Add(credit);
+            }
+        }
+
+        public static void Clear()
+        {
+            loaded = false;
+            title = null;
+            defaults = null;
+            parts.Clear();
+            identification = null;
+            credits.Clear();
+            work = null;
+            file = null;
+            MusicXMLViewerWPF.Defaults.Appearance.Clear();
+        }
+
+        public static void DrawPageRectangle(DrawingVisual visual)
+        {
+            Misc.DrawingHelpers.DrawRectangle(visual, new Point(0, 0), new Point(Defaults.Page.Width, Defaults.Page.Height));
+        }
+
+        public static void DrawMusicScoreMargins(DrawingVisual visual)
+        {
+            Point right_down_margin_corner = new Point(Defaults.Page.Width - Defaults.Page.Margins.Right, Defaults.Page.Height - Defaults.Page.Margins.Bottom);
+            Misc.DrawingHelpers.DrawRectangle(visual, new Point(Defaults.Page.Margins.Left, Defaults.Page.Margins.Top), right_down_margin_corner, Brushes.Blue);
         }
     }
 }

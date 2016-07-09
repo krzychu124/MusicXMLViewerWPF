@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Media;
 using System.Xml.Linq;
 
 namespace MusicXMLViewerWPF
 {
-    class Attributes //TODO_H finish
+    class Attributes //TODO_L working basics, missing features
     {
         // TODO_L private Divisions divisions;
         // TODO_L private PartSymbol part_symbol;
@@ -31,7 +33,7 @@ namespace MusicXMLViewerWPF
 
         public Attributes(XElement x) // possible rework from switch to dictionary// not further properties planned
         {
-            var ele = x.Elements();
+            var ele = x.Element("attributes").Elements();
             foreach (var item in ele)
             {
                 string name = item.Name.LocalName;
@@ -61,6 +63,50 @@ namespace MusicXMLViewerWPF
                     default:
                         break;
                 }
+            }
+        }
+
+        public void Draw(DrawingVisual visual, Point p, bool firstInLine = false) // rework attempt ... quite good
+        {
+            float currentX = (float)p.X;
+            float currentY = (float)p.Y;
+            if (Clef != null) // basic drawing done
+            {
+                currentX += 5f;
+                DrawingVisual clefVisual = new DrawingVisual();
+                using (DrawingContext dc = clefVisual.RenderOpen())
+                {
+                    string symbol = Clef.Sign.Symbol;
+                    Misc.DrawingHelpers.DrawString(dc, symbol, TypeFaces.MeasuresFont, Brushes.Black, currentX, currentY, MusicScore.Defaults.Scale.Tenths);
+                    currentX += 30f;
+                }
+                visual.Children.Add(clefVisual);
+            }
+            if (Key != null) // basic drawing done
+            {
+                DrawingVisual keyVisual = new DrawingVisual();
+                if (Clef != null)
+                {
+                    Key.Draw(keyVisual, new Point(currentX, currentY), Clef.Sign);
+                }
+                else
+                {
+                    Key.Draw(keyVisual, new Point(currentX, currentY), Clef.Sign_static);
+                }
+                visual.Children.Add(keyVisual);
+                currentX += Math.Abs((int)key.Fifths) *8;
+            }
+            if (Time != null) // basic drawing done
+            {
+                DrawingVisual timeVisual = new DrawingVisual();
+                using (DrawingContext dc = timeVisual.RenderOpen())
+                {
+                    string beats = Time.BeatStr;
+                    string beats_type = Time.BeatTypeStr;
+                    Misc.DrawingHelpers.DrawString(dc, beats, TypeFaces.TimeNumbers, Brushes.Black, currentX, currentY , MusicScore.Defaults.Scale.Tenths);
+                    Misc.DrawingHelpers.DrawString(dc, beats_type, TypeFaces.TimeNumbers, Brushes.Black, currentX, currentY , MusicScore.Defaults.Scale.Tenths);
+                }
+                visual.Children.Add(timeVisual);
             }
         }
     }
@@ -191,7 +237,7 @@ namespace MusicXMLViewerWPF
 
         public MeasureRepeat(XElement x)
         {
-            val = int.Parse(x.Value); // TODO_H need tests
+            val = int.Parse(x.Value); // TODO need tests
             var attr = x.Attributes();
             foreach (var item in attr)
             {

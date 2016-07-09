@@ -43,6 +43,14 @@ namespace MusicXMLViewerWPF
             base.RemoveVisualChild(visual);
             base.RemoveLogicalChild(visual);
         }
-        
+        public void ClearVisuals()
+        {
+            int x = VisualChildrenCount;
+            for( int i = 0; i<x; i++)
+            {
+                DeleteVisual(visuals[0]);
+            }
+            Logger.Log($"Deleted {x} objects from drawing window");
+        }
     }
 }

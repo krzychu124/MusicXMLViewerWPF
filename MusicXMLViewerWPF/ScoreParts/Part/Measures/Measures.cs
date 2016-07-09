@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using System.Xml.Linq;
-using System.Drawing;
 using System.Windows.Shapes;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -15,7 +14,7 @@ using MusicXMLViewerWPF.ScoreParts.Part.Measures;
 
 namespace MusicXMLViewerWPF
 {
-    class Measures : LoadCharsToViewPort, INotifyPropertyChanged // TODO_H Hard rework
+    class Measures : LoadCharsToViewPort, INotifyPropertyChanged // TODO_L Hard rework //E. reworked, no usage for now. // deletion candidate
     {
 
         public static List<Measure> MeasuresList = new List<Measure>(); // list of measures
@@ -459,11 +458,11 @@ namespace MusicXMLViewerWPF
                 }
             if (left_bar == true)
             {
-                DrawString(dc, MusChar.SingleBar, TypeFaces.NotesFont, Brushes.Black, (float)p.X, y, scale);
+                DrawString(dc, MusChar.RegularBar, TypeFaces.NotesFont, Brushes.Black, (float)p.X, y, scale);
             }
             if (right_bar == true)
             {
-                DrawString(dc, MusChar.SingleBar, TypeFaces.NotesFont, Brushes.Black, (float)p.X + l, y, scale);
+                DrawString(dc, MusChar.RegularBar, TypeFaces.NotesFont, Brushes.Black, (float)p.X + l, y, scale);
             }
         }
         public void GetMeasureDraw(DrawingContext dc, int num)
@@ -484,9 +483,9 @@ namespace MusicXMLViewerWPF
                 DrawString(dc, MusChar.Staff5L, TypeFaces.MeasuresFont, Brushes.Black, (float)m.e.X - 32, (float)m.e.Y, Scale);
                 DrawString(dc, MusChar.Staff5Ls, TypeFaces.MeasuresFont, Brushes.Black, (float)m.e.X - 8, (float)m.Start.Y, Scale);
             }
-            DrawString(dc,MusChar.SingleBar,TypeFaces.MeasuresFont,Brushes.Black,m.Start,Scale);
-            DrawString(dc, MusChar.SingleBar, TypeFaces.MeasuresFont, Brushes.Black, m.End, Scale);
-            if (m.LastInLine) DrawString(dc, MusChar.SingleBar, TypeFaces.MeasuresFont, Brushes.Black, m.End, Scale);
+            DrawString(dc,MusChar.RegularBar,TypeFaces.MeasuresFont,Brushes.Black,m.Start,Scale);
+            DrawString(dc, MusChar.RegularBar, TypeFaces.MeasuresFont, Brushes.Black, m.End, Scale);
+            if (m.LastInLine) DrawString(dc, MusChar.RegularBar, TypeFaces.MeasuresFont, Brushes.Black, m.End, Scale);
 
 
 

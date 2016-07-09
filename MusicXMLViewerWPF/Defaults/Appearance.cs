@@ -10,7 +10,7 @@ using System.Xml.Linq;
 
 namespace MusicXMLViewerWPF.Defaults
 {
-    class Appearance
+    class Appearance // rework, minor changes 
     {
         private static Dictionary<string, float> distances = new Dictionary<string, float>() { };
         private static Dictionary<string, float> lineWidths = new Dictionary<string, float>() { };
@@ -22,7 +22,12 @@ namespace MusicXMLViewerWPF.Defaults
 
         public Appearance()
         {
-            initLineWidths();
+            initFromDefaults();
+        }
+
+        public Appearance(XElement x)
+        {
+            initFromXElement(x);
         }
 
         public static float GetDistance(string type)
@@ -54,7 +59,7 @@ namespace MusicXMLViewerWPF.Defaults
             return x;
         }
 
-        public void initLineWidths()
+        public void init()
         {
             var x = Misc.LoadFile.Document;
             if (x == null)
@@ -90,6 +95,77 @@ namespace MusicXMLViewerWPF.Defaults
 
                 }
             }
+        }
+
+        public void initFromXElement(XElement x)
+        {
+            var appearance = x.Elements(); 
+                                           
+            foreach (var item in appearance)
+            {
+                if (item.Name.LocalName == "line-width") //search for <line-width>
+                {
+                    string s = item.Attribute("type").Value;
+                    float v = float.Parse(item.Value, CultureInfo.InvariantCulture);
+                    lineWidths.Add(s, v);
+                }
+                if (item.Name.LocalName == "note-size") //search for <note-size>
+                {
+                    string s = item.Attribute("type").Value;
+                    float v = float.Parse(item.Value, CultureInfo.InvariantCulture);
+                    noteSizes.Add(s, v);
+                }
+                if (item.Name.LocalName == "distance") //search for <ldistance>
+                {
+                    string s = item.Attribute("type").Value;
+                    float v = float.Parse(item.Value, CultureInfo.InvariantCulture);
+                    distances.Add(s, v);
+                }
+
+            }
+
+        }
+
+        private void initFromDefaults()
+        {
+            initDefaultDistances();
+            initDefaultLineWidths();
+            initDefaultNoteSizes();
+        }
+        private void initDefaultDistances()
+        {
+            distances.Add("hyphen", 60f);
+            distances.Add("beam", 8f);
+        }
+
+        private void initDefaultNoteSizes()
+        {
+            noteSizes.Add("grace", 60f);
+            noteSizes.Add("cue", 60f);
+        }
+
+        private void initDefaultLineWidths()
+        {
+            lineWidths.Add("stem", 1.4583f);
+            lineWidths.Add("beam", 5f);
+            lineWidths.Add("staff", 1.4583f);
+            lineWidths.Add("light barline", 1.4583f);
+            lineWidths.Add("heavy barline", 5f);
+            lineWidths.Add("leger", 1.4583f);
+            lineWidths.Add("ending", 1.4583f);
+            lineWidths.Add("wedge", 1.4583f);
+            lineWidths.Add("enclosure", 1.4583f);
+            lineWidths.Add("tuplet bracket", 1.4583f);
+        }
+
+        public static void Clear()
+        {
+            distances = null;
+            distances = new Dictionary<string, float>();
+            lineWidths = null;
+            lineWidths = new Dictionary<string, float>();
+            noteSizes = null;
+            noteSizes = new Dictionary<string, float>();
         }
     }
     

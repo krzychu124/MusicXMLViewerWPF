@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -10,7 +11,7 @@ using System.Xml.Linq;
 
 namespace MusicXMLViewerWPF
 {
-    public class Page  // Need to be reworked // Currently not used(maybe partial but not as good as it should be)// Should be the base of Page layout :/ // missing logic for pages, parts, scores, voices layouts
+    public class Page  //TODO_H provide default margins if not presented in document  // Need to be reworked // Currently not used(maybe partial but not as good as it should be)// Should be the base of Page layout :/ // missing logic for pages, parts, scores, voices layouts
     {
 
         //public string part_id;
@@ -43,7 +44,7 @@ namespace MusicXMLViewerWPF
 
         public Page(XElement x)
         {
-
+            GetPageInfo(x);
         }
         public Page(float h, float w, PageMargins p)
         {
@@ -63,7 +64,7 @@ namespace MusicXMLViewerWPF
             
             line.Add(m);
         }
-        public void GetPageInfo(XElement xele) // TODO_L test, slight rework //not tested // first rewok maight need improvements // not tested
+        public void GetPageInfo(XElement xele) // TODO_L more indepth test
         {
             //XDocument doc = LoadDocToClasses.Document;
             //var p = from z in doc.Descendants("defaults") select z;
@@ -71,11 +72,11 @@ namespace MusicXMLViewerWPF
 
             foreach (var item in pg)
             {
-                page_width = (float)Convert.ToDouble(item.Element("page-width").Value);
-                page_height = (float)Convert.ToDouble(item.Element("page-height").Value);
+                page_width = float.Parse(item.Element("page-width").Value, CultureInfo.InvariantCulture);
+                page_height = float.Parse(item.Element("page-height").Value, CultureInfo.InvariantCulture);
                 var pmargins = item.Elements("page-margins");
                 string type = item.Attribute("type") != null ? item.Attribute("type").Value : "both";
-                page_margins = new PageMargins(type, (float)Convert.ToDouble(item.Element("page-margins").Element("left-margin").Value), (float)Convert.ToDouble(item.Element("page-margins").Element("right-margin").Value), (float)Convert.ToDouble(item.Element("page-margins").Element("top-margin").Value), (float)Convert.ToDouble(item.Element("page-margins").Element("bottom-margin").Value));
+                page_margins = new PageMargins(type, float.Parse(item.Element("page-margins").Element("left-margin").Value, CultureInfo.InvariantCulture), float.Parse(item.Element("page-margins").Element("right-margin").Value, CultureInfo.InvariantCulture), float.Parse(item.Element("page-margins").Element("top-margin").Value, CultureInfo.InvariantCulture), float.Parse(item.Element("page-margins").Element("bottom-margin").Value, CultureInfo.InvariantCulture));
                // Page page = new Page(w,h,pm);
             }
             
@@ -149,12 +150,9 @@ namespace MusicXMLViewerWPF
 
         public PageMargins() // default margins
         {
-            bottom_margin = 40f;
-            left_margin = 30f;
-            right_margin = 30f;
-            top_margin = 40f;
-            type =MarginType.both;
+            SetDefaultMargins();
         }
+
         public PageMargins(string type, float l, float r, float t,float b)
         {
             bottom_margin = b;
@@ -163,6 +161,16 @@ namespace MusicXMLViewerWPF
             this.type = type == "both" ? MarginType.both : type == "odd" ? MarginType.odd : MarginType.even;
             top_margin = t;
         }
+
+        private void SetDefaultMargins()
+        {
+            bottom_margin = 25f;
+            left_margin = 20f;
+            right_margin = 20f;
+            top_margin = 25f;
+            type = MarginType.both;
+        }
+
         public enum MarginType
         {
             both,
