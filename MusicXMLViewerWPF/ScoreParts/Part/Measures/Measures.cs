@@ -14,7 +14,7 @@ using MusicXMLViewerWPF.ScoreParts.Part.Measures;
 
 namespace MusicXMLViewerWPF
 {
-    class Measures : LoadCharsToViewPort, INotifyPropertyChanged // TODO_L Hard rework //E. reworked, no usage for now.
+    class Measures : LoadCharsToViewPort, INotifyPropertyChanged // TODO_L Hard rework //E. reworked, no usage for now. // deletion candidate
     {
 
         public static List<Measure> MeasuresList = new List<Measure>(); // list of measures
