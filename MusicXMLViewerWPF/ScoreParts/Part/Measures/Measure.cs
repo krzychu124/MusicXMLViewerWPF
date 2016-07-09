@@ -78,7 +78,7 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
         public void XMLFiller(XElement x)
         {
             width = x.Attribute("width") != null ? float.Parse(x.Attribute("width").Value, CultureInfo.InvariantCulture) : 0f;
-            if (width == 0f) Logger.Log($"Measure has no width: {width}");
+            if (width == 0f) Logger.Log($"Measure {number} has no width: {width}");
             bool t = int.TryParse(x.Attribute("number").Value, out number);
             if (t == false) Logger.Log($"Measure number is: {x.Attribute("number").Value}");
             //number = Convert.ToInt32(x.Attribute("number").Value);
@@ -113,7 +113,14 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
 
             if (Attributes != null) // works quite good, need deep tests later
             {
-                Attributes.Draw(visual,p); // visual will be opened inside, good results, maybe changed in the future
+                if (Barlines.Exists(i => i.Repeat != null))
+                {
+                    Attributes.Draw(visual, p, true);
+                }
+                else
+                {
+                    Attributes.Draw(visual, p); // visual will be opened inside, good results, maybe changed in the future
+                }
             }
             if (Direction != null)
             {

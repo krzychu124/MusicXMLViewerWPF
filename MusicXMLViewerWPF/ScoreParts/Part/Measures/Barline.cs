@@ -133,10 +133,10 @@ namespace MusicXMLViewerWPF
                         Misc.DrawingHelpers.DrawString(dc, MusChar.LightLightBar, TypeFaces.MeasuresFont, Brushes.Black, loc - 3.5f, (float)p.Y, scale);
                         break;
                     case BarStyle.light_heavy:
-                        Misc.DrawingHelpers.DrawString(dc, MusChar.LightHeavyBar, TypeFaces.MeasuresFont, Brushes.Black, loc - 6, (float)p.Y, scale);
+                        Misc.DrawingHelpers.DrawString(dc, MusChar.LightHeavyBar, TypeFaces.MeasuresFont, Brushes.Black, loc - 7, (float)p.Y, scale);
                         break;
                     case BarStyle.heavy_light:
-                        Misc.DrawingHelpers.DrawString(dc, MusChar.HeavyLightBar, TypeFaces.MeasuresFont, Brushes.Black, loc, (float)p.Y, scale);
+                        Misc.DrawingHelpers.DrawString(dc, MusChar.HeavyLightBar, TypeFaces.MeasuresFont, Brushes.Black, loc - 3, (float)p.Y, scale);
                         break;
                     case BarStyle.heavy_heavy:
                         Misc.DrawingHelpers.DrawString(dc, MusChar.HeavyHeavyBar, TypeFaces.MeasuresFont, Brushes.Black, loc, (float)p.Y, scale);
@@ -155,7 +155,7 @@ namespace MusicXMLViewerWPF
                     DrawingVisual visualForRepeats = new DrawingVisual();
                     using (DrawingContext dc2 = visualForRepeats.RenderOpen())
                     {
-                        float location = Repeat.Direction == Repeat.RepeatDirection.forward ? 10f : -12f;
+                        float location = Repeat.Direction == Repeat.RepeatDirection.forward ? 7f : -12f;
                         if (Repeat.Winged == null) //Repeat.Winged.Type == Winged.WingType.none || 
                         {
                             Misc.DrawingHelpers.DrawString(dc, MusChar.RepeatDots, TypeFaces.MeasuresFont, Brushes.Black, loc + location, (float)p.Y, scale);

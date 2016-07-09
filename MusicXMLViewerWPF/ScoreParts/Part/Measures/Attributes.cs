@@ -66,9 +66,13 @@ namespace MusicXMLViewerWPF
             }
         }
 
-        public void Draw(DrawingVisual visual, Point p, bool firstInLine = false) // rework attempt ... quite good
+        public void Draw(DrawingVisual visual, Point p, bool hasBarline = false, bool firstInLine = false) // rework attempt ... quite good
         {
             float currentX = (float)p.X;
+            if (hasBarline != false)
+            {
+                currentX += 10f;
+            }
             float currentY = (float)p.Y;
             if (Clef != null) // basic drawing done
             {
@@ -78,12 +82,13 @@ namespace MusicXMLViewerWPF
                 {
                     string symbol = Clef.Sign.Symbol;
                     Misc.DrawingHelpers.DrawString(dc, symbol, TypeFaces.MeasuresFont, Brushes.Black, currentX, currentY, MusicScore.Defaults.Scale.Tenths);
-                    currentX += 30f;
+                    currentX += 25f;
                 }
                 visual.Children.Add(clefVisual);
             }
             if (Key != null) // basic drawing done
             {
+                currentX += 5f;
                 DrawingVisual keyVisual = new DrawingVisual();
                 if (Clef != null)
                 {
@@ -98,6 +103,7 @@ namespace MusicXMLViewerWPF
             }
             if (Time != null) // basic drawing done
             {
+                currentX += 5f;
                 DrawingVisual timeVisual = new DrawingVisual();
                 using (DrawingContext dc = timeVisual.RenderOpen())
                 {
