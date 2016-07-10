@@ -99,6 +99,15 @@ namespace MusicXMLViewerWPF
                 this.beats_str = beat_d[i];
             }
         }
+        public string GetNumber(int i)
+        {
+            string number = "??";
+            if (beat_d.ContainsKey(i))
+            {
+                number = beat_d[i];
+            }
+            return number;
+        }
         private Dictionary<int, string> beat_d = new Dictionary<int, string>()
         {
             {1,MusChar.one },

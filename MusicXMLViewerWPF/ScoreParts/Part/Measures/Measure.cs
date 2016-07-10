@@ -115,11 +115,11 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
             {
                 if (Barlines.Exists(i => i.Repeat != null))
                 {
-                    Attributes.Draw(visual, p, true);
+                    Attributes.Draw(visual, p, width, true);
                 }
                 else
                 {
-                    Attributes.Draw(visual, p); // visual will be opened inside, good results, maybe changed in the future
+                    Attributes.Draw(visual, p, width); // visual will be opened inside, good results, maybe changed in the future
                 }
             }
             if (Direction != null)
