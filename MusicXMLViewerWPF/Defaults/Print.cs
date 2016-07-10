@@ -178,7 +178,7 @@ namespace MusicXMLViewerWPF
         {
             var stafflayout = x;//.Element("staff-layout"); //TODO_H need test may crash here
             number = stafflayout.HasAttributes ? int.Parse(stafflayout.Attribute("number").Value) : 1;
-            distance = (float)Convert.ToDouble(stafflayout.Element("staff-distance").Value);
+            distance = float.Parse(stafflayout.Element("staff-distance").Value, CultureInfo.InvariantCulture);
         }
     }
     public enum AccidentalText
