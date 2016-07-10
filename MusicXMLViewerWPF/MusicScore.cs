@@ -116,5 +116,32 @@ namespace MusicXMLViewerWPF
             Point right_down_margin_corner = new Point(Defaults.Page.Width - Defaults.Page.Margins.Right, Defaults.Page.Height - Defaults.Page.Margins.Bottom);
             Misc.DrawingHelpers.DrawRectangle(visual, new Point(Defaults.Page.Margins.Left, Defaults.Page.Margins.Top), right_down_margin_corner, Brushes.Blue);
         }
+        public static void DrawMusicScoreTitleSpace(DrawingVisual visual)
+        {
+            float space_height = 0f;
+            foreach (var item in CreditList)
+            {
+                if (item.Type == Credit.CreditType.title)
+                {
+                    space_height += 50f;
+                }
+                if (item.Type == Credit.CreditType.subtitle)
+                {
+                    space_height += 50f;
+                }
+                if (item.Type == Credit.CreditType.arranger)
+                {
+                    space_height += 50f;
+                }
+            }
+            if (space_height != 0)
+            {
+                Point left_up = new Point(Defaults.Page.Margins.Left, Defaults.Page.Margins.Top);
+                //Point right_down = new Point(CreditList.Where(i => i.Type == Credit.CreditType.arranger).Select( i => i.CreditWords.DefX).First(), CreditList.Where(i => i.Type == Credit.CreditType.arranger).Select(i => i.CreditWords.DefY).First());
+
+                Point right_down = new Point(Defaults.Page.Width - Defaults.Page.Margins.Right, Defaults.Page.Margins.Top + space_height);
+                Misc.DrawingHelpers.DrawRectangle(visual, left_up, right_down, Brushes.Green);
+            }
+        }
     }
 }
