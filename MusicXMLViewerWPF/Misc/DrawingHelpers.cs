@@ -19,15 +19,18 @@ namespace MusicXMLViewerWPF.Misc
         {
 
         }
-        public static void DrawText(DrawingContext dc, string text, Point position, float font_size, Halign align = Halign.right, Valign valign = Valign.middle, string font_weight = null)
+        public static void DrawText(DrawingContext dc, string text, Point position, float font_size, Halign align = Halign.right, Valign valign = Valign.middle, string font_weight = null, bool withsub = true)
         {
             Point page = new Point(MusicScore.Defaults.Page.Width, MusicScore.Defaults.Page.Height);
             Point page_margins = new Point(0, MusicScore.Defaults.Page.Margins.Bottom);
             Point calculated_margins = CalculatePosition(page, page_margins); // test
-            position = CalculatePosition(calculated_margins, new Point(page.X - position.X ,position.Y)); // (page, //
+            if (withsub)
+            {
+                position = CalculatePosition(calculated_margins, new Point(page.X - position.X, position.Y)); // (page, //
+            }
             Logger.Log($"Added \"{text}\" at position {position.X}, {position.Y}, {align}");
             FormattedText ft = new FormattedText(text, System.Threading.Thread.CurrentThread.CurrentUICulture, FlowDirection.LeftToRight, TypeFaces.TextFont, font_size * 1.4, Brushes.Black);
-            DrawString(dc, "||", TypeFaces.TextFont, Brushes.Black, (float)position.X, (float)position.Y, 18); // visual debug position helper
+            //DrawString(dc, "||", TypeFaces.TextFont, Brushes.Black, (float)position.X, (float)position.Y, 18); // visual debug position helper
             if (font_weight != null)
             {
                 if (font_weight == "bold")

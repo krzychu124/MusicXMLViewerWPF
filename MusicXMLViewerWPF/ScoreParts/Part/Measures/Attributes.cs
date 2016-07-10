@@ -66,9 +66,13 @@ namespace MusicXMLViewerWPF
             }
         }
 
-        public void Draw(DrawingVisual visual, Point p, bool firstInLine = false) // rework attempt ... quite good
+        public void Draw(DrawingVisual visual, Point p, float width, bool hasBarline = false, bool firstInLine = false) // rework attempt ... quite good
         {
             float currentX = (float)p.X;
+            if (hasBarline != false)
+            {
+                currentX += 10f;
+            }
             float currentY = (float)p.Y;
             if (Clef != null) // basic drawing done
             {
@@ -78,12 +82,13 @@ namespace MusicXMLViewerWPF
                 {
                     string symbol = Clef.Sign.Symbol;
                     Misc.DrawingHelpers.DrawString(dc, symbol, TypeFaces.MeasuresFont, Brushes.Black, currentX, currentY, MusicScore.Defaults.Scale.Tenths);
-                    currentX += 30f;
+                    currentX += 25f;
                 }
                 visual.Children.Add(clefVisual);
             }
             if (Key != null) // basic drawing done
             {
+                currentX += 5f;
                 DrawingVisual keyVisual = new DrawingVisual();
                 if (Clef != null)
                 {
@@ -98,6 +103,7 @@ namespace MusicXMLViewerWPF
             }
             if (Time != null) // basic drawing done
             {
+                currentX += 5f;
                 DrawingVisual timeVisual = new DrawingVisual();
                 using (DrawingContext dc = timeVisual.RenderOpen())
                 {
@@ -107,6 +113,14 @@ namespace MusicXMLViewerWPF
                     Misc.DrawingHelpers.DrawString(dc, beats_type, TypeFaces.TimeNumbers, Brushes.Black, currentX, currentY , MusicScore.Defaults.Scale.Tenths);
                 }
                 visual.Children.Add(timeVisual);
+            }
+            if (measure_style != null)
+            {
+                Point p_style = new Point(p.X + 5, p.Y + 30);
+                Point p_style_end = new Point(p.X + width - 5, p.Y + 30);
+                DrawingVisual style_visual = new DrawingVisual();
+                measure_style.Draw(style_visual, p_style, p_style_end);
+                visual.Children.Add(style_visual);
             }
         }
     }
@@ -185,6 +199,26 @@ namespace MusicXMLViewerWPF
                     default:
                         break;
                 }
+            }
+        }
+        public void Draw(DrawingVisual visual, Point p1, Point p2)
+        {
+            if (multiple_rest != 0)
+            {
+                Pen pen = new Pen(Brushes.Black, 1.5);
+                Pen pen2 = new Pen(Brushes.Black, 4);
+                DrawingVisual repeat = new DrawingVisual();
+                using(DrawingContext dc = repeat.RenderOpen())
+                {
+                    dc.DrawLine(pen, new Point(p1.X, p1.Y - 7), new Point(p1.X, p1.Y + 7));
+                    dc.DrawLine(pen, new Point(p2.X, p2.Y - 7), new Point(p2.X, p2.Y + 7));
+                    dc.DrawLine(pen2, p1, p2);
+                    Point midpoint = Calc.MidPoint(p1, p2);
+                    midpoint.Y -= 28;
+                    Misc.DrawingHelpers.DrawText(dc, multiple_rest.ToString(), midpoint, 15f, Halign.center, Valign.middle, "bold", false);
+                   // Misc.DrawingHelpers.DrawString(dc, multiple_rest.ToString(), TypeFaces.TextFont, Brushes.Black, (float)midpoint.X, (float)midpoint.Y, 20f);
+                }
+                visual.Children.Add(repeat);
             }
         }
     }
