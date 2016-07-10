@@ -33,6 +33,22 @@ namespace MusicXMLViewerWPF.Credit
             credit_type = x.Element("credit-type") != null ? x.Element("credit-type").Value : null;
             SetCreditType();
             credit_words = new CreditWords(x.Element("credit-words"));
+            if (credit_type == null)
+            {
+                if (credit_words.HAlign == Halign.center)
+                {
+                    if (credit_words.VAlign == Valign.top)
+                    {
+                        credit_type = "title";
+                        SetCreditType();
+                    }
+                    if (credit_words.VAlign == Valign.bottom)
+                    {
+                        credit_type = "copyrights";
+                        SetCreditType();
+                    }
+                }
+            }
         }
         private void SetCreditType()
         {
@@ -57,6 +73,9 @@ namespace MusicXMLViewerWPF.Credit
                         break;
                     case "lyricist":
                         type = MusicXMLViewerWPF.Credit.CreditType.lyricist;
+                        break;
+                    case "rights":
+                        type = MusicXMLViewerWPF.Credit.CreditType.rights;
                         break;
                 }
             }
