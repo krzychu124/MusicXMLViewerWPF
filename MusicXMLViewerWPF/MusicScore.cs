@@ -13,6 +13,7 @@ namespace MusicXMLViewerWPF
     /// </summary>
     class MusicScore 
     {
+        #region static variables
         protected static CanvasList Surface;
         protected static string title;
         protected static Defaults.Defaults defaults; 
@@ -23,7 +24,15 @@ namespace MusicXMLViewerWPF
         protected static Work.Work work; 
         protected static XElement file; // <<Loaded XML file>>
         protected static bool loaded = false;
+        #endregion
 
+        #region helpers
+        private static List<Misc.LineBreak> breaks = new List<Misc.LineBreak>();
+
+        public static List<Misc.LineBreak> LineBreaks { get { return breaks; } }
+        #endregion
+
+        #region public static properties (read-only)
         public static string Title { get { return title; } }
         public static Defaults.Defaults Defaults { get { return defaults; } }
         public static Dictionary<string, ScoreParts.Part.Part> Parts { get { return parts; } }
@@ -33,6 +42,7 @@ namespace MusicXMLViewerWPF
         public static Work.Work Work { get { return work; } }
         public static XElement File { get { return file; } }
         public static bool isLoaded { get { return loaded; } }
+        #endregion
 
         public MusicScore(XDocument x)
         {
@@ -101,9 +111,15 @@ namespace MusicXMLViewerWPF
             parts.Clear();
             identification = null;
             credits.Clear();
+            breaks.Clear();
             work = null;
             file = null;
             MusicXMLViewerWPF.Defaults.Appearance.Clear();
+        }
+
+        public static void AddBreak(float x, float y, string type)
+        {
+            breaks.Add(new Misc.LineBreak(x, y, type));
         }
 
         public static void DrawPageRectangle(DrawingVisual visual)
@@ -116,6 +132,15 @@ namespace MusicXMLViewerWPF
             Point right_down_margin_corner = new Point(Defaults.Page.Width - Defaults.Page.Margins.Right, Defaults.Page.Height - Defaults.Page.Margins.Bottom);
             Misc.DrawingHelpers.DrawRectangle(visual, new Point(Defaults.Page.Margins.Left, Defaults.Page.Margins.Top), right_down_margin_corner, Brushes.Blue);
         }
+
+        public static void DrawBreaks(DrawingVisual visual) // drawing break for debugging: line, page, etc.
+        {
+            foreach (var item in breaks)
+            {
+                item.DrawBreak(visual);
+            }
+        }
+
         public static void DrawMusicScoreTitleSpace(DrawingVisual visual)
         {
             float space_height = 0f;
@@ -138,9 +163,10 @@ namespace MusicXMLViewerWPF
             {
                 Point left_up = new Point(Defaults.Page.Margins.Left, Defaults.Page.Margins.Top);
                 //Point right_down = new Point(CreditList.Where(i => i.Type == Credit.CreditType.arranger).Select( i => i.CreditWords.DefX).First(), CreditList.Where(i => i.Type == Credit.CreditType.arranger).Select(i => i.CreditWords.DefY).First());
-
+                
                 Point right_down = new Point(Defaults.Page.Width - Defaults.Page.Margins.Right, Defaults.Page.Margins.Top + space_height);
                 Misc.DrawingHelpers.DrawRectangle(visual, left_up, right_down, Brushes.Green);
+                AddBreak((float)right_down.X + 20f, (float)right_down.Y, "title");
             }
         }
     }
