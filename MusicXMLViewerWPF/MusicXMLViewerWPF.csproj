@@ -59,6 +59,7 @@
     <Compile Include="Defaults\Defaults.cs" />
     <Compile Include="Identification\Identification.cs" />
     <Compile Include="Misc\DrawingHelpers.cs" />
+    <Compile Include="Misc\LineBreak.cs" />
     <Compile Include="Misc\LoadFile.cs" />
     <Compile Include="ScoreParts\Part\Measures\Attributes.cs" />
     <Compile Include="ScoreParts\Part\Measures\Barline.cs" />

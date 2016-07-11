@@ -237,8 +237,7 @@ y += (glyphTypeface.Height* size);
             {
                 DrawingVisual visual = new DrawingVisual();
                 //...
-                LoadCharsToViewPort c = new LoadCharsToViewPort();
-                c.AddKey(visual);
+                MusicScore.DrawMusicScoreTitleSpace(visual);
                 drawingSurface.AddVisual(visual);
             }
             else
@@ -253,8 +252,7 @@ y += (glyphTypeface.Height* size);
             {
                 DrawingVisual visual = new DrawingVisual();
                 //...
-                LoadCharsToViewPort c = new LoadCharsToViewPort();
-                c.AddTimeSig(visual);
+                MusicScore.DrawBreaks(visual);
                 drawingSurface.AddVisual(visual);
             }
             else

@@ -117,6 +117,7 @@ namespace MusicXMLViewerWPF.ScoreParts.Part
                 if (measure_margin_helper.ContainsKey(measure.Number))
                 {
                     start = measure_margin_helper[measure.Number];
+                    MusicScore.AddBreak( MusicScore.Defaults.Page.Width - (float)start.X, (float)start.Y, "line");
                 }
                 //if (measure.PrintProperties != null)
                 //{
@@ -128,6 +129,7 @@ namespace MusicXMLViewerWPF.ScoreParts.Part
                 //}
                 measure.Draw(surface, start);
                 start.X += measure.Width;
+                
             }
         }
     }
