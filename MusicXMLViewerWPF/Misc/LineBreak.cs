@@ -106,7 +106,7 @@ namespace MusicXMLViewerWPF.Misc
             using (DrawingContext dc = visual_break.RenderOpen())
             {
                 dc.DrawRectangle(Brushes.LightBlue, pen, rectangle);
-                Misc.DrawingHelpers.DrawText(dc, text, Position, 12f, Halign.center, Valign.top, font_weight:"bold", withsub:false, color:Brushes.DarkBlue);
+                DrawingHelpers.DrawText(dc, text, Position, 12f, Halign.center, Valign.top, font_weight:"bold", withsub:false, color:Brushes.DarkBlue);
             }
             visual.Children.Add(visual_break);
         }
