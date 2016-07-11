@@ -14,7 +14,7 @@ namespace MusicXMLViewerWPF
        //public static Typeface NotesFont = new Typeface("Bravura Text");
        public static Typeface MeasuresFont =  new Typeface(new FontFamily("Bravura Text"), FontStyles.Normal, FontWeights.Regular, FontStretches.Normal);
        public static Typeface GraceNoteFont = new Typeface(new FontFamily(new Uri("pack://application:,,,/"), "./resources/Fonts/#Bravura Text"), FontStyles.Normal, FontWeights.Regular, FontStretches.Normal);
-       public static Typeface TextFont = new Typeface(new FontFamily("Times New Roman"), FontStyles.Italic, FontWeights.Bold, FontStretches.Normal);
+       public static Typeface TextFont = new Typeface(new FontFamily("Times New Roman"), FontStyles.Normal, FontWeights.Bold, FontStretches.Normal);
        public static Typeface TimeNumbers = new Typeface(new FontFamily("Bravura Text"), FontStyles.Normal, FontWeights.Regular, FontStretches.Normal);
     }
 }
