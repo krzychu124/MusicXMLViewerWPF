@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Media;
 using System.Xml.Linq;
 
@@ -168,6 +169,16 @@ namespace MusicXMLViewerWPF
         {
             value =  x.Value;
         }
+
+        public void Draw(DrawingVisual visual, Point p)
+        {
+            DrawingVisual other_dir = new DrawingVisual();
+            using (DrawingContext dc = other_dir.RenderOpen())
+            {
+                Misc.DrawingHelpers.DrawText(dc, Value, p, this.font_size, withsub: false);
+            }
+            visual.Children.Add(other_dir);
+        }
     }
 
     enum DirectionType //TODO_L may be not usable due to rework whole class
@@ -228,12 +239,12 @@ namespace MusicXMLViewerWPF
             stop,
             next
         }
-        public void Draw(DrawingVisual visual)
+        public void Draw(DrawingVisual visual, Point p)
         {
             DrawingVisual wedge = new DrawingVisual();
             using(DrawingContext dc = wedge.RenderOpen())
             {
-
+                //incomplete
             }
             visual.Children.Add(wedge);
         }
@@ -241,7 +252,7 @@ namespace MusicXMLViewerWPF
     }
     public class Rehearsal : EmptyPrintStyle, IDirections
     {
-        private string id ="rehearsal";
+        private string id = "rehearsal";
         private string value;
 
         public string Id { get { return id; } }
@@ -252,10 +263,26 @@ namespace MusicXMLViewerWPF
             value = x.Value;
         }
 
+        public void Draw(DrawingVisual visual, Point p)
+        {
+            Point rehearsalPos = new Point(p.X - this.def_x, p.Y - this.def_y);
+            Point rect1 = new Point(rehearsalPos.X - 8, rehearsalPos.Y - 8);
+            Point rect2 = new Point(rehearsalPos.X + 8, rehearsalPos.Y + 8);
+            Pen pen = new Pen(Brushes.Black, 1);
+            Rect rectangle = new Rect(rect1, rect2);
+            DrawingVisual rehearsal = new DrawingVisual();
+            using(DrawingContext dc = rehearsal.RenderOpen())
+            {
+                dc.DrawRectangle(Brushes.Transparent, pen, rectangle);
+                Misc.DrawingHelpers.DrawText(dc, Value, rehearsalPos, this.FontSize, Halign.center, Valign.middle, font_weight:this.font_weight, withsub:false);
+            }
+            visual.Children.Add(rehearsal);
+        }
     }
     public interface IDirections
     {
         string Id { get; }
+        void Draw(DrawingVisual visual, Point point);
     }
 
     public enum LineType

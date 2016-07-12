@@ -15,17 +15,20 @@ namespace MusicXMLViewerWPF
             return myString;
         }
         //public static string Staff5L = to_utf8("\u1d110");
-        //clefs
+        #region clefs
         public const string FClef = "\uE062";
         public static string GClef = "\uE050";//"\ue050";//"\U0001D11E";
         public const string CClef = "\uE05C";
+        #endregion
 
-        //staffs
+        #region staffs
         public const string Staff4L = "\uE019";
         public const string Staff5L = "\uE01A";//"\uE01A";// "\U0001D11A";   // x=8 size=10, 16-20,32-40
         public const string Staff5Ls = "\uE020";
         public const string Staff6L = "\uE01B";
-        //bars
+        #endregion
+
+        #region bars
         public const string DashedBar = "\uE036";
         public const string DottedBar = "\uE037";
         public const string DoubleRepeatBar = "\uE042";
@@ -39,17 +42,23 @@ namespace MusicXMLViewerWPF
         public const string RightRepeatBar = "\uE041";
         public const string ShortBar = "\uE038";
         public const string TickBar = "\uE039";
-        //repeats
+        #endregion
+
+        #region repeats
         public const string RepeatFigure = "\U0001D10D";
         public const string RepeatMeasure = "\uE500";
         public const string Repeat2Measures = "\uE501";
-        //gracenotes
+        #endregion
+
+        #region gracenotes
         public const string GraceNote = "\uE562";
         public const string GraceNoteR = "\uE563";
         public const string GraceNoteSlash = "\uE560";
         public const string GraceNoteSlashR = "\uE561"; // R means upside-down
         public const string Dot = "\uE1E7";
-        //notes
+        #endregion
+
+        #region notes
         public const string Whole = "\uE1D1";// "\U0001D117";
         public const string Half = "\uE1D3";//"\U0001D15E";
         public const string Quarter = "\uE1D5";//"\U0001D15F";
@@ -57,7 +66,9 @@ namespace MusicXMLViewerWPF
         public const string Sixteen = "\uE1D9";//"\U0001D161";
         public const string ThirtyTwo = "\uE1DB";//"\U0001D162";
         public const string SixstyFour = "\uE1DD";// "\U0001D163";
-        //notes upsidedown
+        #endregion
+
+        #region notes upsidedown
         public const string WholeU = "\uE1D1";// "\U0001D117";
         public const string HalfU = "\uE1D4";//"\U0001D15E";
         public const string QuarterU = "\uE1D6";//"\U0001D15F";
@@ -65,7 +76,9 @@ namespace MusicXMLViewerWPF
         public const string SixteenU = "\uE1DA";//"\U0001D161";
         public const string ThirtyTwoU = "\uE1DC";//"\U0001D162";
         public const string SixstyFourU = "\uE1DE";// "\U0001D163";
-        //rests
+        #endregion
+
+        #region rests
         public const string WholeRest = "\uE4F4";
         public const string HalfRest = "\uE4F5";
         public const string QuarterRest = "\uE4E5";
@@ -74,7 +87,9 @@ namespace MusicXMLViewerWPF
         public const string ThirtyTwoRest = "\uE4E8";
         public const string SixstyFourRest = "\uE4E9";
         public const string MultiMeasureRest = "\uE4EE";
-        //primitives
+        #endregion
+
+        #region primitives
         public const string HalfDot = "\uE0A3";
         public const string QuarterDot = "\uE0A4";
         //public const string DurationDot = "\U0001D157";
@@ -84,7 +99,9 @@ namespace MusicXMLViewerWPF
         public const string FlagSixteen = "\U0001D16f";
         public const string FlagThirtyTwo = "\U0001D170";
         public const string FlagSixstyFour = "\U0001D171";
-        //articulations
+        #endregion
+
+        #region articulations
         public const string Accent = "\uE4A0";
         public const string AccentBelow = "\uE4A1";
         public const string Staccato = "\uE4A2";
@@ -93,14 +110,18 @@ namespace MusicXMLViewerWPF
         public const string TenutoBelow = "\uE4A5";
         public const string Marcato = "\uE4AC";
         public const string MarcatoBelow = "\uE4AD";
-        //misc
+        #endregion
+
+        #region misc
         public const string Natural = "\uE261";
         public const string Sharp = "\uE262";
         public const string Flat = "\uE260";
         public const string DoubleSharp = "\uE263";
         public const string DoubleFlat = "\uE264";
         public const string RepeatDots = "\uE043";
-        //ornaments
+        #endregion
+
+        #region ornaments
         public const string trillmark = "\uE566";
         public const string turn = "\uE567";
         public const string delayed_turn = "\uE569";
@@ -113,7 +134,9 @@ namespace MusicXMLViewerWPF
         public const string inverted_mordent = "\uE56C";
         public const string schleifer ="\uE587";
         public const string tremolo = "\uE220";
-        
+        #endregion
+
+        #region repeat signs
         public const string DalSegno = "\uE045";
         public const string DaCapo = "\uE046";
         public const string Segno = "\uE047";
@@ -121,7 +144,9 @@ namespace MusicXMLViewerWPF
         public const string Breath = "\uE4CE";
         public const string Fermata = "\uE4C0";
         public const string FermataBelow = "\uE4C1";
-        //dynamics
+        #endregion
+
+        #region dynamics_by_name
         public const string Rinforzando = "\uE523";
         public const string Subito ="\uE524";
         public const string Z_mus = "\uE525";
@@ -130,10 +155,41 @@ namespace MusicXMLViewerWPF
         public const string Forte = "\uE522";
         public const string Crescendo = "\uE53E";
         public const string Decrescendo = "\uE53F";
-        //time
+        #endregion
+
+        #region dynamics
+        public static string f = "\uE522";
+        public static string ff = "\uE52F";
+        public static string fff = "\uE530";
+        public static string ffff = "\uE531";
+        public static string fp = "\uE534";
+        public static string fz = "\uE535";
+        public static string m = "\uE521";
+        public static string mf = "\uE52D";
+        public static string mp = "\uE52C";
+        public static string n = "\uE526";
+        public static string p = "\uE520";
+        public static string pf = "\uE52E";
+        public static string pp = "\uE52B";
+        public static string ppp = "\uE52A";
+        public static string pppp = "\uE529";
+        public static string r = "\uE523";
+        public static string rf = "\uE53C";
+        public static string rfz = "\uE53D";
+        public static string s = "\uE524";
+        public static string sf = "\uE536";
+        public static string sffz = "\uE53B";
+        public static string sfp = "\uE537";
+        public static string sfpp = "\uE538";
+        public static string sfz = "\uE539";
+        public static string sfzp = "\uE53A";
+        public static string z = "\uE525";
+        #endregion
+
+        #region time signs
         public const string CommonTime = "\uE08A";
         public const string CutTime = "\uE08B";
-
+        #region time numbers
         public const string one = "\uF55B";
         public const string two = "\uF55D";
         public const string three = "\uF55F";
@@ -144,7 +200,8 @@ namespace MusicXMLViewerWPF
         public const string eight = "\uF569";
         public const string nine = "\uF56B";
         public const string zero = "\uF56D";
-        //time beats
+        #endregion
+        #region time beats
         public const string oneT = "\uF55A";
         public const string twoT = "\uF55C";
         public const string threeT = "\uF55E";
@@ -155,6 +212,8 @@ namespace MusicXMLViewerWPF
         public const string eightT = "\uF568";
         public const string nineT = "\uF56A";
         public const string zeroT = "\uF56C";
+        #endregion
+        #endregion
 
         public static string getNoteSymbol(MusSymbolDuration m)
         {
