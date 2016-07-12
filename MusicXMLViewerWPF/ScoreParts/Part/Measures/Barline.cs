@@ -206,24 +206,38 @@ namespace MusicXMLViewerWPF
     public class Segno : EmptyPrintStyle
     {
         private string name = "segno";
+        private string _symbol;
+
         public string Name { get { return name; } }
+        public string Symbol { get { return _symbol; } }
+
         public Segno(IEnumerable<XAttribute> x) : base(x)
         {
-            
+            //TODO_H missing implementation
+        }
+
+        public void Draw(DrawingVisual visual, Point p)
+        {
+            DrawingVisual segno = new DrawingVisual();
+            using (DrawingContext dc = segno.RenderOpen())
+            {
+                Misc.DrawingHelpers.DrawString(dc, Symbol, TypeFaces.MeasuresFont, Brushes.Black, (float)p.X - this.DefX, (float)p.Y - this.DefY, MusicScore.Defaults.Scale.Tenths / 2);
+            }
+            visual.Children.Add(segno);
         }
     }
 
     public class Coda : EmptyPrintStyle
     {
         private string name = "coda";
-        private string string_symbol;
+        private string _symbol;
 
         public string Name { get { return name; } }
-        public string Symbol { get { return string_symbol; } }
+        public string Symbol { get { return _symbol; } }
 
         public Coda(IEnumerable<XAttribute> x) : base(x)
         {
-            string_symbol = MusChar.Coda;
+            _symbol = MusChar.Coda;
         }
         
         public void Draw(DrawingVisual visual, Point p) //TODO_H not tested - position needs check
@@ -236,11 +250,16 @@ namespace MusicXMLViewerWPF
             visual.Children.Add(coda);
         }
     }
+
     public class Fermata : EmptyPrintStyle
     {
         private string name = "fermata";
         private UprightInverted type;
+        private string _symbol;
+
         public string Name { get { return name; } }
+        public string Symbol { get { return _symbol; } }
+
         public Fermata(IEnumerable<XAttribute> x) : base(x)
         {
             
@@ -250,7 +269,18 @@ namespace MusicXMLViewerWPF
                 type = t == "upright" ? UprightInverted.upright : UprightInverted.inverted;
             }
         }
+
+        public void Draw(DrawingVisual visual, Point p)
+        {
+            DrawingVisual fermata = new DrawingVisual();
+            using (DrawingContext dc = fermata.RenderOpen())
+            {
+                Misc.DrawingHelpers.DrawString(dc, Symbol, TypeFaces.MeasuresFont, Brushes.Black, (float)p.X - this.DefX, (float)p.Y - this.DefY, MusicScore.Defaults.Scale.Tenths / 2);
+            }
+            visual.Children.Add(fermata);
+        }
     }
+
     class Ending : EmptyPrintStyle
     {
         private int measure_number;
@@ -399,6 +429,7 @@ namespace MusicXMLViewerWPF
 
         public Repeat(IEnumerable<XAttribute> x)
         {
+            winged = null;
             foreach (var item in x)
             {
                 string s = item.Name.LocalName;
@@ -418,7 +449,10 @@ namespace MusicXMLViewerWPF
 
         public void Draw(DrawingVisual visual, Point p)
         {
-
+            if (Winged != null)
+            {
+                //TODO_L incomplete
+            }
         }
 
         internal enum RepeatDirection
