@@ -216,12 +216,25 @@ namespace MusicXMLViewerWPF
     public class Coda : EmptyPrintStyle
     {
         private string name = "coda";
+        private string string_symbol;
+
         public string Name { get { return name; } }
+        public string Symbol { get { return string_symbol; } }
+
         public Coda(IEnumerable<XAttribute> x) : base(x)
         {
-
+            string_symbol = MusChar.Coda;
         }
         
+        public void Draw(DrawingVisual visual, Point p) //TODO_H not tested - position needs check
+        {
+            DrawingVisual coda = new DrawingVisual();
+            using (DrawingContext dc = coda.RenderOpen())
+            {
+                Misc.DrawingHelpers.DrawString(dc, Symbol, TypeFaces.MeasuresFont, Brushes.Black, (float)p.X - this.DefX, (float)p.Y - this.DefY, MusicScore.Defaults.Scale.Tenths / 2);
+            }
+            visual.Children.Add(coda);
+        }
     }
     public class Fermata : EmptyPrintStyle
     {
