@@ -169,6 +169,16 @@ namespace MusicXMLViewerWPF
         {
             value =  x.Value;
         }
+
+        public void Draw(DrawingVisual visual, Point p)
+        {
+            DrawingVisual other_dir = new DrawingVisual();
+            using (DrawingContext dc = other_dir.RenderOpen())
+            {
+                Misc.DrawingHelpers.DrawText(dc, Value, p, this.font_size, withsub: false);
+            }
+            visual.Children.Add(other_dir);
+        }
     }
 
     enum DirectionType //TODO_L may be not usable due to rework whole class
@@ -229,7 +239,7 @@ namespace MusicXMLViewerWPF
             stop,
             next
         }
-        public void Draw(DrawingVisual visual)
+        public void Draw(DrawingVisual visual, Point p)
         {
             DrawingVisual wedge = new DrawingVisual();
             using(DrawingContext dc = wedge.RenderOpen())
@@ -272,6 +282,7 @@ namespace MusicXMLViewerWPF
     public interface IDirections
     {
         string Id { get; }
+        void Draw(DrawingVisual visual, Point point);
     }
 
     public enum LineType
