@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media;
 using System.Xml.Linq;
 
 namespace MusicXMLViewerWPF
@@ -84,14 +85,15 @@ namespace MusicXMLViewerWPF
             }
         }
 
-        public void Draw(System.Windows.Media.DrawingVisual visual, System.Windows.Point p)
+        public void Draw(DrawingVisual visual, System.Windows.Point p)
         {
-            using (System.Windows.Media.DrawingContext dc = visual.RenderOpen())
+            DrawingVisual dynamic_visual = new DrawingVisual();
+            using (DrawingContext dc = dynamic_visual.RenderOpen())
             {
-                
                 float posY = (float)p.Y + 50f;
-                Misc.DrawingHelpers.DrawString(dc, Symbol, TypeFaces.MeasuresFont, System.Windows.Media.Brushes.Black, (float)p.X, posY, MusicScore.Defaults.Scale.Tenths/2.2f);
+                Misc.DrawingHelpers.DrawString(dc, Symbol, TypeFaces.MeasuresFont, Brushes.Black, (float)p.X, posY, MusicScore.Defaults.Scale.Tenths/2.2f);
             }
+            visual.Children.Add(dynamic_visual);
         }
 
         public Dictionary<string, DynamicType> stringToDynType_dict = new Dictionary<string, DynamicType> {
