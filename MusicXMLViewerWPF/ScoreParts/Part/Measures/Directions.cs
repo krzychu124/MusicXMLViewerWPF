@@ -134,6 +134,13 @@ namespace MusicXMLViewerWPF
                     item.Other.Draw(otherVisual, p);
                     visual.Children.Add(otherVisual);
                 }
+                
+                if (item.Words != null)
+                {
+                    DrawingVisual wordsVisual = new DrawingVisual();
+                    item.Words.Draw(wordsVisual, p, placement);
+                    visual.Children.Add(wordsVisual);
+                }
             }
         }
     }
@@ -154,6 +161,7 @@ namespace MusicXMLViewerWPF
         public Coda Coda { get { return coda; } }
         public Dynamics Dynamics { get { return dynamics; } }
         public OtherDirection Other { get { return other; } }
+        public Words Words {  get { return words; } }
 
         public Directions(XElement x)
         {
@@ -331,13 +339,34 @@ namespace MusicXMLViewerWPF
     public class Words : EmptyPrintStyle
     {
         private string name = "words";
+        private string value;
         
         public string Name { get { return name; } }
+        public string Value { get { return value; } }
 
         public Words(XElement x): base(x.Attributes())
         {
-
+            value = x.Value;
         }
+
+        public void Draw(DrawingVisual visual, Point p, string placement)
+        {
+            if (placement == "above")
+            {
+                p.Y += -10f;
+            }
+            else
+            {
+                p.Y += 40f;
+            }
+            DrawingVisual wordsVisual = new DrawingVisual();
+            using (DrawingContext dc = wordsVisual.RenderOpen())
+            {
+                Misc.DrawingHelpers.DrawText(dc, Value, p, 10f, align: Halign.left,withsub: false);
+            }
+            visual.Children.Add(wordsVisual);
+        }
+
     }
 
     public class PositionHelper
