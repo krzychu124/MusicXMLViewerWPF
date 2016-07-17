@@ -29,6 +29,9 @@ namespace MusicXMLViewerWPF
         public Dynamics Dynamics { get { return dynamics; } }
         public List<Directions> DirectionList { get { return directionList; } }
         public int Staff { get { return staff; } }
+        public float Offset { get { return offset; } }
+        public string Placement { get { return placement; } }
+        public string Directive { get { return directive; } }
 
         public Direction(XElement x)
         {
@@ -65,12 +68,14 @@ namespace MusicXMLViewerWPF
                 }
             }
         }
+        #region Direction constructors - not usage currently
         public Direction(Dynamics dynamic, string placement)
         {
             typ = DirectionType.dynamics;
             dynamics = dynamic;
             this.placement = placement;
         }
+        
         public Direction(string placement, string direct_type, int posY, string type)
         {
             this.placement = placement;
@@ -88,20 +93,58 @@ namespace MusicXMLViewerWPF
                     break;
             }
         }
+        #endregion
 
-        public void Draw(DrawingVisual visual, System.Windows.Point p)
+        public void Draw(DrawingVisual visual, Point p)
         {
+
             foreach (var item in directionList)
             {
+                if(item.Coda != null)
+                {
+                    DrawingVisual codaVisual = new DrawingVisual();
+                    item.Coda.Draw(codaVisual, p);
+                    visual.Children.Add(codaVisual);
+                }
+
+                if (item.Rehearsal != null)
+                {
+                    DrawingVisual rehearsalVisual = new DrawingVisual();
+                    item.Rehearsal.Draw(rehearsalVisual, p);
+                    visual.Children.Add(rehearsalVisual);
+                }
+
+                if (item.Segno != null)
+                {
+                    DrawingVisual segnoVisual = new DrawingVisual();
+                    item.Segno.Draw(segnoVisual, p);
+                    visual.Children.Add(segnoVisual);
+                }
+
                 if (item.Dynamics != null)
                 {
                     DrawingVisual dynamicsVisual = new DrawingVisual();
                     item.Dynamics.Draw(dynamicsVisual, p);
                     visual.Children.Add(dynamicsVisual);
                 }
+
+                if (item.Other != null)
+                {
+                    DrawingVisual otherVisual = new DrawingVisual();
+                    item.Other.Draw(otherVisual, p);
+                    visual.Children.Add(otherVisual);
+                }
+                
+                if (item.Words != null)
+                {
+                    DrawingVisual wordsVisual = new DrawingVisual();
+                    item.Words.Draw(wordsVisual, p, placement);
+                    visual.Children.Add(wordsVisual);
+                }
             }
         }
     }
+
     public class Directions
     {
         private Wedge wedge = null;
@@ -118,6 +161,7 @@ namespace MusicXMLViewerWPF
         public Coda Coda { get { return coda; } }
         public Dynamics Dynamics { get { return dynamics; } }
         public OtherDirection Other { get { return other; } }
+        public Words Words {  get { return words; } }
 
         public Directions(XElement x)
         {
@@ -295,13 +339,34 @@ namespace MusicXMLViewerWPF
     public class Words : EmptyPrintStyle
     {
         private string name = "words";
+        private string value;
         
         public string Name { get { return name; } }
+        public string Value { get { return value; } }
 
         public Words(XElement x): base(x.Attributes())
         {
-
+            value = x.Value;
         }
+
+        public void Draw(DrawingVisual visual, Point p, string placement)
+        {
+            if (placement == "above")
+            {
+                p.Y += -10f;
+            }
+            else
+            {
+                p.Y += 40f;
+            }
+            DrawingVisual wordsVisual = new DrawingVisual();
+            using (DrawingContext dc = wordsVisual.RenderOpen())
+            {
+                Misc.DrawingHelpers.DrawText(dc, Value, p, 10f, align: Halign.left,withsub: false);
+            }
+            visual.Children.Add(wordsVisual);
+        }
+
     }
 
     public class PositionHelper

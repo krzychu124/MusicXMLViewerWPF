@@ -214,6 +214,7 @@ namespace MusicXMLViewerWPF
         public Segno(IEnumerable<XAttribute> x) : base(x)
         {
             //TODO_H missing implementation
+            _symbol = MusChar.Segno;
         }
 
         public void Draw(DrawingVisual visual, Point p)
@@ -221,7 +222,7 @@ namespace MusicXMLViewerWPF
             DrawingVisual segno = new DrawingVisual();
             using (DrawingContext dc = segno.RenderOpen())
             {
-                Misc.DrawingHelpers.DrawString(dc, Symbol, TypeFaces.MeasuresFont, Brushes.Black, (float)p.X - this.DefX, (float)p.Y - this.DefY, MusicScore.Defaults.Scale.Tenths / 2);
+                Misc.DrawingHelpers.DrawString(dc, Symbol, TypeFaces.MeasuresFont, Brushes.Black, (float)p.X - DefX - 8, (float)p.Y - this.DefY -20, MusicScore.Defaults.Scale.Tenths / 1.5f);
             }
             visual.Children.Add(segno);
         }
@@ -245,7 +246,7 @@ namespace MusicXMLViewerWPF
             DrawingVisual coda = new DrawingVisual();
             using (DrawingContext dc = coda.RenderOpen())
             {
-                Misc.DrawingHelpers.DrawString(dc, Symbol, TypeFaces.MeasuresFont, Brushes.Black, (float)p.X - this.DefX, (float)p.Y - this.DefY, MusicScore.Defaults.Scale.Tenths / 2);
+                Misc.DrawingHelpers.DrawString(dc, Symbol, TypeFaces.MeasuresFont, Brushes.Black, (float)p.X - this.DefX - 10, (float)p.Y - this.DefY -20, MusicScore.Defaults.Scale.Tenths / 1.5f);
             }
             visual.Children.Add(coda);
         }

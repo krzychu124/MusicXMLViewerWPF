@@ -124,6 +124,13 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
             }
             if (Direction != null)
             {
+
+                foreach (var item in Direction)
+                {
+
+                    item.Draw(visual, p);
+                }
+                /*
                 foreach (var item in Direction)
                 {
                     if (item.DirectionList != null)
@@ -142,6 +149,7 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
                        
                     }
                 }
+                */
             } 
                 //Draw_Directions(dc2, p); // TODO_H missing implementation
 
