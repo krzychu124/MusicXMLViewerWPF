@@ -121,7 +121,7 @@ namespace MusicXMLViewerWPF
         {
             breaks.Add(new Misc.LineBreak(x, y, type));
         }
-
+        #region Visual Helpers for easier debugging
         public static void DrawPageRectangle(DrawingVisual visual)
         {
             Misc.DrawingHelpers.DrawRectangle(visual, new Point(0, 0), new Point(Defaults.Page.Width, Defaults.Page.Height));
@@ -169,5 +169,6 @@ namespace MusicXMLViewerWPF
                 AddBreak((float)right_down.X + 20f, (float)right_down.Y, "title");
             }
         }
+        #endregion
     }
 }
