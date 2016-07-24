@@ -11,6 +11,8 @@ namespace MusicXMLViewerWPF
 {
     interface IDrawable
     {
+        Point Position { get; set; }
+        DrawingVisual Visual { get; set; }
         //void Draw(CanvasList surface,Point p);
         void Draw(DrawingVisual visual, Point p); // tests only for now
         //void DeleteDraw();

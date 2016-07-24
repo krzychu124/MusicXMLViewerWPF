@@ -16,6 +16,8 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
         private float width;
         private bool hasNumberInvisible;
         private MeasureCoordinates measure_pos;
+        private Point pos;
+        private DrawingVisual visual;
 
         private List<Note> notes_list = new List<Note>(); // experimental
         private List<Barline> barlines;
@@ -26,13 +28,16 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
         public int Number { get { return number; } }
         public float Width { get { return width; } }
         public bool NumberVisible { get { return hasNumberInvisible; } }
-        public MeasureCoordinates Position { get { return measure_pos; } }
+        public MeasureCoordinates MeasurePosition { get { return measure_pos; } }
 
         public List<Note> NotesList { get { return notes_list; } } // Not complete
         public List<Barline> Barlines { get { return barlines; } }
         public Print PrintProperties { get { return print_properties; } }
         public List<Direction> Direction { get { return direction; } }
         public Attributes Attributes { get { return attributes; } }
+
+        public Point Position { get { return pos; } set { if (value != null) pos = value; } }
+        public DrawingVisual Visual { get { return visual; } set { if (value != null) visual = value; } }
 
         public Measure()
         {
@@ -87,6 +92,7 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
 
         public void Draw(CanvasList surface,Point p) // drawing method
         {
+            Position = p;
             DrawingVisual visual = new DrawingVisual();
             DrawingVisual visualMeasure = new DrawingVisual();
             using (DrawingContext dc = visualMeasure.RenderOpen())
@@ -150,10 +156,10 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
                     }
                 }
                 */
-            } 
-                //Draw_Directions(dc2, p); // TODO_H missing implementation
+            }
+            //Draw_Directions(dc2, p); // TODO_H missing implementation
 
-            
+            Visual = visual;
             surface.AddVisual(visual);
 
         }
