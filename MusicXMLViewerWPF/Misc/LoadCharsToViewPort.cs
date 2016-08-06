@@ -38,7 +38,7 @@ namespace MusicXMLViewerWPF
             Surface = list;
         }
 
-        public static List<MusicalChars> x = LoadDocToClasses.list;
+        public static List<Segment> x = LoadDocToClasses.list;
         public void AddClef(DrawingVisual visual)
         {
             
@@ -71,7 +71,7 @@ namespace MusicXMLViewerWPF
             var z = x.OfType<Key>();
             var c = x.OfType<Clef>();
             ClefType clef = c.ElementAt(0).Sign;
-            int num = z.ElementAt(0).MeasureId;
+            int num = z.ElementAt(0).MeasureNumber;
             int f = (int)z.ElementAt(0).Fifths;
             using (DrawingContext dc = visual.RenderOpen())
             {

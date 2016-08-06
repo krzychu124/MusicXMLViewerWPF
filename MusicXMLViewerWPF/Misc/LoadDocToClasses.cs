@@ -14,7 +14,7 @@ namespace MusicXMLViewerWPF
         public static XDocument doc;
         private static bool CharListLoaded;
         private static bool MListLoaded;
-        public static List<MusicalChars> list = new List<MusicalChars>();
+        public static List<Segment> list = new List<Segment>();
         public static List<Measures> MeasuresList = new List<Measures>();
         public bool isCharListLoaded
         {
@@ -86,7 +86,7 @@ namespace MusicXMLViewerWPF
             CharListLoaded = true;
             Measures.CoordedMeasures();
         }
-        public static List<MusicalChars> LoadCharsFromMeasures()
+        public static List<Segment> LoadCharsFromMeasures()
         {
             
             //list = new List<MusicalChars>();
