@@ -41,11 +41,18 @@ namespace MusicXMLViewerWPF
         //{
         //    GetPageInfo();
         //}
+        public Page()
+        {
+            page_width = 2100f;
+            page_height = 2970f;
+            page_margins = new PageMargins();
+        }
 
         public Page(XElement x)
         {
             GetPageInfo(x);
         }
+
         public Page(float h, float w, PageMargins p)
         {
             page_margins = p;

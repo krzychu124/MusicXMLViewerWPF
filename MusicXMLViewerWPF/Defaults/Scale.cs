@@ -18,12 +18,13 @@ namespace MusicXMLViewerWPF.Defaults
 
         public Scale()
         {
-            var x = XMLExtractor();
-            foreach (var item in x)
-            {
-                XMLFiller(item);
-            }
-            
+            //var x = XMLExtractor();
+            //foreach (var item in x)
+            //{
+            //    XMLFiller(item);
+            //}
+            millimeters = 7.05556f;
+            tenths = 40f;
         }
 
         public Scale(XElement x)
