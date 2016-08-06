@@ -11,7 +11,7 @@ namespace MusicXMLViewerWPF
         private string symbol;
         //private DynamicType dyn_type;
         
-        public new ArticulationType Type { get { return type; } }
+        public ArticulationType Type { get { return type; } }
         public float X { get { return x; } }
         public float Y { get { return y; } }
         public bool Placement { get { return placement; } }

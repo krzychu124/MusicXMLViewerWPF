@@ -7,11 +7,11 @@ using System.Windows;
 
 namespace MusicXMLViewerWPF
 {
-    class Notations : MusicalChars
+    class Notations 
     { 
        
         //protected int id;
-        protected new NotationTypes type;
+        protected NotationTypes type;
         protected string type_s;
         protected bool ispartial;
         
@@ -88,7 +88,7 @@ namespace MusicXMLViewerWPF
 
         public bool Placement { get { return placement; } }
         public int Level { get { return level; } }
-        new public SlurType Type { get { return type_; } }
+        public SlurType Type { get { return type_; } }
         public string Type_S { get { return type_s; } }
 
         public Slur(int lvl, string t)
