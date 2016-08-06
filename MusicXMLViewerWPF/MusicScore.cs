@@ -65,7 +65,7 @@ namespace MusicXMLViewerWPF
         {
             title = file.Element("movement-title") != null ? file.Element("movement-title").Value : "No title" ;
             work = file.Element("work") != null ? new Work.Work(file.Element("work")) : null;
-            defaults = new Defaults.Defaults(file.Element("defaults")); 
+            defaults = file.Element("defaults") != null ? new Defaults.Defaults(file.Element("defaults")) : new MusicXMLViewerWPF.Defaults.Defaults(); 
             identification = new Identification.Identification(file.Element("identification")); 
             foreach (var item in file.Elements("credit"))
             {

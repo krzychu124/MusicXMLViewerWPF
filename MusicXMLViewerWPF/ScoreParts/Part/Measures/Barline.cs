@@ -20,6 +20,8 @@ namespace MusicXMLViewerWPF
         private Segno segno;
         private Ending ending;
         private Repeat repeat;
+        private Point pos;
+        private DrawingVisual visual;
 
         public BarlineLocation Location { get { return location; } set { location = value; } } 
         public BarStyle Style { get { return style; } set { style = value; } }
@@ -28,7 +30,8 @@ namespace MusicXMLViewerWPF
         public Segno Segno  { get { return segno; } }
         public Ending Ending { get { return ending; } }
         public Repeat Repeat { get { return repeat; } }
-        
+        public Point Position { get { return pos; } set { pos = value; } }
+        public DrawingVisual Visual { get { return visual; } set { visual = value; } }
 
         public Barline()
         {
@@ -111,6 +114,7 @@ namespace MusicXMLViewerWPF
 
         public DrawingVisual DrawBarline(DrawingVisual visual, Point p, float width)
         {
+            Position = p;
             float scale = MusicScore.Defaults.Scale.Tenths;
             using (DrawingContext dc = visual.RenderOpen())
             {
@@ -165,6 +169,7 @@ namespace MusicXMLViewerWPF
                 }
                 
             }
+            Visual = visual;
             return visual;
         }
         private Dictionary<string, BarStyle> styleDictionary = new Dictionary<string, BarStyle>()
@@ -466,9 +471,13 @@ namespace MusicXMLViewerWPF
     {
         private WingType type;
         private string s_type;
+        private Point pos;
+        private DrawingVisual visual;
 
         public WingType Type { get { return type; } }
         public string Type_s { get { return s_type; } }
+        public Point Position { get { return pos; } set { pos = value; } }
+        public DrawingVisual Visual { get { return visual; } set { visual = value; } }
 
         public Winged(string s)
         {

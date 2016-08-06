@@ -12,27 +12,37 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
 {
     class Measure : IXMLExtract, IDrawable // UNDONE finish reworking class
     {
+        private float width; // default value is 100 may change later
+        //--------------------
         private int number;
-        private float width;
         private bool hasNumberInvisible;
         private MeasureCoordinates measure_pos;
+        private Point pos;
+        private DrawingVisual visual;
+        private int elements_count;
 
         private List<Note> notes_list = new List<Note>(); // experimental
         private List<Barline> barlines;
         private Print print_properties;
         private List<Direction> direction;
         private Attributes attributes;
+        private List<MusicalChars> music_characters = new List<MusicalChars>();
 
         public int Number { get { return number; } }
-        public float Width { get { return width; } }
+        public float Width { get { return width; } set { if (value >= 0) { width = value; } else { width = 100f; Logger.Log("width is negative here"); } } }
         public bool NumberVisible { get { return hasNumberInvisible; } }
-        public MeasureCoordinates Position { get { return measure_pos; } }
+        public MeasureCoordinates MeasurePosition { get { return measure_pos; } }
 
         public List<Note> NotesList { get { return notes_list; } } // Not complete
         public List<Barline> Barlines { get { return barlines; } }
         public Print PrintProperties { get { return print_properties; } }
         public List<Direction> Direction { get { return direction; } }
         public Attributes Attributes { get { return attributes; } }
+
+        public Point Position { get { return pos; } set { if (value != null) pos = value; } }
+        public DrawingVisual Visual { get { return visual; } set { if (value != null) visual = value; } }
+
+        public int ElementsCount { get { return elements_count; } }
 
         public Measure()
         {
@@ -66,6 +76,7 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
             }
             
             attributes = x.Element("attributes") != null ? new Attributes(x) : null;  // TODO_L tests
+
         }
 
         public IEnumerable<XElement> XMLExtractor()
@@ -78,15 +89,44 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
         public void XMLFiller(XElement x)
         {
             width = x.Attribute("width") != null ? float.Parse(x.Attribute("width").Value, CultureInfo.InvariantCulture) : 0f;
-            if (width == 0f) Logger.Log($"Measure {number} has no width: {width}");
+            foreach (var item in x.Elements("note"))
+            {
+                if (item.Element("rest") != null)
+                {
+                    music_characters.Add(new Rest(item));
+                }
+                else
+                {
+                    music_characters.Add(new Note(item));
+                }
+            }
+            if (width == 0f)
+            {
+                Logger.Log($"Measure {number} has no width: {width}");
+                int num = music_characters.Count();
+                elements_count = num;
+                AutoMeasureWidth(num);
+            }
             bool t = int.TryParse(x.Attribute("number").Value, out number);
             if (t == false) Logger.Log($"Measure number is: {x.Attribute("number").Value}");
             //number = Convert.ToInt32(x.Attribute("number").Value);
             hasNumberInvisible = x.Attribute("implicit") != null ? x.Attribute("implicit").Value == "yes" ? true : false : false; // TODO_L not sure if itll work - very rare usage
         }
 
+        private void AutoMeasureWidth(int n)
+        {
+            width = 100f;
+            float temp_width = 0f;
+            foreach (var item in music_characters)
+            {
+                temp_width += item.Width;
+            }
+            if (temp_width > width) width = temp_width;
+        }
+
         public void Draw(CanvasList surface,Point p) // drawing method
         {
+            Position = p;
             DrawingVisual visual = new DrawingVisual();
             DrawingVisual visualMeasure = new DrawingVisual();
             using (DrawingContext dc = visualMeasure.RenderOpen())
@@ -150,10 +190,10 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
                     }
                 }
                 */
-            } 
-                //Draw_Directions(dc2, p); // TODO_H missing implementation
+            }
+            //Draw_Directions(dc2, p); // TODO_H missing implementation
 
-            
+            Visual = visual;
             surface.AddVisual(visual);
 
         }

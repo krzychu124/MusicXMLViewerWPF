@@ -1,13 +1,16 @@
-﻿using System;
+﻿using MusicXMLViewerWPF.Misc;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace MusicXMLViewerWPF
 {
-    class Rest : MusicalChars
+    class Rest : MusicalChars, IAutoPosition
     {
+        private float rest_width;
         private int measure_num;
         private int id;
         private float posX;
@@ -28,10 +31,21 @@ namespace MusicXMLViewerWPF
         public string Symbol { get { return duration_symbol; } }
         public bool IsMeasureRest { get { return ismeasurerest; } }
         public bool HasDot { get { return hasDot; } }
+        public float Width { get { return rest_width; } }
+
+        public Rest(XElement x)
+        {
+            duration = int.Parse(x.Element("duration").Value);
+            voice = int.Parse(x.Element("voice").Value);
+            rest_width = 10f;
+            width = 10f;
+            ismeasurerest = false;
+        }
 
         public Rest()
         {
-
+            this.width = 10f;
+            rest_width = 10f;
         }
         public Rest(int m_num,int id,int d, int v, string t, float x, bool restType, bool dot = false)
         {

@@ -23,6 +23,7 @@ namespace MusicXMLViewerWPF.Defaults
         public StaffLayout StaffLayout { get { return staff_layout; } }
         public Appearance Appearance { get { return appearance; } }
         public Dictionary<string,ScoreFonts> Fonts { get { return fonts; } }
+
         public Defaults(System.Xml.Linq.XElement x)
         {
             var temp = x;
@@ -43,6 +44,14 @@ namespace MusicXMLViewerWPF.Defaults
             {
                 fonts.Add("l",new ScoreFonts(x.Element("lyric-font")));
             }
+        }
+        public Defaults()
+        {
+            scale = new Scale();
+            page = new Page();
+            system_layout = new SystemLayout();
+            staff_layout = null;
+            appearance = new Appearance();
         }
     }
 
