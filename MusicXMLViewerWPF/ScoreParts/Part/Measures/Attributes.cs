@@ -15,6 +15,7 @@ namespace MusicXMLViewerWPF
         // TODO_L private PartSymbol part_symbol;
         // TODO_L private StaffDetails staff_details;
         // TODO_L public PartSymbol PartSymbol { get { return part_symbol; } }
+        private float attribute_width;
         private Clef clef;
         private Key key;
         private MeasureStyle measure_style;
@@ -30,6 +31,7 @@ namespace MusicXMLViewerWPF
         public Transpose Transpose { get { return transpose; } }
         public uint Instruments { get { return instruments; } }
         public uint Staves { get { return staves; } }
+        public float Width { get { return attribute_width; } }
 
         public Attributes(XElement x) // possible rework from switch to dictionary// not further properties planned
         {
@@ -76,6 +78,7 @@ namespace MusicXMLViewerWPF
             float currentY = (float)p.Y;
             if (Clef != null) // basic drawing done
             {
+                attribute_width += 25f;
                 currentX += 5f;
                 DrawingVisual clefVisual = new DrawingVisual();
                 using (DrawingContext dc = clefVisual.RenderOpen())
@@ -88,6 +91,7 @@ namespace MusicXMLViewerWPF
             }
             if (Key != null) // basic drawing done
             {
+                attribute_width += Math.Abs((int)key.Fifths) * 8; 
                 currentX += 5f;
                 DrawingVisual keyVisual = new DrawingVisual();
                 if (Clef != null)
@@ -103,6 +107,7 @@ namespace MusicXMLViewerWPF
             }
             if (Time != null) // basic drawing done
             {
+                attribute_width += 15f;
                 currentX += 5f;
                 DrawingVisual timeVisual = new DrawingVisual();
                 using (DrawingContext dc = timeVisual.RenderOpen())

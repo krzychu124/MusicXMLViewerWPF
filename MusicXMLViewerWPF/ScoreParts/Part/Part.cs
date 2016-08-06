@@ -34,18 +34,21 @@ namespace MusicXMLViewerWPF.ScoreParts.Part
 
                 if (i == 0)
                 {
-                    if (measure_list.ElementAt(i).PrintProperties.SystemLayout != null)
+                    if (measure_list.ElementAt(i).PrintProperties != null)
                     {
-                        tempPoint = new Point(tempMargins.X + measure_list.ElementAt(i).PrintProperties.SystemLayout.LeftRelative, tempMargins.Y + measure_list.ElementAt(i).PrintProperties.SystemLayout.SystemDistance + MusicScore.Defaults.SystemLayout.TopSystemDistance);
+                        if (measure_list.ElementAt(i).PrintProperties.SystemLayout != null)
+                        {
+                            tempPoint = new Point(tempMargins.X + measure_list.ElementAt(i).PrintProperties.SystemLayout.LeftRelative, tempMargins.Y + measure_list.ElementAt(i).PrintProperties.SystemLayout.SystemDistance + MusicScore.Defaults.SystemLayout.TopSystemDistance);
+                        }
+                        else
+                        {
+                            tempPoint = new Point(tempMargins.X, tempMargins.Y + MusicScore.Defaults.SystemLayout.TopSystemDistance);
+                        }
+                        Logger.Log($"Margins {tempMargins.X} {tempMargins.Y}");
+                        Logger.Log($"First point {tempPoint.X} {tempPoint.Y}");
+                        measure_margin_helper.Add(measure_list.ElementAt(i).Number, tempPoint);
+                        //Logger.Log($"helper_dict measure-page margins {MusicScore.Defaults.Page.Margins.Left}  {MusicScore.Defaults.Page.Margins.Top}");
                     }
-                    else
-                    {
-                        tempPoint = new Point(tempMargins.X, tempMargins.Y + MusicScore.Defaults.SystemLayout.TopSystemDistance);
-                    }
-                    Logger.Log($"Margins {tempMargins.X} {tempMargins.Y}");
-                    Logger.Log($"First point {tempPoint.X} {tempPoint.Y}");
-                    measure_margin_helper.Add(measure_list.ElementAt(i).Number, tempPoint);
-                    //Logger.Log($"helper_dict measure-page margins {MusicScore.Defaults.Page.Margins.Left}  {MusicScore.Defaults.Page.Margins.Top}");
                 }
                 else
                 {
@@ -88,7 +91,11 @@ namespace MusicXMLViewerWPF.ScoreParts.Part
             //{
             //    measure_list.Add(new Measures.Measure(item));
             //}
-            FillPositionHelper();
+            if (measure_margin_helper.Count != 0)
+            {
+                FillPositionHelper();
+            }
+                
         }
         private void FillPositionHelper()
         {
@@ -110,8 +117,12 @@ namespace MusicXMLViewerWPF.ScoreParts.Part
         public void DrawMeasures(CanvasList surface)
         {
             Point start = new Point();
-            start.X = measure_margin_helper.ElementAt(0).Value.X;
-            start.Y = measure_margin_helper.ElementAt(0).Value.Y;
+            if (measure_margin_helper.Count != 0)
+            {
+                start.X = measure_margin_helper.ElementAt(0).Value.X;
+                start.Y = measure_margin_helper.ElementAt(0).Value.Y;
+            }
+            
             //Point current = new Point();
             foreach ( var measure in measure_list)
             {
