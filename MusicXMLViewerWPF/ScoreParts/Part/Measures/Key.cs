@@ -9,13 +9,25 @@ using System.Xml.Linq;
 
 namespace MusicXMLViewerWPF
 {
-    class Key : EmptyPrintStyle//  MusicalChars //TODO_L implement missing properties 
+    class Key : Segment//  MusicalChars //TODO_L implement missing properties 
     {
+        #region Fields
+        private EmptyPrintStyle additional_attributes;
         private int measure_num;
         private bool isSharp;
         private bool isNatural = false;
         private Fifths fifths;
         private Mode mode;
+        #endregion
+        #region Properties
+        public EmptyPrintStyle AdditionalAttributes { get { return additional_attributes; } }
+        public int MeasureNumber { get { return measure_num; } }
+        public bool IsSharp { get { return isSharp; } }
+        public bool IsNatural { get { return isNatural; } }
+        public Fifths Fifths { get { return fifths; } }
+        public Mode Mode { get { return mode; } }
+        #endregion
+
         public Key( int fifths, string mode, int num)
         {
             //this.musicalcharacter = fifths < 0 ? "b" : fifths > 0 ? "#" : " ";
@@ -27,8 +39,9 @@ namespace MusicXMLViewerWPF
             this.measure_num = num;
         }
 
-        public Key(XElement x):base(x.Attributes())
-        {
+        public Key(XElement x)
+        { 
+            additional_attributes = new EmptyPrintStyle(x.Attributes());
             this.mode = Mode.major;
             var ele = x.Elements();
             foreach (var item in ele)
@@ -124,29 +137,6 @@ namespace MusicXMLViewerWPF
             { 5,Fifths.B },
             { -6,Fifths.Gb },
         };
-
-        public Fifths Fifths
-        {
-            get
-            {
-                return fifths;
-            }
-        }
-
-        public Mode Mode
-        {
-            get
-            {
-                return mode;
-            }
-        }
-        public int MeasureId
-        {
-            get
-            {
-                return measure_num;
-            }
-        }
     }
     enum Fifths
     {

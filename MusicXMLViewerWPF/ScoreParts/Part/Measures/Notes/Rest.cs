@@ -8,49 +8,45 @@ using System.Xml.Linq;
 
 namespace MusicXMLViewerWPF
 {
-    class Rest : MusicalChars, IAutoPosition
+    class Rest : Note, IAutoPosition
     {
-        private float rest_width;
-        private int measure_num;
-        private int id;
-        private float posX;
-        private int duration;
-        private int voice;
-        private string duration_symbol;
-        private bool ismeasurerest;
-        public static List<Rest> RestList = new List<Rest>();
+        // private int dots; inherited
         // private int multimeasure;
-        private bool hasDot;
-        // private int dots;
-        
-        public int MeasureId { get { return measure_num; } }
-        public int CharId { get { return id; } }
-        public float X { get { return posX; } }
-        public int Duration { get { return duration; } }
-        public int Voice { get { return voice; } }
-        public string Symbol { get { return duration_symbol; } }
+        //private bool hasDot; inherited
+        //private float posX; inherited
+        //private int id; inherited
+        private bool ismeasurerest;
+        private int measure_num;
+        private string duration_symbol;
+        public static List<Rest> RestList = new List<Rest>();
+
+        //public bool HasDot { get { return hasDot; } } inherited
+        //public int Duration { get { return duration; } } inherited
+        //public int MeasureId { get { return measure_num; } } inherited
+        //public int Voice { get { return voice; } } inherited
+        //public string Symbol { get { return duration_symbol; } } inherited
         public bool IsMeasureRest { get { return ismeasurerest; } }
-        public bool HasDot { get { return hasDot; } }
-        public float Width { get { return rest_width; } }
+        public float X { get { return posX; } }
+        public int CharId { get { return id; } }
 
         public Rest(XElement x)
         {
+            Segment_type = SegmentType.Rest;
             duration = int.Parse(x.Element("duration").Value);
             voice = int.Parse(x.Element("voice").Value);
-            rest_width = 10f;
-            width = 10f;
+            Width = 10f;
             ismeasurerest = false;
         }
 
         public Rest()
         {
-            this.width = 10f;
-            rest_width = 10f;
+            Segment_type = SegmentType.Rest;
+            Width = 10f;
         }
         public Rest(int m_num,int id,int d, int v, string t, float x, bool restType, bool dot = false)
         {
             this.id = id;
-            base.type = MusSymbolType.Rest;
+            base.Segment_type = SegmentType.Rest;
             measure_num = m_num;
             this.posX = x;
             duration = d;
@@ -62,7 +58,7 @@ namespace MusicXMLViewerWPF
         public Rest(int m_num,int id,int d, int v, bool restType)
         {
             this.id = id;
-            base.type = MusSymbolType.Rest;
+            base.Segment_type = SegmentType.Rest;
             measure_num = m_num;
             duration = d;
             voice = v;

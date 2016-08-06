@@ -9,31 +9,32 @@ using System.Xml.Linq;
 
 namespace MusicXMLViewerWPF
 {
-    class Note : MusicalChars, IAutoPosition
+    class Note : Segment, IAutoPosition
     { //Need to be reworked !! 1)little improvements done
-        private Beam beam;
-        private bool hasBeams;
-        private bool hasDot;
-        private bool hasNotations;
-        private bool isDefaultStem;
-        private bool isRest;
-        private bool stem_dir;
-        private float defaultStem;
-        private float posX;
-        private float posY;
-        private float stem;
-        private int dot;
-        private int duration;
-        private int id;
-        private int measure_id;
-        private int voice;
-        private MusSymbolDuration symbol_type;
-        private Pitch pitch;
-        private string symbol;
-        private List<Notations> notationsList;
-        //----------------
-        //private float width;
-        //----------------
+        #region fields
+        protected Beam beam;
+        protected bool hasBeams;
+        protected bool hasDot;
+        protected bool hasNotations;
+        protected bool isDefaultStem;
+        protected bool isRest;
+        protected bool stem_dir;
+        protected float defaultStem;
+        protected float posX;
+        protected float posY;
+        protected float stem;
+        protected int dot;
+        protected int duration;
+        protected int id;
+        protected int measure_id;
+        protected int voice;
+        protected MusSymbolDuration symbol_type;
+        protected Pitch pitch;
+        protected string symbol;
+        protected List<Notations> notationsList;
+        #endregion
+        
+        #region properties
         public Beam Beam { get { return beam; } }
         public bool HasBeams { get { return hasBeams; } }
         public bool HasDot { get { return hasDot; } }
@@ -54,35 +55,35 @@ namespace MusicXMLViewerWPF
         public Pitch Pitch { get { return pitch; } }
         public string Symbol { get { return symbol; } }
         public List<Notations> NotationsList { get { return notationsList; } }
+        #endregion
 
-        //public float Width { get { return this.width; } }
-         /*
-        public Note( int measure_id, int id,float pos, Pitch p, int dur,int v, string t, float s, string dir,bool r, int dot, bool notations)
-        {
-            this.measure_id = measure_id;
-            this.type = MusSymbolType.Note;
-            this.id = id;
-            posX = pos;
-            CalculatePitch(p);
-            pitch = p;
-            duration = dur;
-            voice = v;
-            stem_dir = dir == "up" ? false : true;
-            symbol_type =SymbolDuration.d_type(t);
-            symbol = MusChar.getNoteSymbol(t,stem_dir);
-            isRest = r;
-            this.dot = dot;
-            hasDot = dot != 0 ? true : false;
-            stem = s;
-            hasNotations = notations;
-            
-        } */
-        //public Notations notations;
+        /*
+       public Note( int measure_id, int id,float pos, Pitch p, int dur,int v, string t, float s, string dir,bool r, int dot, bool notations)
+       {
+           this.measure_id = measure_id;
+           this.type = MusSymbolType.Note;
+           this.id = id;
+           posX = pos;
+           CalculatePitch(p);
+           pitch = p;
+           duration = dur;
+           voice = v;
+           stem_dir = dir == "up" ? false : true;
+           symbol_type =SymbolDuration.d_type(t);
+           symbol = MusChar.getNoteSymbol(t,stem_dir);
+           isRest = r;
+           this.dot = dot;
+           hasDot = dot != 0 ? true : false;
+           stem = s;
+           hasNotations = notations;
+
+       } */
+
         public Note(int measure_id, int id,float pos, Pitch p, int dur,int v, string t, float s, string dir, bool hasStemVal, bool r, int num, string bm,Dictionary<int, string> beamList, int dot, bool notations, List<Notations> n_list)
         {
             isDefaultStem = hasStemVal ? false : true;
             this.measure_id = measure_id;
-            this.type = MusSymbolType.Note;
+            //Segment_type = SegmentType.Note;
             this.id = id;
             posX = pos;
             CalculatePitch(p);
@@ -103,6 +104,7 @@ namespace MusicXMLViewerWPF
             hasNotations = notations;
             notationsList = n_list;
         }
+
         private void CalculatePitch(Pitch p)
         {
 
@@ -110,7 +112,6 @@ namespace MusicXMLViewerWPF
             float scale = Measures.Scale;
             this.posY = (p.CalculatedStep * 3.95f) + scale * 0.6f;
         }
-            
         
         private float CalculateStem()
         {
@@ -121,9 +122,15 @@ namespace MusicXMLViewerWPF
             return c;
         }
 
-        public Note(XElement x)
+        public Note(XElement x) //TODO_H not finished
         {
-            width = 10f;
+            Width = 10f;
+            //Segment_type = SegmentType.Note;
+        }
+
+        public Note()
+        {
+
         }
     }
 
@@ -203,8 +210,9 @@ namespace MusicXMLViewerWPF
 
     enum NoteStem
     {
-        up = 0,
-        down = 1
+        none = 0,
+        up = 1,
+        down = 2
     }
   
 }

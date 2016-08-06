@@ -10,9 +10,9 @@ using System.Xml.Linq;
 
 namespace MusicXMLViewerWPF
 {
-    class Barline :  IDrawable, IXMLExtract // TODO_L add drawing for coda fermata segno
+    class Barline :  Segment, IDrawable, IXMLExtract // TODO_L add drawing for coda fermata segno
     {
-        
+        #region Fields
         private BarlineLocation location;
         private BarStyle style;
         private Coda coda;
@@ -22,7 +22,8 @@ namespace MusicXMLViewerWPF
         private Repeat repeat;
         private Point pos;
         private DrawingVisual visual;
-
+        #endregion
+        #region Properties
         public BarlineLocation Location { get { return location; } set { location = value; } } 
         public BarStyle Style { get { return style; } set { style = value; } }
         public Coda Coda { get { return coda; } }
@@ -32,6 +33,7 @@ namespace MusicXMLViewerWPF
         public Repeat Repeat { get { return repeat; } }
         public Point Position { get { return pos; } set { pos = value; } }
         public DrawingVisual Visual { get { return visual; } set { visual = value; } }
+        #endregion
 
         public Barline()
         {

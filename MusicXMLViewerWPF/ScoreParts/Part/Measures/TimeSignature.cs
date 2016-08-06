@@ -7,8 +7,9 @@ using System.Xml.Linq;
 
 namespace MusicXMLViewerWPF
 {
-    public class TimeSignature : EmptyPrintStyle // MusicalChars // TODO_L test timesig class
+    public class TimeSignature : Segment // MusicalChars // TODO_L test timesig class
     {
+        private EmptyPrintStyle additional_attributes;
         private int beats;
         private int beats_type;
         private int measure_num;
@@ -17,15 +18,16 @@ namespace MusicXMLViewerWPF
         private string beats_str;
         private string beats_type_str;
 
-
+        public EmptyPrintStyle AdditionalAttributes { get { return additional_attributes; } }
         public int Beats { get { return beats; } }
         public int BeatsType { get { return beats_type; } }
         public int MeasureNum { get { return measure_num; } }
         public string BeatStr { get { return beats_str; } }
         public string BeatTypeStr { get { return beats_type_str; } }
         //TODO_L implement missing properties, separator,interchangeable
-        public TimeSignature(XElement x) : base (x.Attributes())
+        public TimeSignature(XElement x)
         {
+            additional_attributes = new EmptyPrintStyle(x.Attributes());
             var ele = x.Elements();
             foreach (var item in ele)
             {
@@ -74,10 +76,10 @@ namespace MusicXMLViewerWPF
             switch (s)
             {
                 case "common":
-                    this.sigType = SignatureType.common;
+                    sigType = SignatureType.common;
                     break;
                 case "cut":
-                    this.sigType = SignatureType.cut;
+                    sigType = SignatureType.cut;
                     break;
                 default:
                     sigType = SignatureType.number;

@@ -7,23 +7,30 @@ using System.Xml.Linq;
 
 namespace MusicXMLViewerWPF
 {
-    public class Clef : EmptyPrintStyle
+    public class Clef : Segment
     {
+        #region Fields
+        private EmptyPrintStyle additional_attributes;
         private ClefType sign;
         private int line;
         private int measure_num;
         private static int clef_alter;
         private static ClefType sign_static;
-
+        #endregion
+        #region Properties
+        public EmptyPrintStyle AdditionalAttributes { get { return additional_attributes; } }
         public ClefType Sign { get { return sign; } }
         public int Line { get { return line; } }
         public int MeasureId { get { return measure_num; } }
         public static int ClefAlter { get { return clef_alter; } }
         public static ClefType Sign_static { get { return sign_static; } }
-
-        public Clef(XElement x):base(x.Attributes())
+        #endregion
+        public Clef(XElement x)
         {
             //TODO_L more indepth tests
+            additional_attributes = new EmptyPrintStyle(x.Attributes());
+            Segment_type = SegmentType.Clef;
+            //-----------------------
             var ele = x.Elements();
             foreach (var item in ele)
             {

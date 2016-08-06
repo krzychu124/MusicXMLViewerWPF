@@ -8,6 +8,6 @@ namespace MusicXMLViewerWPF.Misc
 {
     interface IAutoPosition
     {
-        float Width { get; }
+        float Width { get; set; }
     }
 }

@@ -10,7 +10,7 @@ using System.Xml.Linq;
 
 namespace MusicXMLViewerWPF
 {
-    public class Direction : MusicalChars
+    public class Direction : Segment
     {
         #region Attributes
         private string placement;
@@ -25,13 +25,14 @@ namespace MusicXMLViewerWPF
         private float offset;
         private int staff;
         #endregion
-
+        #region Properties
         public Dynamics Dynamics { get { return dynamics; } }
         public List<Directions> DirectionList { get { return directionList; } }
         public int Staff { get { return staff; } }
         public float Offset { get { return offset; } }
         public string Placement { get { return placement; } }
         public string Directive { get { return directive; } }
+        #endregion
 
         public Direction(XElement x)
         {
