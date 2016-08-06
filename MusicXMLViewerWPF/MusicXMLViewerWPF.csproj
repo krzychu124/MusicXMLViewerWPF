@@ -79,7 +79,7 @@
     <Compile Include="Misc\MusChar.cs" />
     <Compile Include="MusicScore.cs" />
     <Compile Include="ScoreParts\Part\Measures\Measure.cs" />
-    <Compile Include="ScoreParts\Part\Measures\MusSymbolType.cs" />
+    <Compile Include="ScoreParts\Part\Measures\SegmentType.cs" />
     <Compile Include="ScoreParts\Part\Part.cs" />
     <Compile Include="ScoreParts\ScorePart.cs" />
     <Compile Include="Defaults\Print.cs" />
@@ -92,7 +92,7 @@
     <Compile Include="ScoreParts\Part\Measures\Clef.cs" />
     <Compile Include="ScoreParts\Part\Measures\Dynamics.cs" />
     <Compile Include="ScoreParts\Part\Measures\Measures.cs" />
-    <Compile Include="Misc\MusicalChars.cs" />
+    <Compile Include="Misc\Segment.cs" />
     <Compile Include="ScoreParts\Part\Measures\Notes\Notations.cs" />
     <Compile Include="ScoreParts\Part\Measures\Notes\Note.cs" />
     <Compile Include="Defaults\Page.cs" />

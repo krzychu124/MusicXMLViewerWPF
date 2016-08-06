@@ -26,7 +26,7 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
         private Print print_properties;
         private List<Direction> direction;
         private Attributes attributes;
-        private List<MusicalChars> music_characters = new List<MusicalChars>();
+        private List<Segment> music_characters = new List<Segment>();
 
         public int Number { get { return number; } }
         public float Width { get { return width; } set { if (value >= 0) { width = value; } else { width = 100f; Logger.Log("width is negative here"); } } }
