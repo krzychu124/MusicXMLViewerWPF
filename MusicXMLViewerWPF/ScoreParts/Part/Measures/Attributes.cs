@@ -35,7 +35,7 @@ namespace MusicXMLViewerWPF
 
         public Attributes(XElement x) // possible rework from switch to dictionary// not further properties planned
         {
-            var ele = x.Element("attributes").Elements();
+            var ele = x.Elements();//.Element("attributes").Elements();
             foreach (var item in ele)
             {
                 string name = item.Name.LocalName;

@@ -10,8 +10,9 @@ namespace MusicXMLViewerWPF
     {
         Unknown = 0,
         Clef,
-        Key,
-        TimeSignature,
+        KeySig,
+        TimeSig,
+        Chord,
         Rest,
         Direction,
         Barline,

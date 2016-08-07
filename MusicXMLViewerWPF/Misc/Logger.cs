@@ -15,6 +15,7 @@ namespace MusicXMLViewerWPF
 
         public static event EventHandler LogAdded;
         public static event EventHandler LogCleared;
+       // public static List<string> LoggingList { get { return log; } }
 
         public static void Log(string message, [CallerMemberName] string memberName = "")
         {
