@@ -62,6 +62,8 @@
     <Compile Include="Misc\IAutoPosition.cs" />
     <Compile Include="Misc\LineBreak.cs" />
     <Compile Include="Misc\LoadFile.cs" />
+    <Compile Include="Misc\ScoreSystem.cs" />
+    <Compile Include="Misc\ScorePage.cs" />
     <Compile Include="ScoreParts\Part\Measures\Attributes.cs" />
     <Compile Include="ScoreParts\Part\Measures\Barline.cs" />
     <Compile Include="Defaults\SystemLayout.cs" />

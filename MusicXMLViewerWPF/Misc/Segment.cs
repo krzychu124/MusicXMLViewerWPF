@@ -21,6 +21,9 @@ namespace MusicXMLViewerWPF
         
         private float offset_x;
         private float offset_y;
+
+        private float space_l; //left spacer
+        private float space_r; //right spacer 
         
         private SegmentType segment_type;
         #endregion
@@ -33,7 +36,9 @@ namespace MusicXMLViewerWPF
         public float Offset_y { get { return offset_y; } set { offset_y = value; } }
         public float Relative_x { get { return relative_x; } set { relative_x = value; } }
         public float Relative_y { get { return relative_y; } set { relative_y = value; } }
-        public SegmentType Segment_type { get { return segment_type; } set { segment_type = value; } }
+        public float Spacer_L { get { return space_l; } set { space_l = value; } }
+        public float Spacer_R { get { return space_r; } set { space_r = value; } }
+        public SegmentType Segment_type { get { return segment_type; } set { segment_type = value; SetSpacers(); } }
         public float Width { get { return width; } set { width = value; } }
         #endregion
 
@@ -59,6 +64,54 @@ namespace MusicXMLViewerWPF
         {
             Width = w;
             Height = h;
+        }
+
+        public void SetSpacers()
+        {
+            float left = 0;
+            float right = 0;
+            if (Segment_type == SegmentType.Barline)
+            {
+                left = 0f;
+                right = 1.5f;
+            }
+            if (Segment_type == SegmentType.Chord)
+            {
+                left = 1f;
+                right = 6f;
+            }
+            if (Segment_type == SegmentType.Clef)
+            {
+                left = 2f;
+                right = 22f;
+            }
+            if (Segment_type == SegmentType.KeySig)
+            {
+                left = 2f;
+                right = 4f;
+            }
+            if (Segment_type == SegmentType.TimeSig)
+            {
+                left = 2f;
+                right = 14f;
+            }
+            if (Segment_type == SegmentType.Rest)
+            {
+                left = 1f;
+                right = 6f;
+            }
+            if (Segment_type == SegmentType.Direction)
+            {
+                left = 0f;
+                right = 0f;
+            }
+            Spacer_L = left;
+            Spacer_R = right;
+        }
+        public void SetSpacers(float l, float r)
+        { 
+            space_l = l;
+            space_r = r;
         }
     }
 }

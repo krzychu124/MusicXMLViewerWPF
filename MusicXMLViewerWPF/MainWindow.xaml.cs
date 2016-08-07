@@ -27,7 +27,7 @@ namespace MusicXMLViewerWPF
         public MainWindow()
         {
             InitializeComponent();
-          //  LogBox.FontFamily = new FontFamily("BravuraText,FreeSerif");
+            //  LogBox.FontFamily = new FontFamily("BravuraText,FreeSerif");
             //LogBox.FontSize = 40;
             // Console.WriteLine("\U0001D122");
             // LogBox.Text += "-> \uE050 <-";

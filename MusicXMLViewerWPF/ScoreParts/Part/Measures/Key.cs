@@ -40,7 +40,8 @@ namespace MusicXMLViewerWPF
         }
 
         public Key(XElement x)
-        { 
+        {
+            Segment_type = SegmentType.KeySig;
             additional_attributes = new EmptyPrintStyle(x.Attributes());
             this.mode = Mode.major;
             var ele = x.Elements();

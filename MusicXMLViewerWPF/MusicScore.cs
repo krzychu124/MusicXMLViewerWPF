@@ -28,7 +28,7 @@ namespace MusicXMLViewerWPF
 
         #region helpers
         private static List<Misc.LineBreak> breaks = new List<Misc.LineBreak>();
-
+        //private static List<>
         public static List<Misc.LineBreak> LineBreaks { get { return breaks; } }
         #endregion
 

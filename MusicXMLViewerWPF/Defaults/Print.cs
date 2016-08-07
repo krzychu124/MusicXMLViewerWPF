@@ -34,9 +34,9 @@ namespace MusicXMLViewerWPF
 
         public Print(XElement x)
         {
-            if (x.Element("print") != null)
-            {
-                var print = x.Element("print");
+            //if (x.Element("print") != null)
+            //{
+                var print = x;//.Element("print");
                 if (print.HasAttributes)
                 {
                     var attributes = from z in print.Attributes() select z;
@@ -91,7 +91,7 @@ namespace MusicXMLViewerWPF
                         }
                     }
                 }
-            }
+            //}
         }
     }
     public class MeasureNumbering
