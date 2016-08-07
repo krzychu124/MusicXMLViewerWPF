@@ -12,71 +12,143 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
 {
     class Measure : IXMLExtract, IDrawable // UNDONE finish reworking class
     {
-        private float width; // default value is 100 may change later
+        #region Fields for drawing
+
+        #endregion
+        #region Fields
         //--------------------
         private int number;
+        private float width; // default value is 100 may change later
+        //--------------------
+        private Attributes attributes;
         private bool hasNumberInvisible;
-        private MeasureCoordinates measure_pos;
-        private Point pos;
         private DrawingVisual visual;
         private int elements_count;
-
-        private List<Note> notes_list = new List<Note>(); // experimental
-        private List<Barline> barlines;
+        private MeasureCoordinates measure_pos;
+        private Point pos;
         private Print print_properties;
-        private List<Direction> direction;
-        private Attributes attributes;
+        #endregion
+
+        #region Collections
+        private List<Barline> barlines = new List<Barline>();
+        private List<Direction> direction = new List<MusicXMLViewerWPF.Direction>();
+        private List<Note> notes_list = new List<Note>(); // experimental
         private List<Segment> music_characters = new List<Segment>();
+        #endregion
 
-        public int Number { get { return number; } }
-        public float Width { get { return width; } set { if (value >= 0) { width = value; } else { width = 100f; Logger.Log("width is negative here"); } } }
-        public bool NumberVisible { get { return hasNumberInvisible; } }
-        public MeasureCoordinates MeasurePosition { get { return measure_pos; } }
-
-        public List<Note> NotesList { get { return notes_list; } } // Not complete
-        public List<Barline> Barlines { get { return barlines; } }
-        public Print PrintProperties { get { return print_properties; } }
-        public List<Direction> Direction { get { return direction; } }
+        #region Properties
         public Attributes Attributes { get { return attributes; } }
-
-        public Point Position { get { return pos; } set { if (value != null) pos = value; } }
+        public bool NumberVisible { get { return hasNumberInvisible; } }
         public DrawingVisual Visual { get { return visual; } set { if (value != null) visual = value; } }
-
+        public float Width { get { return width; } set { if (value >= 0) { width = value; } else { width = 100f; Logger.Log("width is negative here"); } } }
         public int ElementsCount { get { return elements_count; } }
+        public int Number { get { return number; } }
+        public List<Barline> Barlines { get { return barlines; } }
+        public List<Direction> Direction { get { return direction; } }
+        public List<Note> NotesList { get { return notes_list; } } // Not complete
+        public List<Segment> MusicCharacters { get { return music_characters; } }
+        public MeasureCoordinates MeasurePosition { get { return measure_pos; } }
+        public Point Position { get { return pos; } set { if (value != null) pos = value; } }
+        public Print PrintProperties { get { return print_properties; } }
+        #endregion
 
         public Measure()
         {
 
         }
+
         public Measure(XElement x)
         {
             XMLFiller(x);
-            barlines = new List<Barline>();
-            barlines.Add(new Barline() { Style = Barline.BarStyle.regular, Location = Barline.BarlineLocation.right }); // adding default barline for drawing later
-            if (x.Element("barline") != null)
-            {
-                
-                var bars = x.Elements("barline");
 
-                foreach (var item in bars)
-                {
-                    barlines.Add(new Barline(item)); // << adding irregular barline object like coda,segno, fermata, repeats or endings
-                } 
-            }
-            print_properties = x.Element("print") != null ? new Print(x) : null; // TODO_H needs more tests :)
-            direction = null;
-            if (x.Element("direction") != null)
+            if (x.Elements("direction").Any() == false)
             {
-                direction = new List<MusicXMLViewerWPF.Direction>();
-                var directions = x.Elements("direction");
-                foreach (var item in directions)
-                {
-                    direction.Add(new Direction(item));// TODO_L tests
-                }
+                direction = null;
             }
             
-            attributes = x.Element("attributes") != null ? new Attributes(x) : null;  // TODO_L tests
+            foreach (var element in x.Elements())
+            {
+                //XMLFiller(x);
+                if (element.Name.LocalName == "print")
+                {
+                    XMLExtractPrint(element);
+                }
 
+                if (element.Name.LocalName == "note")
+                {
+                        if (element.Element("rest") != null)
+                        {
+                            XMLExtractRests(element);
+                        }
+                        else
+                        {
+                            XMLExtractNotes(element);
+                        }
+                }
+
+                if (element.Name.LocalName == "direction")
+                { 
+                    XMLExtractDirections(element);
+                }
+
+                if (element.Name.LocalName == "attributes")
+                {
+                    XMLExtractAttributes(element);
+                }
+
+                if (element.Name.LocalName == "barline")
+                {
+                    XMLExtractBarlines(element);
+                }
+            }
+            //if (barlines.Count ==0 || barlines.Where(b => b.Style != Barline.BarStyle.regular).Any()) 
+            //{
+                barlines.Add(new Barline() { Style = Barline.BarStyle.regular, Location = Barline.BarlineLocation.right }); // adding default barline for drawing later
+            //}
+            foreach (var item in Misc.ScoreSystem.Segments)
+            {
+                //Logger.Log($"Added segment {item.Segment_type.ToString()}");
+            }
+        }
+
+        private void XMLExtractBarlines(XElement x)
+        {
+            barlines.Add(new Barline(x));
+            Misc.ScoreSystem.Segments.Add(new Segment() { Segment_type = SegmentType.Barline });
+        }
+
+        private void XMLExtractAttributes(XElement x)
+        {
+            attributes =  new Attributes(x); 
+            if (attributes.Clef != null) Misc.ScoreSystem.Segments.Add(new Segment() { Segment_type = SegmentType.Clef });
+            if (attributes.Key != null) Misc.ScoreSystem.Segments.Add(new Segment() { Segment_type = SegmentType.KeySig });
+            if (attributes.Time != null) Misc.ScoreSystem.Segments.Add(new Segment() { Segment_type = SegmentType.TimeSig });
+        }
+
+        private void XMLExtractDirections(XElement x)
+        {
+            direction.Add(new Direction(x));// TODO_L tests
+            Misc.ScoreSystem.Segments.Add(new Segment() { Segment_type = SegmentType.Direction });
+            music_characters.Add(new Segment() { Segment_type = SegmentType.Direction });
+        }
+
+        private void XMLExtractRests(XElement x)
+        {
+            Logger.Log("missing impl for this rest");
+            Misc.ScoreSystem.Segments.Add(new Segment() { Segment_type = SegmentType.Rest });
+            music_characters.Add(new Segment() { Segment_type = SegmentType.Rest });
+        }
+
+        private void XMLExtractNotes(XElement x)
+        {
+            Logger.Log("missing impl for this note");
+            Misc.ScoreSystem.Segments.Add(new Segment() { Segment_type = SegmentType.Chord});
+            music_characters.Add(new Segment() { Segment_type = SegmentType.Chord });
+        }
+
+        private void XMLExtractPrint(XElement x)
+        {
+            print_properties = new Print(x);
         }
 
         public IEnumerable<XElement> XMLExtractor()
@@ -89,17 +161,6 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
         public void XMLFiller(XElement x)
         {
             width = x.Attribute("width") != null ? float.Parse(x.Attribute("width").Value, CultureInfo.InvariantCulture) : 0f;
-            foreach (var item in x.Elements("note"))
-            {
-                if (item.Element("rest") != null)
-                {
-                    music_characters.Add(new Rest(item));
-                }
-                else
-                {
-                    music_characters.Add(new Note(item));
-                }
-            }
             if (width == 0f)
             {
                 Logger.Log($"Measure {number} has no width: {width}");

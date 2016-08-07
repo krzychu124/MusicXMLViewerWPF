@@ -15,7 +15,7 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <Label Grid.Column="0" />
-          <!--  <ScrollViewer HorizontalScrollBarVisibility="Auto"  VerticalScrollBarVisibility="Auto" Margin="0,5">
+            <!--  <ScrollViewer HorizontalScrollBarVisibility="Auto"  VerticalScrollBarVisibility="Auto" Margin="0,5">
                 <StackPanel Width="450">-->
                      <!--<Grid HorizontalAlignment="Left" Width="441" Height="150" VerticalAlignment="Top" Margin="5,0,0,0">
                         <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Margin="10,0">
@@ -24,7 +24,7 @@
                     </Grid> -->
                    <!-- <Grid HorizontalAlignment="Left" Width="441" Margin="5,0,0,0" Height="500" > -->
                         <Label Padding="1">Logger:</Label>
-                        <ScrollViewer VerticalScrollBarVisibility="Auto"  HorizontalScrollBarVisibility="Auto" Margin="0,20,0,0" >
+                        <ScrollViewer VerticalScrollBarVisibility="Auto"  HorizontalScrollBarVisibility="Auto" Margin="0,20,0,0">
                             <ScrollViewer.ContextMenu>
                                 <ContextMenu>
                                  <MenuItem Header="Clear Log" Click="MenuItem_Click" ></MenuItem>
