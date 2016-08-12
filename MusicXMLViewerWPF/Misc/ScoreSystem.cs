@@ -8,6 +8,9 @@ namespace MusicXMLViewerWPF.Misc
 {
     class ScoreSystem
     {
+        /// <summary>
+        /// List of segments
+        /// </summary>
         public static List<Segment> Segments = new List<Segment>();
         static float test = 0;
         public static void s (int i)
