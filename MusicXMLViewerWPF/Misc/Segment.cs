@@ -41,32 +41,51 @@ namespace MusicXMLViewerWPF
         public SegmentType Segment_type { get { return segment_type; } set { segment_type = value; SetSpacers(); } }
         public float Width { get { return width; } set { width = value; } }
         #endregion
-
+        /// <summary>
+        /// Set relative position of segment (eg. extracted from XML file)
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
         public void SetRelativePos(float x, float y)
         {
             Relative_x = x;
             Relative_y = y;
         }
-
+        /// <summary>
+        /// Set calculated position of segment
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
         public void SetCalculatedPos(float x, float y)
         {
             Calculated_x = x;
             Calculated_y = y;
         }
-
+        /// <summary>
+        /// Set user offset of segment
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
         public void SetOffset(float x, float y)
         {
             Offset_x = x;
             Offset_y = y;
         }
-
-        public void SetDimensions( float w, float h)
+        /// <summary>
+        /// Set dimensions of segment
+        /// </summary>
+        /// <param name="width"></param>
+        /// <param name="height"></param>
+        public void SetDimensions( float width, float height)
         {
-            Width = w;
-            Height = h;
+            Width = width;
+            Height = height;
         }
 
-        public void SetSpacers()
+        /// <summary>
+        /// Set segment spacers according to type of segment
+        /// </summary>
+        public void SetSpacers() 
         {
             float left = 0;
             float right = 0;
@@ -108,6 +127,11 @@ namespace MusicXMLViewerWPF
             Spacer_L = left;
             Spacer_R = right;
         }
+        /// <summary>
+        /// Set custom spacers of segment (left, right) 
+        /// </summary>
+        /// <param name="l"></param>
+        /// <param name="r"></param>
         public void SetSpacers(float l, float r)
         { 
             space_l = l;

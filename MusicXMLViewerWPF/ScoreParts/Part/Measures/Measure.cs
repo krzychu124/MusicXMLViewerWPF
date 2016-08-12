@@ -105,18 +105,24 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
             //{
                 barlines.Add(new Barline() { Style = Barline.BarStyle.regular, Location = Barline.BarlineLocation.right }); // adding default barline for drawing later
             //}
-            foreach (var item in Misc.ScoreSystem.Segments)
-            {
-                //Logger.Log($"Added segment {item.Segment_type.ToString()}");
-            }
+            //foreach (var item in Misc.ScoreSystem.Segments)
+            //{
+            //    //Logger.Log($"Added segment {item.Segment_type.ToString()}");
+            //}
         }
-
+        /// <summary>
+        /// Extract barlines from XML elemnet
+        /// </summary>
+        /// <param name="x"></param>
         private void XMLExtractBarlines(XElement x)
         {
             barlines.Add(new Barline(x));
             Misc.ScoreSystem.Segments.Add(new Segment() { Segment_type = SegmentType.Barline });
         }
-
+        /// <summary>
+        /// Extract measure attributes (Clef, KeySig, Timesig) from XML elemnet
+        /// </summary>
+        /// <param name="x"></param>
         private void XMLExtractAttributes(XElement x)
         {
             attributes =  new Attributes(x); 
@@ -124,28 +130,40 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
             if (attributes.Key != null) Misc.ScoreSystem.Segments.Add(new Segment() { Segment_type = SegmentType.KeySig });
             if (attributes.Time != null) Misc.ScoreSystem.Segments.Add(new Segment() { Segment_type = SegmentType.TimeSig });
         }
-
+        /// <summary>
+        /// Extract directions (wedge, dynamics, coda etc.) from XML elemnet
+        /// </summary>
+        /// <param name="x"></param>
         private void XMLExtractDirections(XElement x)
         {
             direction.Add(new Direction(x));// TODO_L tests
             Misc.ScoreSystem.Segments.Add(new Segment() { Segment_type = SegmentType.Direction });
             music_characters.Add(new Segment() { Segment_type = SegmentType.Direction });
         }
-
+        /// <summary>
+        /// Extract rests from XML elemnet
+        /// </summary>
+        /// <param name="x"></param>
         private void XMLExtractRests(XElement x)
         {
             Logger.Log("missing impl for this rest");
             Misc.ScoreSystem.Segments.Add(new Segment() { Segment_type = SegmentType.Rest });
             music_characters.Add(new Segment() { Segment_type = SegmentType.Rest });
         }
-
+        /// <summary>
+        /// Extract notes from XML elemnet
+        /// </summary>
+        /// <param name="x"></param>
         private void XMLExtractNotes(XElement x)
         {
             Logger.Log("missing impl for this note");
             Misc.ScoreSystem.Segments.Add(new Segment() { Segment_type = SegmentType.Chord});
             music_characters.Add(new Segment() { Segment_type = SegmentType.Chord });
         }
-
+        /// <summary>
+        /// Extract visual properties (custom margins, spacers, new_page, new_line etc.) from XML elemnet
+        /// </summary>
+        /// <param name="x"></param>
         private void XMLExtractPrint(XElement x)
         {
             print_properties = new Print(x);
@@ -157,7 +175,10 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
             var extracted = from extr in x.Descendants("measure") select extr;
             return extracted;
         }
-
+        /// <summary>
+        /// Extract basic info about measure from XML element. eg. width, isVisible number
+        /// </summary>
+        /// <param name="x"></param>
         public void XMLFiller(XElement x)
         {
             width = x.Attribute("width") != null ? float.Parse(x.Attribute("width").Value, CultureInfo.InvariantCulture) : 0f;
@@ -173,7 +194,10 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
             //number = Convert.ToInt32(x.Attribute("number").Value);
             hasNumberInvisible = x.Attribute("implicit") != null ? x.Attribute("implicit").Value == "yes" ? true : false : false; // TODO_L not sure if itll work - very rare usage
         }
-
+        /// <summary>
+        /// Method calculating measure width according to number and type of elements which contains
+        /// </summary>
+        /// <param name="n"></param>
         private void AutoMeasureWidth(int n)
         {
             width = 100f;
@@ -184,7 +208,11 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
             }
             if (temp_width > width) width = temp_width;
         }
-
+        /// <summary>
+        /// Drawing method used to draw measure with all contating elements (motes, rest, directions etc.)
+        /// </summary>
+        /// <param name="surface"></param>
+        /// <param name="p"></param>
         public void Draw(CanvasList surface,Point p) // drawing method
         {
             Position = p;
@@ -273,7 +301,11 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
         {
             //TODO_L missing implementation
         }
-
+        /// <summary>
+        /// Method for drawing staff of measure using width begining from StartPoint coords
+        /// </summary>
+        /// <param name="dc"></param>
+        /// <param name="StartPoint"></param>
         private void Draw_Measure(DrawingContext dc, Point StartPoint)
         {
             float Scale = MusicScore.Defaults.Scale.Tenths;
@@ -294,7 +326,11 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
                 Misc.DrawingHelpers.DrawString(dc, MusChar.Staff5L, TypeFaces.NotesFont, Brushes.Black, X + (Width-24), Y, Scale);
             }
         }
-
+        /// <summary>
+        /// Method for Drawing barlines !!DEPRECIATED!!
+        /// </summary>
+        /// <param name="dc"></param>
+        /// <param name="StartPoint"></param>
         private void Draw_Barlines(DrawingContext dc, Point StartPoint)
         {
             //float Scale = MusicScore.Defaults.Scale.Tenths;
@@ -356,13 +392,22 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
             //    }
             //}
         }
-
+        /// <summary>
+        /// Gets measure lenght for later calculations
+        /// </summary>
+        /// <param name="length"></param>
+        /// <returns></returns>
         private float GetMeasureLength(float length)
         {
             float num = Convert.ToInt32(Math.Floor(length / 24));
             return num;
         }
-
+        /// <summary>
+        /// Calculate length of empty space left between drawn staff and end of measure 
+        /// (measure staff is made from segment, if adding next segment would make measure too long it needs to calculate position of filler)
+        /// </summary>
+        /// <param name="l"></param>
+        /// <returns></returns>
         private float GetStaffLinesFilling(float l)
         {
             float fill = l % 24;
