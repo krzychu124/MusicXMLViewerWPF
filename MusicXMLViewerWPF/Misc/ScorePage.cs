@@ -8,6 +8,9 @@ namespace MusicXMLViewerWPF.Misc
 {
     class ScorePage
     {
-        public List<ScoreSystem> Pages = new List<ScoreSystem>();
+        /// <summary>
+        /// List of measureSystems which are placed on page (list of lines which contains list of measures in them)
+        /// </summary>
+        public List<MeasureSystem> Pages = new List<MeasureSystem>();
     }
 }
