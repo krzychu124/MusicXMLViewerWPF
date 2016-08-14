@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Media;
 
 namespace MusicXMLViewerWPF
 {
@@ -24,7 +26,9 @@ namespace MusicXMLViewerWPF
 
         private float space_l; //left spacer
         private float space_r; //right spacer 
-        
+
+        private Brush color;
+
         private SegmentType segment_type;
         #endregion
         
@@ -40,6 +44,7 @@ namespace MusicXMLViewerWPF
         public float Spacer_R { get { return space_r; } set { space_r = value; } }
         public SegmentType Segment_type { get { return segment_type; } set { segment_type = value; SetSpacers(); } }
         public float Width { get { return width; } set { width = value; } }
+        public Brush Color { get { return color; } set { color = value; } }
         #endregion
         /// <summary>
         /// Set relative position of segment (eg. extracted from XML file)
@@ -50,6 +55,14 @@ namespace MusicXMLViewerWPF
         {
             Relative_x = x;
             Relative_y = y;
+        }
+        /// <summary>
+        /// Set relative position of segment (eg. extracted from XML file)
+        /// </summary>
+        /// <param name="p"></param>
+        public void SetRelativePos(Point p)
+        {
+            SetRelativePos((float)p.X, (float)p.Y);
         }
         /// <summary>
         /// Set calculated position of segment
@@ -82,8 +95,16 @@ namespace MusicXMLViewerWPF
             Height = height;
         }
 
+        public void CalculateDimensions()
+        {
+            if (Spacer_L != 0 || Spacer_R != 0)
+            {
+                Width = Spacer_L + Spacer_R;
+                Height = 40f;
+            }
+        }
         /// <summary>
-        /// Set segment spacers according to type of segment
+        /// Sets segment spacers according to type of segment
         /// </summary>
         public void SetSpacers() 
         {
@@ -96,28 +117,28 @@ namespace MusicXMLViewerWPF
             }
             if (Segment_type == SegmentType.Chord)
             {
-                left = 1f;
-                right = 6f;
+                left = 10f;
+                right = 20f;
             }
             if (Segment_type == SegmentType.Clef)
             {
-                left = 2f;
-                right = 22f;
+                left = 5f;
+                right = 25f;
             }
             if (Segment_type == SegmentType.KeySig)
             {
-                left = 2f;
-                right = 4f;
+                left = 5f;
+                right = 10f;
             }
             if (Segment_type == SegmentType.TimeSig)
             {
-                left = 2f;
-                right = 14f;
+                left = 5f;
+                right = 25f;
             }
             if (Segment_type == SegmentType.Rest)
             {
-                left = 1f;
-                right = 6f;
+                left = 10f;
+                right = 10f;
             }
             if (Segment_type == SegmentType.Direction)
             {
@@ -136,6 +157,26 @@ namespace MusicXMLViewerWPF
         { 
             space_l = l;
             space_r = r;
+        }
+        /// <summary>
+        /// Segment values to string
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            string value =$"Rel:{Relative_x}, {Relative_y}; Spc L,R: {Spacer_L}, {Spacer_R}";
+            return value;
+        }
+
+        public void Draw(DrawingVisual visual , Brush color = null)
+        {
+            if (color == null)
+            {
+                color = Brushes.DarkBlue;
+            }
+            Point one = new Point(Relative_x,Relative_y);
+            Point two = new Point(Relative_x + Width, Relative_y + Height);
+            DrawingHelpers.DrawRectangle(visual, one, two, color);
         }
     }
 }
