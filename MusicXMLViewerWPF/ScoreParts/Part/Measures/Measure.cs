@@ -10,7 +10,7 @@ using System.Xml.Linq;
 
 namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
 {
-    class Measure : IXMLExtract, IDrawable // UNDONE finish reworking class
+    class Measure : Segment, IXMLExtract, IDrawable // UNDONE finish reworking class
     {
         #region Fields for drawing
 
@@ -27,6 +27,7 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
         private MeasureCoordinates measure_pos;
         private Point pos;
         private Print print_properties;
+        private bool is_first_in_line = false;
         #endregion
 
         #region Collections
@@ -40,7 +41,7 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
         public Attributes Attributes { get { return attributes; } }
         public bool NumberVisible { get { return hasNumberInvisible; } }
         public DrawingVisual Visual { get { return visual; } set { if (value != null) visual = value; } }
-        public float Width { get { return width; } set { if (value >= 0) { width = value; } else { width = 100f; Logger.Log("width is negative here"); } } }
+        public new float Width { get { return width; } set { if (value >= 0) { width = value; } else { width = 100f; Logger.Log("width is negative here"); } } }
         public int ElementsCount { get { return elements_count; } }
         public int Number { get { return number; } }
         public List<Barline> Barlines { get { return barlines; } }
@@ -50,9 +51,15 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
         public MeasureCoordinates MeasurePosition { get { return measure_pos; } }
         public Point Position { get { return pos; } set { if (value != null) pos = value; } }
         public Print PrintProperties { get { return print_properties; } }
+        public bool IsFirstInLine { get { return is_first_in_line; } set { is_first_in_line = value; }  }
         #endregion
 
         public Measure()
+        {
+
+        }
+
+        public Measure(XElement x, Point position)
         {
 
         }
@@ -100,6 +107,7 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
                 {
                     XMLExtractBarlines(element);
                 }
+                
             }
             //if (barlines.Count ==0 || barlines.Where(b => b.Style != Barline.BarStyle.regular).Any()) 
             //{
@@ -107,7 +115,7 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
             //}
             //foreach (var item in Misc.ScoreSystem.Segments)
             //{
-            //    //Logger.Log($"Added segment {item.Segment_type.ToString()}");
+            //    Logger.Log($"Added segment {item.ToString()}");
             //}
         }
         /// <summary>
@@ -117,7 +125,7 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
         private void XMLExtractBarlines(XElement x)
         {
             barlines.Add(new Barline(x));
-            Misc.ScoreSystem.Segments.Add(new Segment() { Segment_type = SegmentType.Barline });
+            Misc.ScoreSystem.Segments.Add(new Segment() { Segment_type = SegmentType.Barline, Color = Brushes.Gold });
         }
         /// <summary>
         /// Extract measure attributes (Clef, KeySig, Timesig) from XML elemnet
@@ -125,10 +133,22 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
         /// <param name="x"></param>
         private void XMLExtractAttributes(XElement x)
         {
-            attributes =  new Attributes(x); 
-            if (attributes.Clef != null) Misc.ScoreSystem.Segments.Add(new Segment() { Segment_type = SegmentType.Clef });
-            if (attributes.Key != null) Misc.ScoreSystem.Segments.Add(new Segment() { Segment_type = SegmentType.KeySig });
-            if (attributes.Time != null) Misc.ScoreSystem.Segments.Add(new Segment() { Segment_type = SegmentType.TimeSig });
+            attributes =  new Attributes(x);
+            if (attributes.Clef != null)
+            {
+                Misc.ScoreSystem.Segments.Add(new Segment() { Segment_type = SegmentType.Clef, Color = Brushes.Brown });
+                music_characters.Add(new Segment() { Segment_type = SegmentType.Clef, Color = Brushes.Brown });
+            }
+            if (attributes.Key != null)
+            {
+                Misc.ScoreSystem.Segments.Add(new Segment() { Segment_type = SegmentType.KeySig, Color = Brushes.Coral });
+                music_characters.Add(new Segment() { Segment_type = SegmentType.KeySig, Color = Brushes.Coral });
+            }
+            if (attributes.Time != null)
+            {
+                Misc.ScoreSystem.Segments.Add(new Segment() { Segment_type = SegmentType.TimeSig, Color = Brushes.Lavender });
+                music_characters.Add(new Segment() { Segment_type = SegmentType.TimeSig, Color = Brushes.Lavender });
+            }
         }
         /// <summary>
         /// Extract directions (wedge, dynamics, coda etc.) from XML elemnet
@@ -137,8 +157,8 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
         private void XMLExtractDirections(XElement x)
         {
             direction.Add(new Direction(x));// TODO_L tests
-            Misc.ScoreSystem.Segments.Add(new Segment() { Segment_type = SegmentType.Direction });
-            music_characters.Add(new Segment() { Segment_type = SegmentType.Direction });
+            Misc.ScoreSystem.Segments.Add(new Segment() { Segment_type = SegmentType.Direction});
+            music_characters.Add(new Segment() { Segment_type = SegmentType.Direction, Color = Brushes.DarkTurquoise });
         }
         /// <summary>
         /// Extract rests from XML elemnet
@@ -147,8 +167,8 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
         private void XMLExtractRests(XElement x)
         {
             Logger.Log("missing impl for this rest");
-            Misc.ScoreSystem.Segments.Add(new Segment() { Segment_type = SegmentType.Rest });
-            music_characters.Add(new Segment() { Segment_type = SegmentType.Rest });
+            Misc.ScoreSystem.Segments.Add(new Segment() { Segment_type = SegmentType.Rest, Color = Brushes.DarkMagenta });
+            music_characters.Add(new Segment() { Segment_type = SegmentType.Rest, Color = Brushes.DarkMagenta });
         }
         /// <summary>
         /// Extract notes from XML elemnet
@@ -157,8 +177,8 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
         private void XMLExtractNotes(XElement x)
         {
             Logger.Log("missing impl for this note");
-            Misc.ScoreSystem.Segments.Add(new Segment() { Segment_type = SegmentType.Chord});
-            music_characters.Add(new Segment() { Segment_type = SegmentType.Chord });
+            Misc.ScoreSystem.Segments.Add(new Segment() { Segment_type = SegmentType.Chord, Color = Brushes.DarkOliveGreen});
+            music_characters.Add(new Segment() { Segment_type = SegmentType.Chord, Color = Brushes.DarkOliveGreen });
         }
         /// <summary>
         /// Extract visual properties (custom margins, spacers, new_page, new_line etc.) from XML elemnet
@@ -216,6 +236,7 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
         public void Draw(CanvasList surface,Point p) // drawing method
         {
             Position = p;
+
             DrawingVisual visual = new DrawingVisual();
             DrawingVisual visualMeasure = new DrawingVisual();
             using (DrawingContext dc = visualMeasure.RenderOpen())
@@ -259,29 +280,52 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
 
                     item.Draw(visual, p);
                 }
-                /*
-                foreach (var item in Direction)
-                {
-                    if (item.DirectionList != null)
-                    {
-                        foreach (var item2 in item.DirectionList)
-                        {
-                            if (item2.Dynamics != null)
-                            {
-                                if (Attributes != null && Attributes.Key != null)
-                                {
-                                    p.X =  p.X + 50f;
-                                }
-                                item2.Dynamics.Draw(visual, p);
-                            }
-                        }
-                       
-                    }
-                }
-                */
+
+                //foreach (var item in Direction)
+                //{
+                //    if (item.DirectionList != null)
+                //    {
+                //        foreach (var item2 in item.DirectionList)
+                //        {
+                //            if (item2.Dynamics != null)
+                //            {
+                //                if (Attributes != null && Attributes.Key != null)
+                //                {
+                //                    p.X = p.X + 50f;
+                //                }
+                //                item2.Dynamics.Draw(visual, p);
+                //            }
+                //        }
+
+                //    }
+                //}
+
             }
             //Draw_Directions(dc2, p); // TODO_H missing implementation
+            
+            if (MusicCharacters.Count != 0)
+            {
+                Point temp = p;
+                temp.Y += 8f;
+                DrawingVisual segments = new DrawingVisual();
+                foreach (var character in MusicCharacters)
+                {
+                    if (character.Width == 0)
+                    {
+                        character.CalculateDimensions();
+                        character.Relative = temp;
+                        temp.X = character.Width + temp.X + 2f;
 
+                    }
+                    if (character.Width != 0)
+                    {
+                        DrawingVisual segment = new DrawingVisual();
+                        character.Draw(segment, character.Color);
+                        segments.Children.Add(segment);
+                    }
+                }
+                visual.Children.Add(segments);
+            }
             Visual = visual;
             surface.AddVisual(visual);
 
