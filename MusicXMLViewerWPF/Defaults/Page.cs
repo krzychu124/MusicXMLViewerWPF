@@ -11,7 +11,7 @@ using System.Xml.Linq;
 
 namespace MusicXMLViewerWPF
 {
-    public class Page  //TODO_H provide default margins if not presented in document  // Need to be reworked // Currently not used(maybe partial but not as good as it should be)// Should be the base of Page layout :/ // missing logic for pages, parts, scores, voices layouts
+    public class Page  
     {
 
         //public string part_id;
