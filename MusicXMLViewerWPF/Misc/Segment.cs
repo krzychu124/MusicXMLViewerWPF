@@ -94,7 +94,9 @@ namespace MusicXMLViewerWPF
             Width = width;
             Height = height;
         }
-
+        /// <summary>
+        /// Calculate dimensions from spacers
+        /// </summary>
         public void CalculateDimensions()
         {
             if (Spacer_L != 0 || Spacer_R != 0)
@@ -123,12 +125,12 @@ namespace MusicXMLViewerWPF
             if (Segment_type == SegmentType.Clef)
             {
                 left = 5f;
-                right = 25f;
+                right = 30f;
             }
             if (Segment_type == SegmentType.KeySig)
             {
                 left = 5f;
-                right = 10f;
+                right = 5f;
             }
             if (Segment_type == SegmentType.TimeSig)
             {
@@ -143,7 +145,7 @@ namespace MusicXMLViewerWPF
             if (Segment_type == SegmentType.Direction)
             {
                 left = 0f;
-                right = 0f;
+                right = 3f;
             }
             Spacer_L = left;
             Spacer_R = right;
