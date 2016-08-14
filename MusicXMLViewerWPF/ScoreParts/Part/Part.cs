@@ -12,7 +12,8 @@ namespace MusicXMLViewerWPF.ScoreParts.Part
     {
         private string part_id;
         private List<Measures.Measure> measure_list = new List<Measures.Measure>();
-        private Dictionary<int, Point> measure_margin_helper = new Dictionary<int, Point>() { }; /// <summary> helper list to store coordinates of starting point for every line </summary>
+        private Dictionary<int, Point> measure_margin_helper = new Dictionary<int, Point>() { }; 
+        /// <summary> helper list to store coordinates of starting point for every line </summary>
         private List<MeasureCoordinates> measure_pos = new List<MeasureCoordinates>();
 
         public string Id { get { return part_id; } }

@@ -125,7 +125,7 @@ namespace MusicXMLViewerWPF
             if (Segment_type == SegmentType.Clef)
             {
                 left = 5f;
-                right = 30f;
+                right = 28f;
             }
             if (Segment_type == SegmentType.KeySig)
             {
@@ -178,7 +178,7 @@ namespace MusicXMLViewerWPF
             }
             Point one = new Point(Relative_x,Relative_y);
             Point two = new Point(Relative_x + Width, Relative_y + Height);
-            DrawingHelpers.DrawRectangle(visual, one, two, color);
+            DrawingHelpers.DrawRectangle(visual, one, two, color, DashStyles.Solid);
         }
     }
 }
