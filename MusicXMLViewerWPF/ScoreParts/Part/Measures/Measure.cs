@@ -10,7 +10,7 @@ using System.Xml.Linq;
 
 namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
 {
-    class Measure : Segment, IXMLExtract, IDrawable // UNDONE finish reworking class
+    class Measure : IXMLExtract, IDrawable // UNDONE finish reworking class
     {
         #region Fields for drawing
 
@@ -27,7 +27,6 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
         private MeasureCoordinates measure_pos;
         private Point pos;
         private Print print_properties;
-        private bool is_first_in_line = false;
         #endregion
 
         #region Collections
@@ -41,7 +40,7 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
         public Attributes Attributes { get { return attributes; } }
         public bool NumberVisible { get { return hasNumberInvisible; } }
         public DrawingVisual Visual { get { return visual; } set { if (value != null) visual = value; } }
-        public new float Width { get { return width; } set { if (value >= 0) { width = value; } else { width = 100f; Logger.Log("width is negative here"); } } }
+        public float Width { get { return width; } set { if (value >= 0) { width = value; } else { width = 100f; Logger.Log("width is negative here"); } } }
         public int ElementsCount { get { return elements_count; } }
         public int Number { get { return number; } }
         public List<Barline> Barlines { get { return barlines; } }
@@ -51,15 +50,9 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
         public MeasureCoordinates MeasurePosition { get { return measure_pos; } }
         public Point Position { get { return pos; } set { if (value != null) pos = value; } }
         public Print PrintProperties { get { return print_properties; } }
-        public bool IsFirstInLine { get { return is_first_in_line; } set { is_first_in_line = value; }  }
         #endregion
 
         public Measure()
-        {
-
-        }
-
-        public Measure(XElement x, Point position)
         {
 
         }
@@ -107,7 +100,6 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
                 {
                     XMLExtractBarlines(element);
                 }
-                
             }
             //if (barlines.Count ==0 || barlines.Where(b => b.Style != Barline.BarStyle.regular).Any()) 
             //{
@@ -236,7 +228,6 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
         public void Draw(CanvasList surface,Point p) // drawing method
         {
             Position = p;
-
             DrawingVisual visual = new DrawingVisual();
             DrawingVisual visualMeasure = new DrawingVisual();
             using (DrawingContext dc = visualMeasure.RenderOpen())
@@ -302,11 +293,9 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
 
             }
             //Draw_Directions(dc2, p); // TODO_H missing implementation
-            
             if (MusicCharacters.Count != 0)
             {
                 Point temp = p;
-                temp.Y += 8f;
                 DrawingVisual segments = new DrawingVisual();
                 foreach (var character in MusicCharacters)
                 {
@@ -314,8 +303,7 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
                     {
                         character.CalculateDimensions();
                         character.SetRelativePos(temp);
-                        temp.X = character.Width + temp.X + 2f;
-
+                        temp.X = character.Width + temp.X;
                     }
                     if (character.Width != 0)
                     {
