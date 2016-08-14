@@ -33,6 +33,7 @@ namespace MusicXMLViewerWPF
         #endregion
         
         #region public properties
+        public Brush Color { get { return color; } set { color = value; } }
         public float Calculated_x { get { return calculated_x; } set { calculated_x = value; } }
         public float Calculated_y { get { return calculated_y; } set { calculated_y = value; } }
         public float Height { get { return height; } set { height = value; } }  
@@ -42,9 +43,13 @@ namespace MusicXMLViewerWPF
         public float Relative_y { get { return relative_y; } set { relative_y = value; } }
         public float Spacer_L { get { return space_l; } set { space_l = value; } }
         public float Spacer_R { get { return space_r; } set { space_r = value; } }
-        public SegmentType Segment_type { get { return segment_type; } set { segment_type = value; SetSpacers(); } }
         public float Width { get { return width; } set { width = value; } }
-        public Brush Color { get { return color; } set { color = value; } }
+
+        public Point Calculated { get { return new Point(calculated_x, calculated_y); } set { calculated_x = (float)value.X; calculated_y = (float)value.Y; } }
+        public Point Dimensions { get { return new Point(width, height); } set { width = (float)value.X; height = (float)value.Y; } }
+        public Point Offset { get { return new Point(offset_x, offset_y); } set { offset_x = (float)value.X; offset_y = (float)value.Y; } }
+        public Point Relative { get { return new Point(relative_x, relative_y); } set { relative_x = (float)value.X; relative_y = (float)value.Y; } }
+        public SegmentType Segment_type { get { return segment_type; } set { segment_type = value; SetSpacers(); } }
         #endregion
         /// <summary>
         /// Set relative position of segment (eg. extracted from XML file)
@@ -55,14 +60,6 @@ namespace MusicXMLViewerWPF
         {
             Relative_x = x;
             Relative_y = y;
-        }
-        /// <summary>
-        /// Set relative position of segment (eg. extracted from XML file)
-        /// </summary>
-        /// <param name="p"></param>
-        public void SetRelativePos(Point p)
-        {
-            SetRelativePos((float)p.X, (float)p.Y);
         }
         /// <summary>
         /// Set calculated position of segment

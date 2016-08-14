@@ -313,7 +313,7 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
                     if (character.Width == 0)
                     {
                         character.CalculateDimensions();
-                        character.SetRelativePos(temp);
+                        character.Relative = temp;
                         temp.X = character.Width + temp.X + 2f;
 
                     }
