@@ -28,6 +28,8 @@ namespace MusicXMLViewerWPF.ScoreParts.Part
             Point tempMargins = new Point(MusicScore.Defaults.Page.Margins.Left, MusicScore.Defaults.Page.Margins.Top + MusicScore.Defaults.SystemLayout.TopSystemDistance);
             float sysdist = MusicScore.Defaults.SystemLayout.SystemDistance;
             var measures = x.Elements();
+            
+            //! Main loop for searching measures in current part
             for (int i = 0; i < measures.Count(); i++)
             {
                 XElement item = measures.ElementAt(i);

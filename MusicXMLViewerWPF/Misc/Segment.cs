@@ -24,8 +24,8 @@ namespace MusicXMLViewerWPF
         private float offset_x;
         private float offset_y;
 
-        private float space_l; //left spacer
-        private float space_r; //right spacer 
+        private float space_l; //! left spacer
+        private float space_r; //! right spacer 
 
         private Brush color;
 
