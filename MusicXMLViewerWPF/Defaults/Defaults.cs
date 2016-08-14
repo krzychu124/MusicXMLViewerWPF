@@ -8,7 +8,7 @@ using System.Windows.Media;
 
 namespace MusicXMLViewerWPF.Defaults
 {
-    class Defaults //TODO place for instacnes of parent class folder;
+    class Defaults 
     {
         private Scale scale;
         private Page page;

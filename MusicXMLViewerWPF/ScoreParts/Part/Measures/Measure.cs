@@ -10,7 +10,7 @@ using System.Xml.Linq;
 
 namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
 {
-    class Measure : Segment, IXMLExtract, IDrawable // UNDONE finish reworking class
+    class Measure : Segment, IXMLExtract, IDrawable // NEEDIMPROVEMENTS: Finish reworking class
     {
         #region Fields for drawing
 
@@ -156,7 +156,7 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
         /// <param name="x"></param>
         private void XMLExtractDirections(XElement x)
         {
-            direction.Add(new Direction(x));// TODO_L tests
+            direction.Add(new Direction(x));
             Misc.ScoreSystem.Segments.Add(new Segment() { Segment_type = SegmentType.Direction});
             music_characters.Add(new Segment() { Segment_type = SegmentType.Direction, Color = Brushes.DarkTurquoise });
         }
@@ -338,12 +338,12 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
 
         private void Draw_Directions(DrawingContext dc2, Point p)
         {
-            //TODO_L missing implementation
+            //UNDONE missing implementation
         }
 
         private void Draw_Attributes(DrawingContext dc2, Point p)
         {
-            //TODO_L missing implementation
+            //UNDONE missing implementation
         }
         /// <summary>
         /// Method for drawing staff of measure using width begining from StartPoint coords

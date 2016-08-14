@@ -8,8 +8,9 @@ using System.Xml.Linq;
 
 namespace MusicXMLViewerWPF
 {
-    public class Print //TODO_L test, looks good
+    public class Print 
     {
+        #region Fields
         //attributes //
         private float staff_spacing;
         private int blank_page;
@@ -21,7 +22,8 @@ namespace MusicXMLViewerWPF
         private Defaults.SystemLayout sys_layout;
         private MeasureNumbering measure_numbering;
         private List<StaffLayout> staff_layout_list = new List<StaffLayout>();
-
+        #endregion
+        #region Properties
         public bool NewPage { get { return (int)new_page == 0 ? false : true; } }
         public bool NewSystem { get { return (int)new_system == 0 ? false : true; } }
         public float StaffSpacing { get { return staff_spacing; } }
@@ -31,7 +33,7 @@ namespace MusicXMLViewerWPF
         public Defaults.SystemLayout SystemLayout { get { return sys_layout; } }
         public MeasureNumbering MeasureNumbering { get { return measure_numbering; } }
         public List<StaffLayout> StaffLayoutList { get { return staff_layout_list; } }
-
+        #endregion
         public Print(XElement x)
         {
             //if (x.Element("print") != null)

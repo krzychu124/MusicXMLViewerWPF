@@ -133,11 +133,6 @@ namespace MusicXMLViewerWPF
                             Logger.Log(" 'key class' missing addition to list");
                            // list.Add(k);
                         }
-                    }
-                    if (i.Element("attributes") != null)
-                    {
-
-                        XElement attr = i.Element("attributes");
                         if (attr.Element("clef") != null)
                         {
                             attr = attr.Element("clef");
@@ -145,11 +140,6 @@ namespace MusicXMLViewerWPF
                             //list.Add(cl);
                             Logger.Log(" 'clef class' missing addition to list");
                         }
-                    }
-                    if (i.Element("attributes") != null)
-                    {
-
-                        XElement attr = i.Element("attributes");
                         if (attr.Element("time") != null)
                         {
                             XElement time = attr.Element("time");
@@ -159,6 +149,31 @@ namespace MusicXMLViewerWPF
                             Logger.Log(" 'sigtime class' missing addition to list");
                         }
                     }
+                    //if (i.Element("attributes") != null)
+                    //{
+
+                    //    XElement attr = i.Element("attributes");
+                    //    if (attr.Element("clef") != null)
+                    //    {
+                    //        attr = attr.Element("clef");
+                    //        Clef cl = new Clef(attr.Element("sign").Value, Convert.ToInt32(attr.Element("line").Value), measure_number);
+                    //        //list.Add(cl);
+                    //        Logger.Log(" 'clef class' missing addition to list");
+                    //    }
+                    //}
+                    //if (i.Element("attributes") != null)
+                    //{
+
+                    //    XElement attr = i.Element("attributes");
+                    //    if (attr.Element("time") != null)
+                    //    {
+                    //        XElement time = attr.Element("time");
+                    //        string symbol = time.HasAttributes ? time.FirstAttribute.ToString() : "number";
+                    //        TimeSignature t = new TimeSignature(Convert.ToInt32(time.Element("beats").Value), Convert.ToInt32(time.Element("beat-type").Value), symbol, measure_number);
+                    //        // list.Add(t);
+                    //        Logger.Log(" 'sigtime class' missing addition to list");
+                    //    }
+                    //}
                             
 
                    

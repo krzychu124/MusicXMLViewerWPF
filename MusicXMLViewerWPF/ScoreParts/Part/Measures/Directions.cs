@@ -17,9 +17,9 @@ namespace MusicXMLViewerWPF
         private string directive;
         #endregion
         #region Elements
-        private Dynamics dynamics; // TODO_L will be moved to directions; // Done
+        private Dynamics dynamics; 
         private List<Directions> directionList = new List<Directions>();
-        private DirectionType typ; // TODO_L rework to class, then add all attributes
+        private DirectionType typ; // TODO_L Deletion cantidate
         private int posY; //  unusable, during rework...
         private int relX; //  unusable, during rework...
         private float offset;
@@ -226,7 +226,7 @@ namespace MusicXMLViewerWPF
         }
     }
 
-    enum DirectionType //TODO_L may be not usable due to rework whole class
+    enum DirectionType //TODO_L Deletion candidate
     {
         other,
         wedge,

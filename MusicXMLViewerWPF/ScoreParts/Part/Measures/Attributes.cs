@@ -9,12 +9,12 @@ using System.Xml.Linq;
 
 namespace MusicXMLViewerWPF
 {
-    class Attributes //TODO_L working basics, missing features
+    class Attributes //TODO_L missing features
     {
-        // TODO_L private Divisions divisions;
-        // TODO_L private PartSymbol part_symbol;
-        // TODO_L private StaffDetails staff_details;
-        // TODO_L public PartSymbol PartSymbol { get { return part_symbol; } }
+        // private Divisions divisions;
+        // private PartSymbol part_symbol;
+        // private StaffDetails staff_details;
+        // public PartSymbol PartSymbol { get { return part_symbol; } }
         private float attribute_width;
         private Clef clef;
         private Key key;
@@ -276,7 +276,7 @@ namespace MusicXMLViewerWPF
 
         public MeasureRepeat(XElement x)
         {
-            val = int.Parse(x.Value); // TODO need tests
+            val = int.Parse(x.Value); 
             var attr = x.Attributes();
             foreach (var item in attr)
             {
