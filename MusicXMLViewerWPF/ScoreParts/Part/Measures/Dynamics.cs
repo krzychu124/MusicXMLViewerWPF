@@ -31,7 +31,7 @@ namespace MusicXMLViewerWPF
             SetStringSymbol(Type);
         }
 
-        public Dynamics( int y, string align, string t, int x=0)//TODO_L improve, currently temp, only for compatibility while reworking
+        public Dynamics( int y, string align, string t, int x=0)
         {
             isRelative = x != 0 ? true : false;
             def_x = x;

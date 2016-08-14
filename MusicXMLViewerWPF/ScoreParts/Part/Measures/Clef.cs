@@ -27,7 +27,7 @@ namespace MusicXMLViewerWPF
         #endregion
         public Clef(XElement x)
         {
-            //TODO_L more indepth tests
+            
             additional_attributes = new EmptyPrintStyle(x.Attributes());
             Segment_type = SegmentType.Clef;
             //-----------------------

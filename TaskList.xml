@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Tasks>
+  <item>
+    <text>Refactor, simplify measure XML extract to classes</text>
+    <finished>false</finished>
+  </item>
+  <item>
+    <text>Measure implicit number check</text>
+    <finished>false</finished>
+  </item>
+  <item>
+    <text>Direction segment dimensions</text>
+    <finished>false</finished>
+  </item>
+  <item>
+    <text>Improve repeats.</text>
+    <finished>false</finished>
+  </item>
+</Tasks>

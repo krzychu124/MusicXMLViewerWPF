@@ -10,7 +10,7 @@ using System.Xml.Linq;
 
 namespace MusicXMLViewerWPF
 {
-    class Barline :  Segment, IDrawable, IXMLExtract // TODO_L add drawing for coda fermata segno
+    class Barline :  Segment, IDrawable, IXMLExtract
     {
         #region Fields
         private BarlineLocation location;
@@ -220,7 +220,7 @@ namespace MusicXMLViewerWPF
 
         public Segno(IEnumerable<XAttribute> x) : base(x)
         {
-            //TODO_H missing implementation
+            //TODO_L missing implementation
             _symbol = MusChar.Segno;
         }
 
@@ -248,7 +248,7 @@ namespace MusicXMLViewerWPF
             _symbol = MusChar.Coda;
         }
         
-        public void Draw(DrawingVisual visual, Point p) //TODO_H not tested - position needs check
+        public void Draw(DrawingVisual visual, Point p) 
         {
             DrawingVisual coda = new DrawingVisual();
             using (DrawingContext dc = coda.RenderOpen())
@@ -459,7 +459,7 @@ namespace MusicXMLViewerWPF
         {
             if (Winged != null)
             {
-                //TODO_L incomplete
+                //UNDONE incomplete
             }
         }
 
@@ -543,7 +543,7 @@ namespace MusicXMLViewerWPF
             double_curved
         }
     }
-    public class EmptyPrintStyle // TODO_L test class
+    public class EmptyPrintStyle
     {
         protected float def_x;
         protected float def_y;
@@ -573,7 +573,8 @@ namespace MusicXMLViewerWPF
         {
             FillAttributes(x);
         }
-        private void FillAttributes(IEnumerable<XAttribute> x) // TODO_L check if it's working
+        private void FillAttributes(IEnumerable<XAttribute> x) 
+
         {
             h_align = Halign.none;
             foreach (var item in x)

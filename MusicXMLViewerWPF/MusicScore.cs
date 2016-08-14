@@ -18,7 +18,7 @@ namespace MusicXMLViewerWPF
         protected static string title;
         protected static Defaults.Defaults defaults; 
         protected static Dictionary<string, ScoreParts.Part.Part> parts = new Dictionary<string, ScoreParts.Part.Part>() { };
-        protected static Identification.Identification identification; // TODO_L tests
+        protected static Identification.Identification identification; 
         protected static List<Credit.Credit> credits = new List<Credit.Credit>();
         protected static List<PartList> musicscoreparts;// = new List<PartList>(); // TODO_L replaced for tests
         protected static Work.Work work; 
