@@ -18,6 +18,7 @@ namespace MusicXMLViewerWPF.Credit
         private CreditWords credit_words;
         private string credit_type;
         private CreditType type;
+        public static Segment segment = new Segment();
         #endregion
 
         #region Public properties read-only
@@ -49,6 +50,15 @@ namespace MusicXMLViewerWPF.Credit
                     }
                 }
             }
+        }
+        /// <summary>
+        /// Set basic properties of Credit segment
+        /// </summary>
+        public static void SetCreditSegment()
+        {
+            segment.Relative = new Point(MusicScore.Defaults.Page.ContentSpace.X, MusicScore.Defaults.Page.ContentSpace.Y);
+            segment.Width = (float)MusicScore.Defaults.Page.ContentSpace.Width;
+            segment.Segment_type = SegmentType.Title;
         }
         private void SetCreditType()
         {

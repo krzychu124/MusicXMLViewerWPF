@@ -37,5 +37,14 @@ namespace MusicXMLViewerWPF
             n.Y /= norm_length;
             return new Point(M.X + (distance * n.X), M.Y + (distance * n.Y));
         }
+        public static Rect Add(Rect one, Rect two)
+        {
+            Rect result = new Rect();
+            result.X = one.X + two.X;
+            result.Y = one.Y + two.Y;
+            result.Width = one.Width + two.Width;
+            result.Height = one.Height + two.Height;
+            return result;
+        }
     }
 }

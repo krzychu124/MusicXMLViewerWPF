@@ -18,12 +18,16 @@ namespace MusicXMLViewerWPF
         private static float page_height;
         private static float page_width;
         private static PageMargins page_margins;
+        private static Rect content_space;
+        private static Rect content_space_for_measures;
 
         public static int num_lines;
         public static List<Margins> line = new List<Margins>();
         public float Width {  get { return page_width; } }
         public float Height {  get { return page_height; } }
         public PageMargins Margins {  get { return page_margins; } }
+        public Rect ContentSpace { get { return content_space; } }
+        public Rect MeasuresContentSpace { get { return content_space_for_measures; } }
 
         public static int Num_lines
         {
@@ -46,11 +50,28 @@ namespace MusicXMLViewerWPF
             page_width = 2100f;
             page_height = 2970f;
             page_margins = new PageMargins();
+            CalculateContentSpace();
+            //CalculateMeasureContetSpace();
+        }
+
+        public void CalculateMeasureContetSpace()
+        {
+            Rect temp = Credit.Credit.segment.Rectangle;
+            content_space_for_measures = new Rect(temp.BottomLeft, content_space.BottomRight);
+            MusicScore m = new MusicScore() { ContentSpaceCalculated = true };
+            //? content_space_measures = 
+        }
+
+        private void CalculateContentSpace()
+        {
+            Point right_bottom = new Point(page_width - Margins.Right, page_height - Margins.Bottom );
+            content_space = new Rect(new Point(Margins.Left, Margins.Top), right_bottom);
         }
 
         public Page(XElement x)
         {
             GetPageInfo(x);
+            CalculateContentSpace();
         }
 
         public Page(float h, float w, PageMargins p)
@@ -184,6 +205,9 @@ namespace MusicXMLViewerWPF
             odd,
             even
         }
-        
+    }
+    public class RectExtensions
+    {
+
     }
 }

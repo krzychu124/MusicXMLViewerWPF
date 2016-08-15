@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,7 +12,7 @@ namespace MusicXMLViewerWPF
 {   /// <summary>
     /// Main class, storage for everything which needs to be drawn
     /// </summary>
-    class MusicScore 
+    class MusicScore : INotifyPropertyChanged
     {
         #region static variables
         protected static CanvasList Surface;
@@ -20,16 +21,47 @@ namespace MusicXMLViewerWPF
         protected static Dictionary<string, ScoreParts.Part.Part> parts = new Dictionary<string, ScoreParts.Part.Part>() { };
         protected static Identification.Identification identification; 
         protected static List<Credit.Credit> credits = new List<Credit.Credit>();
-        protected static List<PartList> musicscoreparts;// = new List<PartList>(); // TODO_L replaced for tests
+        protected static List<PartList> musicscoreparts; //= new List<PartList>(); // TODO_L replaced for tests
         protected static Work.Work work; 
         protected static XElement file; // <<Loaded XML file>>
         protected static bool loaded = false;
+        protected static bool credits_loaded = false;
+        protected static bool content_space_calculated = false;
         #endregion
 
+
         #region helpers
+        public event PropertyChangedEventHandler PropertyChanged;
         private static List<Misc.LineBreak> breaks = new List<Misc.LineBreak>();
         //private static List<>
         public static List<Misc.LineBreak> LineBreaks { get { return breaks; } }
+        public bool Loaded
+        {
+            get { return loaded; }
+            set
+            {
+                loaded = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Loaded)));
+            }
+        }
+        public bool CreditsLoaded
+        {
+            get { return credits_loaded; }
+            set
+            {
+                credits_loaded = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CreditsLoaded)));
+            }
+        }
+        public bool ContentSpaceCalculated
+        {
+            get { return content_space_calculated; }
+            set
+            {
+                content_space_calculated = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ContentSpaceCalculated)));
+            }
+        }
         #endregion
 
         #region public static properties (read-only)
@@ -44,14 +76,19 @@ namespace MusicXMLViewerWPF
         public static bool isLoaded { get { return loaded; } }
         #endregion
 
+        public MusicScore()
+        {
+            this.PropertyChanged += MusicScore_PropertyChanged;
+        }
         public MusicScore(XDocument x)
         {
+            this.PropertyChanged += MusicScore_PropertyChanged;
             file = x.Element("score-partwise");
             if (file != null)
             {
                 Logger.Log("File Loaded");
                 LoadToClasses();
-                loaded = true;
+                Loaded = true;
             }
             else
             {
@@ -59,6 +96,34 @@ namespace MusicXMLViewerWPF
             }
 
             
+        }
+
+        private void MusicScore_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case "CreditsLoaded": if (CreditsLoaded != false)
+                    {
+                        Defaults.Page.CalculateMeasureContetSpace();
+                        Logger.Log("Calculated Content Space for measures");
+                    }
+                    break;
+                case "Loaded": if (Loaded == true)
+                    {
+                        Logger.Log("File loaded.");
+                    }
+                    else
+                    {
+                        Logger.Log("File cleared.");
+                    }
+                    break;
+                case "ContentSpaceLoaded":
+                    Logger.Log("Calculated Content Space");
+                    break;
+                default:
+                    Console.WriteLine($"Not implemented task for {e.PropertyName} property ");
+                    break;
+            }
         }
 
         private void LoadToClasses()
@@ -71,10 +136,14 @@ namespace MusicXMLViewerWPF
             {
                 credits.Add(new Credit.Credit(item));
             }
+            Credit.Credit.SetCreditSegment();
+            
             foreach (var item in file.Elements("part"))
             {
                  parts.Add(item.Attribute("id").Value, new ScoreParts.Part.Part(item));
             }
+            CreditsLoaded = false;
+            CreditsLoaded = true;
         }
         
         public static void GetSurfce (CanvasList s)
@@ -105,7 +174,8 @@ namespace MusicXMLViewerWPF
 
         public static void Clear()
         {
-            loaded = false;
+            MusicScore clear = new MusicScore();
+            clear.Loaded = false;
             title = null;
             defaults = null;
             parts.Clear();
@@ -114,6 +184,7 @@ namespace MusicXMLViewerWPF
             breaks.Clear();
             work = null;
             file = null;
+            credits_loaded = false;
             MusicXMLViewerWPF.Defaults.Appearance.Clear();
         }
 
@@ -140,9 +211,12 @@ namespace MusicXMLViewerWPF
                 item.DrawBreak(visual);
             }
         }
-
-        public static void DrawMusicScoreTitleSpace(DrawingVisual visual)
+        /// <summary>
+        /// Fill neccesary properties to properly draw Title/Credits segment
+        /// </summary>
+        private static void InitTitleSpace()
         {
+            
             float space_height = 0f;
             foreach (var item in CreditList)
             {
@@ -159,15 +233,29 @@ namespace MusicXMLViewerWPF
                     space_height += 50f;
                 }
             }
-            if (space_height != 0)
+            Credit.Credit.segment.Height = (float)Defaults.Page.ContentSpace.Y + space_height;
+            MusicScore n = new MusicScore() { CreditsLoaded = true };
+        }
+        public static void DrawMusicScoreContentSpace(DrawingVisual visual)
+        {
+            Misc.DrawingHelpers.DrawRectangle(visual, Defaults.Page.MeasuresContentSpace, Brushes.Red);
+        }
+        public static void DrawMusicScoreTitleSpace(DrawingVisual visual)
+        {
+            InitTitleSpace();
+            if (Credit.Credit.segment.Height != 0)
             {
-                Point left_up = new Point(Defaults.Page.Margins.Left, Defaults.Page.Margins.Top);
+                //Point left_up = new Point(Defaults.Page.Margins.Left, Defaults.Page.Margins.Top);
                 //Point right_down = new Point(CreditList.Where(i => i.Type == Credit.CreditType.arranger).Select( i => i.CreditWords.DefX).First(), CreditList.Where(i => i.Type == Credit.CreditType.arranger).Select(i => i.CreditWords.DefY).First());
-                
-                Point right_down = new Point(Defaults.Page.Width - Defaults.Page.Margins.Right, Defaults.Page.Margins.Top + space_height);
-                Misc.DrawingHelpers.DrawRectangle(visual, left_up, right_down, Brushes.Green);
+                // Misc.DrawingHelpers.DrawRectangle(visual, left_up, right_down, Brushes.Green);
+                //Point right_down = new Point(Defaults.Page.Width - Defaults.Page.Margins.Right, Defaults.Page.Margins.Top + space_height);
+                Point left_up = Credit.Credit.segment.Relative;
+                Point right_down = new Point(Credit.Credit.segment.Rectangle.Left, Credit.Credit.segment.Rectangle.Height);//Relative.Y + Credit.Credit.segment.Dimensions.Y);
+                Credit.Credit.segment.Draw(visual, Brushes.Green);
+                //Misc.DrawingHelpers.DrawRectangle(visual, Credit.Credit.segment.Rectangle.TopLeft, Credit.Credit.segment.Rectangle.BottomRight, Brushes.Green);
                 AddBreak((float)right_down.X + 20f, (float)right_down.Y, "title");
             }
+
         }
         #endregion
     }
