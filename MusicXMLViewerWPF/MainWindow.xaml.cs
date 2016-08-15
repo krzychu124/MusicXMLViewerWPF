@@ -206,9 +206,14 @@ new Point(origin.X + totalWidth, y));
         {
             if (MusicScore.isLoaded)
             {
+                //! drawing page 
                 DrawingVisual visual = new DrawingVisual();
                 MusicScore.DrawPageRectangle(visual);
                 drawingSurface.AddVisual(visual);
+                //! drawing margins rectangle
+                DrawingVisual visual2 = new DrawingVisual();
+                MusicScore.DrawMusicScoreMargins(visual2);
+                drawingSurface.AddVisual(visual2);
             }
             else
             {
@@ -220,9 +225,7 @@ new Point(origin.X + totalWidth, y));
         {
             if (MusicScore.isLoaded)
             {
-                DrawingVisual visual = new DrawingVisual();
-                MusicScore.DrawMusicScoreMargins(visual);
-                drawingSurface.AddVisual(visual);
+                
                 //...
                 //LoadCharsToViewPort c = new LoadCharsToViewPort();
                 //c.AddClef(visual);
@@ -292,6 +295,18 @@ new Point(origin.X + totalWidth, y));
                 Rect content = MusicScore.Defaults.Page.MeasuresContentSpace;
                 Logger.Log(margins.ToString());
                 Logger.Log(content.ToString());
+                foreach (var item in MusicScore.Parts.ElementAt(0).Value.MeasureSegmentList)
+                {
+                    DrawingVisual segment = new DrawingVisual();
+                    item.Draw(segment, Brushes.Blue, DashStyles.Solid);
+                    using (DrawingContext dc = segment.RenderOpen())
+                    {//
+                        Misc.DrawingHelpers.DrawText(dc, item.Relative.ToString(), new Point(item.Relative.X + 70f, item.Relative.Y + 15f), 12, font_weight: "regular", withsub:false);
+                        Misc.DrawingHelpers.DrawText(dc, item.Width.ToString(), new Point(item.Relative.X + 45f, item.Relative.Y + 30f), 12, withsub: false, color: Brushes.DarkGray);
+                    }
+                        
+                    drawingSurface.AddVisual(segment);
+                }
             }
             else
             {
