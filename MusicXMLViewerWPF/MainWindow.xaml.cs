@@ -286,8 +286,12 @@ new Point(origin.X + totalWidth, y));
         {
             if (MusicScore.isLoaded)
             {
-                LoadCharsToViewPort sur = new LoadCharsToViewPort(drawingSurface);
-                sur.AddNotes();
+                //LoadCharsToViewPort sur = new LoadCharsToViewPort(drawingSurface);
+                //sur.AddNotes();
+                Rect margins = MusicScore.Defaults.Page.ContentSpace;
+                Rect content = MusicScore.Defaults.Page.MeasuresContentSpace;
+                Logger.Log(margins.ToString());
+                Logger.Log(content.ToString());
             }
             else
             {
