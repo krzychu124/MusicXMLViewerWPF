@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -11,23 +12,32 @@ using System.Xml.Linq;
 
 namespace MusicXMLViewerWPF
 {
-    public class Page  
+    public class Page : INotifyPropertyChanged
     {
 
         //public string part_id;
-        private static float page_height;
-        private static float page_width;
-        private static PageMargins page_margins;
-        private static Rect content_space;
-        private static Rect content_space_for_measures;
+        private float page_height;
+        private float page_width;
+        private PageMargins page_margins;
+        private Rect content_space;
+        private Rect content_space_for_measures;
 
+        public event PropertyChangedEventHandler PropertyChanged;
         public static int num_lines;
         public static List<Margins> line = new List<Margins>();
         public float Width {  get { return page_width; } }
         public float Height {  get { return page_height; } }
         public PageMargins Margins {  get { return page_margins; } }
-        public Rect ContentSpace { get { return content_space; } }
-        public Rect MeasuresContentSpace { get { return content_space_for_measures; } }
+        public Rect ContentSpace { get { return content_space; } set { content_space = value; } }
+        public Rect MeasuresContentSpace
+        {
+            get { return content_space_for_measures; }
+            set
+            {
+                content_space_for_measures = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(MeasuresContentSpace)));
+            }
+        }
 
         public static int Num_lines
         {
@@ -47,6 +57,7 @@ namespace MusicXMLViewerWPF
         //}
         public Page()
         {
+            this.PropertyChanged += Page_PropertyChanged;
             page_width = 2100f;
             page_height = 2970f;
             page_margins = new PageMargins();
@@ -54,10 +65,23 @@ namespace MusicXMLViewerWPF
             //CalculateMeasureContetSpace();
         }
 
+        public void Page_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case "MeasuresContentSpace":
+                    Logger.Log($"ContentSpaceMeasures has changed! New value is {MeasuresContentSpace.ToString()}");
+                    break;
+                default:
+                    Logger.Log($"Not implemented action for {e.PropertyName} property");
+                    break;
+            }
+        }
+
         public void CalculateMeasureContetSpace()
         {
-            Rect temp = Credit.Credit.segment.Rectangle;
-            content_space_for_measures = new Rect(temp.BottomLeft, content_space.BottomRight);
+            Rect temp = Credit.Credit.Titlesegment.Rectangle;
+            MeasuresContentSpace = new Rect(new Point(temp.Left, temp.Bottom), content_space.BottomRight);
             MusicScore m = new MusicScore() { ContentSpaceCalculated = true };
             //? content_space_measures = 
         }
@@ -65,12 +89,14 @@ namespace MusicXMLViewerWPF
         private void CalculateContentSpace()
         {
             Point right_bottom = new Point(page_width - Margins.Right, page_height - Margins.Bottom );
-            content_space = new Rect(new Point(Margins.Left, Margins.Top), right_bottom);
+            ContentSpace = new Rect(new Point(Margins.Left, Margins.Top), right_bottom);
         }
 
         public Page(XElement x)
         {
+            this.PropertyChanged += Page_PropertyChanged;
             GetPageInfo(x);
+            
             CalculateContentSpace();
         }
 
