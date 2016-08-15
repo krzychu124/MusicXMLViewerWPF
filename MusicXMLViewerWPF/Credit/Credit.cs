@@ -8,7 +8,7 @@ using System.Windows.Media;
 
 namespace MusicXMLViewerWPF.Credit
 {
-    class Credit 
+    class Credit : Segment
     {
         #region Attributes
         private int page; // number of page where credit is presented
@@ -18,7 +18,7 @@ namespace MusicXMLViewerWPF.Credit
         private CreditWords credit_words;
         private string credit_type;
         private CreditType type;
-        public static Segment segment = new Segment();
+        public static Segment Titlesegment = new Segment();
         #endregion
 
         #region Public properties read-only
@@ -26,6 +26,7 @@ namespace MusicXMLViewerWPF.Credit
         public int Page { get { return page; } }
         public string CreditType { get { return credit_type; } }
         public CreditType Type { get { return type; } }
+
         #endregion
 
         public Credit(System.Xml.Linq.XElement x)
@@ -56,9 +57,9 @@ namespace MusicXMLViewerWPF.Credit
         /// </summary>
         public static void SetCreditSegment()
         {
-            segment.Relative = new Point(MusicScore.Defaults.Page.ContentSpace.X, MusicScore.Defaults.Page.ContentSpace.Y);
-            segment.Width = (float)MusicScore.Defaults.Page.ContentSpace.Width;
-            segment.Segment_type = SegmentType.Title;
+            Titlesegment.Relative = new Point(MusicScore.Defaults.Page.ContentSpace.X, MusicScore.Defaults.Page.ContentSpace.Y);
+            Titlesegment.Width = (float)MusicScore.Defaults.Page.ContentSpace.Width;
+            Titlesegment.Segment_type = SegmentType.Title;
         }
         private void SetCreditType()
         {
@@ -94,23 +95,37 @@ namespace MusicXMLViewerWPF.Credit
                 type = MusicXMLViewerWPF.Credit.CreditType.none;
             }
         }
+
+        public void UpdateSegmentHeight(float height)
+        {
+            Height = height;
+        }
         public void Draw(DrawingVisual visual)
         {
-            
-            using(DrawingContext dc = visual.RenderOpen())
+            using (DrawingContext dc = visual.RenderOpen())
             {
                 string text = CreditWords.Value;
-                Point pos = new Point(CreditWords.DefX, CreditWords.DefY);
+                Point pos = new Point(CreditWords.DefX, MusicScore.Defaults.Page.ContentSpace.Bottom - CreditWords.DefY);
                 Halign align = CreditWords.HAlign;
                 float size = CreditWords.FontSize;
                 string weight = CreditWords.FontWeight;
                 Valign valign = CreditWords.VAlign;
                 //string style = CreditWords.
-                Misc.DrawingHelpers.DrawText(dc, text, pos, size, align, valign, weight);
+                FormattedText ft = new FormattedText(text, System.Threading.Thread.CurrentThread.CurrentUICulture, FlowDirection.LeftToRight, TypeFaces.TextFont, size * 1.4, Brushes.Black);
+                Misc.DrawingHelpers.SetFontWeight(ft, weight);
+                Misc.DrawingHelpers.VerticalAlign(pos, ft, valign);
+                Misc.DrawingHelpers.HorizontalAlign(ft, align);
+                UpdateSegmentHeight((float)ft.Height);
+                //Misc.DrawingHelpers.DrawText(dc, text, pos, size, align, valign, weight);
+                dc.DrawText(ft, pos);
             }
-            
+        }
+        public void Draw(DrawingVisual visual, Rect rect)
+        {
+            //Todo missint implementation
         }
     }
+
 
     enum CreditType
     {
