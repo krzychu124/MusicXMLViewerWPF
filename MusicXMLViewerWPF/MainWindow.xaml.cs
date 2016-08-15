@@ -34,61 +34,65 @@ namespace MusicXMLViewerWPF
             //LogBox.DataContext = Logger.Text;
             Logger.LogAdded += new EventHandler(MyLogger_LogAdded);
             Logger.LogCleared += new EventHandler(MyLogger_LogClear);
+             
             //Logger.Log("check");
            // Measures m = new Measures();
            // m.MeasureList_Loaded = true;
            // LoadCharsToViewPort l = new LoadCharsToViewPort(drawingSurface);
         }
-    /*    public void test()
-        {
-            Typeface typeface = new Typeface(new FontFamily("Arial"),
-                                    FontStyles.Italic,
-                                    FontWeights.Normal,
-                                    FontStretches.Normal);
 
-            GlyphTypeface glyphTypeface;
+        
+
+        /*    public void test()
+   {
+       Typeface typeface = new Typeface(new FontFamily("Arial"),
+                               FontStyles.Italic,
+                               FontWeights.Normal,
+                               FontStretches.Normal);
+
+       GlyphTypeface glyphTypeface;
 if (!typeface.TryGetGlyphTypeface(out glyphTypeface))
-    throw new InvalidOperationException("No glyphtypeface found");
+throw new InvalidOperationException("No glyphtypeface found");
 
-            string text = "Hello, world!";
-            double size = 40;
+       string text = "Hello, world!";
+       double size = 40;
 
-            ushort[] glyphIndexes = new ushort[text.Length];
-            double[] advanceWidths = new double[text.Length];
+       ushort[] glyphIndexes = new ushort[text.Length];
+       double[] advanceWidths = new double[text.Length];
 
-            double totalWidth = 0;
+       double totalWidth = 0;
 
 for (int n = 0; n<text.Length; n++)
 {
-    ushort glyphIndex = glyphTypeface.CharacterToGlyphMap[text[n]];
-            glyphIndexes[n] = glyphIndex;
+ushort glyphIndex = glyphTypeface.CharacterToGlyphMap[text[n]];
+       glyphIndexes[n] = glyphIndex;
 
-    double width = glyphTypeface.AdvanceWidths[glyphIndex] * size;
-            advanceWidths[n] = width;
+double width = glyphTypeface.AdvanceWidths[glyphIndex] * size;
+       advanceWidths[n] = width;
 
-    totalWidth += width;
+totalWidth += width;
 }
 
-        Point origin = new Point(50, 50);
-            DrawingContext dc = new DrawingContext();
-        GlyphRun glyphRun = new GlyphRun(glyphTypeface, 0, false, size,
-            glyphIndexes, origin, advanceWidths, null, null, null, null,
-            null, null);
+   Point origin = new Point(50, 50);
+       DrawingContext dc = new DrawingContext();
+   GlyphRun glyphRun = new GlyphRun(glyphTypeface, 0, false, size,
+       glyphIndexes, origin, advanceWidths, null, null, null, null,
+       null, null);
 
-        dc.DrawGlyphRun(Brushes.Black, glyphRun);
+   dc.DrawGlyphRun(Brushes.Black, glyphRun);
 
 double y = origin.Y;
-        dc.DrawLine(new Pen(Brushes.Red, 1), new Point(origin.X, y), 
-    new Point(origin.X + totalWidth, y));
+   dc.DrawLine(new Pen(Brushes.Red, 1), new Point(origin.X, y), 
+new Point(origin.X + totalWidth, y));
 
 y -= (glyphTypeface.Baseline* size);
-        dc.DrawLine(new Pen(Brushes.Green, 1), new Point(origin.X, y), 
-    new Point(origin.X + totalWidth, y));
+   dc.DrawLine(new Pen(Brushes.Green, 1), new Point(origin.X, y), 
+new Point(origin.X + totalWidth, y));
 
 y += (glyphTypeface.Height* size);
-        dc.DrawLine(new Pen(Brushes.Blue, 1), new Point(origin.X, y), 
-    new Point(origin.X + totalWidth, y));
-    }
+   dc.DrawLine(new Pen(Brushes.Blue, 1), new Point(origin.X, y), 
+new Point(origin.X + totalWidth, y));
+}
 */
         private void Button_MouseEnter(object sender, MouseEventArgs e)
         {
@@ -261,16 +265,19 @@ y += (glyphTypeface.Height* size);
             }
         }
 
-        private void test5_Click(object sender, RoutedEventArgs e)
+        public void test5_Click(object sender, RoutedEventArgs e)
         {
-            if (MusicScore.isLoaded)
+
+            MusicScore m = new MusicScore();
+            if (m.ContentSpaceCalculated == true)
             {
-                LoadCharsToViewPort sur = new LoadCharsToViewPort(drawingSurface);
-                sur.AddRests();
+                DrawingVisual visual = new DrawingVisual();
+                MusicScore.DrawMusicScoreContentSpace(visual);
+                drawingSurface.AddVisual(visual);
             }
             else
             {
-                Logger.Log("Please load XML file first");
+                Logger.Log("Please Calculate Content Space first");
             }
 
         }
