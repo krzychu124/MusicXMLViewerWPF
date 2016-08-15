@@ -6,9 +6,9 @@
         xmlns:local="clr-namespace:MusicXMLViewerWPF"
         mc:Ignorable="d"
         
-        Title="MainWindow" Height="491" Width="1240.5">
-    <Grid>
-        <Grid Margin="0,0,4,40">
+        Title="MainWindow" Height="491" Width="1240.5" UseLayoutRounding="True">
+    <Grid >
+        <Grid Margin="0,0,4,40" >
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="250" MaxWidth="450" MinWidth="200"/>
                 <ColumnDefinition Width="Auto"/>

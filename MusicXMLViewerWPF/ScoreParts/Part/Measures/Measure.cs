@@ -18,7 +18,7 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
         #region Fields
         //--------------------
         private int number;
-        private float width; // default value is 100 may change later
+        //private float width; // default value is 100 may change later
         //--------------------
         private Attributes attributes;
         private bool hasNumberInvisible;
@@ -41,7 +41,7 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
         public Attributes Attributes { get { return attributes; } }
         public bool NumberVisible { get { return hasNumberInvisible; } }
         public DrawingVisual Visual { get { return visual; } set { if (value != null) visual = value; } }
-        public new float Width { get { return width; } set { if (value >= 0) { width = value; } else { width = 100f; Logger.Log("width is negative here"); } } }
+        public new float Width { get { return base.Width; } set { if (value >= 0) { base.Width = value; } else { base.Width = 100f; Logger.Log("width is negative here"); } } }
         public int ElementsCount { get { return elements_count; } }
         public int Number { get { return number; } }
         public List<Barline> Barlines { get { return barlines; } }
@@ -187,6 +187,13 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
         private void XMLExtractPrint(XElement x)
         {
             print_properties = new Print(x);
+            if (print_properties != null)
+            {
+                if (print_properties.NewSystem)
+                {
+                    IsFirstInLine = true;
+                }
+            }    
         }
 
         public IEnumerable<XElement> XMLExtractor()
@@ -201,10 +208,10 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
         /// <param name="x"></param>
         public void XMLFiller(XElement x)
         {
-            width = x.Attribute("width") != null ? float.Parse(x.Attribute("width").Value, CultureInfo.InvariantCulture) : 0f;
-            if (width == 0f)
+            Width = x.Attribute("width") != null ? float.Parse(x.Attribute("width").Value, CultureInfo.InvariantCulture) : 0f;
+            if (Width == 0f)
             {
-                Logger.Log($"Measure {number} has no width: {width}");
+                Logger.Log($"Measure {number} has no width: {Width}");
                 int num = music_characters.Count();
                 elements_count = num;
                 AutoMeasureWidth(num);
@@ -220,13 +227,13 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
         /// <param name="n"></param>
         private void AutoMeasureWidth(int n)
         {
-            width = 100f;
+            Width = 100f;
             float temp_width = 0f;
             foreach (var item in music_characters)
             {
                 temp_width += item.Width;
             }
-            if (temp_width > width) width = temp_width;
+            if (temp_width > Width) Width = temp_width;
         }
         /// <summary>
         /// Drawing method used to draw measure with all contating elements (motes, rest, directions etc.)
@@ -265,11 +272,11 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
             {
                 if (Barlines.Exists(i => i.Repeat != null))
                 {
-                    Attributes.Draw(visual, p, width, true);
+                    Attributes.Draw(visual, p, Width, true);
                 }
                 else
                 {
-                    Attributes.Draw(visual, p, width); // visual will be opened inside, good results, maybe changed in the future
+                    Attributes.Draw(visual, p, Width); // visual will be opened inside, good results, maybe changed in the future
                 }
             }
             if (Direction != null)

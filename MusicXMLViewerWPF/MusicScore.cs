@@ -105,20 +105,31 @@ namespace MusicXMLViewerWPF
                 case "CreditsLoaded": if (CreditsLoaded != false)
                     {
                         Defaults.Page.CalculateMeasureContetSpace();
-                        Logger.Log("Calculated Content Space for measures");
+                        Logger.Log("Credits: ready");
+                    }
+                    else
+                    {
+                        Logger.Log("Credits: cleared");
                     }
                     break;
                 case "Loaded": if (Loaded == true)
                     {
-                        Logger.Log("File loaded.");
+                        Logger.Log("File: ready.");
                     }
                     else
                     {
-                        Logger.Log("File cleared.");
+                        Logger.Log("File: unloaded.");
                     }
                     break;
-                case "ContentSpaceLoaded":
-                    Logger.Log("Calculated Content Space");
+                case "ContentSpaceLoaded": if(ContentSpaceCalculated == true)
+                    {
+                        Logger.Log("Calculated Content Space: ready");
+                    }
+                    
+                    else
+                    {
+                        Logger.Log("Cleared Content Space: not_ready");
+                    }
                     break;
                 default:
                     Console.WriteLine($"Not implemented task for {e.PropertyName} property ");
@@ -130,22 +141,24 @@ namespace MusicXMLViewerWPF
         {
             title = file.Element("movement-title") != null ? file.Element("movement-title").Value : "No title" ;
             work = file.Element("work") != null ? new Work.Work(file.Element("work")) : null;
-            defaults = file.Element("defaults") != null ? new Defaults.Defaults(file.Element("defaults")) : new MusicXMLViewerWPF.Defaults.Defaults(); 
+            defaults = file.Element("defaults") != null ? new Defaults.Defaults(file.Element("defaults")) : new MusicXMLViewerWPF.Defaults.Defaults();
             identification = new Identification.Identification(file.Element("identification")); 
             foreach (var item in file.Elements("credit"))
             {
                 credits.Add(new Credit.Credit(item));
             }
             Credit.Credit.SetCreditSegment();
-            
+            InitTitleSpaceSegment();
+
             foreach (var item in file.Elements("part"))
             {
                  parts.Add(item.Attribute("id").Value, new ScoreParts.Part.Part(item));
             }
-            CreditsLoaded = false;
-            CreditsLoaded = true;
         }
-        
+        /// <summary>
+        /// Gets Canvas surface for Drawing
+        /// </summary>
+        /// <param name="s"></param>
         public static void GetSurfce (CanvasList s)
         {
             Surface = s;
@@ -153,9 +166,9 @@ namespace MusicXMLViewerWPF
 
         public static void Draw(CanvasList surface)
         {
-            DrawingVisual credits = new DrawingVisual();
-            DrawCredits(credits);
-            surface.AddVisual(credits);
+            //DrawingVisual credits = new DrawingVisual();
+            //DrawCredits(credits);
+            //surface.AddVisual(credits);
             // DrawingVisual visual = new DrawingVisual();
             Parts.ElementAt(0).Value.DrawMeasures(surface);
 
@@ -176,6 +189,8 @@ namespace MusicXMLViewerWPF
         {
             MusicScore clear = new MusicScore();
             clear.Loaded = false;
+            clear.CreditsLoaded = false;
+            clear.ContentSpaceCalculated = false;
             title = null;
             defaults = null;
             parts.Clear();
@@ -192,6 +207,32 @@ namespace MusicXMLViewerWPF
         {
             breaks.Add(new Misc.LineBreak(x, y, type));
         }
+
+        /// <summary>
+        /// Fill neccesary properties to properly draw Title/Credits segment
+        /// </summary>
+        private static void InitTitleSpaceSegment()
+        {
+            float space_height = 0f;
+            foreach (var item in CreditList)
+            {
+                if (item.Type == Credit.CreditType.title)
+                {
+                    space_height += item.Height;
+                }
+                if (item.Type == Credit.CreditType.subtitle)
+                {
+                    space_height += item.Height;
+                }
+                if (item.Type == Credit.CreditType.arranger)
+                {
+                    space_height += item.Height;
+                }
+            }
+            Credit.Credit.Titlesegment.Height = (float)Credit.Credit.Titlesegment.Rectangle.Y + space_height;
+            MusicScore n = new MusicScore() { CreditsLoaded = true };
+        }
+
         #region Visual Helpers for easier debugging
         public static void DrawPageRectangle(DrawingVisual visual)
         {
@@ -211,48 +252,58 @@ namespace MusicXMLViewerWPF
                 item.DrawBreak(visual);
             }
         }
-        /// <summary>
-        /// Fill neccesary properties to properly draw Title/Credits segment
-        /// </summary>
-        private static void InitTitleSpace()
-        {
-            
-            float space_height = 0f;
-            foreach (var item in CreditList)
-            {
-                if (item.Type == Credit.CreditType.title)
-                {
-                    space_height += 50f;
-                }
-                if (item.Type == Credit.CreditType.subtitle)
-                {
-                    space_height += 50f;
-                }
-                if (item.Type == Credit.CreditType.arranger)
-                {
-                    space_height += 50f;
-                }
-            }
-            Credit.Credit.segment.Height = (float)Defaults.Page.ContentSpace.Y + space_height;
-            MusicScore n = new MusicScore() { CreditsLoaded = true };
-        }
         public static void DrawMusicScoreContentSpace(DrawingVisual visual)
         {
             Misc.DrawingHelpers.DrawRectangle(visual, Defaults.Page.MeasuresContentSpace, Brushes.Red);
         }
         public static void DrawMusicScoreTitleSpace(DrawingVisual visual)
         {
-            InitTitleSpace();
-            if (Credit.Credit.segment.Height != 0)
+            //InitTitleSpaceSegment();
+            if (Credit.Credit.Titlesegment.Height != 0)
             {
+                var items = from i in CreditList where i.Type == Credit.CreditType.title || i.Type == Credit.CreditType.subtitle || i.Type == Credit.CreditType.arranger select i;
+                //if (items.Contains(Credit.CreditType.title))
+                var title_ = items.Where(z => z.Type == Credit.CreditType.title);
+
+                foreach (var item in CreditList)
+                {
+                    if (item.Type == Credit.CreditType.title)
+                    {
+                        DrawingVisual title = new DrawingVisual();
+                        item.Draw(title);
+                        DrawingVisual rect = new DrawingVisual();
+                        item.Draw(rect, Brushes.Cyan, dashtype: DashStyles.Dot);
+                        visual.Children.Add(title);
+                        visual.Children.Add(rect);
+                    }
+                    if (item.Type == Credit.CreditType.subtitle)
+                    {
+                        DrawingVisual subtitle = new DrawingVisual();
+                        item.Draw(subtitle);
+                        DrawingVisual rect = new DrawingVisual();
+                        item.Draw(rect, Brushes.Cyan, dashtype: DashStyles.Dot);
+                        visual.Children.Add(subtitle);
+                        visual.Children.Add(rect);
+                    }
+                    if (item.Type == Credit.CreditType.arranger)
+                    {
+                        DrawingVisual arranger = new DrawingVisual();
+                        item.Draw(arranger);
+                        DrawingVisual rect = new DrawingVisual();
+                        item.Draw(rect, Brushes.Cyan, dashtype: DashStyles.Dot);
+                        visual.Children.Add(arranger);
+                        visual.Children.Add(rect);
+                    }
+
+                }
                 //Point left_up = new Point(Defaults.Page.Margins.Left, Defaults.Page.Margins.Top);
                 //Point right_down = new Point(CreditList.Where(i => i.Type == Credit.CreditType.arranger).Select( i => i.CreditWords.DefX).First(), CreditList.Where(i => i.Type == Credit.CreditType.arranger).Select(i => i.CreditWords.DefY).First());
                 // Misc.DrawingHelpers.DrawRectangle(visual, left_up, right_down, Brushes.Green);
                 //Point right_down = new Point(Defaults.Page.Width - Defaults.Page.Margins.Right, Defaults.Page.Margins.Top + space_height);
-                Point left_up = Credit.Credit.segment.Relative;
-                Point right_down = new Point(Credit.Credit.segment.Rectangle.Left, Credit.Credit.segment.Rectangle.Height);//Relative.Y + Credit.Credit.segment.Dimensions.Y);
-                Credit.Credit.segment.Draw(visual, Brushes.Green);
-                //Misc.DrawingHelpers.DrawRectangle(visual, Credit.Credit.segment.Rectangle.TopLeft, Credit.Credit.segment.Rectangle.BottomRight, Brushes.Green);
+                Point left_up = Credit.Credit.Titlesegment.Relative;
+                Point right_down = new Point(Credit.Credit.Titlesegment.Rectangle.Left, Credit.Credit.Titlesegment.Rectangle.Height);//Relative.Y + Credit.Credit.segment.Dimensions.Y);
+                Credit.Credit.Titlesegment.Draw(visual, Brushes.Green);
+                Misc.DrawingHelpers.DrawRectangle(visual, Credit.Credit.Titlesegment.Rectangle.TopLeft, Credit.Credit.Titlesegment.Rectangle.BottomRight, Brushes.Crimson);
                 AddBreak((float)right_down.X + 20f, (float)right_down.Y, "title");
             }
 

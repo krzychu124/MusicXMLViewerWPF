@@ -15,11 +15,13 @@ namespace MusicXMLViewerWPF.ScoreParts.Part
         private Dictionary<int, Point> measure_margin_helper = new Dictionary<int, Point>() { }; 
         /// <summary> helper list to store coordinates of starting point for every line </summary>
         private List<MeasureCoordinates> measure_pos = new List<MeasureCoordinates>();
+        private List<Measures.Measure> measure_segment_list = new List<Measures.Measure>(); //! segmemt test
 
         public string Id { get { return part_id; } }
         public List<Measures.Measure> MeasureList { get { return measure_list; } }
         public Dictionary<int,Point> MarginHelper { get { return measure_margin_helper; } }
         public List<MeasureCoordinates> PositionHelper { get { return measure_pos; } }
+        public List<Measures.Measure> MeasureSegmentList { get { return measure_segment_list; } } //! segment test
 
         public Part(XElement x)
         {
@@ -28,11 +30,52 @@ namespace MusicXMLViewerWPF.ScoreParts.Part
             Point tempMargins = new Point(MusicScore.Defaults.Page.Margins.Left, MusicScore.Defaults.Page.Margins.Top + MusicScore.Defaults.SystemLayout.TopSystemDistance);
             float sysdist = MusicScore.Defaults.SystemLayout.SystemDistance;
             var measures = x.Elements();
-            
+            Point measure_location = MusicScore.Defaults.Page.MeasuresContentSpace.TopLeft;
+            float measure_location_left = (float)MusicScore.Defaults.Page.MeasuresContentSpace.X;
+            float measure_system = (float)MusicScore.Defaults.SystemLayout.TopSystemDistance;
+            measure_location.Y += measure_system;
             //! Main loop for searching measures in current part
             for (int i = 0; i < measures.Count(); i++)
             {
                 XElement item = measures.ElementAt(i);
+                bool test = true;
+                if (test)
+                {
+
+                    Measures.Measure measure = new Measures.Measure(item);
+                    if (measure.PrintProperties != null)
+                    {
+                        if (measure.PrintProperties.SystemLayout != null)
+                        {
+                            if (measure.PrintProperties.SystemLayout.SystemDistance != measure_system)
+                            {
+                                measure_system = measure.PrintProperties.SystemLayout.SystemDistance;
+                            }
+                            if (measure.PrintProperties.SystemLayout.LeftRelative != measure_location_left)
+                            {
+                                measure_location_left = measure.PrintProperties.SystemLayout.LeftRelative + (float) MusicScore.Defaults.Page.MeasuresContentSpace.Left;
+                            }
+                        }
+                    }
+                    if (i == 0) measure.IsFirstInLine = true;
+                    //measure.Relative = new Point(measure_location.X, measure_location.Y - 10f);
+                    measure.SetSpacers(0, measure.Width);
+                    measure.Height = 80f;
+                    if (measure.IsFirstInLine)
+                    {
+                        measure_location.X = measure_location_left;
+                        measure_location.Y += MusicScore.Defaults.SystemLayout.SystemDistance;
+                        measure.Relative = new Point( measure_location.X, measure_location.Y - 10f);
+                        measure_location.X += measure.Width;
+                    }
+                    else
+                    {
+                        measure.Relative = new Point(measure_location.X, measure_location.Y - 10f);
+                        measure_location.X += measure.Width;
+                    }
+                    measure_segment_list.Add(measure);
+                }
+
                 measure_list.Add(new Measures.Measure(item)); // 
 
                 if (i == 0)
@@ -59,6 +102,7 @@ namespace MusicXMLViewerWPF.ScoreParts.Part
                     {
                         if (measure_list.ElementAt(i).PrintProperties.NewSystem)
                         {
+                            //measure_list.ElementAt(i).IsFirstInLine = true;
                             if (measure_list.ElementAt(i).PrintProperties.SystemLayout != null)
                             {
                                 tempPoint.X = measure_list.ElementAt(i).PrintProperties.SystemLayout.LeftRelative + tempMargins.X;
