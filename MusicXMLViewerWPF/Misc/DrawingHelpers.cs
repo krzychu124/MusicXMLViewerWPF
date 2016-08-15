@@ -32,6 +32,7 @@ namespace MusicXMLViewerWPF.Misc
             Logger.Log($"Added \"{text}\" at position {position.X}, {position.Y}, {align}");
             FormattedText ft = new FormattedText(text, System.Threading.Thread.CurrentThread.CurrentUICulture, FlowDirection.LeftToRight, TypeFaces.TextFont, font_size * 1.4, color);
             //DrawString(dc, "||", TypeFaces.TextFont, Brushes.Black, (float)position.X, (float)position.Y, 18); // visual debug position helper
+           
             if (font_weight != null)
             {
                 if (font_weight == "bold")
@@ -39,11 +40,45 @@ namespace MusicXMLViewerWPF.Misc
                     ft.SetFontWeight(FontWeights.Bold);
                 }
             }
+            VerticalAlign(position, ft, valign);
+            //switch (valign)
+            //{
+            //    case Valign.top:
+            //        position.Y = position.Y - (ft.Height/2);
+            //        break;
+            //    case Valign.middle:
+            //        break;
+            //    case Valign.bottom:
+            //        position.Y = position.Y + (ft.Height / 2);
+            //        break;
+            //    case Valign.baseline:
+            //        position.Y = position.Y + (ft.Height / 2);
+            //        break;
+            //    default:
+            //        break;
+            //}
+            HorizontalAlign(ft, align);
+            //switch (align)
+            //{ 
+            //    case Halign.center:
+            //        ft.TextAlignment = TextAlignment.Center;
+            //        break;
+            //    case Halign.right:
+            //        ft.TextAlignment = TextAlignment.Right;
+            //        break;
+            //    case Halign.left:
+            //        ft.TextAlignment = TextAlignment.Left;
+            //        break;
+            //}
+            dc.DrawText(ft, position);
+        }
 
+        public static void VerticalAlign(Point position, FormattedText ft, Valign valign)
+        {
             switch (valign)
             {
                 case Valign.top:
-                    position.Y = position.Y - (ft.Height/2);
+                    position.Y = position.Y - (ft.Height / 2);
                     break;
                 case Valign.middle:
                     break;
@@ -56,7 +91,29 @@ namespace MusicXMLViewerWPF.Misc
                 default:
                     break;
             }
+        }
 
+        public static void SetFontWeight(FormattedText ft, string font_weight)
+        {
+            if (font_weight != null)
+            {
+                if (font_weight == "bold")
+                {
+                    ft.SetFontWeight(FontWeights.Bold);
+                }
+                if (font_weight == "normal")
+                {
+                    ft.SetFontWeight(FontWeights.Normal);
+                }
+                if (font_weight == "regular")
+                {
+                    ft.SetFontWeight(FontWeights.Regular);
+                }
+            }
+        }
+
+        public static FormattedText HorizontalAlign(FormattedText ft, Halign align)
+        {
             switch (align)
             {
                 case Halign.center:
@@ -68,9 +125,13 @@ namespace MusicXMLViewerWPF.Misc
                 case Halign.left:
                     ft.TextAlignment = TextAlignment.Left;
                     break;
+                case Halign.none:
+                    ft.TextAlignment = TextAlignment.Justify;
+                    break;
             }
-            dc.DrawText(ft, position);
+            return ft;
         }
+
         public static Point CalculatePosition(Point one, Point two)
         {
             Point result = new Point();
