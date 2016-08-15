@@ -49,6 +49,7 @@ namespace MusicXMLViewerWPF
         public Point Dimensions { get { return new Point(width, height); } set { width = (float)value.X; height = (float)value.Y; } }
         public Point Offset { get { return new Point(offset_x, offset_y); } set { offset_x = (float)value.X; offset_y = (float)value.Y; } }
         public Point Relative { get { return new Point(relative_x, relative_y); } set { relative_x = (float)value.X; relative_y = (float)value.Y; } }
+        public Rect Rectangle { get { return new Rect(Relative, Dimensions); } }
         public SegmentType Segment_type { get { return segment_type; } set { segment_type = value; SetSpacers(); } }
         #endregion
         /// <summary>
@@ -166,16 +167,25 @@ namespace MusicXMLViewerWPF
             string value =$"Rel:{Relative_x}, {Relative_y}; Spc L,R: {Spacer_L}, {Spacer_R}";
             return value;
         }
-
-        public void Draw(DrawingVisual visual , Brush color = null)
+        /// <summary>
+        /// Draws segment on visual
+        /// </summary>
+        /// <param name="visual"></param>
+        /// <param name="color"></param>
+        /// <param name="dashtype"></param>
+        public void Draw(DrawingVisual visual , Brush color = null, DashStyle dashtype = null)
         {
             if (color == null)
             {
                 color = Brushes.DarkBlue;
             }
+            if (dashtype == null)
+            {
+                dashtype = DashStyles.Solid;
+            }
             Point one = new Point(Relative_x,Relative_y);
             Point two = new Point(Relative_x + Width, Relative_y + Height);
-            DrawingHelpers.DrawRectangle(visual, one, two, color, DashStyles.Solid);
+            DrawingHelpers.DrawRectangle(visual, one, two, color, dashtype);
         }
     }
 }
