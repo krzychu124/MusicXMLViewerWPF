@@ -51,6 +51,7 @@ namespace MusicXMLViewerWPF.Credit
                     }
                 }
             }
+            UpdateSegmentHeight();
         }
         /// <summary>
         /// Set basic properties of Credit segment
@@ -96,33 +97,40 @@ namespace MusicXMLViewerWPF.Credit
             }
         }
 
-        public void UpdateSegmentHeight(float height)
+        public void UpdateSegmentHeight()
         {
-            Height = height;
+            FormattedText ft = GetFormattedText();
+            Height = (float)ft.Height;
         }
+
         public void Draw(DrawingVisual visual)
         {
             using (DrawingContext dc = visual.RenderOpen())
             {
-                string text = CreditWords.Value;
                 Point pos = new Point(CreditWords.DefX, MusicScore.Defaults.Page.ContentSpace.Bottom - CreditWords.DefY);
-                Halign align = CreditWords.HAlign;
-                float size = CreditWords.FontSize;
-                string weight = CreditWords.FontWeight;
-                Valign valign = CreditWords.VAlign;
-                //string style = CreditWords.
-                FormattedText ft = new FormattedText(text, System.Threading.Thread.CurrentThread.CurrentUICulture, FlowDirection.LeftToRight, TypeFaces.TextFont, size * 1.4, Brushes.Black);
-                Misc.DrawingHelpers.SetFontWeight(ft, weight);
-                Misc.DrawingHelpers.VerticalAlign(pos, ft, valign);
-                Misc.DrawingHelpers.HorizontalAlign(ft, align);
-                UpdateSegmentHeight((float)ft.Height);
+                FormattedText ft = GetFormattedText(pos);
                 //Misc.DrawingHelpers.DrawText(dc, text, pos, size, align, valign, weight);
                 dc.DrawText(ft, pos);
             }
         }
+
+        private FormattedText GetFormattedText(Point pos = new Point())
+        {
+            string text = CreditWords.Value;
+            Halign align = CreditWords.HAlign;
+            float size = CreditWords.FontSize;
+            string weight = CreditWords.FontWeight;
+            Valign valign = CreditWords.VAlign;
+            FormattedText ft = new FormattedText(text, System.Threading.Thread.CurrentThread.CurrentUICulture, FlowDirection.LeftToRight, TypeFaces.TextFont, size * 1.4, Brushes.Black);
+            Misc.DrawingHelpers.SetFontWeight(ft, weight);
+            Misc.DrawingHelpers.VerticalAlign(pos, ft, valign);
+            Misc.DrawingHelpers.HorizontalAlign(ft, align);
+            return ft;
+        }
+
         public void Draw(DrawingVisual visual, Rect rect)
         {
-            //Todo missint implementation
+            //Todo refactoring
         }
     }
 
