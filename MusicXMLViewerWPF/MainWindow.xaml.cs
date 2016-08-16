@@ -275,7 +275,7 @@ new Point(origin.X + totalWidth, y));
             if (m.ContentSpaceCalculated == true)
             {
                 DrawingVisual visual = new DrawingVisual();
-                MusicScore.DrawMusicScoreContentSpace(visual);
+                MusicScore.DrawMusicScoreMeasuresContentSpace(visual);
                 drawingSurface.AddVisual(visual);
             }
             else
@@ -291,18 +291,19 @@ new Point(origin.X + totalWidth, y));
             {
                 //LoadCharsToViewPort sur = new LoadCharsToViewPort(drawingSurface);
                 //sur.AddNotes();
-                Rect margins = MusicScore.Defaults.Page.ContentSpace;
-                Rect content = MusicScore.Defaults.Page.MeasuresContentSpace;
-                Logger.Log(margins.ToString());
-                Logger.Log(content.ToString());
+                Page page = MusicScore.Defaults.Page;
+                string credit = Credit.Credit.Titlesegment.Rectangle.ToString();
+                Logger.Log("Space inside margins "+page.ContentSpace_str); //? content space inside margins
+                Logger.Log("Space without titlle "+ page.MeasuresContentSpace_str); //? content space avaliable for drawing measures
+                Logger.Log("Space for title, credits " + credit);
                 foreach (var item in MusicScore.Parts.ElementAt(0).Value.MeasureSegmentList)
                 {
                     DrawingVisual segment = new DrawingVisual();
                     item.Draw(segment, Brushes.Blue, DashStyles.Solid);
                     using (DrawingContext dc = segment.RenderOpen())
                     {//
-                        Misc.DrawingHelpers.DrawText(dc, item.Relative.ToString(), new Point(item.Relative.X + 70f, item.Relative.Y + 15f), 12, font_weight: "regular", withsub:false);
-                        Misc.DrawingHelpers.DrawText(dc, item.Width.ToString(), new Point(item.Relative.X + 45f, item.Relative.Y + 30f), 12, withsub: false, color: Brushes.DarkGray);
+                        Misc.DrawingHelpers.DrawText(dc, item.Relative_str, new Point(item.Relative.X + 10f, item.Relative.Y + 15f), 10, font_weight: "regular", withsub:false, align: Halign.left);
+                        Misc.DrawingHelpers.DrawText(dc, item.Width.ToString() + "px width", new Point(item.Relative.X + 10f, item.Relative.Y + 28f), 10, withsub: false, color: Brushes.DarkGray, align: Halign.left);
                     }
                         
                     drawingSurface.AddVisual(segment);
