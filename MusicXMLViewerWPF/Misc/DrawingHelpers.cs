@@ -29,7 +29,7 @@ namespace MusicXMLViewerWPF.Misc
             {
                 position = CalculatePosition(calculated_margins, new Point(page.X - position.X, position.Y)); // (page, //
             }
-            Logger.Log($"Added \"{text}\" at position {position.X}, {position.Y}, {align}");
+            //! debug: Logger.Log($"Added \"{text}\" at position {position.X}, {position.Y}, {align}");
             FormattedText ft = new FormattedText(text, System.Threading.Thread.CurrentThread.CurrentUICulture, FlowDirection.LeftToRight, TypeFaces.TextFont, font_size * 1.4, color);
             //DrawString(dc, "||", TypeFaces.TextFont, Brushes.Black, (float)position.X, (float)position.Y, 18); // visual debug position helper
            

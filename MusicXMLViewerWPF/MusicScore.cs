@@ -121,11 +121,11 @@ namespace MusicXMLViewerWPF
                         Logger.Log("File: unloaded.");
                     }
                     break;
-                case "ContentSpaceLoaded": if(ContentSpaceCalculated == true)
+                case "ContentSpaceCalculated": if(ContentSpaceCalculated == true)
                     {
                         Logger.Log("Calculated Content Space: ready");
                     }
-                    
+
                     else
                     {
                         Logger.Log("Cleared Content Space: not_ready");
@@ -229,7 +229,7 @@ namespace MusicXMLViewerWPF
                     space_height += item.Height;
                 }
             }
-            Credit.Credit.Titlesegment.Height = (float)Credit.Credit.Titlesegment.Rectangle.Y + space_height;
+            Credit.Credit.Titlesegment.Height = (float)Credit.Credit.Titlesegment.Relative.Y + space_height;
             MusicScore n = new MusicScore() { CreditsLoaded = true };
         }
 
@@ -252,7 +252,7 @@ namespace MusicXMLViewerWPF
                 item.DrawBreak(visual);
             }
         }
-        public static void DrawMusicScoreContentSpace(DrawingVisual visual)
+        public static void DrawMusicScoreMeasuresContentSpace(DrawingVisual visual)
         {
             Misc.DrawingHelpers.DrawRectangle(visual, Defaults.Page.MeasuresContentSpace, Brushes.Red);
         }
@@ -261,47 +261,47 @@ namespace MusicXMLViewerWPF
             //InitTitleSpaceSegment();
             if (Credit.Credit.Titlesegment.Height != 0)
             {
-                var items = from i in CreditList where i.Type == Credit.CreditType.title || i.Type == Credit.CreditType.subtitle || i.Type == Credit.CreditType.arranger select i;
+                //? var items = from i in CreditList where i.Type == Credit.CreditType.title || i.Type == Credit.CreditType.subtitle || i.Type == Credit.CreditType.arranger || i.Type == Credit.CreditType.composer select i;
                 //if (items.Contains(Credit.CreditType.title))
-                var title_ = items.Where(z => z.Type == Credit.CreditType.title);
+                //? var title_ = items.Where(z => z.Type == Credit.CreditType.title);
 
-                foreach (var item in CreditList)
-                {
-                    if (item.Type == Credit.CreditType.title)
-                    {
-                        DrawingVisual title = new DrawingVisual();
-                        item.Draw(title);
-                        DrawingVisual rect = new DrawingVisual();
-                        item.Draw(rect, Brushes.Cyan, dashtype: DashStyles.Dot);
-                        visual.Children.Add(title);
-                        visual.Children.Add(rect);
-                    }
-                    if (item.Type == Credit.CreditType.subtitle)
-                    {
-                        DrawingVisual subtitle = new DrawingVisual();
-                        item.Draw(subtitle);
-                        DrawingVisual rect = new DrawingVisual();
-                        item.Draw(rect, Brushes.Cyan, dashtype: DashStyles.Dot);
-                        visual.Children.Add(subtitle);
-                        visual.Children.Add(rect);
-                    }
-                    if (item.Type == Credit.CreditType.arranger)
-                    {
-                        DrawingVisual arranger = new DrawingVisual();
-                        item.Draw(arranger);
-                        DrawingVisual rect = new DrawingVisual();
-                        item.Draw(rect, Brushes.Cyan, dashtype: DashStyles.Dot);
-                        visual.Children.Add(arranger);
-                        visual.Children.Add(rect);
-                    }
+                //foreach (var item in CreditList)
+                //{
+                //    if (item.Type == Credit.CreditType.title)
+                //    {
+                //        DrawingVisual title = new DrawingVisual();
+                //        item.Draw(title);
+                //        visual.Children.Add(title);
+                //        //? DrawingVisual rect = new DrawingVisual();
+                //        //? item.Draw(rect, Brushes.Cyan, dashtype: DashStyles.Dot);
+                //        //? visual.Children.Add(rect);
+                //    }
+                //    if (item.Type == Credit.CreditType.subtitle)
+                //    {
+                //        DrawingVisual subtitle = new DrawingVisual();
+                //        item.Draw(subtitle);
+                //        visual.Children.Add(subtitle);
+                //        //? DrawingVisual rect = new DrawingVisual();
+                //        //? item.Draw(rect, Brushes.Cyan, dashtype: DashStyles.Dot);
+                //        //? visual.Children.Add(rect);
+                //    }
+                //    if (item.Type == Credit.CreditType.arranger)
+                //    {
+                //        DrawingVisual arranger = new DrawingVisual();
+                //        item.Draw(arranger);
+                //        visual.Children.Add(arranger);
+                //        //? DrawingVisual rect = new DrawingVisual();
+                //        //? item.Draw(rect, Brushes.Cyan, dashtype: DashStyles.Dot);
+                //        //? visual.Children.Add(rect);
+                //    }
 
-                }
+                //}
                 //Point left_up = new Point(Defaults.Page.Margins.Left, Defaults.Page.Margins.Top);
                 //Point right_down = new Point(CreditList.Where(i => i.Type == Credit.CreditType.arranger).Select( i => i.CreditWords.DefX).First(), CreditList.Where(i => i.Type == Credit.CreditType.arranger).Select(i => i.CreditWords.DefY).First());
                 // Misc.DrawingHelpers.DrawRectangle(visual, left_up, right_down, Brushes.Green);
                 //Point right_down = new Point(Defaults.Page.Width - Defaults.Page.Margins.Right, Defaults.Page.Margins.Top + space_height);
                 Point left_up = Credit.Credit.Titlesegment.Relative;
-                Point right_down = new Point(Credit.Credit.Titlesegment.Rectangle.Left, Credit.Credit.Titlesegment.Rectangle.Height);//Relative.Y + Credit.Credit.segment.Dimensions.Y);
+                Point right_down = Credit.Credit.Titlesegment.Rectangle.BottomRight;//Relative.Y + Credit.Credit.segment.Dimensions.Y);
                 Credit.Credit.Titlesegment.Draw(visual, Brushes.Green);
                 Misc.DrawingHelpers.DrawRectangle(visual, Credit.Credit.Titlesegment.Rectangle.TopLeft, Credit.Credit.Titlesegment.Rectangle.BottomRight, Brushes.Crimson);
                 AddBreak((float)right_down.X + 20f, (float)right_down.Y, "title");

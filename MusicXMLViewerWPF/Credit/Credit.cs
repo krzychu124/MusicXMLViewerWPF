@@ -18,15 +18,18 @@ namespace MusicXMLViewerWPF.Credit
         private CreditWords credit_words;
         private string credit_type;
         private CreditType type;
-        public static Segment Titlesegment = new Segment();
+        /// <summary>
+        /// Segment sace for title, dubtitle, arranger and composer
+        /// </summary>
+        public static Segment titlesegment = new Segment();
         #endregion
 
         #region Public properties read-only
         public CreditWords CreditWords { get { return credit_words; } }
-        public int Page { get { return page; } }
+        public int PageNumber { get { return page; } }
         public string CreditType { get { return credit_type; } }
         public CreditType Type { get { return type; } }
-
+        public static Segment Titlesegment { get { return titlesegment; } set { titlesegment = value; } }
         #endregion
 
         public Credit(System.Xml.Linq.XElement x)

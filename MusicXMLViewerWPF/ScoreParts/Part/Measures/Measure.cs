@@ -166,7 +166,7 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
         /// <param name="x"></param>
         private void XMLExtractRests(XElement x)
         {
-            Logger.Log("missing impl for this rest");
+            //! debug; Logger.Log("missing impl for this rest");
             Misc.ScoreSystem.Segments.Add(new Segment() { Segment_type = SegmentType.Rest, Color = Brushes.DarkMagenta });
             music_characters.Add(new Segment() { Segment_type = SegmentType.Rest, Color = Brushes.DarkMagenta });
         }
@@ -176,7 +176,7 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
         /// <param name="x"></param>
         private void XMLExtractNotes(XElement x)
         {
-            Logger.Log("missing impl for this note");
+            //! debug; Logger.Log("missing impl for this note");
             Misc.ScoreSystem.Segments.Add(new Segment() { Segment_type = SegmentType.Chord, Color = Brushes.DarkOliveGreen});
             music_characters.Add(new Segment() { Segment_type = SegmentType.Chord, Color = Brushes.DarkOliveGreen });
         }
