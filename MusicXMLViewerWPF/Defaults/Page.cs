@@ -28,7 +28,16 @@ namespace MusicXMLViewerWPF
         public float Width {  get { return page_width; } }
         public float Height {  get { return page_height; } }
         public PageMargins Margins {  get { return page_margins; } }
-        public Rect ContentSpace { get { return content_space; } set { content_space = value; } }
+        public Rect ContentSpace
+        {
+            get { return content_space; }
+            set
+            {
+                content_space = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ContentSpace)));
+            }
+        }
+        public string ContentSpace_str { get { return GetString(ContentSpace); } }
         public Rect MeasuresContentSpace
         {
             get { return content_space_for_measures; }
@@ -38,7 +47,7 @@ namespace MusicXMLViewerWPF
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(MeasuresContentSpace)));
             }
         }
-
+        public string MeasuresContentSpace_str { get { return GetString(MeasuresContentSpace); } }
         public static int Num_lines
         {
             get
@@ -70,10 +79,13 @@ namespace MusicXMLViewerWPF
             switch (e.PropertyName)
             {
                 case "MeasuresContentSpace":
-                    Logger.Log($"ContentSpaceMeasures has changed! New value is {MeasuresContentSpace.ToString()}");
+                    Logger.Log($"CSM changed! Nv: {MeasuresContentSpace_str}");
+                    break;
+                case "ContentSpace":
+                    Logger.Log($"CS changed! Nv: {ContentSpace_str}");
                     break;
                 default:
-                    Logger.Log($"Not implemented action for {e.PropertyName} property");
+                    Logger.Log($"Missing action for {e.PropertyName}");
                     break;
             }
         }
@@ -82,14 +94,15 @@ namespace MusicXMLViewerWPF
         {
             Rect temp = Credit.Credit.Titlesegment.Rectangle;
             MeasuresContentSpace = new Rect(new Point(temp.Left, temp.Bottom), content_space.BottomRight);
-            MusicScore m = new MusicScore() { ContentSpaceCalculated = true };
+            //MusicScore m = new MusicScore() { ContentSpaceCalculated = true };
             //? content_space_measures = 
         }
 
         private void CalculateContentSpace()
         {
-            Point right_bottom = new Point(page_width - Margins.Right, page_height - Margins.Bottom );
+            Point right_bottom = new Point(page_width - Margins.Right, page_height - Margins.Bottom);
             ContentSpace = new Rect(new Point(Margins.Left, Margins.Top), right_bottom);
+            MusicScore m = new MusicScore() { ContentSpaceCalculated = true };
         }
 
         public Page(XElement x)
@@ -162,6 +175,16 @@ namespace MusicXMLViewerWPF
             DrawString(drawingContext, num_lines.ToString(), TypeFaces.NotesFont, Brushes.Black, 120f, 10.0f, 40.0f);
         }
         */
+        /// <summary>
+        /// Gets string values from Rect object (X,Y,Width,Heigth)
+        /// </summary>
+        /// <param name="rect"></param>
+        /// <returns></returns>
+        private string GetString(Rect rect)
+        {
+            string result = $"{rect.X.ToString("0.##")}; {rect.Y.ToString("0.##")}; {rect.Width.ToString("0.##")}; {rect.Height.ToString("0.##")}";
+            return result;
+        }
     }
     public class Margins
     {
