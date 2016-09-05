@@ -124,13 +124,17 @@ namespace MusicXMLViewerWPF
 
         public Note(XElement x) //TODO_H not finished
         {
-            Width = 10f;
+            Width = 10f; //! CalculateWidth();
             //Segment_type = SegmentType.Note;
         }
 
         public Note()
         {
 
+        }
+        private void CalculateWidth()
+        {
+            //TODO calulation of with neccessary for segment drawing ( with is calculated according to aditional properties of note: added dots, signs(flat,shaph))
         }
     }
 

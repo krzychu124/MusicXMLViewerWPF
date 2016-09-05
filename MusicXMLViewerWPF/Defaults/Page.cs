@@ -37,6 +37,9 @@ namespace MusicXMLViewerWPF
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ContentSpace)));
             }
         }
+        /// <summary>
+        /// ContentSpace dimensions: x,y,w,h
+        /// </summary>
         public string ContentSpace_str { get { return GetString(ContentSpace); } }
         public Rect MeasuresContentSpace
         {
@@ -47,6 +50,9 @@ namespace MusicXMLViewerWPF
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(MeasuresContentSpace)));
             }
         }
+        /// <summary>
+        /// MeasureContentSpace dimensions: x,y,w,h
+        /// </summary>
         public string MeasuresContentSpace_str { get { return GetString(MeasuresContentSpace); } }
         public static int Num_lines
         {
