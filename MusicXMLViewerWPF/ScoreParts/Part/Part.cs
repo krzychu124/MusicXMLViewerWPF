@@ -65,12 +65,14 @@ namespace MusicXMLViewerWPF.ScoreParts.Part
                     {
                         measure_location.X = measure_location_left;
                         measure_location.Y += MusicScore.Defaults.SystemLayout.SystemDistance;
-                        measure.Relative = new Point( measure_location.X, measure_location.Y - 10f);
+                        measure.Relative = new Point( measure_location.X, measure_location.Y - 10f); //! Set relative position of measure
+                        measure.Calculated = new Point(measure_location.X, measure_location.Y); //! Set calculated relative position of measure
                         measure_location.X += measure.Width;
                     }
                     else
                     {
                         measure.Relative = new Point(measure_location.X, measure_location.Y - 10f);
+                        measure.Calculated = new Point(measure_location.X, measure_location.Y);
                         measure_location.X += measure.Width;
                     }
                     measure_segment_list.Add(measure);

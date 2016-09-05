@@ -134,10 +134,24 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
         private void XMLExtractAttributes(XElement x)
         {
             attributes =  new Attributes(x);
-            if (attributes.Clef != null)
+            if (attributes.Clef != null) //Todo Needs rework... WiP
             {
-                Misc.ScoreSystem.Segments.Add(new Segment() { Segment_type = SegmentType.Clef, Color = Brushes.Brown });
-                music_characters.Add(new Segment() { Segment_type = SegmentType.Clef, Color = Brushes.Brown });
+                Segment s = new Segment() { Segment_type = SegmentType.Clef, Color = Brushes.Brown };
+                var c = music_characters.LastOrDefault(); //! gets last obj from list
+                Point p = new Point();
+                if (c == null)
+                {
+                    p = Calculate_Current_Position(s);
+                }
+                else
+                {
+                    p = Calculate_Current_Position(c);
+                }
+                s.Relative = Calc.Add(Calculated, p);
+                s.CalculateDimensions();
+
+                Misc.ScoreSystem.Segments.Add(s); //! (new Segment() { Segment_type = SegmentType.Clef, Color = Brushes.Brown });
+                music_characters.Add(s); //! (new Segment() { Segment_type = SegmentType.Clef, Color = Brushes.Brown });
             }
             if (attributes.Key != null)
             {
@@ -342,7 +356,36 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
         {
             // maybe rework to use that approach
         }
-
+        /// <summary>
+        /// Draw Mesure (inside segment) - test
+        /// </summary>
+        /// <param name="visual"></param>
+        public void Draw(DrawingVisual visual)
+        {
+            using( DrawingContext dc = visual.RenderOpen())
+            {
+                Point temp = new Point(Calculated_x, Calculated_y);
+                Draw_Measure(dc, temp);
+            }
+            if (MusicCharacters.Any(i => i.Segment_type == SegmentType.Clef))
+            {
+                var character = MusicCharacters.First(z => z.Segment_type == SegmentType.Clef);
+                DrawingVisual vis = new DrawingVisual();
+                character.Draw(vis, character.Color);
+                visual.Children.Add(vis);
+            }
+        }
+        /// <summary>
+        /// Calculate position of segment according to previous
+        /// </summary>
+        /// <param name="s"></param>
+        /// <returns></returns>
+        private Point Calculate_Current_Position(Segment s)
+        {
+            Point position = Calculated;
+            position.X += s.Width;
+            return position;
+        }
         private void Draw_Directions(DrawingContext dc2, Point p)
         {
             //UNDONE missing implementation
