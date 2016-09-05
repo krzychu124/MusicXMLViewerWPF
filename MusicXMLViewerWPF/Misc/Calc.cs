@@ -46,5 +46,18 @@ namespace MusicXMLViewerWPF
             result.Height = one.Height + two.Height;
             return result;
         }
+        /// <summary>
+        /// Adds Point to Point (x+X, y+Y)
+        /// </summary>
+        /// <param name="one"></param>
+        /// <param name="TWO"></param>
+        /// <returns></returns>
+        public static Point Add(Point one, Point TWO)
+        {
+            Point result = new Point();
+            result.X = one.X + TWO.X;
+            result.Y = one.Y + TWO.Y;
+            return result;
+        }
     }
 }
