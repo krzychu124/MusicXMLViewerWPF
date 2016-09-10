@@ -2,7 +2,7 @@
 
 **Hello Stranger,**
 
-I don't know how did you find this but if you are brave, you can check it out.
+I don't know how did you get here but if you are brave, you can check it out.
 ```diff
 -Spagetti code warning !!!
 ```
@@ -35,4 +35,4 @@ ___
   - [ ] Add each object using only mouse 
   - [ ] Maybe simple printing to PDF, XPS or something else
  
-**Sorry for my English if someting is not understandable**
+**Sorry for my English if something is not understandable**
