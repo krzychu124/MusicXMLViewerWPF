@@ -3,13 +3,10 @@
 **Hello Stranger,**
 
 I don't know how did you find this but if you are brave, you can check it out.
+```diff
+-Spagetti code warning !!!
+```
 
-First make sure if you are ready to see:
-*   tons of commented lines
-*   ideas and test methods without any sense or usage
-*   not intuitive and complicated parts of
-
-===
 **_Everything here is an experiment here so everything could be changed in the future and will be for sure._**
 #### Main goal of this project is learn/improve _C#_ by programming something bigger than calculator.
 ---
