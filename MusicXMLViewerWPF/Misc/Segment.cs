@@ -31,6 +31,8 @@ namespace MusicXMLViewerWPF
         private Brush color;
 
         private SegmentType segment_type;
+
+        private Dictionary<string, float> spacer_dict = new Dictionary<string, float>();
         #endregion
         
         #region public properties
@@ -53,6 +55,7 @@ namespace MusicXMLViewerWPF
         public string Relative_str { get { return "("+ relative_x.ToString("0.##") + "; "+ relative_y.ToString("0.##") + ")"; } }
         public Rect Rectangle { get { return new Rect(Relative, Dimensions); } }
         public SegmentType Segment_type { get { return segment_type; } set { segment_type = value; SetSpacers(); } }
+        public Dictionary<string,float> SpacerDict { get { return spacer_dict; } set { if (value != null) spacer_dict = value; } }
         #endregion
         /// <summary>
         /// Set relative position of segment (eg. extracted from XML file)
@@ -91,7 +94,7 @@ namespace MusicXMLViewerWPF
         /// <param name="height"></param>
         public void SetDimensions( float width, float height)
         {
-            Width = width;
+            this.width = width;
             Height = height;
         }
         /// <summary>
@@ -101,8 +104,10 @@ namespace MusicXMLViewerWPF
         {
             if (Spacer_L != 0 || Spacer_R != 0)
             {
-                Width = Spacer_L + Spacer_R;
-                Height = 40f;
+                width = Spacer_L + Spacer_R;
+                Height = 60f;
+                spacer_dictionary();
+                Logger.Log("SpacersDict generated");
             }
         }
         /// <summary>
@@ -188,6 +193,27 @@ namespace MusicXMLViewerWPF
             Point one = new Point(Relative_x,Relative_y);
             Point two = new Point(Relative_x + Width, Relative_y + Height);
             DrawingHelpers.DrawRectangle(visual, one, two, color, dashtype);
+        }
+        /// <summary>
+        /// Generate Spacer Dictionary (spacers proportions)
+        /// </summary>
+        private void spacer_dictionary()
+        {
+            if (Width != 0)
+            {
+                SpacerDict.Clear();
+                SpacerDict.Add("L", Spacer_L / Width);
+                SpacerDict.Add("R", Spacer_R / Width);
+            }
+        }
+        /// <summary>
+        /// Recalculate Spacers according to changed Width
+        /// </summary>
+        public void recalculate_spacers()
+        {
+            Spacer_L = SpacerDict["L"] * Width;
+            Spacer_R = SpacerDict["R"] * Width;
+            spacer_dictionary();
         }
     }
 }

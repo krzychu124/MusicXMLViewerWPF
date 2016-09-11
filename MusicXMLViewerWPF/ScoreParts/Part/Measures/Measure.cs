@@ -72,9 +72,11 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
             {
                 direction = null;
             }
-            
+            int el_num = x.Elements().Count();
+            int index = 0;
             foreach (var element in x.Elements())
             {
+                index++;
                 //XMLFiller(x);
                 if (element.Name.LocalName == "print")
                 {
@@ -107,7 +109,11 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
                 {
                     XMLExtractBarlines(element);
                 }
-                
+                if (index == el_num)
+                {
+                    
+                    //! Generate segments () ... 
+                }
             }
             //if (barlines.Count ==0 || barlines.Where(b => b.Style != Barline.BarStyle.regular).Any()) 
             //{
@@ -172,7 +178,7 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
         {
             direction.Add(new Direction(x));
             Misc.ScoreSystem.Segments.Add(new Segment() { Segment_type = SegmentType.Direction});
-            music_characters.Add(new Segment() { Segment_type = SegmentType.Direction, Color = Brushes.DarkTurquoise });
+           // music_characters.Add(new Segment() { Segment_type = SegmentType.Direction, Color = Brushes.DarkTurquoise });
         }
         /// <summary>
         /// Extract rests from XML elemnet
@@ -365,13 +371,21 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
             using( DrawingContext dc = visual.RenderOpen())
             {
                 Point temp = new Point(Calculated_x, Calculated_y);
+                CalculateXPosCharacter(temp);
                 Draw_Measure(dc, temp);
             }
+            /*
             if (MusicCharacters.Any(i => i.Segment_type == SegmentType.Clef))
             {
                 var character = MusicCharacters.First(z => z.Segment_type == SegmentType.Clef);
                 DrawingVisual vis = new DrawingVisual();
                 character.Draw(vis, character.Color);
+                visual.Children.Add(vis);
+            }*/
+            foreach (var item in MusicCharacters)
+            {
+                DrawingVisual vis = new DrawingVisual();
+                item.Draw(vis, item.Color);
                 visual.Children.Add(vis);
             }
         }
@@ -506,6 +520,79 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
         {
             float fill = l % 24;
             return fill;
+        }
+        /// <summary>
+        /// Calculates MusicCharacters segment positions in measure
+        /// </summary>
+        /// <param name="measurePosition"></param>
+        private void CalculateXPosCharacter(Point measurePosition)
+        {
+            int chars_count = MusicCharacters.Count;
+            float temp_pos = 0.0f; //! temp var for calculating X-pos of element along measure
+            float calc_width = 0.0f;
+            foreach (var item in MusicCharacters)
+            {
+                item.CalculateDimensions();
+            }
+            temp_pos = SetCharXPos();
+            calc_width = temp_pos + MusicCharacters[chars_count - 1].Width;
+            if (calc_width < this.Width)
+            {
+                SegmentWidthLower(calc_width, chars_count);
+                SetCharXPos();
+            }
+            else
+            {
+                if (calc_width > this.Width)
+                {
+                    SegmentWidthHigher();
+                }
+            }
+        }
+        /// <summary>
+        /// Recalculate Character Spacers if segment width increased
+        /// </summary>
+        /// <param name="calc_width"></param>
+        /// <param name="count"></param>
+        private void SegmentWidthLower(float calc_width, int count)
+        {
+            float temp = Width - calc_width;
+            temp = temp / count;
+            foreach (var item in MusicCharacters)
+            {
+                item.Width += temp;
+                item.recalculate_spacers();
+            }
+        }
+        /// <summary>
+        /// Recalculate CHaracter Spacers if segment width decreased
+        /// </summary>
+        private void SegmentWidthHigher()
+        {
+
+        }
+        /// <summary>
+        /// Sets Calculated and relative segment positions of each character in measure
+        /// </summary>
+        /// <returns></returns>
+        private float SetCharXPos()
+        {
+            int chars_count = MusicCharacters.Count;
+            float temp_pos = 0.0f;
+            for (int i = 0; i < chars_count; i++)
+            {
+                if (i == 0)
+                {
+                    temp_pos += MusicCharacters[i].Width;
+                }
+                else
+                {
+                    MusicCharacters[i].Calculated_x = temp_pos;
+                    temp_pos += MusicCharacters[i].Width;
+                }
+                MusicCharacters[i].Relative = new Point(Calculated_x + MusicCharacters[i].Calculated_x, Calculated_y);
+            }
+            return temp_pos;
         }
     }
 }
