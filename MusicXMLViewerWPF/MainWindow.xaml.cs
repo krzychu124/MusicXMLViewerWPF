@@ -298,15 +298,15 @@ new Point(origin.X + totalWidth, y));
                 Logger.Log("Space for title, credits " + credit); //? credit space dimensions
                 foreach (var item in MusicScore.Parts.ElementAt(0).Value.MeasureSegmentList)
                 {
-                    DrawingVisual segment = new DrawingVisual();
-                    item.Draw(segment, Brushes.Blue, DashStyles.Solid);
-                    using (DrawingContext dc = segment.RenderOpen()) //! Debug info
+                    DrawingVisual segment_vis = new DrawingVisual();
+                    item.Draw(segment_vis, Brushes.Blue, DashStyles.Solid);
+                    using (DrawingContext dc = segment_vis.RenderOpen()) //! Debug info
                     {
                         Misc.DrawingHelpers.DrawText(dc, item.Relative_str, new Point(item.Relative.X + 10f, item.Relative.Y + 15f), 10, font_weight: "regular", withsub:false, align: Halign.left);
                         Misc.DrawingHelpers.DrawText(dc, item.Width.ToString() + "px width", new Point(item.Relative.X + 10f, item.Relative.Y + 28f), 10, withsub: false, color: Brushes.DarkGray, align: Halign.left);
                     }
-                    item.Draw(segment);  
-                    drawingSurface.AddVisual(segment);
+                    item.Draw(segment_vis);  
+                    drawingSurface.AddVisual(segment_vis);
                 }
             }
             else
