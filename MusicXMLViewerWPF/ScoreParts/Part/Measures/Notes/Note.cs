@@ -136,6 +136,11 @@ namespace MusicXMLViewerWPF
         {
             //TODO calulation of with neccessary for segment drawing ( with is calculated according to aditional properties of note: added dots, signs(flat,shaph))
         }
+        public override string ToString()
+        {
+            string result = $"Position {Relative_x.ToString("0.#")}X, {Relative_y.ToString("0.#")}X, Width: {Width.ToString("0.#")}";
+            return result;
+        }
     }
 
     public class Beam
