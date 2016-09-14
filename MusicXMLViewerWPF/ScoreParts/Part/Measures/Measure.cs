@@ -10,7 +10,7 @@ using System.Xml.Linq;
 
 namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
 {
-    class Measure : Segment, IXMLExtract, IDrawable // NEEDIMPROVEMENTS: Finish reworking class
+    class Measure : Segment, IDrawable // NEEDIMPROVEMENTS: Finish reworking class
     {
         #region Fields for drawing
 
@@ -66,8 +66,8 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
 
         public Measure(XElement x)
         {
-            XMLFiller(x);
-
+            XMLExtractMeasureInfo(x);
+            this.PropertyChanged += segment_Properties_Ready;
             if (x.Elements("direction").Any() == false)
             {
                 direction = null;
@@ -226,7 +226,7 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
         /// Extract basic info about measure from XML element. eg. width, isVisible number
         /// </summary>
         /// <param name="x"></param>
-        public void XMLFiller(XElement x)
+        public void XMLExtractMeasureInfo(XElement x)
         {
             Width = x.Attribute("width") != null ? float.Parse(x.Attribute("width").Value, CultureInfo.InvariantCulture) : 0f;
             if (Width == 0f)
@@ -382,6 +382,15 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
                 character.Draw(vis, character.Color);
                 visual.Children.Add(vis);
             }*/
+            foreach (var item in MusicCharacters)
+            {
+                DrawingVisual vis = new DrawingVisual();
+                item.Draw(vis, item.Color);
+                visual.Children.Add(vis);
+            }
+        }
+        public void Draw_(DrawingVisual visual)
+        {
             foreach (var item in MusicCharacters)
             {
                 DrawingVisual vis = new DrawingVisual();
@@ -593,6 +602,11 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
                 MusicCharacters[i].Relative = new Point(Calculated_x + MusicCharacters[i].Calculated_x, Calculated_y);
             }
             return temp_pos;
+        }
+        public override string ToString()
+        {
+            string result = $"Rel: {Relative.X.ToString("0.#")}X; {Relative.Y.ToString("0.#")}Y, Width: {Width}";
+            return result;
         }
     }
 }

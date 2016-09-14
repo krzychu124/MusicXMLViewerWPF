@@ -1,6 +1,7 @@
 ﻿using MusicXMLViewerWPF.Misc;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,7 +11,7 @@ using System.Windows.Media;
 
 namespace MusicXMLViewerWPF
 {
-    public class Segment 
+    public class Segment : INotifyPropertyChanged
     {
         #region protected fields
         private float width;
@@ -33,6 +34,7 @@ namespace MusicXMLViewerWPF
         private SegmentType segment_type;
 
         private Dictionary<string, float> spacer_dict = new Dictionary<string, float>();
+        private string missingProperies;
         #endregion
         
         #region public properties
@@ -46,17 +48,33 @@ namespace MusicXMLViewerWPF
         public float Relative_y { get { return relative_y; } set { relative_y = value; } }
         public float Spacer_L { get { return space_l; } set { space_l = value; } }
         public float Spacer_R { get { return space_r; } set { space_r = value; } }
-        public float Width { get { return width; } set { width = value; } }
+        public float Width { get { return width; } set { width = value; if (checkIfSet()) { PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Width))); } } }
+        public event PropertyChangedEventHandler PropertyChanged;
 
-        public Point Calculated { get { return new Point(calculated_x, calculated_y); } set { calculated_x = (float)value.X; calculated_y = (float)value.Y; } }
+        public Point Calculated { get { return new Point(calculated_x, calculated_y); } set { calculated_x = (float)value.X; calculated_y = (float)value.Y; if (checkIfSet()) { PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Calculated))); } } }
         public Point Dimensions { get { return new Point(width, height); } set { width = (float)value.X; height = (float)value.Y; } }
         public Point Offset { get { return new Point(offset_x, offset_y); } set { offset_x = (float)value.X; offset_y = (float)value.Y; } }
         public Point Relative { get { return new Point(relative_x, relative_y); } set { relative_x = (float)value.X; relative_y = (float)value.Y; } }
         public string Relative_str { get { return "("+ relative_x.ToString("0.##") + "; "+ relative_y.ToString("0.##") + ")"; } }
         public Rect Rectangle { get { return new Rect(Relative, Dimensions); } }
-        public SegmentType Segment_type { get { return segment_type; } set { segment_type = value; SetSpacers(); } }
+        public SegmentType Segment_type { get { return segment_type; } set { segment_type = value; SetSpacers(); if (Width == 0) CalculateDimensions(); } }
         public Dictionary<string,float> SpacerDict { get { return spacer_dict; } set { if (value != null) spacer_dict = value; } }
         #endregion
+
+        public void segment_Properties_Ready(object sender, PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case "Calculated":
+                    Logger.Log($"Segment {sender.ToString()}");
+                    Logger.Log($"Set to {Calculated.X.ToString("0.#")}X, {Calculated.Y.ToString("0.#")}Y, {Relative.X.ToString("0.#")}X;  {Relative.Y.ToString("0.#")}Y, Width: {Width}");
+                    break;
+                default:
+                    Logger.Log($"Segment {e.PropertyName} ready");
+                    Logger.Log($"Set to {Width}, {Height}, {Calculated}, {Relative}");
+                    break;
+            }
+        }
         /// <summary>
         /// Set relative position of segment (eg. extracted from XML file)
         /// </summary>
@@ -175,7 +193,7 @@ namespace MusicXMLViewerWPF
             return value;
         }
         /// <summary>
-        /// Draws segment on visual
+        /// Draws segment rectangle on visual
         /// </summary>
         /// <param name="visual"></param>
         /// <param name="color"></param>
@@ -214,6 +232,22 @@ namespace MusicXMLViewerWPF
             Spacer_L = SpacerDict["L"] * Width;
             Spacer_R = SpacerDict["R"] * Width;
             spacer_dictionary();
+        }
+        private bool checkIfSet()
+        {
+            bool result = false;
+            if (Calculated.Y != 0 && Relative.Y != 0 && Width != 0 && Height != 0)
+            {
+                missingProperies = string.Empty;
+                result = true;
+            }
+            if (result == false)
+            {
+                if (Calculated.Y == 0) missingProperies += "Calculated ";
+                if (Relative.Y == 0) missingProperies += "Relative ";
+                if (Width == 0) missingProperies += "Width ";
+            }
+            return result;
         }
     }
 }

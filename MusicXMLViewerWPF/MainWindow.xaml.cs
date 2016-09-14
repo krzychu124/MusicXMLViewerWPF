@@ -223,13 +223,14 @@ new Point(origin.X + totalWidth, y));
 
         private void test2_Click(object sender, RoutedEventArgs e)
         {
+            
             if (MusicScore.isLoaded)
             {
-                
                 //...
                 //LoadCharsToViewPort c = new LoadCharsToViewPort();
                 //c.AddClef(visual);
                 //drawingSurface.AddVisual(visual);
+
             }
             else
             {
@@ -237,7 +238,6 @@ new Point(origin.X + totalWidth, y));
             }
             
         }
-
         private void test3_Click(object sender, RoutedEventArgs e)
         {
             if (MusicScore.isLoaded)
