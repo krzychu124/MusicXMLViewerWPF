@@ -332,7 +332,7 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
             
             if (MusicCharacters.Count != 0)
             {
-                Point temp = p;
+                Point temp = new Point(p.X + 20f, p.Y);
                 temp.Y += 8f;
                 DrawingVisual segments = new DrawingVisual();
                 foreach (var character in MusicCharacters)
@@ -544,15 +544,15 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
                 item.CalculateDimensions();
             }
             temp_pos = SetCharXPos();
-            calc_width = temp_pos + MusicCharacters[chars_count - 1].Width;
-            if (calc_width < this.Width)
+            calc_width = temp_pos; //! summary widths of all segments in measure
+            if (calc_width < this.Width) //! if sum width is lower - stretch every segment to match measure width
             {
                 SegmentWidthLower(calc_width, chars_count);
                 SetCharXPos();
             }
             else
             {
-                if (calc_width > this.Width)
+                if (calc_width > this.Width) //! if calculated sum width of segments is higher than width of measure - lower width of every segment in measure 
                 {
                     SegmentWidthHigher();
                 }
@@ -578,7 +578,12 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
         /// </summary>
         private void SegmentWidthHigher()
         {
-
+            //? Ideas for now ...
+            //! II options:
+            //! lower width of every segment to match size of measure
+            //! resize measure, check if whole line of measures fits in given space (length of line), 
+            //! if measures < given length: try resize to every measure, 
+            //! if measures > given length: move last measure to next line then repeat steps to check if every line of measures is <= given length of measures line
         }
         /// <summary>
         /// Sets Calculated and relative segment positions of each character in measure
