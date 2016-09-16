@@ -18,7 +18,7 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
         #region Fields
         //--------------------
         private int number;
-        //private float width; // default value is 100 may change later
+        //private float width; // default value is 100 may change later ?
         //--------------------
         private Attributes attributes;
         private bool hasNumberInvisible;

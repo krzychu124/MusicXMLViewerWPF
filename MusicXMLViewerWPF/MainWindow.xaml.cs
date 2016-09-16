@@ -32,13 +32,14 @@ namespace MusicXMLViewerWPF
             // Console.WriteLine("\U0001D122");
             // LogBox.Text += "-> \uE050 <-";
             //LogBox.DataContext = Logger.Text;
-            Logger.LogAdded += new EventHandler(MyLogger_LogAdded);
-            Logger.LogCleared += new EventHandler(MyLogger_LogClear);
-             
+            //!Logger.LogAdded += new EventHandler(MyLogger_LogAdded);
+            Logger.LogAdded += new EventHandler(MyLogger_TxtBox_Add);
+           //! Logger.LogCleared += new EventHandler(MyLogger_LogClear);
+            Logger.LogCleared += new EventHandler(MyLogger_TxtBox_Clear);
             //Logger.Log("check");
-           // Measures m = new Measures();
-           // m.MeasureList_Loaded = true;
-           // LoadCharsToViewPort l = new LoadCharsToViewPort(drawingSurface);
+            // Measures m = new Measures();
+            // m.MeasureList_Loaded = true;
+            // LoadCharsToViewPort l = new LoadCharsToViewPort(drawingSurface);
         }
 
         
@@ -384,14 +385,23 @@ new Point(origin.X + totalWidth, y));
             return dist;
         }
 
-        void MyLogger_LogAdded(object sender, EventArgs e)
-        {
-            LogBox.Text = LogBox.Text + Environment.NewLine + Logger.GetLastLog();
-        }
+        //void MyLogger_LogAdded(object sender, EventArgs e)
+        //{
+        //    LogBox.Text = LogBox.Text + Environment.NewLine + Logger.GetLastLog();
+        //}
 
-        void MyLogger_LogClear(object sender, EventArgs e)
+        //void MyLogger_LogClear(object sender, EventArgs e)
+        //{
+        //    LogBox.Text = "";
+        //}
+
+        void MyLogger_TxtBox_Add(object sender, EventArgs e)
         {
-            LogBox.Text = "";
+            textBox.Text = textBox.Text + Environment.NewLine + Logger.GetLastLog();
+        }
+        void MyLogger_TxtBox_Clear(object sender, EventArgs e)
+        {
+            textBox.Text = "";
         }
 
         private void MenuItem_Click(object sender, RoutedEventArgs e)
