@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media;
 using System.Xml.Linq;
 
 namespace MusicXMLViewerWPF
 {
-    public class Clef : Segment
+    public class Clef : Segment, Misc.IDrawableMusicalChar
     {
         #region Fields
         private EmptyPrintStyle additional_attributes;
@@ -24,10 +25,11 @@ namespace MusicXMLViewerWPF
         public int MeasureId { get { return measure_num; } }
         public static int ClefAlter { get { return clef_alter; } }
         public static ClefType Sign_static { get { return sign_static; } }
+        public SegmentType CharacterType { get { return SegmentType.Clef; } }
         #endregion
         public Clef(XElement x)
         {
-            
+            ID = Misc.RandomGenerator.GetRandomHexNumber();
             additional_attributes = new EmptyPrintStyle(x.Attributes());
             Segment_type = SegmentType.Clef;
             //-----------------------
@@ -63,6 +65,17 @@ namespace MusicXMLViewerWPF
             this.sign = new ClefType(c);
 
             clef_alter = sign.Sign == ClefType.Clef.GClef ? 0 : sign.Sign == ClefType.Clef.FClef? -12: -6;
+        }
+
+        public void Draw(DrawingVisual visual)
+        {
+            DrawingVisual clef = new DrawingVisual();
+            using( DrawingContext dc = clef.RenderOpen())
+            {
+                Brush clefColor = (SolidColorBrush)new BrushConverter().ConvertFromString(AdditionalAttributes.Color);
+                Misc.DrawingHelpers.DrawString(dc, this.Sign.Symbol, TypeFaces.NotesFont, clefColor, Relative_x + Spacer_L, Relative_y, MusicScore.Defaults.Scale.Tenths); //! Experimental
+            }
+            visual.Children.Add(clef);
         }
     }
 }

@@ -9,7 +9,7 @@ using System.Xml.Linq;
 
 namespace MusicXMLViewerWPF
 {
-    class Key : Segment//  MusicalChars //TODO_L implement missing properties 
+    class Key : Segment, Misc.IDrawableMusicalChar//  MusicalChars //TODO_L implement missing properties 
     {
         #region Fields
         private EmptyPrintStyle additional_attributes;
@@ -26,6 +26,7 @@ namespace MusicXMLViewerWPF
         public bool IsNatural { get { return isNatural; } }
         public Fifths Fifths { get { return fifths; } }
         public Mode Mode { get { return mode; } }
+        public SegmentType CharacterType { get { return SegmentType.KeySig; } }
         #endregion
 
         public Key( int fifths, string mode, int num)
@@ -41,6 +42,7 @@ namespace MusicXMLViewerWPF
 
         public Key(XElement x)
         {
+            ID = Misc.RandomGenerator.GetRandomHexNumber();
             Segment_type = SegmentType.KeySig;
             additional_attributes = new EmptyPrintStyle(x.Attributes());
             this.mode = Mode.major;
@@ -90,10 +92,24 @@ namespace MusicXMLViewerWPF
             
         }
 
-        public static void Draw_Key(DrawingContext dc, Point p, ClefType sign, int num = 1)
+        public void Draw(DrawingVisual visual, ClefType clef_type)
+        {
+            DrawingVisual key = new DrawingVisual();
+            using (DrawingContext dc = key.RenderOpen())
+            {
+                Brush KeyColor = (SolidColorBrush)new BrushConverter().ConvertFromString(AdditionalAttributes.Color);
+                Draw_Key(dc, Relative, clef_type, color:KeyColor);  //! Experimental
+            }
+            visual.Children.Add(key);
+        }
+    
+        public static void Draw_Key(DrawingContext dc, Point p, ClefType sign, int num = 1, Brush color = null)
         {
             // num = 4;// test
-
+            if (color == null)
+            {
+                color = (SolidColorBrush)new BrushConverter().ConvertFromString("Black");
+            }
             if (num == 0)
             {
                 // do nothing if key is sharp/flat-less
@@ -111,7 +127,7 @@ namespace MusicXMLViewerWPF
                 string key = isSharp ? MusChar.Sharp : MusChar.Flat; // assign unicode symbol
                 for (int i = 0; i < Math.Abs(num); i++)
                 {
-                    Misc.DrawingHelpers.DrawString(dc, key, TypeFaces.NotesFont, Brushes.Black, x + padding * i, y + (test[i] + alt), MusicScore.Defaults.Scale.Tenths); // draw
+                    Misc.DrawingHelpers.DrawString(dc, key, TypeFaces.NotesFont, color, x + padding * i, y + (test[i] + alt), MusicScore.Defaults.Scale.Tenths); // draw
                 }
             }
         }
