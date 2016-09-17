@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MusicXMLViewerWPF.Misc;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -65,6 +66,22 @@ namespace MusicXMLViewerWPF
                     default:
                         break;
                 }
+            }
+        }
+
+        public void Draw(DrawingVisual visual)
+        {
+            if (Clef != null)
+            {
+                Clef.Draw(visual);
+            }
+            if (Key != null)
+            {
+                Key.Draw(visual, Clef.Sign);
+            }
+            if (Time != null)
+            {
+                Time.Draw(visual);
             }
         }
 
