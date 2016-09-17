@@ -9,7 +9,7 @@ using System.Windows.Media;
 
 namespace MusicXMLViewerWPF
 {
-    public static class Logger
+    public  class Logger
     {
         private static List<string> log = new List<string>();
 
@@ -43,7 +43,8 @@ namespace MusicXMLViewerWPF
         {
             log.Clear();
             LogCleared?.Invoke(null, EventArgs.Empty);
-            System.Windows.MessageBox.Show("Log cleared.");
+            Log("Log Cleared");
+            //? System.Windows.MessageBox.Show("Log cleared.");
             return string.Empty;
         }
     }

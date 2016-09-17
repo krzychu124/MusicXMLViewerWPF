@@ -60,9 +60,11 @@
     <Compile Include="Identification\Identification.cs" />
     <Compile Include="Misc\DrawingHelpers.cs" />
     <Compile Include="Misc\IAutoPosition.cs" />
+    <Compile Include="Misc\IDrawableMusicalChar.cs" />
     <Compile Include="Misc\LineBreak.cs" />
     <Compile Include="Misc\LoadFile.cs" />
     <Compile Include="Misc\MeasureSystem.cs" />
+    <Compile Include="Misc\RandomGenerator.cs" />
     <Compile Include="Misc\ScoreSystem.cs" />
     <Compile Include="Misc\ScorePage.cs" />
     <Compile Include="ScoreParts\Part\Measures\Attributes.cs" />

@@ -35,13 +35,15 @@ namespace MusicXMLViewerWPF.ScoreParts.Part
             float measure_system = (float)MusicScore.Defaults.SystemLayout.TopSystemDistance;
             measure_location.Y += measure_system;
             //! Main loop for searching measures in current part
+            bool test = true;
+            bool test2 = false;
             for (int i = 0; i < measures.Count(); i++)
             {
                 XElement item = measures.ElementAt(i);
-                bool test = true;
+                //measure_list.Add(new Measures.Measure(item));
+                
                 if (test)
                 {
-
                     Measures.Measure measure = new Measures.Measure(item);
                     if (measure.PrintProperties != null)
                     {
@@ -76,58 +78,61 @@ namespace MusicXMLViewerWPF.ScoreParts.Part
                         measure_location.X += measure.Width;
                     }
                     measure_segment_list.Add(measure);
+                    //test = false;
                 }
-
-                measure_list.Add(new Measures.Measure(item)); // 
-
-                if (i == 0)
+                if (test2)
                 {
-                    if (measure_list.ElementAt(i).PrintProperties != null)
+                    measure_list.Add(new Measures.Measure(item)); // 
+
+                    if (i == 0)
                     {
-                        if (measure_list.ElementAt(i).PrintProperties.SystemLayout != null)
+                        if (measure_list.ElementAt(i).PrintProperties != null)
                         {
-                            tempPoint = new Point(tempMargins.X + measure_list.ElementAt(i).PrintProperties.SystemLayout.LeftRelative, tempMargins.Y + measure_list.ElementAt(i).PrintProperties.SystemLayout.SystemDistance + MusicScore.Defaults.SystemLayout.TopSystemDistance);
-                        }
-                        else
-                        {
-                            tempPoint = new Point(tempMargins.X, tempMargins.Y + MusicScore.Defaults.SystemLayout.TopSystemDistance);
-                        }
-                        //todo Logger.Log($"Margins {tempMargins.X} {tempMargins.Y}");
-                        //todo Logger.Log($"First point {tempPoint.X} {tempPoint.Y}");
-                        measure_margin_helper.Add(measure_list.ElementAt(i).Number, tempPoint);
-                        //Logger.Log($"helper_dict measure-page margins {MusicScore.Defaults.Page.Margins.Left}  {MusicScore.Defaults.Page.Margins.Top}");
-                    }
-                }
-                else
-                {
-                    if (measure_list.ElementAt(i).PrintProperties != null)
-                    {
-                        if (measure_list.ElementAt(i).PrintProperties.NewSystem)
-                        {
-                            //measure_list.ElementAt(i).IsFirstInLine = true;
                             if (measure_list.ElementAt(i).PrintProperties.SystemLayout != null)
                             {
-                                tempPoint.X = measure_list.ElementAt(i).PrintProperties.SystemLayout.LeftRelative + tempMargins.X;
-                                tempPoint.Y += measure_list.ElementAt(i).PrintProperties.SystemLayout.SystemDistance;
-                                sysdist = measure_list.ElementAt(i).PrintProperties.SystemLayout.SystemDistance;
-                                measure_margin_helper.Add(measure_list.ElementAt(i).Number, tempPoint);
-                                //todo Logger.Log($"helper_dict measure nr. {i+1}  changed system layout");
+                                tempPoint = new Point(tempMargins.X + measure_list.ElementAt(i).PrintProperties.SystemLayout.LeftRelative, tempMargins.Y + measure_list.ElementAt(i).PrintProperties.SystemLayout.SystemDistance + MusicScore.Defaults.SystemLayout.TopSystemDistance);
                             }
                             else
                             {
-                                //todo Logger.Log($"helper_dict NewSystem in measure nr. {i + 1}");
-                                measure_margin_helper.Add(measure_list.ElementAt(i).Number, new Point( measure_margin_helper.ElementAt(measure_margin_helper.Count - 1).Value.X, measure_margin_helper.ElementAt(measure_margin_helper.Count - 1).Value.Y +sysdist));
+                                tempPoint = new Point(tempMargins.X, tempMargins.Y + MusicScore.Defaults.SystemLayout.TopSystemDistance);
                             }
-                            //measure_margin_helper.Add(i, new Point(measure_margin_helper.ElementAt(measure_margin_helper.Count).Value.X, measure_margin_helper.ElementAt(measure_margin_helper.Count).Value.Y));
+                            //todo Logger.Log($"Margins {tempMargins.X} {tempMargins.Y}");
+                            //todo Logger.Log($"First point {tempPoint.X} {tempPoint.Y}");
+                            measure_margin_helper.Add(measure_list.ElementAt(i).Number, tempPoint);
+                            //Logger.Log($"helper_dict measure-page margins {MusicScore.Defaults.Page.Margins.Left}  {MusicScore.Defaults.Page.Margins.Top}");
                         }
-                        else
+                    }
+                    else
+                    {
+                        if (measure_list.ElementAt(i).PrintProperties != null)
                         {
-                            //measure_margin_helper.Add(measure_list.ElementAt(i).Number, new Point(measure_margin_helper.ElementAt(measure_margin_helper.Count - 1).Value.X, measure_margin_helper.ElementAt(measure_margin_helper.Count - 1).Value.Y));
-                            //todo Logger.Log($"helper_dict NewSystem value: no in measure nr. {i + 1}");
-                        }
-                        //measure_margin_helper.Add(measure_list.ElementAt(i).Number, measure_margin_helper.ElementAt(measure_margin_helper.Count - 1).Value);
-                        //Logger.Log($"helper_dict measure nr. {measure_margin_helper.ElementAt(measure_margin_helper.Count -1).Value.X} {measure_margin_helper.ElementAt(measure_margin_helper.Count -1).Value.Y}");
+                            if (measure_list.ElementAt(i).PrintProperties.NewSystem)
+                            {
+                                //measure_list.ElementAt(i).IsFirstInLine = true;
+                                if (measure_list.ElementAt(i).PrintProperties.SystemLayout != null)
+                                {
+                                    tempPoint.X = measure_list.ElementAt(i).PrintProperties.SystemLayout.LeftRelative + tempMargins.X;
+                                    tempPoint.Y += measure_list.ElementAt(i).PrintProperties.SystemLayout.SystemDistance;
+                                    sysdist = measure_list.ElementAt(i).PrintProperties.SystemLayout.SystemDistance;
+                                    measure_margin_helper.Add(measure_list.ElementAt(i).Number, tempPoint);
+                                    //todo Logger.Log($"helper_dict measure nr. {i+1}  changed system layout");
+                                }
+                                else
+                                {
+                                    //todo Logger.Log($"helper_dict NewSystem in measure nr. {i + 1}");
+                                    measure_margin_helper.Add(measure_list.ElementAt(i).Number, new Point(measure_margin_helper.ElementAt(measure_margin_helper.Count - 1).Value.X, measure_margin_helper.ElementAt(measure_margin_helper.Count - 1).Value.Y + sysdist));
+                                }
+                                //measure_margin_helper.Add(i, new Point(measure_margin_helper.ElementAt(measure_margin_helper.Count).Value.X, measure_margin_helper.ElementAt(measure_margin_helper.Count).Value.Y));
+                            }
+                            else
+                            {
+                                //measure_margin_helper.Add(measure_list.ElementAt(i).Number, new Point(measure_margin_helper.ElementAt(measure_margin_helper.Count - 1).Value.X, measure_margin_helper.ElementAt(measure_margin_helper.Count - 1).Value.Y));
+                                //todo Logger.Log($"helper_dict NewSystem value: no in measure nr. {i + 1}");
+                            }
+                            //measure_margin_helper.Add(measure_list.ElementAt(i).Number, measure_margin_helper.ElementAt(measure_margin_helper.Count - 1).Value);
+                            //Logger.Log($"helper_dict measure nr. {measure_margin_helper.ElementAt(measure_margin_helper.Count -1).Value.X} {measure_margin_helper.ElementAt(measure_margin_helper.Count -1).Value.Y}");
 
+                        }
                     }
                 }
             }

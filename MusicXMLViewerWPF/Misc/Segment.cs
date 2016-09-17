@@ -11,7 +11,7 @@ using System.Windows.Media;
 
 namespace MusicXMLViewerWPF
 {
-    public class Segment : INotifyPropertyChanged
+    public class Segment : INotifyPropertyChanged, Misc.IDrawableMusicalChar
     {
         #region protected fields
         private float width;
@@ -29,12 +29,13 @@ namespace MusicXMLViewerWPF
         private float space_l; //! left spacer
         private float space_r; //! right spacer 
 
-        private Brush color;
+        private Brush color = Brushes.Black;
 
         private SegmentType segment_type;
 
         private Dictionary<string, float> spacer_dict = new Dictionary<string, float>();
         private string missingProperies;
+        private string id;
         #endregion
         
         #region public properties
@@ -50,6 +51,18 @@ namespace MusicXMLViewerWPF
         public float Spacer_R { get { return space_r; } set { space_r = value; } }
         public float Width { get { return width; } set { width = value; if (checkIfSet()) { PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Width))); } } }
         public event PropertyChangedEventHandler PropertyChanged;
+        public string ID {
+            get {
+                return id; }
+            set {
+                if (id == null)
+                {
+                    id = value;
+                } else
+                {
+                    Logger.Log($"ID changed from {value} to {id}"); MessageBox.Show($"ID changed from {value} to {id}"); }
+            }
+        }
 
         public Point Calculated { get { return new Point(calculated_x, calculated_y); } set { calculated_x = (float)value.X; calculated_y = (float)value.Y; if (checkIfSet()) { PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Calculated))); } } }
         public Point Dimensions { get { return new Point(width, height); } set { width = (float)value.X; height = (float)value.Y; } }
@@ -59,6 +72,7 @@ namespace MusicXMLViewerWPF
         public Rect Rectangle { get { return new Rect(Relative, Dimensions); } }
         public SegmentType Segment_type { get { return segment_type; } set { segment_type = value; SetSpacers(); if (Width == 0) CalculateDimensions(); } }
         public Dictionary<string,float> SpacerDict { get { return spacer_dict; } set { if (value != null) spacer_dict = value; } }
+        public SegmentType CharacterType { get { return Segment_type; } }
         #endregion
 
         public void segment_Properties_Ready(object sender, PropertyChangedEventArgs e)
@@ -189,7 +203,7 @@ namespace MusicXMLViewerWPF
         /// <returns></returns>
         public override string ToString()
         {
-            string value =$"Rel:{Relative_x.ToString("0.##")}, {Relative_y.ToString("0.##")}; L,R:{Spacer_L}, {Spacer_R}; W,H: {Width.ToString("0.##")},{Height.ToString("0.##")}";
+            string value =$"<{ID}>||{Segment_type.ToString()}| |XY_r|<{Relative_x.ToString("0.#")}><{Relative_y.ToString("0.#")}> |LR| <{Spacer_L.ToString("0.#")}><{Spacer_R.ToString("0.#")}> |WH| <{Width.ToString("0.#")}><{Height.ToString("0.#")}>";
             return value;
         }
         /// <summary>

@@ -11,7 +11,7 @@ namespace MusicXMLViewerWPF.Misc
         /// <summary>
         /// List of segments
         /// </summary>
-        public static List<Segment> Segments = new List<Segment>();
+        public static Dictionary<string, Segment> Segments = new Dictionary<string, Segment>();
         //static float test = 0;
         //public static void s (int i)
         //{

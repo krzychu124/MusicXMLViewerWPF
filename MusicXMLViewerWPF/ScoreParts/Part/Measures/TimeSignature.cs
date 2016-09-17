@@ -7,7 +7,7 @@ using System.Xml.Linq;
 
 namespace MusicXMLViewerWPF
 {
-    public class TimeSignature : Segment // MusicalChars // TODO_L test timesig class
+    public class TimeSignature : Segment, Misc.IDrawableMusicalChar // MusicalChars // TODO_L test timesig class
     {
         private EmptyPrintStyle additional_attributes;
         private int beats;
@@ -24,9 +24,12 @@ namespace MusicXMLViewerWPF
         public int MeasureNum { get { return measure_num; } }
         public string BeatStr { get { return beats_str; } }
         public string BeatTypeStr { get { return beats_type_str; } }
+        public SegmentType CharacterType { get { return SegmentType.TimeSig; } }
         //TODO_L implement missing properties, separator,interchangeable
         public TimeSignature(XElement x)
         {
+            ID = Misc.RandomGenerator.GetRandomHexNumber();
+            Segment_type = SegmentType.TimeSig;
             additional_attributes = new EmptyPrintStyle(x.Attributes());
             var ele = x.Elements();
             foreach (var item in ele)

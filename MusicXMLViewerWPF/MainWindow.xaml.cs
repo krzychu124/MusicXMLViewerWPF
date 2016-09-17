@@ -32,13 +32,14 @@ namespace MusicXMLViewerWPF
             // Console.WriteLine("\U0001D122");
             // LogBox.Text += "-> \uE050 <-";
             //LogBox.DataContext = Logger.Text;
-            Logger.LogAdded += new EventHandler(MyLogger_LogAdded);
-            Logger.LogCleared += new EventHandler(MyLogger_LogClear);
-             
+            //!Logger.LogAdded += new EventHandler(MyLogger_LogAdded);
+            //? Logger.LogAdded += new EventHandler(MyLogger_TxtBox_Add);
+            //! Logger.LogCleared += new EventHandler(MyLogger_LogClear);
+            Logger.LogCleared += new EventHandler(MyLogger_TxtBox_Clear);
             //Logger.Log("check");
-           // Measures m = new Measures();
-           // m.MeasureList_Loaded = true;
-           // LoadCharsToViewPort l = new LoadCharsToViewPort(drawingSurface);
+            // Measures m = new Measures();
+            // m.MeasureList_Loaded = true;
+            // LoadCharsToViewPort l = new LoadCharsToViewPort(drawingSurface);
         }
 
         
@@ -383,65 +384,85 @@ new Point(origin.X + totalWidth, y));
             float dist = (float)Math.Sqrt( Math.Pow((p1.X-p2.X),2) + Math.Pow((p1.Y - p2.Y),2));
             return dist;
         }
+        //? TextBlock delegates
+        //void MyLogger_LogAdded(object sender, EventArgs e)
+        //{
+        //    LogBox.Text = LogBox.Text + Environment.NewLine + Logger.GetLastLog();
+        //}
 
-        void MyLogger_LogAdded(object sender, EventArgs e)
+        //void MyLogger_LogClear(object sender, EventArgs e)
+        //{
+        //    LogBox.Text = "";
+        //}
+
+        void MyLogger_TxtBox_Add(object sender, EventArgs e)
         {
-            LogBox.Text = LogBox.Text + Environment.NewLine + Logger.GetLastLog();
+            textBox.Text = textBox.Text + Environment.NewLine + Logger.GetLastLog();
         }
-
-        void MyLogger_LogClear(object sender, EventArgs e)
+        void MyLogger_TxtBox_Clear(object sender, EventArgs e)
         {
-            LogBox.Text = "";
+            textBox.Text = "";
         }
 
         private void MenuItem_Click(object sender, RoutedEventArgs e)
         {
             Logger.ClearLog();
         }
-        //public void CreateALine()
-        //{
-        //    DrawingGroup d = new DrawingGroup();
-        //    DrawingVisual visual = new DrawingVisual();
-        //    using (DrawingContext dc = visual.RenderOpen())
-        //    {
-        //        // Create a Line
-        //        Line redLine = new Line();
-        //        redLine.X1 = 50;
-        //        redLine.Y1 = 50;
-        //        redLine.X2 = 200;
-        //        redLine.Y2 = 200;
-        //       // DrawingContext dc;
-        //        DrawString(dc, MusChar.FClef, TypeFaces.NotesFont, Brushes.Black, 5f, 10.0f, 40.0f);
-        //        // Create a red Brush
-        //        SolidColorBrush redBrush = new SolidColorBrush();
-        //        redBrush.Color = Colors.Red;
 
-        //        // Set Line's width and color
-        //        redLine.StrokeThickness = 4;
-        //        redLine.Stroke = redBrush;
-        //    }
+        private void checkBox_Checked(object sender, RoutedEventArgs e)
+        {
+            Logger.LogAdded += new EventHandler(MyLogger_TxtBox_Add);
+            //Logger.LogCleared += new EventHandler(MyLogger_TxtBox_Clear);
+        }
 
-        //    // Add line to the Grid.
-        //can.Children.Add();
-        //}
-        //private DrawingVisual CreateDrawingVisualRectangle()
-        //{
-        //    DrawingVisual drawingVisual = new DrawingVisual();
+        private void checkBox_Unchecked(object sender, RoutedEventArgs e)
+        {
+            Logger.LogAdded -= MyLogger_TxtBox_Add;
+        }
+            //public void CreateALine()
+            //{
+            //    DrawingGroup d = new DrawingGroup();
+            //    DrawingVisual visual = new DrawingVisual();
+            //    using (DrawingContext dc = visual.RenderOpen())
+            //    {
+            //        // Create a Line
+            //        Line redLine = new Line();
+            //        redLine.X1 = 50;
+            //        redLine.Y1 = 50;
+            //        redLine.X2 = 200;
+            //        redLine.Y2 = 200;
+            //       // DrawingContext dc;
+            //        DrawString(dc, MusChar.FClef, TypeFaces.NotesFont, Brushes.Black, 5f, 10.0f, 40.0f);
+            //        // Create a red Brush
+            //        SolidColorBrush redBrush = new SolidColorBrush();
+            //        redBrush.Color = Colors.Red;
 
-        //    // Retrieve the DrawingContext in order to create new drawing content.
-        //    DrawingContext drawingContext = drawingVisual.RenderOpen();
+            //        // Set Line's width and color
+            //        redLine.StrokeThickness = 4;
+            //        redLine.Stroke = redBrush;
+            //    }
 
-        //    // Create a rectangle and draw it in the DrawingContext.
-        //    Rect rect = new Rect(new System.Windows.Point(160, 100), new System.Windows.Size(320, 80));
-        //    drawingContext.DrawRectangle(System.Windows.Media.Brushes.LightBlue, (System.Windows.Media.Pen)null, rect);
+            //    // Add line to the Grid.
+            //can.Children.Add();
+            //}
+            //private DrawingVisual CreateDrawingVisualRectangle()
+            //{
+            //    DrawingVisual drawingVisual = new DrawingVisual();
 
-        //    // Persist the drawing content.
-        //    drawingContext.Close();
+            //    // Retrieve the DrawingContext in order to create new drawing content.
+            //    DrawingContext drawingContext = drawingVisual.RenderOpen();
 
-        //    return drawingVisual;
-        //}
+            //    // Create a rectangle and draw it in the DrawingContext.
+            //    Rect rect = new Rect(new System.Windows.Point(160, 100), new System.Windows.Size(320, 80));
+            //    drawingContext.DrawRectangle(System.Windows.Media.Brushes.LightBlue, (System.Windows.Media.Pen)null, rect);
 
-    }
+            //    // Persist the drawing content.
+            //    drawingContext.Close();
+
+            //    return drawingVisual;
+            //}
+
+        }
 
     public static class ExtensionMethods
     {

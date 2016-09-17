@@ -18,7 +18,7 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
         #region Fields
         //--------------------
         private int number;
-        //private float width; // default value is 100 may change later
+        //private float width; // default value is 100 may change later ?
         //--------------------
         private Attributes attributes;
         private bool hasNumberInvisible;
@@ -66,6 +66,7 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
 
         public Measure(XElement x)
         {
+            ID = Misc.RandomGenerator.GetRandomHexNumber();
             XMLExtractMeasureInfo(x);
             this.PropertyChanged += segment_Properties_Ready;
             if (x.Elements("direction").Any() == false)
@@ -123,6 +124,7 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
             //{
             //    Logger.Log($"Added segment {item.ToString()}");
             //}
+            
         }
         /// <summary>
         /// Extract barlines from XML elemnet
@@ -130,8 +132,9 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
         /// <param name="x"></param>
         private void XMLExtractBarlines(XElement x)
         {
-            barlines.Add(new Barline(x));
-            Misc.ScoreSystem.Segments.Add(new Segment() { Segment_type = SegmentType.Barline, Color = Brushes.Gold });
+            Barline barline = new Barline(x);
+            barlines.Add(barline);
+            Misc.ScoreSystem.Segments.Add(barline.ID, new Segment() { ID = barline.ID, Segment_type = SegmentType.Barline, Color = Brushes.Gold });
         }
         /// <summary>
         /// Extract measure attributes (Clef, KeySig, Timesig) from XML elemnet
@@ -140,34 +143,46 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
         private void XMLExtractAttributes(XElement x)
         {
             attributes =  new Attributes(x);
-            if (attributes.Clef != null) //Todo Needs rework... WiP
-            {
+            if (Attributes.Clef != null) //Todo Needs rework... WiP
+            { 
+                /*
+                Clef ClefSegment = Attributes.Clef;
+                ClefSegment.Segment_type = SegmentType.Clef;
+                ClefSegment.Color = Brushes.Brown;
                 Segment s = new Segment() { Segment_type = SegmentType.Clef, Color = Brushes.Brown };
                 var c = music_characters.LastOrDefault(); //! gets last obj from list
                 Point p = new Point();
                 if (c == null)
                 {
-                    p = Calculate_Current_Position(s);
+                    //! p = Calculate_Current_Position(s);
+                    p = Calculate_Current_Position(ClefSegment);
                 }
                 else
                 {
                     p = Calculate_Current_Position(c);
                 }
-                s.Relative = Calc.Add(Calculated, p);
-                s.CalculateDimensions();
+              //!  s.Relative = Calc.Add(Calculated, p);
+              //!  s.CalculateDimensions();
+                ClefSegment.Relative = Calc.Add(Calculated, p);
+                ClefSegment.CalculateDimensions();
+                
+              //! Misc.ScoreSystem.Segments.Add(s); //! (new Segment() { Segment_type = SegmentType.Clef, Color = Brushes.Brown });
 
-                Misc.ScoreSystem.Segments.Add(s); //! (new Segment() { Segment_type = SegmentType.Clef, Color = Brushes.Brown });
-                music_characters.Add(s); //! (new Segment() { Segment_type = SegmentType.Clef, Color = Brushes.Brown });
+                //! music_characters.Add(s); //! (new Segment() { Segment_type = SegmentType.Clef, Color = Brushes.Brown });
+                */
+
+                Misc.ScoreSystem.Segments.Add(Attributes.Clef.ID, Attributes.Clef);
+                music_characters.Add(Attributes.Clef);
             }
-            if (attributes.Key != null)
+            if (Attributes.Key != null)
             {
-                Misc.ScoreSystem.Segments.Add(new Segment() { Segment_type = SegmentType.KeySig, Color = Brushes.Coral });
-                music_characters.Add(new Segment() { Segment_type = SegmentType.KeySig, Color = Brushes.Coral });
+                Misc.ScoreSystem.Segments.Add(Attributes.Key.ID, new Segment() { ID = Attributes.Key.ID, Segment_type = SegmentType.KeySig, Color = Brushes.Coral });
+                music_characters.Add(Attributes.Key); //! new Segment() { Segment_type = SegmentType.KeySig, Color = Brushes.Coral }
             }
-            if (attributes.Time != null)
+            if (Attributes.Time != null)
             {
-                Misc.ScoreSystem.Segments.Add(new Segment() { Segment_type = SegmentType.TimeSig, Color = Brushes.Lavender });
-                music_characters.Add(new Segment() { Segment_type = SegmentType.TimeSig, Color = Brushes.Lavender });
+                Misc.ScoreSystem.Segments.Add(Attributes.Time.ID, new Segment() { ID = Attributes.Time.ID, Segment_type = SegmentType.TimeSig, Color = Brushes.Lavender });
+                music_characters.Add(new Segment() { ID = Attributes.Time.ID, Segment_type = SegmentType.TimeSig, Color = Brushes.Lavender });
             }
         }
         /// <summary>
@@ -176,8 +191,9 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
         /// <param name="x"></param>
         private void XMLExtractDirections(XElement x)
         {
-            direction.Add(new Direction(x));
-            Misc.ScoreSystem.Segments.Add(new Segment() { Segment_type = SegmentType.Direction});
+            Direction direction = new Direction(x);
+            this.direction.Add(direction);
+            Misc.ScoreSystem.Segments.Add(direction.ID, new Segment() { ID = direction.ID, Segment_type = SegmentType.Direction});
            // music_characters.Add(new Segment() { Segment_type = SegmentType.Direction, Color = Brushes.DarkTurquoise });
         }
         /// <summary>
@@ -186,9 +202,10 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
         /// <param name="x"></param>
         private void XMLExtractRests(XElement x)
         {
+            string temp_str = Misc.RandomGenerator.GetRandomHexNumber();
             //! debug; Logger.Log("missing impl for this rest");
-            Misc.ScoreSystem.Segments.Add(new Segment() { Segment_type = SegmentType.Rest, Color = Brushes.DarkMagenta });
-            music_characters.Add(new Segment() { Segment_type = SegmentType.Rest, Color = Brushes.DarkMagenta });
+            Misc.ScoreSystem.Segments.Add(temp_str, new Segment() { ID = temp_str, Segment_type = SegmentType.Rest, Color = Brushes.DarkMagenta });
+            music_characters.Add(new Segment() { ID = temp_str, Segment_type = SegmentType.Rest, Color = Brushes.DarkMagenta });
         }
         /// <summary>
         /// Extract notes from XML elemnet
@@ -196,9 +213,10 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
         /// <param name="x"></param>
         private void XMLExtractNotes(XElement x)
         {
+            string temp_str = Misc.RandomGenerator.GetRandomHexNumber();
             //! debug; Logger.Log("missing impl for this note");
-            Misc.ScoreSystem.Segments.Add(new Segment() { Segment_type = SegmentType.Chord, Color = Brushes.DarkOliveGreen});
-            music_characters.Add(new Segment() { Segment_type = SegmentType.Chord, Color = Brushes.DarkOliveGreen });
+            Misc.ScoreSystem.Segments.Add(temp_str, new Segment() { ID = temp_str, Segment_type = SegmentType.Chord, Color = Brushes.DarkOliveGreen});
+            music_characters.Add(new Segment() { ID = temp_str, Segment_type = SegmentType.Chord, Color = Brushes.DarkOliveGreen });
         }
         /// <summary>
         /// Extract visual properties (custom margins, spacers, new_page, new_line etc.) from XML elemnet
@@ -332,7 +350,7 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
             
             if (MusicCharacters.Count != 0)
             {
-                Point temp = p;
+                Point temp = new Point(p.X + 20f, p.Y);
                 temp.Y += 8f;
                 DrawingVisual segments = new DrawingVisual();
                 foreach (var character in MusicCharacters)
@@ -368,12 +386,16 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
         /// <param name="visual"></param>
         public void Draw(DrawingVisual visual)
         {
-            using( DrawingContext dc = visual.RenderOpen())
+            using (DrawingContext dc = visual.RenderOpen())
             {
                 Point temp = new Point(Calculated_x, Calculated_y);
                 CalculateXPosCharacter(temp);
                 Draw_Measure(dc, temp);
             }
+
+            DrawingVisual attr_vis = new DrawingVisual();
+            Draw_Attributes(attr_vis);
+            visual.Children.Add(attr_vis);
             /*
             if (MusicCharacters.Any(i => i.Segment_type == SegmentType.Clef))
             {
@@ -387,6 +409,13 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
                 DrawingVisual vis = new DrawingVisual();
                 item.Draw(vis, item.Color);
                 visual.Children.Add(vis);
+                if (item.Segment_type == SegmentType.Clef)
+                {
+                    List<IDrawable> test = new List<IDrawable>();
+                    Measure t = new Measure();
+                    test.Add(t);
+                }
+
             }
         }
         public void Draw_(DrawingVisual visual)
@@ -414,8 +443,12 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
             //UNDONE missing implementation
         }
 
-        private void Draw_Attributes(DrawingContext dc2, Point p)
+        private void Draw_Attributes(DrawingVisual attributes_visual)
         {
+            if (Attributes != null)
+            {
+                Attributes.Draw(attributes_visual);
+            }
             //UNDONE missing implementation
         }
         /// <summary>
@@ -544,19 +577,23 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
                 item.CalculateDimensions();
             }
             temp_pos = SetCharXPos();
-            calc_width = temp_pos + MusicCharacters[chars_count - 1].Width;
-            if (calc_width < this.Width)
+            calc_width = temp_pos; //! summary widths of all segments in measure
+            if (calc_width < this.Width) //! if sum width is lower - stretch every segment to match measure width
             {
                 SegmentWidthLower(calc_width, chars_count);
                 SetCharXPos();
             }
             else
             {
-                if (calc_width > this.Width)
+                if (calc_width > this.Width) //! if calculated sum width of segments is higher than width of measure - lower width of every segment in measure 
                 {
                     SegmentWidthHigher();
                 }
             }
+        }
+        private void ClaculateCharacterPositions(Point measurePosition)
+        {
+
         }
         /// <summary>
         /// Recalculate Character Spacers if segment width increased
@@ -578,7 +615,12 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
         /// </summary>
         private void SegmentWidthHigher()
         {
-
+            //? Ideas for now ...
+            //! II options:
+            //! lower width of every segment to match size of measure
+            //! resize measure, check if whole line of measures fits in given space (length of line), 
+            //! if measures < given length: try resize to every measure, 
+            //! if measures > given length: move last measure to next line then repeat steps to check if every line of measures is <= given length of measures line
         }
         /// <summary>
         /// Sets Calculated and relative segment positions of each character in measure
@@ -605,7 +647,7 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
         }
         public override string ToString()
         {
-            string result = $"Rel: {Relative.X.ToString("0.#")}X; {Relative.Y.ToString("0.#")}Y, Width: {Width}";
+            string result = $"<{ID}> |XY|<{Relative.X.ToString("0.#")}><{Relative.Y.ToString("0.#")}> |W|<{Width}>";
             return result;
         }
     }

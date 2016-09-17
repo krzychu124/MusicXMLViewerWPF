@@ -16,7 +16,7 @@ namespace MusicXMLViewerWPF
         protected bool hasBeams;
         protected bool hasDot;
         protected bool hasNotations;
-        protected bool isDefaultStem;
+        protected bool hasDefaultStem;
         protected bool isRest;
         protected bool stem_dir;
         protected float defaultStem;
@@ -39,7 +39,7 @@ namespace MusicXMLViewerWPF
         public bool HasBeams { get { return hasBeams; } }
         public bool HasDot { get { return hasDot; } }
         public bool HasNotations { get { return hasNotations; } }
-        public bool isDefault_Stem { get { return isDefaultStem; } }
+        public bool isDefault_Stem { get { return hasDefaultStem; } }
         public bool IsRest { get { return isRest; } }
         public bool Stem_dir { get { return stem_dir; } }
         public float DefaultStem { get { return defaultStem; } }
@@ -81,7 +81,7 @@ namespace MusicXMLViewerWPF
 
         public Note(int measure_id, int id,float pos, Pitch p, int dur,int v, string t, float s, string dir, bool hasStemVal, bool r, int num, string bm,Dictionary<int, string> beamList, int dot, bool notations, List<Notations> n_list)
         {
-            isDefaultStem = hasStemVal ? false : true;
+            hasDefaultStem = hasStemVal ? false : true;
             this.measure_id = measure_id;
             //Segment_type = SegmentType.Note;
             this.id = id;

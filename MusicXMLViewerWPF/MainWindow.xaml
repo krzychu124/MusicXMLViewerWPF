@@ -17,25 +17,26 @@
             <Label Grid.Column="0" />
             <!--  <ScrollViewer HorizontalScrollBarVisibility="Auto"  VerticalScrollBarVisibility="Auto" Margin="0,5">
                 <StackPanel Width="450">-->
-                     <!--<Grid HorizontalAlignment="Left" Width="441" Height="150" VerticalAlignment="Top" Margin="5,0,0,0">
+            <!--<Grid HorizontalAlignment="Left" Width="441" Height="150" VerticalAlignment="Top" Margin="5,0,0,0">
                         <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Margin="10,0">
                             <local:Window1 x:Name="viewer" HorizontalAlignment="Left" VerticalAlignment="Top" Width="233" Visibility="Visible" Height="Auto"/>
                         </ScrollViewer>
                     </Grid> -->
-                   <!-- <Grid HorizontalAlignment="Left" Width="441" Margin="5,0,0,0" Height="500" > -->
-                        <Label Padding="1">Logger:</Label>
-                        <ScrollViewer VerticalScrollBarVisibility="Auto"  HorizontalScrollBarVisibility="Auto" Margin="0,20,0,0">
-                            <ScrollViewer.ContextMenu>
-                                <ContextMenu>
-                                 <MenuItem Header="Clear Log" Click="MenuItem_Click" ></MenuItem>
-                                </ContextMenu>
-                            </ScrollViewer.ContextMenu>
-                            <TextBlock x:Name="LogBox" HorizontalAlignment="Left" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Height="Auto" MinHeight="12" Width="421" FontSize="12" FontFamily="/WpfMusTestViewer;component/resources/Fonts/#BravuraText" />
-                           
-                        </ScrollViewer>
-                <!-- </Grid> -->
+            <!-- <Grid HorizontalAlignment="Left" Width="441" Margin="5,0,0,0" Height="500" > -->
+            <ScrollViewer  VerticalScrollBarVisibility="Auto"  HorizontalScrollBarVisibility="Auto" Margin="0,20,0,0">
+                <ScrollViewer.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Clear Log" Click="MenuItem_Click" ></MenuItem>
+                    </ContextMenu>
+                </ScrollViewer.ContextMenu>
+                <!-- <TextBlock x:Name="LogBox" HorizontalAlignment="Left" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Height="Auto" MinHeight="12" Width="421" FontSize="12" FontFamily="/WpfMusTestViewer;component/resources/Fonts/#BravuraText" /> -->
+                <TextBox x:Name="textBox" HorizontalAlignment="Left" VerticalAlignment="Top" TextWrapping="Wrap" Text="" IsReadOnly="True" Width="421" FontSize="12" BorderThickness="0"/>
 
-                <!-- </StackPanel>
+
+            </ScrollViewer>
+            <!-- </Grid> -->
+
+            <!-- </StackPanel>
             </ScrollViewer>-->
             <GridSplitter HorizontalAlignment="Right" 
                   VerticalAlignment="Stretch" 
@@ -46,7 +47,8 @@
                 <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" >
                     <Grid x:Name="TestGrid" Width="Auto" ScrollViewer.CanContentScroll="True" ScrollViewer.HorizontalScrollBarVisibility="Visible" ClipToBounds="True">
 
-                        <local:CanvasList Width="Auto" x:Name="drawingSurface"  Background="White" ClipToBounds="True" Margin="10,10,17,10" MinWidth="2100" MinHeight="2500" ScrollViewer.CanContentScroll="True"/> <!-- Temporary A4 dimensions to make scrolling working-->
+                        <local:CanvasList Width="Auto" x:Name="drawingSurface"  Background="White" ClipToBounds="True" Margin="10,10,17,10" MinWidth="2100" MinHeight="2500" ScrollViewer.CanContentScroll="True"/>
+                        <!-- Temporary A4 dimensions to make scrolling working-->
                         <!-- <local:testview   /> -->
 
                     </Grid>
@@ -55,15 +57,16 @@
             </Label>
         </Grid>
         <!--<local:Prototype x:Name="prototype"/> -->
-        <Button x:Name="test1" Content="1" HorizontalAlignment="Left" Margin="263,0,0,10" Width="96" Click="test1_Click" Height="24" VerticalAlignment="Bottom"/>
-        <Button x:Name="test2" Content="2" HorizontalAlignment="Left" Margin="364,0,0,10" Width="96" Click="test2_Click" Height="24" VerticalAlignment="Bottom"/>
-        <Button x:Name="test3" Content="3" HorizontalAlignment="Left" Margin="465,0,0,10" Width="96" Click="test3_Click" Height="24" VerticalAlignment="Bottom"/>
-        <Button x:Name="test4" Content="4" HorizontalAlignment="Left" Margin="566,0,0,10" Width="94" Click="test4_Click" Height="24" VerticalAlignment="Bottom" />
-        <Button x:Name="test5" Content="5" HorizontalAlignment="Left" Margin="665,0,0,10" Width="96" Click="test5_Click" Height="24" VerticalAlignment="Bottom"/>
-        <Button x:Name="test6" Content="6" HorizontalAlignment="Left" Margin="766,0,0,10" Width="96" Click="test6_Click" Height="25" VerticalAlignment="Bottom"/>
+        <Button x:Name="test1" Content="1" HorizontalAlignment="Left" Margin="363,0,0,10" Width="96" Click="test1_Click" Height="24" VerticalAlignment="Bottom"/>
+        <Button x:Name="test2" Content="2" HorizontalAlignment="Left" Margin="464,0,0,10" Width="96" Click="test2_Click" Height="24" VerticalAlignment="Bottom"/>
+        <Button x:Name="test3" Content="3" HorizontalAlignment="Left" Margin="565,0,0,10" Width="96" Click="test3_Click" Height="24" VerticalAlignment="Bottom"/>
+        <Button x:Name="test4" Content="4" HorizontalAlignment="Left" Margin="666,0,0,10" Width="94" Click="test4_Click" Height="24" VerticalAlignment="Bottom" />
+        <Button x:Name="test5" Content="5" HorizontalAlignment="Left" Margin="765,0,0,10" Width="96" Click="test5_Click" Height="24" VerticalAlignment="Bottom"/>
+        <Button x:Name="test6" Content="6" HorizontalAlignment="Left" Margin="866,0,0,10" Width="96" Click="test6_Click" Height="25" VerticalAlignment="Bottom"/>
         <Button Content="Open File" Margin="10,0,0,10" Click="Button_Click" HorizontalAlignment="Left" Width="100" Height="24" VerticalAlignment="Bottom" />
         <Button Content="Reworked Draw" Margin="115,0,0,10" Panel.ZIndex="0" Click="Button_Click_1" HorizontalAlignment="Left" Width="100" Height="24" VerticalAlignment="Bottom"/>
         <Button x:Name="clearAll" Content="Clear View" HorizontalAlignment="Left" Margin="1110,0,0,10" Width="97" Click="clearAll_Click" Height="25" VerticalAlignment="Bottom"/>
+        <CheckBox x:Name="checkBox" Content="Generate Log" HorizontalAlignment="Left" Margin="220,0,0,10" Width="113" Checked="checkBox_Checked" Unchecked="checkBox_Unchecked" Height="24" VerticalAlignment="Bottom"/>
 
 
         <!-- <Button x:Name="load_M" Content="Load Measure" HorizontalAlignment="Left" Height="24" Margin="665,426,0,0" VerticalAlignment="Top" Width="103" Click="load_M_Click"/>

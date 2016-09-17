@@ -95,7 +95,7 @@ namespace MusicXMLViewerWPF
                 Logger.Log("Error while loading file");
             }
 
-            
+            Misc.ScoreSystem ss = new Misc.ScoreSystem(); 
         }
 
         private void MusicScore_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -187,6 +187,7 @@ namespace MusicXMLViewerWPF
 
         public static void Clear()
         {
+            Misc.ScoreSystem.Segments.Clear();
             MusicScore clear = new MusicScore();
             clear.Loaded = false;
             clear.CreditsLoaded = false;

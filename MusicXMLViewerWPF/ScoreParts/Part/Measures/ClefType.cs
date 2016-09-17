@@ -9,10 +9,11 @@ namespace MusicXMLViewerWPF
     public class ClefType
     {
         private Clef sign;
-        public Clef Sign { get { return sign; } }
         private string sign_s;
-        public string Sign_s { get { return sign_s; } }
         private string symbol;
+
+        public Clef Sign { get { return sign; } }
+        public string Sign_s { get { return sign_s; } }
         public string Symbol { get { return symbol; } }
 
         public ClefType(string s)
