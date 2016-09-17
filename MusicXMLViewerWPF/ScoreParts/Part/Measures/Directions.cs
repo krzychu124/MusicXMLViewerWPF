@@ -36,6 +36,7 @@ namespace MusicXMLViewerWPF
 
         public Direction(XElement x)
         {
+            ID = Misc.RandomGenerator.GetRandomHexNumber();
             var directions = x;
             placement = null;
             directive = null;

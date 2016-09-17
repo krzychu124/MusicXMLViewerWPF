@@ -37,6 +37,7 @@ namespace MusicXMLViewerWPF
 
         public Barline()
         {
+            ID = Misc.RandomGenerator.GetRandomHexNumber();
             location = BarlineLocation.right;
             coda = null;
             fermata = null;
@@ -47,6 +48,7 @@ namespace MusicXMLViewerWPF
 
         public Barline(XElement x)
         {
+            ID = Misc.RandomGenerator.GetRandomHexNumber();
             coda = null;
             fermata = null;
             segno = null;
@@ -553,7 +555,7 @@ namespace MusicXMLViewerWPF
         protected string font_weight;
         protected Halign h_align;
         protected Valign v_align;
-        protected string color;
+        protected string color = "black";
 
         public float DefX { get { return def_x; } }
         public float DefY { get { return def_y; } }
