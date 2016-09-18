@@ -24,6 +24,7 @@ namespace MusicXMLViewerWPF
         private Transpose transpose;
         private uint instruments;
         private uint staves = 1; // info how much staffs in part
+        private static ClefType _clefType;
 
         public Clef Clef { get { return clef; } }
         public Key Key { get { return key; } }
@@ -33,6 +34,7 @@ namespace MusicXMLViewerWPF
         public uint Instruments { get { return instruments; } }
         public uint Staves { get { return staves; } }
         public float Width { get { return attribute_width; } }
+        public ClefType ClefType { get { return _clefType; } }
 
         public Attributes(XElement x) // possible rework from switch to dictionary// not further properties planned
         {
@@ -44,6 +46,7 @@ namespace MusicXMLViewerWPF
                 {
                     case "clef":
                         clef = new Clef(item);
+                        _clefType = clef.Sign;
                         break;
                     case "key":
                         key = new Key(item);
@@ -77,7 +80,7 @@ namespace MusicXMLViewerWPF
             }
             if (Key != null)
             {
-                Key.Draw(visual, Clef.Sign);
+                Key.Draw(visual);
             }
             if (Time != null)
             {
