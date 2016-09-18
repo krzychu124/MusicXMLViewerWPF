@@ -120,9 +120,8 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
                     foreach (var item in MusicCharacters)
                     {
                         segments.Add(item);
-
                     }
-                    SetCharXPos();
+                    RecalculateSegmentXPos();
                     //! Generate segments () ... 
                 }
             }
@@ -415,7 +414,7 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
             using (DrawingContext dc = visual.RenderOpen())
             {
                 Point temp = new Point(Calculated_x, Calculated_y);
-               // CalculateXPosCharacter(temp);
+                CalculateXPosCharacter(temp);
                 Draw_Measure(dc, temp);
             }
 
@@ -595,42 +594,73 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
         /// <param name="measurePosition"></param>
         private void CalculateXPosCharacter(Point measurePosition)
         {
-            int chars_count = MusicCharacters.Count;
-            float temp_pos = 0.0f; //! temp var for calculating X-pos of element along measure
-            float calc_width = 0.0f;
-            foreach (var item in MusicCharacters)
+            float calc_notes_width = GetNotesWidth(MusicCharacters);
+            float calc_no_scalable_width = GetNotesWidth(MusicCharacters, false);
+            float width_to_scale = Width - calc_no_scalable_width;
+            float calc_scaling_width = width_to_scale - calc_notes_width;
+            List<Segment> segmentsToScale = GetNoteRestList(MusicCharacters);
+            if (calc_scaling_width > 0)
             {
-                item.CalculateDimensions();
-            }
-            temp_pos = SetCharXPos();
-            calc_width = temp_pos; //! summary widths of all segments in measure
-            if (calc_width < this.Width) //! if sum width is lower - stretch every segment to match measure width
-            {
-                SegmentWidthLower(calc_width, chars_count);
-                SetCharXPos();
+                SegmentsWidthLower(segmentsToScale, calc_scaling_width);
+                RecalculateSegmentXPos();
             }
             else
             {
-                if (calc_width > this.Width) //! if calculated sum width of segments is higher than width of measure - lower width of every segment in measure 
-                {
-                    SegmentWidthHigher();
-                }
+                SegmentsWidthHigher();
+                //! needs implementation/ further tests
             }
         }
-        private void ClaculateCharacterPositions(Point measurePosition)
+        /// <summary>
+        /// Calculated Width of all elements in list. True - width of notes/rests, False width without notes/rests.
+        /// </summary>
+        /// <param name="list"></param>
+        /// <param name="notesOnly"></param>
+        /// <returns></returns>
+        private float GetNotesWidth(List<Segment> list, bool notesOnly= true)
         {
-
+            float width = 0f;
+            if (notesOnly)
+            {
+                foreach (var item in list)
+                {
+                    if (item.Segment_type == SegmentType.Chord)
+                    {
+                        width += item.Width;
+                    }
+                    if (item.Segment_type == SegmentType.Rest)
+                    {
+                        width += item.Width;
+                    }
+                }
+            }
+            else
+            {
+                foreach (var item in list)
+                {
+                    width += item.Width;
+                }
+                float notesWidth = GetNotesWidth(list, true);
+                width = width - notesWidth;
+            }
+            return width;
+        }
+        private List<Segment> GetNoteRestList(List<Segment> list)
+        {
+            List<Segment> resultList = new List<Segment>();
+            var resultlist = from item in list where item.Segment_type == SegmentType.Chord || item.Segment_type == SegmentType.Rest select item;
+            resultList = resultlist.ToList();
+            return resultList;
         }
         /// <summary>
         /// Recalculate Character Spacers if segment width increased
         /// </summary>
         /// <param name="calc_width"></param>
         /// <param name="count"></param>
-        private void SegmentWidthLower(float calc_width, int count)
+        private void SegmentsWidthLower(List<Segment> list, float calc_width)
         {
-            float temp = Width - calc_width;
-            temp = temp / count;
-            foreach (var item in MusicCharacters)
+            int count = list.Count;
+            float temp = calc_width / count;
+            foreach (var item in list)
             {
                 item.Width += temp;
                 item.recalculate_spacers();
@@ -639,7 +669,7 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
         /// <summary>
         /// Recalculate CHaracter Spacers if segment width decreased
         /// </summary>
-        private void SegmentWidthHigher()
+        private void SegmentsWidthHigher()
         {
             //? Ideas for now ...
             //! II options:
@@ -652,7 +682,7 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
         /// Sets Calculated and relative segment positions of each character in measure
         /// </summary>
         /// <returns></returns>
-        private float SetCharXPos()
+        private float RecalculateSegmentXPos()
         {
             int chars_count = MusicCharacters.Count;
             float temp_pos = 0.0f;

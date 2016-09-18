@@ -18,6 +18,7 @@ namespace MusicXMLViewerWPF
         private bool isNatural = false;
         private Fifths fifths;
         private Mode mode;
+        private ClefType clef_type;
         #endregion
         #region Properties
         public EmptyPrintStyle AdditionalAttributes { get { return additional_attributes; } }
@@ -66,6 +67,7 @@ namespace MusicXMLViewerWPF
             isSharp = false;
             isSharp = fifths > 0 ? true : fifths < 0 ? false : isNatural = true;
             Width = Math.Abs((int)Fifths) * 7f;
+            clef_type = Clef.Sign_static;
             //recalculate_spacers();
         }
 
@@ -94,7 +96,7 @@ namespace MusicXMLViewerWPF
             
         }
 
-        public void Draw(DrawingVisual visual, ClefType clef_type)
+        public void Draw(DrawingVisual visual)
         {
             DrawingVisual key = new DrawingVisual();
             using (DrawingContext dc = key.RenderOpen())

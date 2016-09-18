@@ -25,7 +25,7 @@ namespace MusicXMLViewerWPF.Identification
 
         public Identification(XElement x)
         {
-            encoding = new Encode(x);
+            encoding = x.Element("encoding") != null ? new Encode(x.Element("encoding")) : null;
             miscellaneous = x.Element("miscellaneous") != null ? x.Element("miscellaneous").Value : null;
             source = x.Element("source") != null ? x.Element("source").Value : null;
             var creators = x.Elements("creator");
@@ -111,6 +111,7 @@ namespace MusicXMLViewerWPF.Identification
                 }
             }
         }
+
     }
     class TypedText
     {

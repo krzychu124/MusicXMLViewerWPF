@@ -27,6 +27,8 @@ namespace MusicXMLViewerWPF
         protected static bool loaded = false;
         protected static bool credits_loaded = false;
         protected static bool content_space_calculated = false;
+        protected static bool supports_new_system;
+        protected static bool supports_new_page;
         #endregion
 
 
@@ -60,6 +62,24 @@ namespace MusicXMLViewerWPF
             {
                 content_space_calculated = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ContentSpaceCalculated)));
+            }
+        }
+        public bool SupportNewSystem
+        {
+            get { return supports_new_system; }
+            set
+            {
+                supports_new_system = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SupportNewSystem)));
+            }
+        }
+        public bool SupportNewPage
+        {
+            get { return supports_new_system; }
+            set
+            {
+                supports_new_page = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SupportNewPage)));
             }
         }
         #endregion
@@ -97,12 +117,17 @@ namespace MusicXMLViewerWPF
 
             Misc.ScoreSystem ss = new Misc.ScoreSystem(); 
         }
-
+        /// <summary>
+        /// PopertiesChanged switch
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void MusicScore_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
             {
-                case "CreditsLoaded": if (CreditsLoaded != false)
+                case "CreditsLoaded":
+                    if (CreditsLoaded != false)
                     {
                         Defaults.Page.CalculateMeasureContetSpace();
                         Logger.Log("Credits: ready");
@@ -112,7 +137,8 @@ namespace MusicXMLViewerWPF
                         Logger.Log("Credits: cleared");
                     }
                     break;
-                case "Loaded": if (Loaded == true)
+                case "Loaded":
+                    if (Loaded == true)
                     {
                         Logger.Log("File: ready.");
                     }
@@ -121,7 +147,8 @@ namespace MusicXMLViewerWPF
                         Logger.Log("File: unloaded.");
                     }
                     break;
-                case "ContentSpaceCalculated": if(ContentSpaceCalculated == true)
+                case "ContentSpaceCalculated":
+                    if (ContentSpaceCalculated == true)
                     {
                         Logger.Log("Calculated Content Space: ready");
                     }
@@ -129,6 +156,26 @@ namespace MusicXMLViewerWPF
                     else
                     {
                         Logger.Log("Cleared Content Space: not_ready");
+                    }
+                    break;
+                case "SupportNewSystem":
+                    if (SupportNewSystem == true)
+                    {
+                        Logger.Log("\"NewSystem\" feature Supported");
+                    }
+                    else
+                    {
+                        Logger.Log("\"NewSystem\" feature NotSupported");
+                    }
+                    break;
+                case "SupportNewPage":
+                    if (SupportNewPage == true)
+                    {
+                        Logger.Log("\"NewPage\" feature Supported");
+                    }
+                    else
+                    {
+                        Logger.Log("\"NewPage\" feature NotSupported");
                     }
                     break;
                 default:
@@ -142,7 +189,24 @@ namespace MusicXMLViewerWPF
             title = file.Element("movement-title") != null ? file.Element("movement-title").Value : "No title" ;
             work = file.Element("work") != null ? new Work.Work(file.Element("work")) : null;
             defaults = file.Element("defaults") != null ? new Defaults.Defaults(file.Element("defaults")) : new MusicXMLViewerWPF.Defaults.Defaults();
-            identification = new Identification.Identification(file.Element("identification")); 
+            identification = new Identification.Identification(file.Element("identification"));
+            if (Identification?.Encoding?.Supports != null)
+            {
+                foreach (var item in Identification.Encoding.Supports)
+                {
+                    switch (item.Attribute)
+                    {
+                        case "new-system":
+                            SupportNewSystem = item.Value;
+                            break;
+                        case "new-page":
+                            SupportNewPage = item.Value;
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
             foreach (var item in file.Elements("credit"))
             {
                 credits.Add(new Credit.Credit(item));
