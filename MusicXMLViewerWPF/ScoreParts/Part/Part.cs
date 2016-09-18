@@ -55,8 +55,13 @@ namespace MusicXMLViewerWPF.ScoreParts.Part
                             }
                             if (measure.PrintProperties.SystemLayout.LeftRelative != measure_location_left)
                             {
-                                measure_location_left = measure.PrintProperties.SystemLayout.LeftRelative + (float) MusicScore.Defaults.Page.MeasuresContentSpace.Left;
+                                measure_location_left = measure.PrintProperties.SystemLayout.LeftRelative + (float)MusicScore.Defaults.Page.MeasuresContentSpace.Left;
                             }
+                        }
+                        if (measure.PrintProperties.StaffLayoutList.Count != 0)
+                        {
+                            float staffspacer = measure.PrintProperties.StaffLayoutList.ElementAt(0).Distance;
+                            measure_system += staffspacer;
                         }
                     }
                     if (i == 0) measure.IsFirstInLine = true;
@@ -67,6 +72,11 @@ namespace MusicXMLViewerWPF.ScoreParts.Part
                     {
                         measure_location.X = measure_location_left;
                         measure_location.Y += MusicScore.Defaults.SystemLayout.SystemDistance;
+                        if (measure.PrintProperties?.StaffLayoutList.Count != 0 && measure.PrintProperties?.StaffLayoutList.Count != null) //! no working properly
+                        {
+                            float staffspacer = measure.PrintProperties.StaffLayoutList.ElementAt(0).Distance;
+                            measure_location.Y += staffspacer;
+                        }
                         measure.Relative = new Point( measure_location.X, measure_location.Y - 10f); //! Set relative position of measure
                         measure.Calculated = new Point(measure_location.X, measure_location.Y); //! Set calculated relative position of measure
                         measure_location.X += measure.Width;

@@ -80,10 +80,12 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
             }
             int el_num = x.Elements().Count();
             int index = 0;
+            
             foreach (var element in x.Elements())
             {
                 index++;
                 //XMLFiller(x);
+                
                 if (element.Name.LocalName == "print")
                 {
                     XMLExtractPrint(element);
@@ -117,6 +119,12 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
                 }
                 if (index == el_num)
                 {
+                    //! vv Adds clef object to every first measure in line from previous measure 
+                    if (Number != 1 && IsFirstInLine)
+                    {
+                        attributes = new Attributes(MusicXMLViewerWPF.Clef.ClefStatic);
+                        music_characters.Insert(0,Attributes.Clef);
+                    }
                     foreach (var item in MusicCharacters)
                     {
                         segments.Add(item);
@@ -133,7 +141,7 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
             //{
             //    Logger.Log($"Added segment {item.ToString()}");
             //}
-            
+
         }
 
         private void Measure_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -169,7 +177,7 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
         {
             attributes =  new Attributes(x);
             if (Attributes.Clef != null) //Todo Needs rework... WiP
-            { 
+            {
                 /*
                 Clef ClefSegment = Attributes.Clef;
                 ClefSegment.Segment_type = SegmentType.Clef;
@@ -195,9 +203,19 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
 
                 //! music_characters.Add(s); //! (new Segment() { Segment_type = SegmentType.Clef, Color = Brushes.Brown });
                 */
-
-                Misc.ScoreSystem.Segments.Add(Attributes.Clef.ID, Attributes.Clef);
-                music_characters.Add(Attributes.Clef);
+                if (Attributes.Clef.Number != 0)
+                {
+                    if (Attributes.Clef.Number == 1)
+                    {
+                        Misc.ScoreSystem.Segments.Add(Attributes.Clef.ID, Attributes.Clef);
+                        music_characters.Add(Attributes.Clef);
+                    }
+                }
+                else
+                {
+                    Misc.ScoreSystem.Segments.Add(Attributes.Clef.ID, Attributes.Clef);
+                    music_characters.Add(Attributes.Clef);
+                }
             }
             if (Attributes.Key != null)
             {
@@ -500,6 +518,10 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
             {
                 Misc.DrawingHelpers.DrawString(dc, MusChar.Staff5L, TypeFaces.NotesFont, Brushes.Black, X + (Width-24), Y, Scale);
             }
+            if (IsFirstInLine)
+            {
+                Misc.DrawingHelpers.DrawText(dc, Number.ToString(), new Point(Relative_x + 5f, Relative_y - 5f), 10f, withsub: false, color: Brushes.Black, font_weight:"regular");
+            }
         }
         /// <summary>
         /// Method for Drawing barlines !!DEPRECIATED!!
@@ -701,6 +723,15 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
             }
             return temp_pos;
         }
+
+        private void DrawNumber(DrawingVisual visual)
+        {
+            using(DrawingContext dc = visual.RenderOpen())
+            {
+                Misc.DrawingHelpers.DrawText(dc, Number.ToString(), new Point(Relative_x, Relative_y - 5f), 10f, withsub: false, color: Brushes.Black);
+            }
+        }
+
         public override string ToString()
         {
             string result = $"<{ID}> |XY|<{Relative.X.ToString("0.#")}><{Relative.Y.ToString("0.#")}> |W|<{Width}>";

@@ -34,7 +34,7 @@ namespace MusicXMLViewerWPF.Credit
 
         public Credit(System.Xml.Linq.XElement x)
         {
-            page = int.Parse(x.Attribute("page").Value);
+            page = x.HasAttributes ? int.Parse(x.Attribute("page").Value) : 1;
             credit_type = x.Element("credit-type") != null ? x.Element("credit-type").Value : null;
             SetCreditType();
             credit_words = new CreditWords(x.Element("credit-words"));

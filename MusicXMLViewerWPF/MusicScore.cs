@@ -27,16 +27,18 @@ namespace MusicXMLViewerWPF
         protected static bool loaded = false;
         protected static bool credits_loaded = false;
         protected static bool content_space_calculated = false;
-        protected static bool supports_new_system;
-        protected static bool supports_new_page;
+        protected static bool supports_new_system = false;
+        protected static bool supports_new_page = false;
         #endregion
-
+        public event PropertyChangedEventHandler PropertyChanged;
 
         #region helpers
-        public event PropertyChangedEventHandler PropertyChanged;
+        
         private static List<Misc.LineBreak> breaks = new List<Misc.LineBreak>();
         //private static List<>
         public static List<Misc.LineBreak> LineBreaks { get { return breaks; } }
+        #endregion
+        #region properties with Notification
         public bool Loaded
         {
             get { return loaded; }
@@ -96,6 +98,7 @@ namespace MusicXMLViewerWPF
         public static bool isLoaded { get { return loaded; } }
         #endregion
 
+        #region ctors.
         public MusicScore()
         {
             this.PropertyChanged += MusicScore_PropertyChanged;
@@ -117,6 +120,7 @@ namespace MusicXMLViewerWPF
 
             Misc.ScoreSystem ss = new Misc.ScoreSystem(); 
         }
+        #endregion
         /// <summary>
         /// PopertiesChanged switch
         /// </summary>
@@ -234,7 +238,7 @@ namespace MusicXMLViewerWPF
             //DrawCredits(credits);
             //surface.AddVisual(credits);
             // DrawingVisual visual = new DrawingVisual();
-            Parts.ElementAt(0).Value.DrawMeasures(surface);
+            Parts.ElementAt(1).Value.DrawMeasures(surface);
 
             
         }
