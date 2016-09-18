@@ -297,23 +297,29 @@ new Point(origin.X + totalWidth, y));
                 Logger.Log("Space inside margins "+page.ContentSpace_str); //? content space inside margins
                 Logger.Log("Space without titlle "+ page.MeasuresContentSpace_str); //? content space avaliable for drawing measures
                 Logger.Log("Space for title, credits " + credit); //? credit space dimensions
-                foreach (var item in MusicScore.Parts.ElementAt(0).Value.MeasureSegmentList)
+                foreach (var item in MusicScore.Parts)
                 {
-                    DrawingVisual segment_vis = new DrawingVisual();
-                    item.Draw(segment_vis, Brushes.Blue, DashStyles.Solid);
-                    //! DEBUG
-                     /* DrawingVisual debug_coords = new DrawingVisual();
-                    using (DrawingContext dc = debug_coords.RenderOpen()) //! Debug info
+                    foreach (var item2 in item.Value.MeasureSegmentList)
                     {
-                        Misc.DrawingHelpers.DrawText(dc, item.Relative_str, new Point(item.Relative.X + 10f, item.Relative.Y + 15f), 10, font_weight: "regular", withsub:false, align: Halign.left);
-                        Misc.DrawingHelpers.DrawText(dc, item.Width.ToString() + "px width", new Point(item.Relative.X + 10f, item.Relative.Y + 28f), 10, withsub: false, color: Brushes.DarkGray, align: Halign.left);
+                        DrawingVisual segment_vis = new DrawingVisual();
+                        item2.Draw(segment_vis, Brushes.Blue, DashStyles.Solid);
+                        //! DEBUG
+                        /* DrawingVisual debug_coords = new DrawingVisual();
+                       using (DrawingContext dc = debug_coords.RenderOpen()) //! Debug info
+                       {
+                           Misc.DrawingHelpers.DrawText(dc, item.Relative_str, new Point(item.Relative.X + 10f, item.Relative.Y + 15f), 10, font_weight: "regular", withsub:false, align: Halign.left);
+                           Misc.DrawingHelpers.DrawText(dc, item.Width.ToString() + "px width", new Point(item.Relative.X + 10f, item.Relative.Y + 28f), 10, withsub: false, color: Brushes.DarkGray, align: Halign.left);
+                       }
+                       drawingSurface.AddVisual(debug_coords);
+                       */
+                        DrawingVisual item_vis = new DrawingVisual();
+                        item2.Draw(item_vis);
+                        drawingSurface.AddVisual(item_vis);
+                        drawingSurface.AddVisual(segment_vis);
                     }
-                    drawingSurface.AddVisual(debug_coords);
-                    */
-                    DrawingVisual item_vis = new DrawingVisual();
-                    item.Draw(item_vis);
-                    drawingSurface.AddVisual(item_vis);
-                    drawingSurface.AddVisual(segment_vis);
+                    DrawingVisual credits = new DrawingVisual();
+                    MusicScore.DrawCredits(credits);
+                    drawingSurface.AddVisual(credits);
                 }
             }
             else
