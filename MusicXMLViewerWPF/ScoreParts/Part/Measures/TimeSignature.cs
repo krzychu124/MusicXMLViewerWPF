@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media;
 using System.Xml.Linq;
 
 namespace MusicXMLViewerWPF
@@ -61,6 +62,15 @@ namespace MusicXMLViewerWPF
             }
             SetBeatTime(beats_type);
             SetBeat(beats);
+        }
+
+        public void Draw(DrawingVisual visual)
+        {
+            using (DrawingContext dc = visual.RenderOpen())
+            {
+                Misc.DrawingHelpers.DrawString(dc, BeatStr, TypeFaces.TimeNumbers, Brushes.Black, Relative_x + Spacer_L, Relative_y, MusicScore.Defaults.Scale.Tenths);
+                Misc.DrawingHelpers.DrawString(dc, BeatTypeStr, TypeFaces.TimeNumbers, Brushes.Black, Relative_x + Spacer_L, Relative_y, MusicScore.Defaults.Scale.Tenths);
+            }
         }
 
         public TimeSignature(int beats, int beats_type,string symbol, int num)
