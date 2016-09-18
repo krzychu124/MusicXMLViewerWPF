@@ -19,6 +19,7 @@ namespace MusicXMLViewerWPF
         private static ClefType sign_static;
         private bool visible = false;
         private static Clef cl;
+        private int number = 0;
         #endregion
         #region Properties
         public EmptyPrintStyle AdditionalAttributes { get { return additional_attributes; } }
@@ -30,11 +31,13 @@ namespace MusicXMLViewerWPF
         public SegmentType CharacterType { get { return SegmentType.Clef; } }
         public bool IsVisible { get { return visible; } }
         public static Clef ClefStatic { get { return cl; } }
+        public int Number { get { return number; } }
         #endregion
         public Clef(XElement x)
         {
             ID = Misc.RandomGenerator.GetRandomHexNumber();
-            additional_attributes = new EmptyPrintStyle(x.Attributes());
+            additional_attributes = x.Attributes()!=null ? new EmptyPrintStyle(x.Attributes()) : null;
+            number = x.HasAttributes ? int.Parse(x.Attribute("number").Value) : 0;
             Segment_type = SegmentType.Clef;
             //-----------------------
             var ele = x.Elements();
