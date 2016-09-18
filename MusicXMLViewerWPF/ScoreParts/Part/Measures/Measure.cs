@@ -177,7 +177,7 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
         {
             attributes =  new Attributes(x);
             if (Attributes.Clef != null) //Todo Needs rework... WiP
-            { 
+            {
                 /*
                 Clef ClefSegment = Attributes.Clef;
                 ClefSegment.Segment_type = SegmentType.Clef;
@@ -203,9 +203,19 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
 
                 //! music_characters.Add(s); //! (new Segment() { Segment_type = SegmentType.Clef, Color = Brushes.Brown });
                 */
-
-                Misc.ScoreSystem.Segments.Add(Attributes.Clef.ID, Attributes.Clef);
-                music_characters.Add(Attributes.Clef);
+                if (Attributes.Clef.Number != 0)
+                {
+                    if (Attributes.Clef.Number == 1)
+                    {
+                        Misc.ScoreSystem.Segments.Add(Attributes.Clef.ID, Attributes.Clef);
+                        music_characters.Add(Attributes.Clef);
+                    }
+                }
+                else
+                {
+                    Misc.ScoreSystem.Segments.Add(Attributes.Clef.ID, Attributes.Clef);
+                    music_characters.Add(Attributes.Clef);
+                }
             }
             if (Attributes.Key != null)
             {
