@@ -64,10 +64,10 @@ namespace MusicXMLViewerWPF
             }
         }
 
-        public Point Calculated { get { return new Point(calculated_x, calculated_y); } set { calculated_x = (float)value.X; calculated_y = (float)value.Y; if (checkIfSet()) { PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Calculated))); } } }
+        public Point Calculated { get { return new Point(calculated_x, calculated_y); } set { calculated_x = (float)value.X; calculated_y = (float)value.Y; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Calculated)));  } }
         public Point Dimensions { get { return new Point(width, height); } set { width = (float)value.X; height = (float)value.Y; } }
         public Point Offset { get { return new Point(offset_x, offset_y); } set { offset_x = (float)value.X; offset_y = (float)value.Y; } }
-        public Point Relative { get { return new Point(relative_x, relative_y); } set { relative_x = (float)value.X; relative_y = (float)value.Y; } }
+        public Point Relative { get { return new Point(relative_x, relative_y); } set { relative_x = (float)value.X; relative_y = (float)value.Y; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Relative))); } }
         public string Relative_str { get { return "("+ relative_x.ToString("0.##") + "; "+ relative_y.ToString("0.##") + ")"; } }
         public Rect Rectangle { get { return new Rect(Relative, Dimensions); } }
         public SegmentType Segment_type { get { return segment_type; } set { segment_type = value; SetSpacers(); if (Width == 0) CalculateDimensions(); } }
@@ -80,8 +80,15 @@ namespace MusicXMLViewerWPF
             switch (e.PropertyName)
             {
                 case "Calculated":
-                    Logger.Log($"Segment {sender.ToString()}");
+                    Logger.Log($"Segment {sender.ToString()}, {e.PropertyName}");
                     Logger.Log($"Set to {Calculated.X.ToString("0.#")}X, {Calculated.Y.ToString("0.#")}Y, {Relative.X.ToString("0.#")}X;  {Relative.Y.ToString("0.#")}Y, Width: {Width}");
+                    if (Relative_y == 0)
+                    {
+                        SetRelativePos(Calculated_x, Calculated_y);
+                    }
+                    break;
+                case "Relative":
+                    Logger.Log($"Relative set {Relative_str}");
                     break;
                 default:
                     Logger.Log($"Segment {e.PropertyName} ready");
@@ -89,6 +96,11 @@ namespace MusicXMLViewerWPF
                     break;
             }
         }
+        public Segment()
+        {
+            PropertyChanged += segment_Properties_Ready;
+        }
+        
         /// <summary>
         /// Set relative position of segment (eg. extracted from XML file)
         /// </summary>
@@ -97,7 +109,7 @@ namespace MusicXMLViewerWPF
         public void SetRelativePos(float x, float y)
         {
             Relative_x = x;
-            Relative_y = y;
+            Relative_y = y + 10f;
         }
         /// <summary>
         /// Set calculated position of segment
@@ -139,7 +151,7 @@ namespace MusicXMLViewerWPF
                 width = Spacer_L + Spacer_R;
                 Height = 60f;
                 spacer_dictionary();
-                Logger.Log("SpacersDict generated");
+                //! DEBUG Logger.Log("SpacersDict generated");
             }
         }
         /// <summary>
