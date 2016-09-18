@@ -184,7 +184,7 @@ namespace MusicXMLViewerWPF
             if (Segment_type == SegmentType.TimeSig)
             {
                 left = 5f;
-                right = 25f;
+                right = 20f;
             }
             if (Segment_type == SegmentType.Rest)
             {
@@ -217,6 +217,10 @@ namespace MusicXMLViewerWPF
         {
             string value =$"<{ID}>||{Segment_type.ToString()}| |XY_r|<{Relative_x.ToString("0.#")}><{Relative_y.ToString("0.#")}> |LR| <{Spacer_L.ToString("0.#")}><{Spacer_R.ToString("0.#")}> |WH| <{Width.ToString("0.#")}><{Height.ToString("0.#")}>";
             return value;
+        }
+        public void Draw(DrawingVisual visual)
+        {
+            Draw(visual, color:Brushes.DarkBlue);
         }
         /// <summary>
         /// Draws segment rectangle on visual
