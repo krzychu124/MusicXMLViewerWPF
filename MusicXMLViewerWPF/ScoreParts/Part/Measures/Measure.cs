@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -10,7 +11,7 @@ using System.Xml.Linq;
 
 namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
 {
-    class Measure : Segment, IDrawable // NEEDIMPROVEMENTS: Finish reworking class
+    class Measure : Segment, IDrawable, INotifyPropertyChanged // NEEDIMPROVEMENTS: Finish reworking class
     {
         #region Fields for drawing
 
@@ -35,9 +36,11 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
         private List<Direction> direction = new List<MusicXMLViewerWPF.Direction>();
         private List<Note> notes_list = new List<Note>(); // experimental
         private List<Segment> music_characters = new List<Segment>();
+        private Misc.Segments segments = new Misc.Segments();
         #endregion
 
         #region Properties
+        public event PropertyChangedEventHandler PropertyChanged;
         public Attributes Attributes { get { return attributes; } }
         public bool NumberVisible { get { return hasNumberInvisible; } }
         public DrawingVisual Visual { get { return visual; } set { if (value != null) visual = value; } }
@@ -52,6 +55,7 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
         public Point Position { get { return pos; } set { if (value != null) pos = value; } }
         public Print PrintProperties { get { return print_properties; } }
         public bool IsFirstInLine { get { return is_first_in_line; } set { is_first_in_line = value; }  }
+        public new Point Relative { get { return base.Relative; } set { base.Relative = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Relative))); } }
         #endregion
 
         public Measure()
@@ -68,7 +72,8 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
         {
             ID = Misc.RandomGenerator.GetRandomHexNumber();
             XMLExtractMeasureInfo(x);
-            this.PropertyChanged += segment_Properties_Ready;
+            //PropertyChanged += segment_Properties_Ready;
+            PropertyChanged += Measure_PropertyChanged;
             if (x.Elements("direction").Any() == false)
             {
                 direction = null;
@@ -112,7 +117,12 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
                 }
                 if (index == el_num)
                 {
-                    
+                    foreach (var item in MusicCharacters)
+                    {
+                        segments.Add(item);
+
+                    }
+                    SetCharXPos();
                     //! Generate segments () ... 
                 }
             }
@@ -126,6 +136,22 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
             //}
             
         }
+
+        private void Measure_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case "Relative":
+                    foreach (var item in MusicCharacters)
+                    {
+                        item.SetRelativePos(Relative_x + item.Calculated_x, Relative_y);
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+
         /// <summary>
         /// Extract barlines from XML elemnet
         /// </summary>
@@ -182,7 +208,7 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
             if (Attributes.Time != null)
             {
                 Misc.ScoreSystem.Segments.Add(Attributes.Time.ID, new Segment() { ID = Attributes.Time.ID, Segment_type = SegmentType.TimeSig, Color = Brushes.Lavender });
-                music_characters.Add(new Segment() { ID = Attributes.Time.ID, Segment_type = SegmentType.TimeSig, Color = Brushes.Lavender });
+                music_characters.Add(Attributes.Time); //! new Segment() { ID = Attributes.Time.ID, Segment_type = SegmentType.TimeSig, Color = Brushes.Lavender }
             }
         }
         /// <summary>
@@ -389,7 +415,7 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
             using (DrawingContext dc = visual.RenderOpen())
             {
                 Point temp = new Point(Calculated_x, Calculated_y);
-                CalculateXPosCharacter(temp);
+               // CalculateXPosCharacter(temp);
                 Draw_Measure(dc, temp);
             }
 
