@@ -17,6 +17,7 @@ namespace MusicXMLViewerWPF
         private int measure_num;
         private static int clef_alter;
         private static ClefType sign_static;
+        private bool visible = false;
         #endregion
         #region Properties
         public EmptyPrintStyle AdditionalAttributes { get { return additional_attributes; } }
@@ -26,6 +27,7 @@ namespace MusicXMLViewerWPF
         public static int ClefAlter { get { return clef_alter; } }
         public static ClefType Sign_static { get { return sign_static; } }
         public SegmentType CharacterType { get { return SegmentType.Clef; } }
+        public bool IsVisible { get { return visible; } }
         #endregion
         public Clef(XElement x)
         {
@@ -43,6 +45,7 @@ namespace MusicXMLViewerWPF
                         sign = new ClefType(item.Value);
                         sign_static = Sign;
                         clef_alter = sign.Sign == ClefType.Clef.GClef ? 0 : sign.Sign == ClefType.Clef.FClef ? -12 : -6;
+                        visible = true;
                         break;
                     case "line":
                         line = int.Parse(item.Value);

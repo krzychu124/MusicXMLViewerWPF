@@ -301,13 +301,15 @@ new Point(origin.X + totalWidth, y));
                 {
                     DrawingVisual segment_vis = new DrawingVisual();
                     item.Draw(segment_vis, Brushes.Blue, DashStyles.Solid);
-                    DrawingVisual debug_coords = new DrawingVisual();
+                    //! DEBUG
+                     /* DrawingVisual debug_coords = new DrawingVisual();
                     using (DrawingContext dc = debug_coords.RenderOpen()) //! Debug info
                     {
                         Misc.DrawingHelpers.DrawText(dc, item.Relative_str, new Point(item.Relative.X + 10f, item.Relative.Y + 15f), 10, font_weight: "regular", withsub:false, align: Halign.left);
                         Misc.DrawingHelpers.DrawText(dc, item.Width.ToString() + "px width", new Point(item.Relative.X + 10f, item.Relative.Y + 28f), 10, withsub: false, color: Brushes.DarkGray, align: Halign.left);
                     }
                     drawingSurface.AddVisual(debug_coords);
+                    */
                     DrawingVisual item_vis = new DrawingVisual();
                     item.Draw(item_vis);
                     drawingSurface.AddVisual(item_vis);

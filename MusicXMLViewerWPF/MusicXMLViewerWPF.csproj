@@ -67,6 +67,7 @@
     <Compile Include="Misc\RandomGenerator.cs" />
     <Compile Include="Misc\ScoreSystem.cs" />
     <Compile Include="Misc\ScorePage.cs" />
+    <Compile Include="Misc\Segments.cs" />
     <Compile Include="ScoreParts\Part\Measures\Attributes.cs" />
     <Compile Include="ScoreParts\Part\Measures\Barline.cs" />
     <Compile Include="Defaults\SystemLayout.cs" />
