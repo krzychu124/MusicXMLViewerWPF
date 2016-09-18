@@ -11,7 +11,7 @@ using System.Windows.Media;
 
 namespace MusicXMLViewerWPF
 {
-    public class Segment : INotifyPropertyChanged, Misc.IDrawableMusicalChar
+    public class Segment : INotifyPropertyChanged, IDrawableMusicalChar
     {
         #region protected fields
         private float width;
@@ -88,7 +88,7 @@ namespace MusicXMLViewerWPF
                     }
                     break;
                 case "Relative":
-                    Logger.Log($"Relative set {Relative_str}");
+                    Logger.Log($"Relative set {Relative_str} {this.ToString(StringType.Type)}");
                     break;
                 default:
                     Logger.Log($"Segment {e.PropertyName} ready");
@@ -168,8 +168,8 @@ namespace MusicXMLViewerWPF
             }
             if (Segment_type == SegmentType.Chord)
             {
-                left = 10f;
-                right = 20f;
+                left = 7f;
+                right = 15f;
             }
             if (Segment_type == SegmentType.Clef)
             {
@@ -188,8 +188,8 @@ namespace MusicXMLViewerWPF
             }
             if (Segment_type == SegmentType.Rest)
             {
-                left = 10f;
-                right = 10f;
+                left = 5f;
+                right = 12f;
             }
             if (Segment_type == SegmentType.Direction)
             {
@@ -217,6 +217,31 @@ namespace MusicXMLViewerWPF
         {
             string value =$"<{ID}>||{Segment_type.ToString()}| |XY_r|<{Relative_x.ToString("0.#")}><{Relative_y.ToString("0.#")}> |LR| <{Spacer_L.ToString("0.#")}><{Spacer_R.ToString("0.#")}> |WH| <{Width.ToString("0.#")}><{Height.ToString("0.#")}>";
             return value;
+        }
+        public string ToString(StringType type = StringType.ToString)
+        {
+            string result = "";
+            switch (type)
+            {
+                case StringType.Type:
+                    result = $"|{Segment_type.ToString()}|";
+                    break;
+                case StringType.ToString:
+                    result = this.ToString();
+                    break;
+                case StringType.Spacer:
+                    result = Spacer_L.ToString() + Spacer_R.ToString();
+                    break;
+                case StringType.Relative:
+                    result = Relative.ToString();
+                    break;
+                case StringType.Calculated:
+                    result = Calculated.ToString();
+                    break;
+                default:
+                    break;
+            }
+            return result;
         }
         public void Draw(DrawingVisual visual)
         {
@@ -279,5 +304,14 @@ namespace MusicXMLViewerWPF
             }
             return result;
         }
+        public enum StringType
+        {
+            Spacer,
+            Relative,
+            Calculated,
+            Type,
+            ToString
+        }
     }
+    
 }
