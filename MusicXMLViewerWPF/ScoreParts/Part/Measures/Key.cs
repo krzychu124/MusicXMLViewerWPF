@@ -65,6 +65,8 @@ namespace MusicXMLViewerWPF
             isNatural = false;
             isSharp = false;
             isSharp = fifths > 0 ? true : fifths < 0 ? false : isNatural = true;
+            Width = Math.Abs((int)Fifths) * 7f;
+            //recalculate_spacers();
         }
 
         private void SetMode(string s)
@@ -98,12 +100,12 @@ namespace MusicXMLViewerWPF
             using (DrawingContext dc = key.RenderOpen())
             {
                 Brush KeyColor = (SolidColorBrush)new BrushConverter().ConvertFromString(AdditionalAttributes.Color);
-                Draw_Key(dc, Relative, clef_type, color:KeyColor);  //! Experimental
+                Draw_Key(dc, Relative, clef_type, (int)Fifths, color:KeyColor);  //! Experimental
             }
             visual.Children.Add(key);
         }
     
-        public static void Draw_Key(DrawingContext dc, Point p, ClefType sign, int num = 1, Brush color = null)
+        public static void Draw_Key(DrawingContext dc, Point p, ClefType sign, int num = 0, Brush color = null)
         {
             // num = 4;// test
             if (color == null)
