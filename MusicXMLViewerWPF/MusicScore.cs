@@ -220,7 +220,56 @@ namespace MusicXMLViewerWPF
 
             foreach (var item in file.Elements("part"))
             {
-                 parts.Add(item.Attribute("id").Value, new ScoreParts.Part.Part(item));
+                parts.Add(item.Attribute("id").Value, new ScoreParts.Part.Part(item));
+            }
+            RecalculateMeasuresPosInParts();
+        }
+        private void RecalculateMeasuresPosInParts() //TODO improve part drawing
+        {
+            float staffDistance = 70f;
+            float staveDistance = 100f;
+            int firstinline_count = 1;
+            int count = Parts.Count;
+            float clc_stave = 0f;
+            if (count != 1)
+            {
+                clc_stave = staveDistance + (staffDistance * count - 1);
+            }
+
+            for (int i = 0; i < Parts.Count; i++)
+            {
+                
+                float tempY = 0;
+                int segmentCount = Parts.Values.ElementAt(i).MeasureSegmentList.Count;
+                for (int j = 0; j< segmentCount; j++)
+                {
+                    MusicXMLViewerWPF.ScoreParts.Part.Measures.Measure segment = Parts.Values.ElementAt(i).MeasureSegmentList.ElementAt(j);
+                    if (j == 0)
+                    {
+                        firstinline_count++;
+                        //tempY = clc_stave;
+                    }
+                    else
+                    {
+                        if (segment.IsFirstInLine)
+                        {
+                            tempY = clc_stave * firstinline_count * (i+1);
+                            segment.Relative_y += tempY;
+                            segment.Calculated_y += tempY;
+                            firstinline_count++;
+                        }
+                        else
+                        {
+                            segment.Relative_y += tempY;
+                            segment.Calculated_y += tempY;
+                        }
+                    }
+                    if (j == count)
+                    {
+                        tempY =0;
+                        firstinline_count = 1;
+                    }
+                }
             }
         }
         /// <summary>
