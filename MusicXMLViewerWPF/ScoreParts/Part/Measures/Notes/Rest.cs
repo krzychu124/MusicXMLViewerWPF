@@ -1,9 +1,11 @@
 ﻿using MusicXMLViewerWPF.Misc;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media;
 using System.Xml.Linq;
 
 namespace MusicXMLViewerWPF
@@ -28,18 +30,42 @@ namespace MusicXMLViewerWPF
         public bool IsMeasureRest { get { return ismeasurerest; } }
         public float X { get { return posX; } }
         public int CharId { get { return id; } }
+        public event PropertyChangedEventHandler RestPropertyChanged;
 
         public Rest(XElement x)
         {
+            NotePropertyChanged += Rest_RestPropertyChanged;
+            ID = Misc.RandomGenerator.GetRandomHexNumber();
             Segment_type = SegmentType.Rest;
             duration = int.Parse(x.Element("duration").Value);
             voice = int.Parse(x.Element("voice").Value);
+            SymbolXMLValue = x.Element("type") != null ? x.Element("type").Value : null;
+            SymbolType = SymbolXMLValue != null ? SymbolDuration.d_type(SymbolXMLValue) : MusSymbolDuration.Unknown;
+            //Symbol = MusChar.getRestSymbol(SymbolXMLValue);
             Width = 10f;
+            isRest = true;
             ismeasurerest = false;
+        }
+
+        private void Rest_RestPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case "SymbolType":
+                    Symbol = MusChar.getRestSymbol(SymbolXMLValue);
+                    Logger.Log($"Rest symbol is {Symbol}");
+                    break;
+                default:
+                    break;
+            }
         }
 
         public Rest()
         {
+            NotePropertyChanged += Note_PropertyChanged;
+            NotePropertyChanged += Rest_RestPropertyChanged;
+            RestPropertyChanged += Rest_RestPropertyChanged;
+            RestPropertyChanged += Note_PropertyChanged;
             Segment_type = SegmentType.Rest;
             Width = 10f;
         }
@@ -73,6 +99,17 @@ namespace MusicXMLViewerWPF
         public static void ExtractRests()
         {
               RestList = LoadDocToClasses.list.OfType<Rest>().ToList();
+        }
+
+        public new void Draw(DrawingVisual visual)
+        {
+            DrawingVisual rest = new DrawingVisual();
+            using (DrawingContext dc = rest.RenderOpen())
+            {
+                Brush restColor = this.Color;//! (SolidColorBrush)new BrushConverter().ConvertFromString(AdditionalAttributes.Color);
+                Misc.DrawingHelpers.DrawString(dc, this.Symbol, TypeFaces.NotesFont, restColor, Relative_x + Spacer_L, Relative_y, MusicScore.Defaults.Scale.Tenths); //! Experimental
+            }
+            visual.Children.Add(rest);
         }
     }
 }
