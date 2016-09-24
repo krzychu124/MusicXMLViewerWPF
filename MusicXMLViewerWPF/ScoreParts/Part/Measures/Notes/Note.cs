@@ -1,9 +1,11 @@
 ﻿using MusicXMLViewerWPF.Misc;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Xml.Linq;
 
@@ -31,9 +33,12 @@ namespace MusicXMLViewerWPF
         protected MusSymbolDuration symbol_type;
         protected Pitch pitch;
         protected string symbol;
+        protected string symbol_value;
         protected List<Notations> notationsList;
+        private Rest rest;
+        public event PropertyChangedEventHandler NotePropertyChanged;
         #endregion
-        
+
         #region properties
         public Beam Beam { get { return beam; } }
         public bool HasBeams { get { return hasBeams; } }
@@ -44,17 +49,19 @@ namespace MusicXMLViewerWPF
         public bool Stem_dir { get { return stem_dir; } }
         public float DefaultStem { get { return defaultStem; } }
         public float PosX { get { return posX; } }
-        public float PosY  { get { return posY; } }
+        public float PosY { get { return posY; } }
         public float Stem { get { return stem; } }
         public int Dot { get { return dot; } }
         public int Duration { get { return duration; } }
         public int Id { get { return id; } }
         public int MeasureId { get { return measure_id; } }
         public int Voice { get { return voice; } }
-        public MusSymbolDuration SymbolType { get { return symbol_type; } }
+        public MusSymbolDuration SymbolType { get { return symbol_type; } set { symbol_type = value; NotePropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SymbolType))); } }
         public Pitch Pitch { get { return pitch; } }
-        public string Symbol { get { return symbol; } }
+        public string Symbol { get { return symbol; } set { symbol = value; } }
+        public string SymbolXMLValue { get { return symbol_value; } set { symbol_value = value; } }
         public List<Notations> NotationsList { get { return notationsList; } }
+        public Rest Rest { get { return rest; } }
         #endregion
 
         /*
@@ -79,7 +86,8 @@ namespace MusicXMLViewerWPF
 
        } */
 
-        public Note(int measure_id, int id,float pos, Pitch p, int dur,int v, string t, float s, string dir, bool hasStemVal, bool r, int num, string bm,Dictionary<int, string> beamList, int dot, bool notations, List<Notations> n_list)
+        
+        public Note(int measure_id, int id, float pos, Pitch p, int dur, int v, string t, float s, string dir, bool hasStemVal, bool r, int num, string bm, Dictionary<int, string> beamList, int dot, bool notations, List<Notations> n_list)
         {
             hasDefaultStem = hasStemVal ? false : true;
             this.measure_id = measure_id;
@@ -91,13 +99,13 @@ namespace MusicXMLViewerWPF
             duration = dur;
             voice = v;
             stem_dir = dir == "up" ? false : true;
-            symbol_type =SymbolDuration.d_type(t);
-            symbol = MusChar.getNoteSymbol(t,stem_dir);
+            symbol_type = SymbolDuration.d_type(t);
+            symbol = MusChar.getNoteSymbol(t, stem_dir);
             isRest = r;
             stem = s;
             this.dot = dot;
             hasDot = dot != 0 ? true : false;
-            beam = new Beam(bm,num,pos,beamList);
+            beam = new Beam(bm, num, pos, beamList);
             hasBeams = true;
             //beam.Add(b);
             defaultStem = CalculateStem();
@@ -112,11 +120,11 @@ namespace MusicXMLViewerWPF
             float scale = Measures.Scale;
             this.posY = (p.CalculatedStep * 3.95f) + scale * 0.6f;
         }
-        
+
         private float CalculateStem()
         {
             float c;
-            c = (Measures.Scale * 0.75f );
+            c = (Measures.Scale * 0.75f);
 
 
             return c;
@@ -125,20 +133,40 @@ namespace MusicXMLViewerWPF
         public Note(XElement x) //TODO_H not finished
         {
             Width = 10f; //! CalculateWidth();
+
             //Segment_type = SegmentType.Note;
         }
 
         public Note()
         {
+            //PropertyChanged += Note_PropertyChanged;
 
         }
+
+        protected void Note_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case "SymbolType":
+                    Logger.Log($"{sender.ToString()}");
+                    break; 
+                default:
+                    break;
+            }
+        }
+
+        public void Draw(DrawingVisual visual)
+        {
+
+        }
+
         private void CalculateWidth()
         {
             //TODO calulation of with neccessary for segment drawing ( with is calculated according to aditional properties of note: added dots, signs(flat,shaph))
         }
         public override string ToString()
         {
-            string result = $"Position {Relative_x.ToString("0.#")}X, {Relative_y.ToString("0.#")}X, Width: {Width.ToString("0.#")}";
+            string result = $"Position {Relative_x.ToString("0.#")}X, {Relative_y.ToString("0.#")}Y, Width: {Width.ToString("0.#")}";
             return result;
         }
     }
