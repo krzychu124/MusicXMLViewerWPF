@@ -245,10 +245,11 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
         /// <param name="x"></param>
         private void XMLExtractRests(XElement x)
         {
-            string temp_str = Misc.RandomGenerator.GetRandomHexNumber();
+            Rest rest = new Rest(x);
+            NotesList.Add(rest);
             //! debug; Logger.Log("missing impl for this rest");
-            Misc.ScoreSystem.Segments.Add(temp_str, new Segment() { ID = temp_str, Segment_type = SegmentType.Rest, Color = Brushes.DarkMagenta });
-            music_characters.Add(new Segment() { ID = temp_str, Segment_type = SegmentType.Rest, Color = Brushes.DarkMagenta });
+            Misc.ScoreSystem.Segments.Add(rest.ID, rest); //! temp_str, new Segment() { ID = temp_str, Segment_type = SegmentType.Rest, Color = Brushes.DarkMagenta });
+            music_characters.Add(rest);//! (new Segment() { ID = temp_str, Segment_type = SegmentType.Rest, Color = Brushes.DarkMagenta });
         }
         /// <summary>
         /// Extract notes from XML elemnet
@@ -439,6 +440,9 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
             DrawingVisual attr_vis = new DrawingVisual();
             Draw_Attributes(attr_vis);
             visual.Children.Add(attr_vis);
+            DrawingVisual rests_vis = new DrawingVisual();
+            Draw_Rests(rests_vis);
+            visual.Children.Add(rests_vis);
             /*
             if (MusicCharacters.Any(i => i.Segment_type == SegmentType.Clef))
             {
@@ -461,6 +465,19 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
 
             }
         }
+
+        private void Draw_Rests(DrawingVisual rests_vis)
+        {
+            if (NotesList.Count != 0)
+            {
+                var rests = NotesList.OfType<Rest>();
+                foreach (var item in rests)
+                {
+                    item.Draw(rests_vis);
+                }
+            }
+        }
+
         public void Draw_(DrawingVisual visual)
         {
             foreach (var item in MusicCharacters)
@@ -628,7 +645,7 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
             }
             else
             {
-                SegmentsWidthHigher();
+                SegmentsWidthHigher(calc_scaling_width);
                 //! needs implementation/ further tests
             }
         }
@@ -691,8 +708,10 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
         /// <summary>
         /// Recalculate CHaracter Spacers if segment width decreased
         /// </summary>
-        private void SegmentsWidthHigher()
+        private void SegmentsWidthHigher(float length)
         {
+            this.Width += Math.Abs(length); //! temporary fix for too tight measure width
+
             //? Ideas for now ...
             //! II options:
             //! lower width of every segment to match size of measure
@@ -730,6 +749,14 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
             {
                 Misc.DrawingHelpers.DrawText(dc, Number.ToString(), new Point(Relative_x, Relative_y - 5f), 10f, withsub: false, color: Brushes.Black);
             }
+        }
+        /// <summary>
+        /// Resets calculated position to X,Y(0,0); Remains width
+        /// </summary>
+        public void ResetPosition()
+        {
+            this.Calculated = new Point();
+            this.Relative = new Point();
         }
 
         public override string ToString()
