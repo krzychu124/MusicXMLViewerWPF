@@ -224,11 +224,11 @@ namespace MusicXMLViewerWPF
             }
             RecalculateMeasuresPosInParts();
         }
-        private void RecalculateMeasuresPosInParts() //TODO improve part drawing
+        private void RecalculateMeasuresPosInParts() //TODO improve part drawing// better but still no bugless
         {
-            float staffDistance = 70f;
-            float staveDistance = 100f;
-            int firstinline_count = 1;
+            float staffDistance = 80f;
+            float staveDistance = 80f;
+            
             int count = Parts.Count;
             float clc_stave = 0f;
             if (count != 1)
@@ -241,11 +241,15 @@ namespace MusicXMLViewerWPF
                 
                 float tempY = 0;
                 int segmentCount = Parts.Values.ElementAt(i).MeasureSegmentList.Count;
+                int firstinline_count = 0;
                 for (int j = 0; j< segmentCount; j++)
                 {
                     MusicXMLViewerWPF.ScoreParts.Part.Measures.Measure segment = Parts.Values.ElementAt(i).MeasureSegmentList.ElementAt(j);
                     if (j == 0)
                     {
+                        tempY = staffDistance * (i) + staveDistance * (firstinline_count);
+                        segment.Relative_y += tempY;
+                        segment.Calculated_y += tempY;
                         firstinline_count++;
                         //tempY = clc_stave;
                     }
@@ -253,7 +257,7 @@ namespace MusicXMLViewerWPF
                     {
                         if (segment.IsFirstInLine)
                         {
-                            tempY = clc_stave * firstinline_count * (i+1);
+                            tempY = staffDistance * (i) + staveDistance * (firstinline_count);
                             segment.Relative_y += tempY;
                             segment.Calculated_y += tempY;
                             firstinline_count++;
@@ -263,11 +267,6 @@ namespace MusicXMLViewerWPF
                             segment.Relative_y += tempY;
                             segment.Calculated_y += tempY;
                         }
-                    }
-                    if (j == count)
-                    {
-                        tempY =0;
-                        firstinline_count = 1;
                     }
                 }
             }

@@ -107,8 +107,9 @@ namespace MusicXMLViewerWPF
             visual.Children.Add(key);
         }
     
-        public static void Draw_Key(DrawingContext dc, Point p, ClefType sign, int num = 0, Brush color = null)
+        public static void Draw_Key(DrawingContext dc, Point p, ClefType sign, int num = 0, Brush color = null) //TODO improve with clef sign....
         {
+            int alt = -16;
             // num = 4;// test
             if (color == null)
             {
@@ -118,9 +119,12 @@ namespace MusicXMLViewerWPF
             {
                 // do nothing if key is sharp/flat-less
             }
+            if (sign != null)
+            {
+                alt = sign.Sign == ClefType.Clef.GClef ? -16 : sign.Sign == ClefType.Clef.CClef ? -12 : -8;// 0= Gclef 4= Cclef 8= Fclef
+            }
             else
             {
-                int alt = sign.Sign == ClefType.Clef.GClef ? -16 : sign.Sign == ClefType.Clef.CClef ? -12 : -8; // 0= Gclef 4= Cclef 8= Fclef
                 bool isSharp = num > 0 ? true : false;  //check if sharp or flat key
                 float x = (float)p.X; // x pos of measure
                 float y = (float)p.Y; // y pos of measure

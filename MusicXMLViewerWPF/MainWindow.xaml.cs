@@ -36,6 +36,7 @@ namespace MusicXMLViewerWPF
             //? Logger.LogAdded += new EventHandler(MyLogger_TxtBox_Add);
             //! Logger.LogCleared += new EventHandler(MyLogger_LogClear);
             Logger.LogCleared += new EventHandler(MyLogger_TxtBox_Clear);
+            int c = 0;
             //Logger.Log("check");
             // Measures m = new Measures();
             // m.MeasureList_Loaded = true;
@@ -227,6 +228,9 @@ new Point(origin.X + totalWidth, y));
             
             if (MusicScore.isLoaded)
             {
+                drawingSurface.Width = MusicScore.Defaults.Page.Width;
+                drawingSurface.Height = MusicScore.Defaults.Page.Height;
+                //drawingSurface.InvalidateVisual();
                 //...
                 //LoadCharsToViewPort c = new LoadCharsToViewPort();
                 //c.AddClef(visual);
