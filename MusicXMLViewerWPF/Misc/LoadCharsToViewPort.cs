@@ -154,12 +154,12 @@ namespace MusicXMLViewerWPF
                     }
                     if (n.ElementAt(i).HasBeams) //has beams
                     {
-                        if (n.ElementAt(i).isDefault_Stem)
+                        if (n.ElementAt(i).IsCustomStem)
                         {
                             measy = measy + (int)n.ElementAt(i).DefaultStem;
                         }
                         float y_p = n.ElementAt(i).PosY + measy;
-                        float stemlength = n.ElementAt(i).Stem_dir ? measy + 5 - n.ElementAt(i).Stem : measy + 12 - n.ElementAt(i).Stem;
+                        float stemlength = n.ElementAt(i).Stem_dir ? measy + 5 - n.ElementAt(i).StemF : measy + 12 - n.ElementAt(i).StemF;
                         float xoff = n.ElementAt(i).Stem_dir ? 1f : 9f;
                         float yoff = n.ElementAt(i).Stem_dir ? 0f : -29f;
                         float yl = n.ElementAt(i).Stem_dir ? y + 29 : y + 29;
@@ -195,7 +195,7 @@ namespace MusicXMLViewerWPF
                                 case 4: //Beam.Beam_type.backward:
                                     float padd = n.ElementAt(i).Stem_dir ? beam.Key * -7 : -(beam.Key * -7);  // padding according to stem direction
                                     float x_p = n.ElementAt(i - 1).PosX + measx;
-                                    float stemlength_p = n.ElementAt(i - 1).Stem_dir ? measy + 5 - n.ElementAt(i - 1).Stem : measy + 12 - n.ElementAt(i - 1).Stem;
+                                    float stemlength_p = n.ElementAt(i - 1).Stem_dir ? measy + 5 - n.ElementAt(i - 1).StemF : measy + 12 - n.ElementAt(i - 1).StemF;
                                     float x__p = x_p + xoff;
                                     float tem = stemlength - (0.25f * (stemlength - stemlength_p));
                                     hook = x_ - (0.25f * (x_ - x__p));
