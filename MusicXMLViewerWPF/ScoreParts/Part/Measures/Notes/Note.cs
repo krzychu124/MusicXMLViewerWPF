@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,16 +16,17 @@ namespace MusicXMLViewerWPF
     { //Need to be reworked !! 1)little improvements done
         #region fields
         protected Beam beam;
+        protected bool isGraceNote = false;
         protected bool hasBeams;
         protected bool hasDot;
         protected bool hasNotations;
-        protected bool hasDefaultStem;
+        protected bool isCustomStem;
         protected bool isRest;
         protected bool stem_dir;
         protected float defaultStem;
         protected float posX;
         protected float posY;
-        protected float stem;
+        protected float stem_f;
         protected int dot;
         protected int duration;
         protected int id;
@@ -32,36 +34,38 @@ namespace MusicXMLViewerWPF
         protected int voice;
         protected MusSymbolDuration symbol_type;
         protected Pitch pitch;
+        protected Stem stem;
         protected string symbol;
         protected string symbol_value;
         protected List<Notations> notationsList;
-        private Rest rest;
         public event PropertyChangedEventHandler NotePropertyChanged;
         #endregion
 
         #region properties
-        public Beam Beam { get { return beam; } }
-        public bool HasBeams { get { return hasBeams; } }
-        public bool HasDot { get { return hasDot; } }
-        public bool HasNotations { get { return hasNotations; } }
-        public bool isDefault_Stem { get { return hasDefaultStem; } }
-        public bool IsRest { get { return isRest; } }
-        public bool Stem_dir { get { return stem_dir; } }
-        public float DefaultStem { get { return defaultStem; } }
-        public float PosX { get { return posX; } }
-        public float PosY { get { return posY; } }
-        public float Stem { get { return stem; } }
-        public int Dot { get { return dot; } }
-        public int Duration { get { return duration; } }
-        public int Id { get { return id; } }
-        public int MeasureId { get { return measure_id; } }
-        public int Voice { get { return voice; } }
+        public Beam Beam { get { return beam; } protected set { beam = value; } }
+        public bool HasBeams { get { return hasBeams; } protected set { hasBeams = value; } }
+        public bool HasDot { get { return hasDot; } protected set { hasDot = value; } }
+        public bool HasNotations { get { return hasNotations; } protected set { hasNotations = value; } }
+        public bool IsCustomStem { get { return isCustomStem; } protected set { isCustomStem = value; } }
+        public bool IsGraceNote { get { return isGraceNote; } protected set { isGraceNote = value; } }
+        public bool IsRest { get { return isRest; } protected set { isRest = value; } }
+        public bool Stem_dir { get { return stem_dir; } protected set { stem_dir = value; NotePropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Stem_dir))); } }
+        public float DefaultStem { get { return defaultStem; } protected set { defaultStem = value; } }
+        public float PosX { get { return posX; } protected set { } }
+        public float PosY { get { return posY; } protected set { } }
+        public Stem Stem { get { return stem; } protected set { stem = value; } }
+        public float StemF { get { return stem_f; } protected set { stem_f = value; } }
+        public int Dot { get { return dot; } protected set { } }
+        public int Duration { get { return duration; } protected set { } }
+        public int Id { get { return id; } protected set { } }
+        public int MeasureId { get { return measure_id; } protected set { } }
+        public int Voice { get { return voice; } protected set { } }
         public MusSymbolDuration SymbolType { get { return symbol_type; } set { symbol_type = value; NotePropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SymbolType))); } }
-        public Pitch Pitch { get { return pitch; } }
-        public string Symbol { get { return symbol; } set { symbol = value; } }
+        public Pitch Pitch { get { return pitch; } protected set { } }
+        public string Symbol { get { return symbol; } protected set { symbol = value; } }
         public string SymbolXMLValue { get { return symbol_value; } set { symbol_value = value; } }
-        public List<Notations> NotationsList { get { return notationsList; } }
-        public Rest Rest { get { return rest; } }
+        public Brush Color { get { return Brushes.Black; } }
+        public List<Notations> NotationsList { get { return notationsList; } protected set { } }
         #endregion
 
         /*
@@ -89,7 +93,7 @@ namespace MusicXMLViewerWPF
         
         public Note(int measure_id, int id, float pos, Pitch p, int dur, int v, string t, float s, string dir, bool hasStemVal, bool r, int num, string bm, Dictionary<int, string> beamList, int dot, bool notations, List<Notations> n_list)
         {
-            hasDefaultStem = hasStemVal ? false : true;
+            isCustomStem = hasStemVal ? true : false;
             this.measure_id = measure_id;
             //Segment_type = SegmentType.Note;
             this.id = id;
@@ -102,7 +106,7 @@ namespace MusicXMLViewerWPF
             symbol_type = SymbolDuration.d_type(t);
             symbol = MusChar.getNoteSymbol(t, stem_dir);
             isRest = r;
-            stem = s;
+            stem_f = s;
             this.dot = dot;
             hasDot = dot != 0 ? true : false;
             beam = new Beam(bm, num, pos, beamList);
@@ -115,8 +119,7 @@ namespace MusicXMLViewerWPF
 
         private void CalculatePitch(Pitch p)
         {
-
-            int o = p.Octava;
+            int o = p.Octave;
             float scale = Measures.Scale;
             this.posY = (p.CalculatedStep * 3.95f) + scale * 0.6f;
         }
@@ -125,16 +128,65 @@ namespace MusicXMLViewerWPF
         {
             float c;
             c = (Measures.Scale * 0.75f);
-
-
             return c;
         }
 
         public Note(XElement x) //TODO_H not finished
         {
-            Width = 10f; //! CalculateWidth();
-
-            //Segment_type = SegmentType.Note;
+            SetSegmentColor(Brushes.DarkOliveGreen);
+            Segment_type = SegmentType.Chord;
+            this.ID = RandomGenerator.GetRandomHexNumber();
+            //Width = 10f; //! CalculateWidth();
+            foreach (var item in x.Elements())
+            {
+                switch (item.Name.LocalName)
+                {
+                    case "pitch":
+                        pitch = new Pitch(item);
+                        Logger.Log($"{ID} Note Pitch set to s:{Pitch.Step}, o:{Pitch.Octave}, a:{Pitch.Alter}");
+                        break;
+                    case "duration":
+                        duration = int.Parse(item.Value);
+                        break;
+                    case "voice":
+                        voice = int.Parse(item.Value);
+                        Logger.Log($"{ID} Note Voice set to {Voice}");
+                        break;
+                    case "type":
+                        SymbolXMLValue = item.Value;
+                        SymbolType = SymbolXMLValue != null ? SymbolDuration.d_type(SymbolXMLValue) : MusSymbolDuration.Unknown;
+                        Logger.Log($" {ID} Note Type set to {SymbolXMLValue}");
+                        break;
+                    case "stem":
+                        stem_dir = item.Value == "up" ? true : false;
+                        //! stem = new Stem(item);
+                        StemF = item.Attributes() != null ? float.Parse(item.Attribute("default-y").Value, CultureInfo.InvariantCulture) : 20f;
+                        Stem = new Stem(StemF, item.Value);
+                        Logger.Log($"{ID} Note Stem set to {Stem.Direction} {Stem.Length.ToString("0.#")}");
+                        break;
+                    case "notations":
+                        Logger.Log($"{ID} Note Notations not implemented");
+                        break;
+                    case "dot":
+                        Logger.Log($"{ID} Note Dot not implemented but seems to have one or more");
+                        break;
+                    case "beam":
+                        Logger.Log($"{ID} Note Beam not implemented");
+                        break;
+                    case "accidental":
+                        Logger.Log($"{ID} Note Accidental not implemented");
+                        break;
+                    case "staff":
+                        Logger.Log($"{ID} Note Staff not implemented");
+                        break;
+                    case "lyric":
+                        Logger.Log($"{ID} Note Lyric not implemented");
+                        break;
+                    default:
+                        break;
+                }
+            }
+            //
         }
 
         public Note()
@@ -142,24 +194,40 @@ namespace MusicXMLViewerWPF
             //PropertyChanged += Note_PropertyChanged;
 
         }
-
+        #region PropertyChanged options
         protected void Note_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
             {
                 case "SymbolType":
-                    Logger.Log($"{sender.ToString()}");
-                    break; 
+                    Logger.Log($"{sender.ToString()} SymbolType set");
+                    break;
+                case "Stem_dir":
+                    Symbol = MusChar.getNoteSymbol(SymbolXMLValue, Stem_dir);
+                    Logger.Log($"{sender.ToString()}, Stem direction set");
+                    break;
                 default:
                     break;
             }
         }
+        #endregion
 
-        public void Draw(DrawingVisual visual)
+        public virtual void Draw(DrawingVisual visual)
         {
+            if (IsCustomStem) //! If custom stem length - got from XML file
+            {
 
+            }
+            else //! If default stem length
+            {
+
+            }
         }
 
+        protected void SetSegmentColor(Brush brush)
+        {
+            base.Color = brush;
+        }
         private void CalculateWidth()
         {
             //TODO calulation of with neccessary for segment drawing ( with is calculated according to aditional properties of note: added dots, signs(flat,shaph))
@@ -245,7 +313,27 @@ namespace MusicXMLViewerWPF
            
     }
 
-    enum NoteStem
+    public class Stem
+    {
+        private float length;
+        private string direction;
+        private NoteStem stemDirection;
+        public float Length { get { return length; } set { length = value; } }
+        public string Direction { get { return direction; } set { direction = value; } }
+        public NoteStem StemDirection { get { return stemDirection; } set { stemDirection = value; } }
+        public Stem(XElement x)
+        {
+            //? Testing
+        }
+        public Stem(float length, string direction)
+        {
+            Length = length;
+            Direction = direction;
+            StemDirection = Direction == "up" ? NoteStem.up : Direction == "down" ? NoteStem.down : NoteStem.none;
+        }
+    }
+
+    public enum NoteStem
     {
         none = 0,
         up = 1,

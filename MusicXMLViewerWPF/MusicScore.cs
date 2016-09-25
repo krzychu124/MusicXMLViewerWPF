@@ -222,7 +222,11 @@ namespace MusicXMLViewerWPF
             {
                 parts.Add(item.Attribute("id").Value, new ScoreParts.Part.Part(item));
             }
-            RecalculateMeasuresPosInParts();
+            if (Parts.Count > 1)
+            {
+                RecalculateMeasuresPosInParts();
+            }
+            
         }
         private void RecalculateMeasuresPosInParts() //TODO improve part drawing// better but still no bugless
         {

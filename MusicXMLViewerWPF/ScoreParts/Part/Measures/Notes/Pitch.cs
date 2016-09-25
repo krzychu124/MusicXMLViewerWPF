@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace MusicXMLViewerWPF
 {
@@ -11,7 +12,7 @@ namespace MusicXMLViewerWPF
         private string step;
         private int stepid;
         private int alter;
-        private int octava;
+        private int octave;
         private StepType step_;
         private int calculated_step;
         private bool underNote;
@@ -21,7 +22,7 @@ namespace MusicXMLViewerWPF
         public string Step { get { return step; } }
         public int StepId { get { return stepid; } }
         public int Alter { get { return alter; } }
-        public int Octava { get { return octava; } }
+        public int Octave { get { return octave; } }
         public StepType StepType { get { return step_; } }
         public float AdditionalLines { get { return additionalLines; } }
         public int CalculatedStep { get { return calculated_step; } }
@@ -35,7 +36,7 @@ namespace MusicXMLViewerWPF
         public Pitch(string s,int o)
         {
             step = s;
-            octava = o;
+            octave = o;
             alter = 0;
             getStep(s);
             getStep(step);
@@ -46,13 +47,35 @@ namespace MusicXMLViewerWPF
         public Pitch(string s, int o, int alter)
         {
             step = s;
-            octava = o;
+            octave = o;
             this.alter = alter;
             getStep(s);
             getStep(step);
             getPitch(step_);
             calculateStep();
             getAdditionalLines();
+        }
+        public Pitch(XElement x)
+        {
+            foreach (var item in x.Elements())
+            {
+                switch (item.Name.LocalName)
+                {
+                    case "step":
+                        step = item.Value;
+                        break;
+                    case "alter":
+                        alter = int.Parse(item.Value);
+                        break;
+                    case "octave":
+                        octave = int.Parse(item.Value);
+                        break;
+                    default:
+                        Logger.Log($"{item.Name.LocalName} not implemented");
+                        break;
+                }
+
+            }
         }
         public void getPitch(StepType s )
         {
@@ -74,7 +97,7 @@ namespace MusicXMLViewerWPF
         }
         private void calculateStep()
         {
-            calculated_step = ((octava - 4) * (-7) + StepId * -1) + Clef.ClefAlter;
+            calculated_step = ((octave - 4) * (-7) + StepId * -1) + Clef.ClefAlter;
         }
         private void getAdditionalLines()
         {
