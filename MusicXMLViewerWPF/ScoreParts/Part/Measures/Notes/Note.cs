@@ -119,7 +119,7 @@ namespace MusicXMLViewerWPF
 
         private void CalculatePitch(Pitch p)
         {
-            int o = p.Octava;
+            int o = p.Octave;
             float scale = Measures.Scale;
             this.posY = (p.CalculatedStep * 3.95f) + scale * 0.6f;
         }
@@ -143,7 +143,7 @@ namespace MusicXMLViewerWPF
                 {
                     case "pitch":
                         pitch = new Pitch(item);
-                        Logger.Log($"{ID} Note Pitch set to s:{Pitch.Step}, o:{Pitch.Octava}, a:{Pitch.Alter}");
+                        Logger.Log($"{ID} Note Pitch set to s:{Pitch.Step}, o:{Pitch.Octave}, a:{Pitch.Alter}");
                         break;
                     case "duration":
                         duration = int.Parse(item.Value);
