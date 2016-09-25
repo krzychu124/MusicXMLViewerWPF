@@ -257,10 +257,11 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
         /// <param name="x"></param>
         private void XMLExtractNotes(XElement x)
         {
-            string temp_str = Misc.RandomGenerator.GetRandomHexNumber();
+            Note note = new Note(x);
+            NotesList.Add(note);
             //! debug; Logger.Log("missing impl for this note");
-            Misc.ScoreSystem.Segments.Add(temp_str, new Segment() { ID = temp_str, Segment_type = SegmentType.Chord, Color = Brushes.DarkOliveGreen});
-            music_characters.Add(new Segment() { ID = temp_str, Segment_type = SegmentType.Chord, Color = Brushes.DarkOliveGreen });
+            Misc.ScoreSystem.Segments.Add(note.ID, note); //! temp_str, new Segment() { ID = temp_str, Segment_type = SegmentType.Chord, Color = Brushes.DarkOliveGreen});
+            music_characters.Add(note);//! new Segment() { ID = temp_str, Segment_type = SegmentType.Chord, Color = Brushes.DarkOliveGreen });
         }
         /// <summary>
         /// Extract visual properties (custom margins, spacers, new_page, new_line etc.) from XML elemnet
@@ -440,9 +441,9 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
             DrawingVisual attr_vis = new DrawingVisual();
             Draw_Attributes(attr_vis);
             visual.Children.Add(attr_vis);
-            DrawingVisual rests_vis = new DrawingVisual();
-            Draw_Rests(rests_vis);
-            visual.Children.Add(rests_vis);
+            DrawingVisual allnotes_vis = new DrawingVisual();
+            Draw_AllNotes(allnotes_vis);
+            visual.Children.Add(allnotes_vis);
             /*
             if (MusicCharacters.Any(i => i.Segment_type == SegmentType.Clef))
             {
@@ -466,15 +467,23 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
             }
         }
 
-        private void Draw_Rests(DrawingVisual rests_vis)
+        private void Draw_AllNotes(DrawingVisual rests_vis)
         {
             if (NotesList.Count != 0)
             {
-                var rests = NotesList.OfType<Rest>();
-                foreach (var item in rests)
+                //foreach(Rest item in NotesList)
+                //{
+                //    //item.Draw(rests_vis);
+                //}
+                foreach(var item in NotesList)
                 {
                     item.Draw(rests_vis);
                 }
+                //var rests = NotesList.OfType<Rest>();
+                //foreach (var item in rests)
+                //{
+                //    item.Draw(rests_vis);
+                //}
             }
         }
 
