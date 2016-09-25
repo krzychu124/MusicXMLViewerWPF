@@ -34,6 +34,7 @@ namespace MusicXMLViewerWPF
 
         public Rest(XElement x)
         {
+            SetSegmentColor(Brushes.DarkMagenta);
             NotePropertyChanged += Rest_RestPropertyChanged;
             ID = Misc.RandomGenerator.GetRandomHexNumber();
             Segment_type = SegmentType.Rest;
@@ -44,7 +45,17 @@ namespace MusicXMLViewerWPF
             //Symbol = MusChar.getRestSymbol(SymbolXMLValue);
             Width = 10f;
             isRest = true;
-            ismeasurerest = false;
+            if (x.Element("rest").HasAttributes) //! Checks if rest lasts whole measure duration
+            {
+                ismeasurerest = x.Element("rest").Attribute("measure").Value == "yes" ? true : false;
+                SymbolXMLValue = "whole";
+                SymbolType = MusSymbolDuration.Whole;
+            }
+            else
+            {
+                ismeasurerest = false;
+            }
+            
         }
 
         private void Rest_RestPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -101,11 +112,19 @@ namespace MusicXMLViewerWPF
               RestList = LoadDocToClasses.list.OfType<Rest>().ToList();
         }
 
-        public new void Draw(DrawingVisual visual)
+        public override void Draw(DrawingVisual visual)
         {
             DrawingVisual rest = new DrawingVisual();
             using (DrawingContext dc = rest.RenderOpen())
             {
+                if (SymbolType == MusSymbolDuration.Whole) //? TEMPORARY SOLUTION
+                {
+                    Relative_y -= 7;
+                }
+                if (SymbolType == MusSymbolDuration.Half) //? TEMPORARY SOLUTION
+                {
+                    Relative_y += 1;
+                }
                 Brush restColor = this.Color;//! (SolidColorBrush)new BrushConverter().ConvertFromString(AdditionalAttributes.Color);
                 Misc.DrawingHelpers.DrawString(dc, this.Symbol, TypeFaces.NotesFont, restColor, Relative_x + Spacer_L, Relative_y, MusicScore.Defaults.Scale.Tenths); //! Experimental
             }
