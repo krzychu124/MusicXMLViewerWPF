@@ -16,11 +16,11 @@ namespace MusicXMLViewerWPF
     { //Need to be reworked !! 1)little improvements done
         #region fields
         protected Beam beam;
-        protected bool isGraceNote = false;
         protected bool hasBeams;
         protected bool hasDot;
         protected bool hasNotations;
         protected bool isCustomStem;
+        protected bool isGraceNote = false;
         protected bool isRest;
         protected bool stem_dir;
         protected float defaultStem;
@@ -32,12 +32,12 @@ namespace MusicXMLViewerWPF
         protected int id;
         protected int measure_id;
         protected int voice;
+        protected List<Notations> notationsList;
         protected MusSymbolDuration symbol_type;
         protected Pitch pitch;
         protected Stem stem;
         protected string symbol;
         protected string symbol_value;
-        protected List<Notations> notationsList;
         public event PropertyChangedEventHandler NotePropertyChanged;
         #endregion
 
@@ -50,22 +50,22 @@ namespace MusicXMLViewerWPF
         public bool IsGraceNote { get { return isGraceNote; } protected set { isGraceNote = value; } }
         public bool IsRest { get { return isRest; } protected set { isRest = value; } }
         public bool Stem_dir { get { return stem_dir; } protected set { stem_dir = value; NotePropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Stem_dir))); } }
+        public Brush Color { get { return Brushes.Black; } }
         public float DefaultStem { get { return defaultStem; } protected set { defaultStem = value; } }
         public float PosX { get { return posX; } protected set { } }
         public float PosY { get { return posY; } protected set { } }
-        public Stem Stem { get { return stem; } protected set { stem = value; } }
         public float StemF { get { return stem_f; } protected set { stem_f = value; } }
         public int Dot { get { return dot; } protected set { } }
         public int Duration { get { return duration; } protected set { } }
         public int Id { get { return id; } protected set { } }
         public int MeasureId { get { return measure_id; } protected set { } }
         public int Voice { get { return voice; } protected set { } }
+        public List<Notations> NotationsList { get { return notationsList; } protected set { } }
         public MusSymbolDuration SymbolType { get { return symbol_type; } set { symbol_type = value; NotePropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SymbolType))); } }
         public Pitch Pitch { get { return pitch; } protected set { } }
+        public Stem Stem { get { return stem; } protected set { stem = value; } }
         public string Symbol { get { return symbol; } protected set { symbol = value; } }
         public string SymbolXMLValue { get { return symbol_value; } set { symbol_value = value; } }
-        public Brush Color { get { return Brushes.Black; } }
-        public List<Notations> NotationsList { get { return notationsList; } protected set { } }
         #endregion
 
         /*
