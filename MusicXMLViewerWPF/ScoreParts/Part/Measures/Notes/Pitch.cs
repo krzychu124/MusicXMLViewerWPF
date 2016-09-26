@@ -13,7 +13,7 @@ namespace MusicXMLViewerWPF
         private int stepid;
         private int alter;
         private int octave;
-        private StepType step_;
+        private StepType _step;
         private int calculated_step;
         private bool underNote;
         private bool addedLine;
@@ -23,9 +23,9 @@ namespace MusicXMLViewerWPF
         public int StepId { get { return stepid; } }
         public int Alter { get { return alter; } }
         public int Octave { get { return octave; } }
-        public StepType StepType { get { return step_; } }
+        public StepType StepType { get { return _step; } private set { _step = value; } }
         public float AdditionalLines { get { return additionalLines; } }
-        public int CalculatedStep { get { return calculated_step; } }
+        public int CalculatedStep { get { return calculated_step; } private set { calculated_step = value; } }
         public bool isLineUnderNote { get { return underNote; } }
         public bool HasAddedLine { get { return addedLine; } }
 
@@ -40,7 +40,7 @@ namespace MusicXMLViewerWPF
             alter = 0;
             getStep(s);
             getStep(step);
-            getPitch(step_);
+            getPitch(_step);
             calculateStep();
             getAdditionalLines();
         }
@@ -51,7 +51,7 @@ namespace MusicXMLViewerWPF
             this.alter = alter;
             getStep(s);
             getStep(step);
-            getPitch(step_);
+            getPitch(_step);
             calculateStep();
             getAdditionalLines();
         }
@@ -74,8 +74,8 @@ namespace MusicXMLViewerWPF
                         Logger.Log($"{item.Name.LocalName} not implemented");
                         break;
                 }
-
             }
+            StepType = getStep(Step);
         }
         public void getPitch(StepType s )
         {
@@ -88,16 +88,22 @@ namespace MusicXMLViewerWPF
                 step = dict.First(x=>x.Value == s).Key;
             }
         }
-        public void getStep(string s)
+        public StepType getStep(string s)
         {
+            StepType _s = StepType.C;
             if (dict.ContainsKey(s))
             {
-                step_ = dict[s];
+                _s = dict[s];
             }
+            return _s;
+        }
+        private void CalculateStep(int octave, int clef_alter)
+        {
+            //CalculatedStep = 
         }
         private void calculateStep()
         {
-            calculated_step = ((octave - 4) * (-7) + StepId * -1) + Clef.ClefAlter;
+            calculated_step = ((octave - 4) * (-7) + StepId * -1) + Clef.ClefAlterNote;
         }
         private void getAdditionalLines()
         {
