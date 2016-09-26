@@ -20,6 +20,7 @@ namespace MusicXMLViewerWPF
         private bool visible = false;
         private static Clef cl;
         private int number = 0;
+        private static int clef_alter_note;
         #endregion
         #region Properties
         public EmptyPrintStyle AdditionalAttributes { get { return additional_attributes; } }
@@ -28,10 +29,11 @@ namespace MusicXMLViewerWPF
         public int MeasureId { get { return measure_num; } }
         public static int ClefAlter { get { return clef_alter; } }
         public static ClefType Sign_static { get { return sign_static; } }
-        public SegmentType CharacterType { get { return SegmentType.Clef; } }
+        //public SegmentType CharacterType { get { return SegmentType.Clef; } }
         public bool IsVisible { get { return visible; } }
         public static Clef ClefStatic { get { return cl; } }
         public int Number { get { return number; } }
+        public static int ClefAlterNote { get { return clef_alter_note; } }
         #endregion
         public Clef(XElement x)
         {
@@ -63,8 +65,28 @@ namespace MusicXMLViewerWPF
                 }
             }
             cl = this;
+            SetClefAlterNote();
         }
-        
+        /// <summary>
+        /// Calculate C4 Note position to set notes placement on staff
+        /// </summary>
+        private void SetClefAlterNote()
+        {
+            switch (Sign.Sign_s)
+            {
+                case "C":
+                    clef_alter_note = 17 - (line * 2);
+                    break;
+                case "G":
+                    clef_alter_note = 14 - (line * 2);
+                    break;
+                case "F":
+                    clef_alter_note = 6 * (line * 2);
+                    break;
+                default:
+                    break;
+            }
+        }
         public Clef(string c, int line, int num)
         {
             
