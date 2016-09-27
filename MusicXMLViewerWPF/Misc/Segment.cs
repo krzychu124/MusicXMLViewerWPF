@@ -188,7 +188,7 @@ namespace MusicXMLViewerWPF
             }
             if (Segment_type == SegmentType.Rest)
             {
-                left = 5f;
+                left = 6f;
                 right = 12f;
             }
             if (Segment_type == SegmentType.Direction)
