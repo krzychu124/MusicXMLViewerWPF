@@ -319,7 +319,7 @@ new Point(origin.X + totalWidth, y));
                         DrawingVisual item_vis = new DrawingVisual();
                         item2.Draw(item_vis);
                         drawingSurface.AddVisual(item_vis);
-                        drawingSurface.AddVisual(segment_vis);
+                        //drawingSurface.AddVisual(segment_vis);
                     }
                     DrawingVisual credits = new DrawingVisual();
                     MusicScore.DrawCredits(credits);
