@@ -133,6 +133,7 @@ namespace MusicXMLViewerWPF
 
         public Note(XElement x) //TODO_H not finished
         {
+            NotePropertyChanged += Note_PropertyChanged;
             SetSegmentColor(Brushes.DarkOliveGreen);
             Segment_type = SegmentType.Chord;
             this.ID = RandomGenerator.GetRandomHexNumber();
@@ -158,10 +159,11 @@ namespace MusicXMLViewerWPF
                         Logger.Log($" {ID} Note Type set to {SymbolXMLValue}");
                         break;
                     case "stem":
-                        stem_dir = item.Value == "up" ? true : false;
+                        Stem_dir = item.Value == "up" ? true : false;
                         //! stem = new Stem(item);
-                        StemF = item.Attributes() != null ? float.Parse(item.Attribute("default-y").Value, CultureInfo.InvariantCulture) : 20f;
+                        StemF = item.HasAttributes == true ? float.Parse(item.Attribute("default-y").Value, CultureInfo.InvariantCulture) : 20f;
                         Stem = new Stem(StemF, item.Value);
+                        IsCustomStem = true;
                         Logger.Log($"{ID} Note Stem set to {Stem.Direction} {Stem.Length.ToString("0.#")}");
                         break;
                     case "notations":
@@ -216,7 +218,13 @@ namespace MusicXMLViewerWPF
         {
             if (IsCustomStem) //! If custom stem length - got from XML file
             {
-
+                DrawingVisual note = new DrawingVisual();
+                using (DrawingContext dc = note.RenderOpen())
+                {
+                    //Relative_y = 310;
+                    Misc.DrawingHelpers.DrawString(dc, Symbol, TypeFaces.NotesFont, Color, Relative_x + Spacer_L, Relative_y - 16, MusicScore.Defaults.Scale.Tenths);
+                }
+                visual.Children.Add(note);
             }
             else //! If default stem length
             {

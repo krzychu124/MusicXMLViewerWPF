@@ -63,6 +63,8 @@ namespace MusicXMLViewerWPF
                 {
                     case "step":
                         step = item.Value;
+                        _step = getStep(step);
+                        getPitch(_step);
                         break;
                     case "alter":
                         alter = int.Parse(item.Value);

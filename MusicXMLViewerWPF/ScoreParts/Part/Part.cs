@@ -78,6 +78,10 @@ namespace MusicXMLViewerWPF.ScoreParts.Part
                     }
                     else
                     {
+                        if (MeasureSegmentList.ElementAt(i-1).Attributes != null)
+                        {
+                            measure.Attributes = MeasureSegmentList.ElementAt(i - 1).Attributes;
+                        }
                         measure.Relative = new Point(measure_location.X, measure_location.Y - 10f);
                         measure.Calculated = new Point(measure_location.X, measure_location.Y);
                         measure_location.X += measure.Width;
