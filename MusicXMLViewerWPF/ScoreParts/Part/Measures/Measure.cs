@@ -258,7 +258,7 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
         /// <param name="x"></param>
         private void XMLExtractNotes(XElement x)
         {
-            Note note = new Note(x);
+            Note note = new Note(x) { ClefAlter = Clef.ClefAlterNote };
             NotesList.Add(note);
             //! debug; Logger.Log("missing impl for this note");
             Misc.ScoreSystem.Segments.Add(note.ID, note); //! temp_str, new Segment() { ID = temp_str, Segment_type = SegmentType.Chord, Color = Brushes.DarkOliveGreen});

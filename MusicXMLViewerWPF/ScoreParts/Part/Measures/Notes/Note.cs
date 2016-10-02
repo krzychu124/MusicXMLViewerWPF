@@ -23,7 +23,7 @@ namespace MusicXMLViewerWPF
         protected bool isGraceNote = false;
         protected bool isRest;
         protected bool stem_dir;
-        protected float defaultStem;
+        protected float defaultStem = 30f;
         protected float posX;
         protected float posY;
         protected float stem_f;
@@ -38,6 +38,7 @@ namespace MusicXMLViewerWPF
         protected Stem stem;
         protected string symbol;
         protected string symbol_value;
+        protected int clefalter;
         public event PropertyChangedEventHandler NotePropertyChanged;
         #endregion
 
@@ -55,17 +56,18 @@ namespace MusicXMLViewerWPF
         public float PosX { get { return posX; } protected set { } }
         public float PosY { get { return posY; } protected set { } }
         public float StemF { get { return stem_f; } protected set { stem_f = value; } }
-        public int Dot { get { return dot; } protected set { } }
-        public int Duration { get { return duration; } protected set { } }
+        public int Dot { get { return dot; } protected set { NotePropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Dot))); } }
+        public int Duration { get { return duration; } protected set { duration = value; } }
         public int Id { get { return id; } protected set { } }
         public int MeasureId { get { return measure_id; } protected set { } }
-        public int Voice { get { return voice; } protected set { } }
+        public int Voice { get { return voice; } protected set { voice = value; } }
         public List<Notations> NotationsList { get { return notationsList; } protected set { } }
         public MusSymbolDuration SymbolType { get { return symbol_type; } set { symbol_type = value; NotePropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SymbolType))); } }
-        public Pitch Pitch { get { return pitch; } protected set { } }
+        public Pitch Pitch { get { return pitch; } protected set { pitch = value; NotePropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Pitch)));  } }
         public Stem Stem { get { return stem; } protected set { stem = value; } }
         public string Symbol { get { return symbol; } protected set { symbol = value; } }
         public string SymbolXMLValue { get { return symbol_value; } set { symbol_value = value; } }
+        public int ClefAlter { get { return clefalter; } set { clefalter = value; } }
         #endregion
 
         /*
@@ -127,7 +129,7 @@ namespace MusicXMLViewerWPF
         private float CalculateStem()
         {
             float c;
-            c = (Measures.Scale * 0.75f);
+            c = (Measures.Scale * 0.75f); //! 30
             return c;
         }
 
@@ -143,14 +145,14 @@ namespace MusicXMLViewerWPF
                 switch (item.Name.LocalName)
                 {
                     case "pitch":
-                        pitch = new Pitch(item);
+                        Pitch = new Pitch(item) { ClefAlter = this.ClefAlter } ;
                         Logger.Log($"{ID} Note Pitch set to s:{Pitch.Step}, o:{Pitch.Octave}, a:{Pitch.Alter}");
                         break;
                     case "duration":
-                        duration = int.Parse(item.Value);
+                        Duration = int.Parse(item.Value);
                         break;
                     case "voice":
-                        voice = int.Parse(item.Value);
+                        Voice = int.Parse(item.Value);
                         Logger.Log($"{ID} Note Voice set to {Voice}");
                         break;
                     case "type":
@@ -161,7 +163,7 @@ namespace MusicXMLViewerWPF
                     case "stem":
                         Stem_dir = item.Value == "up" ? true : false;
                         //! stem = new Stem(item);
-                        StemF = item.HasAttributes == true ? float.Parse(item.Attribute("default-y").Value, CultureInfo.InvariantCulture) : 20f;
+                        StemF = item.HasAttributes == true ? float.Parse(item.Attribute("default-y").Value, CultureInfo.InvariantCulture) : 30f;
                         Stem = new Stem(StemF, item.Value);
                         IsCustomStem = true;
                         Logger.Log($"{ID} Note Stem set to {Stem.Direction} {Stem.Length.ToString("0.#")}");
@@ -187,6 +189,11 @@ namespace MusicXMLViewerWPF
                     default:
                         break;
                 }
+            }
+            if (IsCustomStem == false)
+            {
+                string direction = Pitch.CalculatedStep <= 4 ? "down" : "up";
+                Stem = new Stem(DefaultStem, direction);
             }
             //
         }
@@ -222,13 +229,19 @@ namespace MusicXMLViewerWPF
                 using (DrawingContext dc = note.RenderOpen())
                 {
                     //Relative_y = 310;
-                    Misc.DrawingHelpers.DrawString(dc, Symbol, TypeFaces.NotesFont, Color, Relative_x + Spacer_L, Relative_y - 16, MusicScore.Defaults.Scale.Tenths);
+                    Misc.DrawingHelpers.DrawString(dc, Symbol, TypeFaces.NotesFont, Color, Relative_x + Spacer_L, (Relative_y + Pitch.CalculatedStep * 4)+24, MusicScore.Defaults.Scale.Tenths);
                 }
                 visual.Children.Add(note);
             }
-            else //! If default stem length
+            else //! If default stem length //
             {
-
+                DrawingVisual note = new DrawingVisual();
+                using (DrawingContext dc = note.RenderOpen())
+                {
+                    //Relative_y = 310;
+                    Misc.DrawingHelpers.DrawString(dc, Symbol, TypeFaces.NotesFont, Color, Relative_x + Spacer_L, Relative_y - 16, MusicScore.Defaults.Scale.Tenths);
+                }
+                visual.Children.Add(note);
             }
         }
 

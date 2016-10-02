@@ -228,7 +228,7 @@ namespace MusicXMLViewerWPF
         public static string getNoteSymbol(string s,bool d)
         {
             string x = "n?";
-            if (d==false)
+            if (d==true)
             {
                 if (DurationSymbol_Note_S.ContainsKey(s))
                 {

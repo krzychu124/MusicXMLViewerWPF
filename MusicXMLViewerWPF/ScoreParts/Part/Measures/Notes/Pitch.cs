@@ -12,12 +12,13 @@ namespace MusicXMLViewerWPF
         private string step;
         private int stepid;
         private int alter;
-        private int octave;
+        private int octave = -1;
         private StepType _step;
         private int calculated_step;
         private bool underNote;
         private bool addedLine;
         private float additionalLines;
+        private int clefalter;
 
         public string Step { get { return step; } }
         public int StepId { get { return stepid; } }
@@ -28,7 +29,7 @@ namespace MusicXMLViewerWPF
         public int CalculatedStep { get { return calculated_step; } private set { calculated_step = value; } }
         public bool isLineUnderNote { get { return underNote; } }
         public bool HasAddedLine { get { return addedLine; } }
-
+        public int ClefAlter { get { return clefalter; } set { clefalter = value; } }
         public Pitch()
         {
 
@@ -78,6 +79,10 @@ namespace MusicXMLViewerWPF
                 }
             }
             StepType = getStep(Step);
+            if (step != null && octave != -1)
+            {
+                CalculateStep();
+            }
         }
         public void getPitch(StepType s )
         {
@@ -99,9 +104,9 @@ namespace MusicXMLViewerWPF
             }
             return _s;
         }
-        private void CalculateStep(int octave, int clef_alter)
+        private void CalculateStep()
         {
-            //CalculatedStep = 
+            CalculatedStep = ((octave - 4) * (-7) + StepId * -1) + ClefAlter;
         }
         private void calculateStep()
         {

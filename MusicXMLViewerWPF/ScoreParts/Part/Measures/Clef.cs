@@ -74,13 +74,13 @@ namespace MusicXMLViewerWPF
         {
             switch (Sign.Sign_s)
             {
-                case "C":
+                case "Clef C":
                     clef_alter_note = 17 - (line * 2);
                     break;
-                case "G":
+                case "Clef G":
                     clef_alter_note = 14 - (line * 2);
                     break;
-                case "F":
+                case "Clef F":
                     clef_alter_note = 6 * (line * 2);
                     break;
                 default:
