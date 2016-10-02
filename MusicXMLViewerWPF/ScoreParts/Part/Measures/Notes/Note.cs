@@ -193,6 +193,7 @@ namespace MusicXMLViewerWPF
             if (IsCustomStem == false)
             {
                 string direction = Pitch.CalculatedStep <= 4 ? "down" : "up";
+                Stem_dir = direction == "up"? true : false;
                 Stem = new Stem(DefaultStem, direction);
             }
             //
@@ -229,9 +230,11 @@ namespace MusicXMLViewerWPF
                 using (DrawingContext dc = note.RenderOpen())
                 {
                     //Relative_y = 310;
-                    Misc.DrawingHelpers.DrawString(dc, Symbol, TypeFaces.NotesFont, Color, Relative_x + Spacer_L, (Relative_y + Pitch.CalculatedStep * 4)+24, MusicScore.Defaults.Scale.Tenths);
+                    Misc.DrawingHelpers.DrawString(dc, MusChar.QuarterDot, TypeFaces.NotesFont, Color, Relative_x + Spacer_L, (Relative_y + Pitch.CalculatedStep * (MusicScore.Defaults.Scale.Tenths * 0.1f)) + MusicScore.Defaults.Scale.Tenths * 0.6f, MusicScore.Defaults.Scale.Tenths);
                 }
                 visual.Children.Add(note);
+                //! add missing additional lines if neccessary vvv
+                DrawAdditionalLines(visual);
             }
             else //! If default stem length //
             {
@@ -239,10 +242,12 @@ namespace MusicXMLViewerWPF
                 using (DrawingContext dc = note.RenderOpen())
                 {
                     //Relative_y = 310;
-                    Misc.DrawingHelpers.DrawString(dc, Symbol, TypeFaces.NotesFont, Color, Relative_x + Spacer_L, Relative_y - 16, MusicScore.Defaults.Scale.Tenths);
+                    Misc.DrawingHelpers.DrawString(dc, Symbol, TypeFaces.NotesFont, Color, Relative_x + Spacer_L, (Relative_y + Pitch.CalculatedStep * (MusicScore.Defaults.Scale.Tenths * 0.1f)) + MusicScore.Defaults.Scale.Tenths * 0.6f, MusicScore.Defaults.Scale.Tenths);
                 }
                 visual.Children.Add(note);
+                DrawAdditionalLines(visual);
             }
+            
         }
 
         protected void SetSegmentColor(Brush brush)
@@ -253,9 +258,54 @@ namespace MusicXMLViewerWPF
         {
             //TODO calulation of with neccessary for segment drawing ( with is calculated according to aditional properties of note: added dots, signs(flat,shaph))
         }
+        private void DrawAdditionalLines(DrawingVisual visual)
+        {
+            if (Pitch.CalculatedStep >= 0 || Pitch.CalculatedStep <= -12)
+            {
+                int numofaddlines = Math.Abs(Pitch.CalculatedStep);
+                int lines = (numofaddlines / 2) + 1;
+
+                if (lines > 0)
+                {
+                    int modaddlines = numofaddlines % 2;
+                    DrawingVisual missinglines = new DrawingVisual();
+                    int inverter = 1;
+                    int oddevenstep = Pitch.CalculatedStep;
+                    if (oddevenstep <= -12) //! while additional lines should be above measure
+                    {
+                        inverter = -1;
+                        lines -= 6;
+                    }
+                    if (Math.Abs(oddevenstep) % 2 == 1)
+                    {
+                        if (Pitch.CalculatedStep <= -12)//! invert placement of line (from above to below of noteDot
+                        {
+                            oddevenstep = Pitch.CalculatedStep +1; 
+                        }
+                        else
+                        {
+                            oddevenstep = Pitch.CalculatedStep - 1;
+                        }
+                        
+                    }
+                    for (int i = 0; i < lines; i++)
+                    {
+                        int step = oddevenstep - (i * 2) * inverter;
+                        DrawingVisual addlinesbetween = new DrawingVisual();
+                        using (DrawingContext dc = addlinesbetween.RenderOpen())
+                        {
+                            Misc.DrawingHelpers.DrawString(dc, MusChar.NoteLine, TypeFaces.NotesFont, Color, Relative_x + Spacer_L * 0.8f, (Relative_y + step * (MusicScore.Defaults.Scale.Tenths * 0.1f)) + MusicScore.Defaults.Scale.Tenths * 0.6f, MusicScore.Defaults.Scale.Tenths);
+                        }
+                        missinglines.Children.Add(addlinesbetween);
+                    }
+                    visual.Children.Add(missinglines);
+                }
+                //visual.Children.Add(additionalline);
+            }
+        }
         public override string ToString()
         {
-            string result = $"Position {Relative_x.ToString("0.#")}X, {Relative_y.ToString("0.#")}Y, Width: {Width.ToString("0.#")}";
+            string result = $"Position {Relative_x.ToString("0.#")}X, {Relative_y.ToString("0.#")}Y, Width: {Width.ToString("0.#")} {Pitch.Step}{Pitch.Octave}";
             return result;
         }
     }
