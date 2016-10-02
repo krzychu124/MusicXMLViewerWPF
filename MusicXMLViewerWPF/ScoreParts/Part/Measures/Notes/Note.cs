@@ -196,7 +196,13 @@ namespace MusicXMLViewerWPF
                 Stem_dir = direction == "up"? true : false;
                 Stem = new Stem(DefaultStem, direction);
             }
+            SetCalculatedNotePosition();
             //
+        }
+
+        private void SetCalculatedNotePosition()
+        {
+            Calculated_y = Pitch.CalculatedStep * (MusicScore.Defaults.Scale.Tenths * 0.1f) +MusicScore.Defaults.Scale.Tenths * 0.6f;
         }
 
         public Note()
@@ -230,7 +236,7 @@ namespace MusicXMLViewerWPF
                 using (DrawingContext dc = note.RenderOpen())
                 {
                     //Relative_y = 310;
-                    Misc.DrawingHelpers.DrawString(dc, MusChar.QuarterDot, TypeFaces.NotesFont, Color, Relative_x + Spacer_L, (Relative_y + Pitch.CalculatedStep * (MusicScore.Defaults.Scale.Tenths * 0.1f)) + MusicScore.Defaults.Scale.Tenths * 0.6f, MusicScore.Defaults.Scale.Tenths);
+                    Misc.DrawingHelpers.DrawString(dc, Symbol, TypeFaces.NotesFont, Color, Relative_x + Spacer_L, Relative_y + Calculated_y, MusicScore.Defaults.Scale.Tenths);
                 }
                 visual.Children.Add(note);
                 //! add missing additional lines if neccessary vvv
@@ -241,8 +247,8 @@ namespace MusicXMLViewerWPF
                 DrawingVisual note = new DrawingVisual();
                 using (DrawingContext dc = note.RenderOpen())
                 {
-                    //Relative_y = 310;
-                    Misc.DrawingHelpers.DrawString(dc, Symbol, TypeFaces.NotesFont, Color, Relative_x + Spacer_L, (Relative_y + Pitch.CalculatedStep * (MusicScore.Defaults.Scale.Tenths * 0.1f)) + MusicScore.Defaults.Scale.Tenths * 0.6f, MusicScore.Defaults.Scale.Tenths);
+                    //Relative_y = 310;  //! Pitch.CalculatedStep * (MusicScore.Defaults.Scale.Tenths * 0.1f)) + MusicScore.Defaults.Scale.Tenths * 0.6f
+                    Misc.DrawingHelpers.DrawString(dc, Symbol, TypeFaces.NotesFont, Color, Relative_x + Spacer_L, Relative_y + Calculated_y, MusicScore.Defaults.Scale.Tenths);
                 }
                 visual.Children.Add(note);
                 DrawAdditionalLines(visual);
