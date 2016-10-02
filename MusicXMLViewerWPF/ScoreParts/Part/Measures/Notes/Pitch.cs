@@ -12,23 +12,24 @@ namespace MusicXMLViewerWPF
         private string step;
         private int stepid;
         private int alter;
-        private int octave;
-        private StepType step_;
+        private int octave = -1;
+        private StepType _step;
         private int calculated_step;
         private bool underNote;
         private bool addedLine;
         private float additionalLines;
+        private int clefalter;
 
         public string Step { get { return step; } }
         public int StepId { get { return stepid; } }
         public int Alter { get { return alter; } }
         public int Octave { get { return octave; } }
-        public StepType StepType { get { return step_; } }
+        public StepType StepType { get { return _step; } private set { _step = value; } }
         public float AdditionalLines { get { return additionalLines; } }
-        public int CalculatedStep { get { return calculated_step; } }
+        public int CalculatedStep { get { return calculated_step; } private set { calculated_step = value; } }
         public bool isLineUnderNote { get { return underNote; } }
         public bool HasAddedLine { get { return addedLine; } }
-
+        public int ClefAlter { get { return clefalter; } set { clefalter = value; } }
         public Pitch()
         {
 
@@ -40,7 +41,7 @@ namespace MusicXMLViewerWPF
             alter = 0;
             getStep(s);
             getStep(step);
-            getPitch(step_);
+            getPitch(_step);
             calculateStep();
             getAdditionalLines();
         }
@@ -51,7 +52,7 @@ namespace MusicXMLViewerWPF
             this.alter = alter;
             getStep(s);
             getStep(step);
-            getPitch(step_);
+            getPitch(_step);
             calculateStep();
             getAdditionalLines();
         }
@@ -63,6 +64,8 @@ namespace MusicXMLViewerWPF
                 {
                     case "step":
                         step = item.Value;
+                        _step = getStep(step);
+                        getPitch(_step);
                         break;
                     case "alter":
                         alter = int.Parse(item.Value);
@@ -74,7 +77,11 @@ namespace MusicXMLViewerWPF
                         Logger.Log($"{item.Name.LocalName} not implemented");
                         break;
                 }
-
+            }
+            StepType = getStep(Step);
+            if (step != null && octave != -1)
+            {
+                CalculateStep();
             }
         }
         public void getPitch(StepType s )
@@ -88,16 +95,22 @@ namespace MusicXMLViewerWPF
                 step = dict.First(x=>x.Value == s).Key;
             }
         }
-        public void getStep(string s)
+        public StepType getStep(string s)
         {
+            StepType _s = StepType.C;
             if (dict.ContainsKey(s))
             {
-                step_ = dict[s];
+                _s = dict[s];
             }
+            return _s;
+        }
+        private void CalculateStep()
+        {
+            CalculatedStep = ((octave - 4) * (-7) + StepId * -1) + ClefAlter;
         }
         private void calculateStep()
         {
-            calculated_step = ((octave - 4) * (-7) + StepId * -1) + Clef.ClefAlter;
+            calculated_step = ((octave - 4) * (-7) + StepId * -1) + Clef.ClefAlterNote;
         }
         private void getAdditionalLines()
         {

@@ -16,14 +16,14 @@ namespace MusicXMLViewerWPF
     { //Need to be reworked !! 1)little improvements done
         #region fields
         protected Beam beam;
-        protected bool isGraceNote = false;
         protected bool hasBeams;
         protected bool hasDot;
         protected bool hasNotations;
         protected bool isCustomStem;
+        protected bool isGraceNote = false;
         protected bool isRest;
         protected bool stem_dir;
-        protected float defaultStem;
+        protected float defaultStem = 30f;
         protected float posX;
         protected float posY;
         protected float stem_f;
@@ -32,12 +32,13 @@ namespace MusicXMLViewerWPF
         protected int id;
         protected int measure_id;
         protected int voice;
+        protected List<Notations> notationsList;
         protected MusSymbolDuration symbol_type;
         protected Pitch pitch;
         protected Stem stem;
         protected string symbol;
         protected string symbol_value;
-        protected List<Notations> notationsList;
+        protected int clefalter;
         public event PropertyChangedEventHandler NotePropertyChanged;
         #endregion
 
@@ -50,22 +51,23 @@ namespace MusicXMLViewerWPF
         public bool IsGraceNote { get { return isGraceNote; } protected set { isGraceNote = value; } }
         public bool IsRest { get { return isRest; } protected set { isRest = value; } }
         public bool Stem_dir { get { return stem_dir; } protected set { stem_dir = value; NotePropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Stem_dir))); } }
+        public Brush Color { get { return Brushes.Black; } }
         public float DefaultStem { get { return defaultStem; } protected set { defaultStem = value; } }
         public float PosX { get { return posX; } protected set { } }
         public float PosY { get { return posY; } protected set { } }
-        public Stem Stem { get { return stem; } protected set { stem = value; } }
         public float StemF { get { return stem_f; } protected set { stem_f = value; } }
-        public int Dot { get { return dot; } protected set { } }
-        public int Duration { get { return duration; } protected set { } }
+        public int Dot { get { return dot; } protected set { NotePropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Dot))); } }
+        public int Duration { get { return duration; } protected set { duration = value; } }
         public int Id { get { return id; } protected set { } }
         public int MeasureId { get { return measure_id; } protected set { } }
-        public int Voice { get { return voice; } protected set { } }
+        public int Voice { get { return voice; } protected set { voice = value; } }
+        public List<Notations> NotationsList { get { return notationsList; } protected set { } }
         public MusSymbolDuration SymbolType { get { return symbol_type; } set { symbol_type = value; NotePropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SymbolType))); } }
-        public Pitch Pitch { get { return pitch; } protected set { } }
+        public Pitch Pitch { get { return pitch; } protected set { pitch = value; NotePropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Pitch)));  } }
+        public Stem Stem { get { return stem; } protected set { stem = value; } }
         public string Symbol { get { return symbol; } protected set { symbol = value; } }
         public string SymbolXMLValue { get { return symbol_value; } set { symbol_value = value; } }
-        public Brush Color { get { return Brushes.Black; } }
-        public List<Notations> NotationsList { get { return notationsList; } protected set { } }
+        public int ClefAlter { get { return clefalter; } set { clefalter = value; } }
         #endregion
 
         /*
@@ -127,12 +129,13 @@ namespace MusicXMLViewerWPF
         private float CalculateStem()
         {
             float c;
-            c = (Measures.Scale * 0.75f);
+            c = (Measures.Scale * 0.75f); //! 30
             return c;
         }
 
         public Note(XElement x) //TODO_H not finished
         {
+            NotePropertyChanged += Note_PropertyChanged;
             SetSegmentColor(Brushes.DarkOliveGreen);
             Segment_type = SegmentType.Chord;
             this.ID = RandomGenerator.GetRandomHexNumber();
@@ -142,14 +145,14 @@ namespace MusicXMLViewerWPF
                 switch (item.Name.LocalName)
                 {
                     case "pitch":
-                        pitch = new Pitch(item);
+                        Pitch = new Pitch(item) { ClefAlter = this.ClefAlter } ;
                         Logger.Log($"{ID} Note Pitch set to s:{Pitch.Step}, o:{Pitch.Octave}, a:{Pitch.Alter}");
                         break;
                     case "duration":
-                        duration = int.Parse(item.Value);
+                        Duration = int.Parse(item.Value);
                         break;
                     case "voice":
-                        voice = int.Parse(item.Value);
+                        Voice = int.Parse(item.Value);
                         Logger.Log($"{ID} Note Voice set to {Voice}");
                         break;
                     case "type":
@@ -158,10 +161,11 @@ namespace MusicXMLViewerWPF
                         Logger.Log($" {ID} Note Type set to {SymbolXMLValue}");
                         break;
                     case "stem":
-                        stem_dir = item.Value == "up" ? true : false;
+                        Stem_dir = item.Value == "up" ? true : false;
                         //! stem = new Stem(item);
-                        StemF = item.Attributes() != null ? float.Parse(item.Attribute("default-y").Value, CultureInfo.InvariantCulture) : 20f;
+                        StemF = item.HasAttributes == true ? float.Parse(item.Attribute("default-y").Value, CultureInfo.InvariantCulture) : 30f;
                         Stem = new Stem(StemF, item.Value);
+                        IsCustomStem = true;
                         Logger.Log($"{ID} Note Stem set to {Stem.Direction} {Stem.Length.ToString("0.#")}");
                         break;
                     case "notations":
@@ -186,7 +190,19 @@ namespace MusicXMLViewerWPF
                         break;
                 }
             }
+            if (IsCustomStem == false)
+            {
+                string direction = Pitch.CalculatedStep <= 4 ? "down" : "up";
+                Stem_dir = direction == "up"? true : false;
+                Stem = new Stem(DefaultStem, direction);
+            }
+            SetCalculatedNotePosition();
             //
+        }
+
+        private void SetCalculatedNotePosition()
+        {
+            Calculated_y = Pitch.CalculatedStep * (MusicScore.Defaults.Scale.Tenths * 0.1f) +MusicScore.Defaults.Scale.Tenths * 0.6f;
         }
 
         public Note()
@@ -216,12 +232,28 @@ namespace MusicXMLViewerWPF
         {
             if (IsCustomStem) //! If custom stem length - got from XML file
             {
-
+                DrawingVisual note = new DrawingVisual();
+                using (DrawingContext dc = note.RenderOpen())
+                {
+                    //Relative_y = 310;
+                    Misc.DrawingHelpers.DrawString(dc, Symbol, TypeFaces.NotesFont, Color, Relative_x + Spacer_L, Relative_y + Calculated_y, MusicScore.Defaults.Scale.Tenths);
+                }
+                visual.Children.Add(note);
+                //! add missing additional lines if neccessary vvv
+                DrawAdditionalLines(visual);
             }
-            else //! If default stem length
+            else //! If default stem length //
             {
-
+                DrawingVisual note = new DrawingVisual();
+                using (DrawingContext dc = note.RenderOpen())
+                {
+                    //Relative_y = 310;  //! Pitch.CalculatedStep * (MusicScore.Defaults.Scale.Tenths * 0.1f)) + MusicScore.Defaults.Scale.Tenths * 0.6f
+                    Misc.DrawingHelpers.DrawString(dc, Symbol, TypeFaces.NotesFont, Color, Relative_x + Spacer_L, Relative_y + Calculated_y, MusicScore.Defaults.Scale.Tenths);
+                }
+                visual.Children.Add(note);
+                DrawAdditionalLines(visual);
             }
+            
         }
 
         protected void SetSegmentColor(Brush brush)
@@ -232,9 +264,54 @@ namespace MusicXMLViewerWPF
         {
             //TODO calulation of with neccessary for segment drawing ( with is calculated according to aditional properties of note: added dots, signs(flat,shaph))
         }
+        private void DrawAdditionalLines(DrawingVisual visual)
+        {
+            if (Pitch.CalculatedStep >= 0 || Pitch.CalculatedStep <= -12)
+            {
+                int numofaddlines = Math.Abs(Pitch.CalculatedStep);
+                int lines = (numofaddlines / 2) + 1;
+
+                if (lines > 0)
+                {
+                    int modaddlines = numofaddlines % 2;
+                    DrawingVisual missinglines = new DrawingVisual();
+                    int inverter = 1;
+                    int oddevenstep = Pitch.CalculatedStep;
+                    if (oddevenstep <= -12) //! while additional lines should be above measure
+                    {
+                        inverter = -1;
+                        lines -= 6;
+                    }
+                    if (Math.Abs(oddevenstep) % 2 == 1)
+                    {
+                        if (Pitch.CalculatedStep <= -12)//! invert placement of line (from above to below of noteDot
+                        {
+                            oddevenstep = Pitch.CalculatedStep +1; 
+                        }
+                        else
+                        {
+                            oddevenstep = Pitch.CalculatedStep - 1;
+                        }
+                        
+                    }
+                    for (int i = 0; i < lines; i++)
+                    {
+                        int step = oddevenstep - (i * 2) * inverter;
+                        DrawingVisual addlinesbetween = new DrawingVisual();
+                        using (DrawingContext dc = addlinesbetween.RenderOpen())
+                        {
+                            Misc.DrawingHelpers.DrawString(dc, MusChar.NoteLine, TypeFaces.NotesFont, Color, Relative_x + Spacer_L * 0.8f, (Relative_y + step * (MusicScore.Defaults.Scale.Tenths * 0.1f)) + MusicScore.Defaults.Scale.Tenths * 0.6f, MusicScore.Defaults.Scale.Tenths);
+                        }
+                        missinglines.Children.Add(addlinesbetween);
+                    }
+                    visual.Children.Add(missinglines);
+                }
+                //visual.Children.Add(additionalline);
+            }
+        }
         public override string ToString()
         {
-            string result = $"Position {Relative_x.ToString("0.#")}X, {Relative_y.ToString("0.#")}Y, Width: {Width.ToString("0.#")}";
+            string result = $"Position {Relative_x.ToString("0.#")}X, {Relative_y.ToString("0.#")}Y, Width: {Width.ToString("0.#")} {Pitch.Step}{Pitch.Octave}";
             return result;
         }
     }

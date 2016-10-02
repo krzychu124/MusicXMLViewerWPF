@@ -41,7 +41,7 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
 
         #region Properties
         public event PropertyChangedEventHandler PropertyChanged;
-        public Attributes Attributes { get { return attributes; } }
+        public Attributes Attributes { get { return attributes; } set { attributes = value; } }
         public bool NumberVisible { get { return hasNumberInvisible; } }
         public DrawingVisual Visual { get { return visual; } set { if (value != null) visual = value; } }
         public new float Width { get { return base.Width; } set { if (value >= 0) { base.Width = value; } else { base.Width = 100f; Logger.Log("width is negative here"); } } }
@@ -203,6 +203,7 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
 
                 //! music_characters.Add(s); //! (new Segment() { Segment_type = SegmentType.Clef, Color = Brushes.Brown });
                 */
+
                 if (Attributes.Clef.Number != 0)
                 {
                     if (Attributes.Clef.Number == 1)
@@ -257,7 +258,7 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
         /// <param name="x"></param>
         private void XMLExtractNotes(XElement x)
         {
-            Note note = new Note(x);
+            Note note = new Note(x) { ClefAlter = Clef.ClefAlterNote };
             NotesList.Add(note);
             //! debug; Logger.Log("missing impl for this note");
             Misc.ScoreSystem.Segments.Add(note.ID, note); //! temp_str, new Segment() { ID = temp_str, Segment_type = SegmentType.Chord, Color = Brushes.DarkOliveGreen});

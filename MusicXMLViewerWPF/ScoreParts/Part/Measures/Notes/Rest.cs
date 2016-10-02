@@ -117,16 +117,17 @@ namespace MusicXMLViewerWPF
             DrawingVisual rest = new DrawingVisual();
             using (DrawingContext dc = rest.RenderOpen())
             {
+                float YPos = Relative_y;
                 if (SymbolType == MusSymbolDuration.Whole) //? TEMPORARY SOLUTION
                 {
-                    Relative_y -= 7;
+                    YPos -= 7;
                 }
                 if (SymbolType == MusSymbolDuration.Half) //? TEMPORARY SOLUTION
                 {
-                    Relative_y += 1;
+                    YPos += 1;
                 }
                 Brush restColor = this.Color;//! (SolidColorBrush)new BrushConverter().ConvertFromString(AdditionalAttributes.Color);
-                Misc.DrawingHelpers.DrawString(dc, this.Symbol, TypeFaces.NotesFont, restColor, Relative_x + Spacer_L, Relative_y, MusicScore.Defaults.Scale.Tenths); //! Experimental
+                Misc.DrawingHelpers.DrawString(dc, this.Symbol, TypeFaces.NotesFont, restColor, Relative_x + Spacer_L, YPos, MusicScore.Defaults.Scale.Tenths); //! Experimental
             }
             visual.Children.Add(rest);
         }

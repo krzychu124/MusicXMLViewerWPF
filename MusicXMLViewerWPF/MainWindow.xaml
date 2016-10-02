@@ -45,13 +45,13 @@
             <Label  Grid.Column="2" >
 
                 <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" >
-                    <Grid x:Name="TestGrid" Width="Auto" ScrollViewer.CanContentScroll="True" ScrollViewer.HorizontalScrollBarVisibility="Visible" ClipToBounds="True" >
+                    <Grid x:Name="TestGrid" Width="Auto" ScrollViewer.CanContentScroll="True" ScrollViewer.HorizontalScrollBarVisibility="Visible" ClipToBounds="True" RenderOptions.EdgeMode="Aliased" SnapsToDevicePixels="True">
                         <Border BorderThickness="0"  >
                             <Border.Effect>
                                 <DropShadowEffect BlurRadius="20">
                                 </DropShadowEffect>
                             </Border.Effect>
-                        <local:CanvasList Width="Auto" x:Name="drawingSurface"  Background="Beige" ClipToBounds="True" Margin="10,10,17,10" MinWidth="900" MinHeight="380" ScrollViewer.CanContentScroll="True" />
+                            <local:CanvasList Width="Auto" x:Name="drawingSurface"  Background="Beige" ClipToBounds="True" Margin="10,10,17,10" MinWidth="900" MinHeight="380" ScrollViewer.CanContentScroll="True" />
                         <!-- Temporary A4 dimensions to make scrolling working-->
                         <!-- <local:testview   /> -->
                         </Border>
@@ -70,7 +70,7 @@
         <Button Content="Open File" Margin="10,0,0,10" Click="Button_Click" HorizontalAlignment="Left" Width="100" Height="24" VerticalAlignment="Bottom" />
         <Button Content="Reworked Draw" Margin="115,0,0,10" Panel.ZIndex="0" Click="Button_Click_1" HorizontalAlignment="Left" Width="100" Height="24" VerticalAlignment="Bottom"/>
         <Button x:Name="clearAll" Content="Clear View" HorizontalAlignment="Left" Margin="1110,0,0,10" Width="97" Click="clearAll_Click" Height="25" VerticalAlignment="Bottom"/>
-        <CheckBox x:Name="checkBox" Content="Generate Log" HorizontalAlignment="Left" Margin="220,0,0,10" Width="113" Checked="checkBox_Checked" Unchecked="checkBox_Unchecked" IsChecked="True" Height="24" VerticalAlignment="Bottom"/>
+        <CheckBox x:Name="checkBox" Content="Generate Log" HorizontalAlignment="Left" Margin="220,0,0,10" Width="113" Checked="checkBox_Checked" Unchecked="checkBox_Unchecked" IsChecked="False" Height="24" VerticalAlignment="Bottom"/>
 
 
         <!-- <Button x:Name="load_M" Content="Load Measure" HorizontalAlignment="Left" Height="24" Margin="665,426,0,0" VerticalAlignment="Top" Width="103" Click="load_M_Click"/>

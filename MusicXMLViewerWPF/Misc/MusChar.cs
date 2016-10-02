@@ -93,7 +93,7 @@ namespace MusicXMLViewerWPF
         public const string HalfDot = "\uE0A3";
         public const string QuarterDot = "\uE0A4";
         //public const string DurationDot = "\U0001D157";
-        public const string NoteLine = "\uE016";
+        public const string NoteLine = "\uE010";
 
         public const string FlagEight = "\U0001D16E";
         public const string FlagSixteen = "\U0001D16f";
@@ -228,7 +228,7 @@ namespace MusicXMLViewerWPF
         public static string getNoteSymbol(string s,bool d)
         {
             string x = "n?";
-            if (d==false)
+            if (d==true)
             {
                 if (DurationSymbol_Note_S.ContainsKey(s))
                 {
