@@ -11,8 +11,8 @@ namespace MusicXMLViewerWPF
 {
     public  class Logger
     {
-        private static List<string> log = new List<string>();
-
+        public static List<string> log = new List<string>();
+        private static bool refresh = true;
         public static event EventHandler LogAdded;
         public static event EventHandler LogCleared;
        // public static List<string> LoggingList { get { return log; } }
@@ -20,7 +20,10 @@ namespace MusicXMLViewerWPF
         public static void Log(string message, [CallerMemberName] string memberName = "")
         {
             log.Add("["+memberName+"]"+": "+message);
-            LogAdded?.Invoke(null, EventArgs.Empty);
+            if (refresh)
+            {
+                LogAdded?.Invoke(null, EventArgs.Empty);
+            }
         }
 
         public static string GetLastLog()
@@ -46,6 +49,20 @@ namespace MusicXMLViewerWPF
             Log("Log Cleared");
             //? System.Windows.MessageBox.Show("Log cleared.");
             return string.Empty;
+        }
+        public static void Refresh(string s)
+        {
+            string[] temp = new string[log.Count];
+            log.CopyTo(temp);
+            var temp_list = temp.ToList();
+            log.Clear();
+            temp_list.ForEach(x => s += x.ToString() + Environment.NewLine);
+            LogAdded?.Invoke(null, EventArgs.Empty);
+        }
+        public static string Fill(string s)
+        {
+            string result = s + Environment.NewLine;
+            return result;
         }
     }
 }
