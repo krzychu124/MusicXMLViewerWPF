@@ -22,6 +22,8 @@ namespace MusicXMLViewerWPF.ScoreParts.Part
         public Dictionary<int,Point> MarginHelper { get { return measure_margin_helper; } }
         public List<MeasureCoordinates> PositionHelper { get { return measure_pos; } }
         public List<Measures.Measure> MeasureSegmentList { get { return measure_segment_list; } } //! segment test
+        private List<List<Slur>> slist;
+        private List<List<Notations>> nlist;
 
         public Part(XElement x)
         {
@@ -145,11 +147,12 @@ namespace MusicXMLViewerWPF.ScoreParts.Part
                     }
                 }
             }
+            SortNotations();
 
-            foreach (var item in measure_margin_helper) // Only to check if list was filled correctly
-            {
-                //todo Logger.Log($"helper_dict measure nr. {item.Key} X: {item.Value.X} Y: {item.Value.Y} "); 
-            }
+            //foreach (var item in measure_margin_helper) // Only to check if list was filled correctly
+            //{
+            //    //todo Logger.Log($"helper_dict measure nr. {item.Key} X: {item.Value.X} Y: {item.Value.Y} "); 
+            //}
             //foreach (var item in measures)
             //{
             //    measure_list.Add(new Measures.Measure(item));
@@ -159,6 +162,53 @@ namespace MusicXMLViewerWPF.ScoreParts.Part
                 FillPositionHelper();
             }
                 
+        }
+
+        private void SortNotations() //TODO improve, add drawing
+        {
+            foreach (var item in MeasureSegmentList)
+            {
+                foreach (var note in item.NotesList)
+                {
+                    if (note.NotationsList != null)
+                    {
+                        if (nlist == null) nlist = new List<List<Notations>>();
+                        nlist.Add(note.NotationsList);
+                    }
+                }
+            }
+            if (nlist != null)
+            {
+                slist = new List<List<Slur>>();
+                List<Slur> slur = new List<Slur>();
+                for (int i = 0; i < nlist.Count; i++)
+                {
+                    var item = nlist.ElementAt(i);
+                    foreach (Slur ele in item)
+                    {
+                        slur.Add(ele);
+                    }
+                }
+                var nums = slur.Select(u => u.Level).Distinct().ToList();
+                foreach (var item in nums)
+                {
+                    var c = slur.Select(o => o).Where(o => o.Level == item);
+                    List<Slur> tmp = new List<Slur>();
+                    foreach (var it in c)
+                    {
+                        if (it.Type == Slur.SlurType.start)
+                        {
+                            tmp.Add(it);
+                        }
+                        if (it.Type == Slur.SlurType.stop)
+                        {
+                            tmp.Add(it);
+                            slist.Add(new List<Slur>(tmp));
+                            tmp.Clear();
+                        }
+                    }
+                }
+            }
         }
         private void FillPositionHelper()
         {

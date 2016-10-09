@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Xml.Linq;
 
 namespace MusicXMLViewerWPF
 {
@@ -14,11 +15,11 @@ namespace MusicXMLViewerWPF
         protected NotationTypes type;
         protected string type_s;
         protected bool ispartial;
-        
+        protected string noteid;
         //public int Id { get { return id; } }
         public NotationTypes NotationType {  get { return type; } }
         public bool IsPartialObject { get { return ispartial; } }
-        
+        public string NoteID { get { return noteid; } }
         protected void setNotationType(string s)
         {
             type_s = s;
@@ -56,12 +57,27 @@ namespace MusicXMLViewerWPF
         private bool show_type;
         private int number;
         private TupletType _type;
+
         public bool Placement { get { return placement; } }
         public bool Bracket {  get { return bracket; } }
         public bool Show_number {  get { return show_number; } }
         public bool Show_type {  get { return show_type; } }
         public int Number { get { return number; } }
         public TupletType Tuplet_Type { get { return _type; } }
+
+        public Tuplet(XElement x, string id)
+        {
+            setNotationType("tuplet");
+            noteid = id;
+            foreach (var item in x.Elements())
+            {
+                switch (item.Name.LocalName)
+                {
+                    default:
+                        break;
+                }
+            }
+        }
         public Tuplet(string type, int num = 1, bool bracket = false,string placement = "",bool shw_num = false, bool shw_tp = false)
         {
             _type = type == "start" ? TupletType.start : TupletType.stop;
@@ -77,6 +93,10 @@ namespace MusicXMLViewerWPF
             start,
             stop
         }
+        public override string ToString()
+        {
+            return $"{Number} {Placement} {Tuplet_Type.ToString()}";
+        }
     }
 
     class Slur : Notations
@@ -84,13 +104,23 @@ namespace MusicXMLViewerWPF
         private bool placement;
         private int level;
         private SlurType type_;
-        
 
         public bool Placement { get { return placement; } }
         public int Level { get { return level; } }
         public SlurType Type { get { return type_; } }
         public string Type_S { get { return type_s; } }
 
+        public Slur (XElement x, string id)
+        {
+            noteid = id;
+            setNotationType("slur");
+            level = int.Parse(x.Attribute("number").Value);
+            type_ = getSlurType(x.Attribute("type").Value);
+            if (x.Attribute("placement") != null)
+            {
+                placement = x.Attribute("placement").Value == "below" ? false : true;
+            }
+        }
         public Slur(int lvl, string t)
         {
             setNotationType("slur");
@@ -115,7 +145,10 @@ namespace MusicXMLViewerWPF
             }
             
         }
-
+        public override string ToString()
+        {
+            return $"{Type_S} {Level} {Placement} {Type.ToString()}";
+        }
 
         public enum SlurType
         {
