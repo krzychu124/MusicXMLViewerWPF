@@ -307,7 +307,7 @@ namespace MusicXMLViewerWPF
 
         public static void Clear()
         {
-            Misc.ScoreSystem.Segments.Clear();
+            Misc.ScoreSystem.Clear();
             MusicScore clear = new MusicScore();
             clear.Loaded = false;
             clear.CreditsLoaded = false;

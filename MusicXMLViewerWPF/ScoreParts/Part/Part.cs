@@ -22,6 +22,7 @@ namespace MusicXMLViewerWPF.ScoreParts.Part
         public Dictionary<int,Point> MarginHelper { get { return measure_margin_helper; } }
         public List<MeasureCoordinates> PositionHelper { get { return measure_pos; } }
         public List<Measures.Measure> MeasureSegmentList { get { return measure_segment_list; } } //! segment test
+        public List<List<Slur>> SlurList { get { return slist; } }
         private List<List<Slur>> slist;
         private List<List<Notations>> nlist;
 
@@ -89,6 +90,7 @@ namespace MusicXMLViewerWPF.ScoreParts.Part
                         measure_location.X += measure.Width;
                     }
                     measure_segment_list.Add(measure);
+                    Misc.ScoreSystem.MeasureSegments.Add(measure.ID, measure);
                     //test = false;
                 }
                 if (test2)

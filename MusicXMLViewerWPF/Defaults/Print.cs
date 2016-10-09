@@ -187,7 +187,10 @@ namespace MusicXMLViewerWPF
     {
         natural,
         flat,
-        sharp
+        sharp,
+        doublesharp,
+        flatflat,
+        other
     }
     public enum YesNo
     {

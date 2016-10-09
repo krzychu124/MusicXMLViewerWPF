@@ -105,7 +105,7 @@ namespace MusicXMLViewerWPF
             {
                 beamseparator = n.ElementAt(i).Stem_dir ? -5 : 5;
                 hook = n.ElementAt(i).Stem_dir ? 12 : -12;  
-                int num = n.ElementAt(i).MeasureId;    // get measure number
+                int num = int.Parse(n.ElementAt(i).MeasureId);    // get measure number
                 int measx = (int)Measures.MeasureList.ElementAt(num-1).Start.X; // X pos of current measure 
                 int measy = (int)Measures.MeasureList.ElementAt(num-1).Start.Y; // y pos of current measure
                 float x = n.ElementAt(i).PosX + measx; //calc. xpos of note
@@ -315,7 +315,7 @@ namespace MusicXMLViewerWPF
             int num = Rest.RestList.Count;
             for (int i = 0; i < num; i++)
             {
-                int m_id = Rest.RestList.ElementAt(i).MeasureId;
+                int m_id = int.Parse(Rest.RestList.ElementAt(i).MeasureId);
                 float r_pos = Rest.RestList.ElementAt(i).X;
                 string symbol = Rest.RestList.ElementAt(i).Symbol;
                 Point p = Measures.MeasureList.ElementAt(m_id-1).Start;

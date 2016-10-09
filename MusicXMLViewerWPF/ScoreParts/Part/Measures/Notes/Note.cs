@@ -17,6 +17,7 @@ namespace MusicXMLViewerWPF
     class Note : Segment, IAutoPosition
     { //Need to be reworked !! 1)little improvements done
         #region fields
+        protected Accidental accidental;
         protected Beam beam;
         protected bool hasBeams;
         protected bool hasDot;
@@ -29,26 +30,28 @@ namespace MusicXMLViewerWPF
         protected float posX;
         protected float posY;
         protected float stem_f;
+        protected int clefalter;
         protected int dot;
         protected int duration;
         protected int id;
-        protected int measure_id;
+        protected string measure_id;
         protected int voice;
         protected List<Beam> beamlist;
         protected List<Notations> notationsList;
+        protected Lyrics lyrics;
         protected MusSymbolDuration symbol_type;
         protected Pitch pitch;
+        protected Point noteheadposition;
         protected Stem stem;
         protected string symbol;
         protected string symbol_value;
-        protected int clefalter;
         protected XElement xmldefinition;
         public event PropertyChangedEventHandler NotePropertyChanged;
         #endregion
 
         #region properties
+        public Accidental Accidental { get { return accidental; } }
         public Beam Beam { get { return beam; } protected set { beam = value; NotePropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Beam))); } }
-        public List<Beam> BeamsList { get { return beamlist; } }
         public bool HasBeams { get { return hasBeams; } protected set { hasBeams = value; } }
         public bool HasDot { get { return hasDot; } protected set { hasDot = value; } }
         public bool HasNotations { get { return hasNotations; } protected set { hasNotations = value; } }
@@ -61,19 +64,23 @@ namespace MusicXMLViewerWPF
         public float PosX { get { return posX; } protected set { } }
         public float PosY { get { return posY; } protected set { } }
         public float StemF { get { return stem_f; } protected set { stem_f = value; } }
+        public int ClefAlter { get { return clefalter; } set { clefalter = value; } }
         public int Dot { get { return dot; } protected set { dot = value; NotePropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Dot))); } }
         public int Duration { get { return duration; } protected set { duration = value; } }
         public int Id { get { return id; } protected set { } }
-        public int MeasureId { get { return measure_id; } protected set { } }
+        public string MeasureId { get { return measure_id; } set { measure_id = value; } }
         public int Voice { get { return voice; } protected set { voice = value; } }
+        public List<Beam> BeamsList { get { return beamlist; } }
         public List<Notations> NotationsList { get { return notationsList; } protected set { notationsList = value; } }
+        public Lyrics Lyrics { get { return lyrics; } protected set { lyrics = value; } }
         public MusSymbolDuration SymbolType { get { return symbol_type; } set { symbol_type = value; NotePropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SymbolType))); } }
         public Pitch Pitch { get { return pitch; } protected set { pitch = value; NotePropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Pitch)));  } }
+        public Point NoteHeadPosition { get { return noteheadposition; } }
         public Stem Stem { get { return stem; } protected set { stem = value; } }
         public string Symbol { get { return symbol; } protected set { symbol = value; } }
         public string SymbolXMLValue { get { return symbol_value; } set { symbol_value = value; } }
-        public int ClefAlter { get { return clefalter; } set { clefalter = value; } }
         public XElement XMLDefinition { get { return xmldefinition; } }
+        //public new Point Relative { get { return base.Relative; } set { base.Relative = value; NotePropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Relative))); } }
         #endregion
 
         /*
@@ -102,7 +109,7 @@ namespace MusicXMLViewerWPF
         public Note(int measure_id, int id, float pos, Pitch p, int dur, int v, string t, float s, string dir, bool hasStemVal, bool r, int num, string bm, Dictionary<int, string> beamList, int dot, bool notations, List<Notations> n_list)
         {
             isCustomStem = hasStemVal ? true : false;
-            this.measure_id = measure_id;
+            this.measure_id = measure_id.ToString();
             //Segment_type = SegmentType.Note;
             this.id = id;
             posX = pos;
@@ -144,6 +151,8 @@ namespace MusicXMLViewerWPF
             
             xmldefinition = x;
             NotePropertyChanged += Note_PropertyChanged;
+            NotePropertyChanged += segment_Properties_Ready;
+            PropertyChanged += Note_PropertyChanged;
             SetSegmentColor(Brushes.DarkOliveGreen);
             Segment_type = SegmentType.Chord;
             this.ID = RandomGenerator.GetRandomHexNumber();
@@ -194,13 +203,15 @@ namespace MusicXMLViewerWPF
                         Logger.Log($"{ID} Note Beam set to {temp_beam.BeamNumber} {temp_beam.BeamType.ToString()} of id {temp_beam.NoteId}");
                         break;
                     case "accidental":
-                        Logger.Log($"{ID} Note Accidental not implemented");
+                        accidental = new Accidental(item);
+                        Logger.Log($"{ID} Note Accidental set to {Accidental.Symbol} {Accidental.AccidentalType.ToString()}");
                         break;
                     case "staff":
                         Logger.Log($"{ID} Note Staff not implemented");
                         break;
                     case "lyric":
-                        Logger.Log($"{ID} Note Lyric not implemented");
+                        Lyrics = new Lyrics(item, ID);
+                        Logger.Log($"{ID} Note Lyric set to {Lyrics.Text}");
                         break;
                     default:
                         break;
@@ -249,6 +260,7 @@ namespace MusicXMLViewerWPF
         private void SetCalculatedNotePosition()
         {
             Calculated_y = Pitch.CalculatedStep * (MusicScore.Defaults.Scale.Tenths * 0.1f) +MusicScore.Defaults.Scale.Tenths * 0.6f;
+            noteheadposition = new Point(Relative_x + Spacer_L + 5, Relative_y + Calculated_y + 30);
         }
 
         public Note()
@@ -267,6 +279,10 @@ namespace MusicXMLViewerWPF
                 case "Stem_dir":
                     Symbol = MusChar.getNoteSymbol(SymbolXMLValue, Stem_dir);
                     Logger.Log($"{sender.ToString()}, Stem direction set");
+                    break;
+                case "Relative":
+                    SetCalculatedNotePosition();
+                    Logger.Log("Recalculated NoteSymbol and Notehead positions");
                     break;
                 default:
                     Logger.Log($"NotePorpertyChanged for {e.PropertyName} not implenmented");
@@ -301,6 +317,12 @@ namespace MusicXMLViewerWPF
                     }
                     visual.Children.Add(dot);
                 }
+                if (Lyrics != null)
+                {
+                    DrawingVisual lyrics = new DrawingVisual();
+                    Lyrics.Draw(lyrics);
+                    visual.Children.Add(lyrics);
+                }
             }
             else //! If custom stem length - got from XML file
             {
@@ -320,6 +342,12 @@ namespace MusicXMLViewerWPF
                         DrawingHelpers.DrawString(dc, MusChar.Dot, TypeFaces.NotesFont, Brushes.Black, notepositionX + 15, notepositionY - dot_placement, MusicScore.Defaults.Scale.Tenths);
                     }
                     visual.Children.Add(dot);
+                }
+                if (Lyrics != null)
+                {
+                    DrawingVisual lyrics = new DrawingVisual();
+                    Lyrics.Draw(lyrics);
+                    visual.Children.Add(lyrics);
                 }
             }
 
@@ -386,6 +414,89 @@ namespace MusicXMLViewerWPF
         {
             string result = $"Position {Relative_x.ToString("0.#")}X, {Relative_y.ToString("0.#")}Y, Width: {Width.ToString("0.#")} {Pitch.Step}{Pitch.Octave}";
             return result;
+        }
+    }
+
+    public class Accidental
+    {
+        private XElement xmldefinition;
+        private bool hasparentheses = false;
+        private AccidentalText accidentaltype;
+        private bool iscautionary = false;
+        private string symbol = "??";
+
+        public XElement XMLDefinition { get { return xmldefinition; } }
+        public bool HasParentheses { get { return hasparentheses; } }
+        public AccidentalText AccidentalType { get { return accidentaltype; } }
+        public bool IsCautionary { get { return iscautionary; } }
+        public string Symbol { get { return symbol; } }
+
+        public Accidental(XElement x)
+        {
+            xmldefinition = x;
+            if (x.HasAttributes)
+            {
+                if (x.Attribute("cautionary") != null)
+                {
+                    iscautionary = x.Attribute("cautionary").Value == "yes" ? true : false;
+                }
+                if (x.Attribute("parentheses") != null)
+                {
+                    hasparentheses = x.Attribute("parentheses").Value == "yes" ? true : false;
+                }
+            }
+            GetAccidentalType(x.Value);
+            GetAccidentalSymbol();
+        }
+        private void GetAccidentalSymbol()
+        {
+            if (AccidentalType != AccidentalText.other)
+            switch (accidentaltype)
+            {
+                case AccidentalText.natural:
+                    symbol = MusChar.Natural;
+                    break;
+                case AccidentalText.flat:
+                    symbol = MusChar.Flat;
+                    break;
+                case AccidentalText.sharp:
+                    symbol = MusChar.Sharp;
+                    break;
+                case AccidentalText.doublesharp:
+                    symbol = MusChar.DoubleSharp;
+                    break;
+                case AccidentalText.flatflat:
+                    symbol = MusChar.DoubleFlat;
+                    break;
+                default:
+                    break;
+            }
+        }
+        private void GetAccidentalType(string name)
+        {
+            accidentaltype = AccidentalText.other;
+            switch (name)
+            {
+                case "natural":
+                    accidentaltype = AccidentalText.natural;
+                    break;
+                case "flat":
+                    accidentaltype = AccidentalText.flat;
+                    break;
+                case "sharp":
+                    accidentaltype = AccidentalText.sharp;
+                    break;
+                case "double-sharp":
+                    accidentaltype = AccidentalText.doublesharp;
+                    break;
+                case "flat-flat":
+                    accidentaltype = AccidentalText.flatflat;
+                    break;
+                default:
+                    accidentaltype = AccidentalText.other;
+                    Logger.Log($"Accidental not found <{name}>");
+                    break;
+            }
         }
     }
 
