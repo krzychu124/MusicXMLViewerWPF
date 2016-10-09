@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media;
 using System.Xml.Linq;
 
 namespace MusicXMLViewerWPF
@@ -156,6 +157,105 @@ namespace MusicXMLViewerWPF
             next,
             stop,
             unknown
+        }
+        public static void Draw(DrawingVisual visual, List<Slur> slurslist)
+        {
+            Slur slurbegin = slurslist.ElementAt(0);
+            Slur slurend = slurslist.ElementAt(1);
+            Note firstnote;
+            Note lastnote;
+            try
+            {
+                firstnote = (Note)Misc.ScoreSystem.GetSegment(slurbegin.NoteID);
+                lastnote = (Note)Misc.ScoreSystem.GetSegment(slurend.NoteID);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Exception occured {e.ToString()}");
+                throw;
+            }
+            
+
+            sbyte dir = slurbegin.Placement ? (sbyte)1 : (sbyte)-1; // set direction of slur
+            Pen pen = new Pen(Brushes.Black, 0.5);
+            Point p1 = firstnote.NoteHeadPosition;
+            Point p2 = lastnote.NoteHeadPosition;
+            if (dir == 1) //! slur ^
+            {
+                if (firstnote.Stem_dir)
+                {
+                    p1.X += 6;
+                    p1.Y -= 2;
+                }
+                else
+                {
+                    p1.X += 6;
+                    p1.Y -= 6;
+                }
+                if (lastnote.Stem_dir) //! 2nd note stem ^
+                {
+                    p2.X += 2;
+                    p2.Y -= 20;
+                }
+                else //! 2nd note stem v
+                {
+                    p2.X -= 5;
+                    p2.Y -= 5;
+                }
+            }
+            else //! slur v
+            {
+                if (firstnote.Stem_dir)
+                {
+                    p1.X += 5;
+                    p1.Y += 5;
+                }
+                else
+                {
+                    p1.X += 5;
+                    p1.Y -= 5;
+                }
+                if (lastnote.Stem_dir)//! 2nd note stem ^
+                {
+                    p2.X -= 5;
+                    p2.Y += 5;
+                }
+                else //! 2nd note stem v
+                {
+                    p2.X -= 5;
+                    p2.Y -= 5;
+                }
+            }
+            bool isDash = false;
+            DrawingVisual slurs = new DrawingVisual();
+            using (DrawingContext dc = slurs.RenderOpen())
+            {
+                StreamGeometry sg = new StreamGeometry();
+                using (StreamGeometryContext sgc = sg.Open())
+                {
+                    sbyte offset = 6; // set offset of bezier according to notes // shape of curve
+                    float distance = Calc.Distance(p1, p2);
+                    Point outerNode = Calc.PerpendicularOffset(p1, p2, (dir * distance) / (offset * 0.6f)); // calculate pos of outer bezier steering node
+                    Point innerNode = Calc.PerpendicularOffset(p1, p2, (dir * distance) / (offset * 0.72f)); // calculate pos of inner bezier steering node
+                    if (isDash) // if dashed slur  - - - - -
+                    {
+                        pen.Thickness = 5;
+                        pen.DashStyle = DashStyles.Dash;
+                        sgc.BeginFigure(p1, false, true);
+                        sgc.QuadraticBezierTo(innerNode, p2, true, true);
+                    }
+                    else // if regular 
+                    {
+                        sgc.BeginFigure(p1, true, true);
+                        sgc.QuadraticBezierTo(outerNode, p2, true, true);
+                        sgc.QuadraticBezierTo(innerNode, p1, true, true);
+                    }
+
+                }
+                sg.Freeze(); // freez geometry stream
+                dc.DrawGeometry(Brushes.Black, pen, sg); // draw on drawing context
+            }
+            visual.Children.Add(slurs); // add to canvas list
         }
     }
 
