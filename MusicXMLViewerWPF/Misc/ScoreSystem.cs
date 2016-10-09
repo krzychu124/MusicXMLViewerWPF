@@ -9,9 +9,14 @@ namespace MusicXMLViewerWPF.Misc
     class ScoreSystem
     {
         /// <summary>
-        /// List of segments
+        /// List of Segments
         /// </summary>
         public static Dictionary<string, Segment> Segments = new Dictionary<string, Segment>();
+        /// <summary>
+        /// List of Measure Segments
+        /// </summary>
+        public static Dictionary<string, Segment> MeasureSegments = new Dictionary<string, Segment>();
+
         public static void Clear()
         {
             Segments.Clear();
@@ -22,6 +27,19 @@ namespace MusicXMLViewerWPF.Misc
             if (Segments.ContainsKey(id))
             {
                 segment = Segments[id];
+            }
+            else
+            {
+                Console.WriteLine($"Segment list NOT contain folowing key {id}");
+            }
+            return segment;
+        }
+        public static Segment GetMeasureSegment(string id)
+        {
+            Segment segment = new Segment();
+            if (MeasureSegments.ContainsKey(id))
+            {
+                segment = MeasureSegments[id];
             }
             else
             {
