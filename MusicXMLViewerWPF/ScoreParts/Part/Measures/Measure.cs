@@ -269,7 +269,7 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
         /// <param name="x"></param>
         private void XMLExtractNotes(XElement x)
         {
-            Note note = new Note(x) { ClefAlter = Clef.ClefAlterNote };
+            Note note = new Note(x) { ClefAlter = Clef.ClefAlterNote, MeasureId = ID };
             NotesList.Add(note);
             if (note.HasBeams)
             {
