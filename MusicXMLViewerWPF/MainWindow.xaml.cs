@@ -230,7 +230,14 @@ new Point(origin.X + totalWidth, y));
             {
                 drawingSurface.Width = MusicScore.Defaults.Page.Width;
                 drawingSurface.Height = MusicScore.Defaults.Page.Height;
-                Logger.Refresh(textBox.Text);
+                foreach (var item in MusicScore.Parts.ElementAt(0).Value.SlurList)
+                {
+                    DrawingVisual slurs = new DrawingVisual();
+                    Slur.Draw(slurs, item);
+                    drawingSurface.AddVisual(slurs);
+                }
+                
+                //Logger.Refresh(textBox.Text);
                 //drawingSurface.InvalidateVisual();
                 //...
                 //LoadCharsToViewPort c = new LoadCharsToViewPort();
