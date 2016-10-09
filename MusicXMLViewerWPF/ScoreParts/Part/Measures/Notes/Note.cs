@@ -28,6 +28,7 @@ namespace MusicXMLViewerWPF
         protected float defaultStem = 30f;
         protected float posX;
         protected float posY;
+        protected Point noteheadposition;
         protected float stem_f;
         protected int dot;
         protected int duration;
@@ -58,6 +59,7 @@ namespace MusicXMLViewerWPF
         public bool Stem_dir { get { return stem_dir; } protected set { stem_dir = value; NotePropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Stem_dir))); } }
         public Brush Color { get { return Brushes.Black; } }
         public float DefaultStem { get { return defaultStem; } protected set { defaultStem = value; } }
+        public Point NoteHeadPosition { get { return noteheadposition; } }
         public float PosX { get { return posX; } protected set { } }
         public float PosY { get { return posY; } protected set { } }
         public float StemF { get { return stem_f; } protected set { stem_f = value; } }
@@ -74,6 +76,7 @@ namespace MusicXMLViewerWPF
         public string SymbolXMLValue { get { return symbol_value; } set { symbol_value = value; } }
         public int ClefAlter { get { return clefalter; } set { clefalter = value; } }
         public XElement XMLDefinition { get { return xmldefinition; } }
+        //public new Point Relative { get { return base.Relative; } set { base.Relative = value; NotePropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Relative))); } }
         #endregion
 
         /*
@@ -144,6 +147,8 @@ namespace MusicXMLViewerWPF
             
             xmldefinition = x;
             NotePropertyChanged += Note_PropertyChanged;
+            NotePropertyChanged += segment_Properties_Ready;
+            PropertyChanged += Note_PropertyChanged;
             SetSegmentColor(Brushes.DarkOliveGreen);
             Segment_type = SegmentType.Chord;
             this.ID = RandomGenerator.GetRandomHexNumber();
@@ -249,6 +254,7 @@ namespace MusicXMLViewerWPF
         private void SetCalculatedNotePosition()
         {
             Calculated_y = Pitch.CalculatedStep * (MusicScore.Defaults.Scale.Tenths * 0.1f) +MusicScore.Defaults.Scale.Tenths * 0.6f;
+            noteheadposition = new Point(Relative_x + Spacer_L + 5, Relative_y + Calculated_y + 30);
         }
 
         public Note()
@@ -267,6 +273,10 @@ namespace MusicXMLViewerWPF
                 case "Stem_dir":
                     Symbol = MusChar.getNoteSymbol(SymbolXMLValue, Stem_dir);
                     Logger.Log($"{sender.ToString()}, Stem direction set");
+                    break;
+                case "Relative":
+                    SetCalculatedNotePosition();
+                    Logger.Log("Recalculated NoteSymbol and Notehead positions");
                     break;
                 default:
                     Logger.Log($"NotePorpertyChanged for {e.PropertyName} not implenmented");
