@@ -90,6 +90,7 @@ namespace MusicXMLViewerWPF.ScoreParts.Part
                         measure_location.X += measure.Width;
                     }
                     measure_segment_list.Add(measure);
+                    Misc.ScoreSystem.MeasureSegments.Add(measure.ID, measure);
                     //test = false;
                 }
                 if (test2)
