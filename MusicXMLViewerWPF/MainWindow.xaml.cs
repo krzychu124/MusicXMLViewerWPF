@@ -117,9 +117,9 @@ new Point(origin.X + totalWidth, y));
                 xmlReader.File_path = dialog.FileName;
                 Logger.Log("Loading: "+dialog.FileName);
                 Console.WriteLine("Loaded file>> "+ dialog.FileName);
-           //     textBlock.Text += "\n Loadind file ... Processing  ";
-                
-                XDocument Doc = XmlRead.GetXmlInventory(dialog.FileName);
+                //     textBlock.Text += "\n Loadind file ... Processing  ";
+                XDocument Doc = XDocument.Load(dialog.FileName, LoadOptions.SetLineInfo);
+                //XDocument Doc = XmlRead.GetXmlInventory(dialog.FileName);
                 //LoadDocToClasses.Document = Doc;
                 //Misc.LoadFile.LoadDocument(Doc);
                 MusicScore mus_score = new MusicScore(Doc);
@@ -230,6 +230,7 @@ new Point(origin.X + totalWidth, y));
             {
                 drawingSurface.Width = MusicScore.Defaults.Page.Width;
                 drawingSurface.Height = MusicScore.Defaults.Page.Height;
+                Logger.Refresh(textBox.Text);
                 //drawingSurface.InvalidateVisual();
                 //...
                 //LoadCharsToViewPort c = new LoadCharsToViewPort();
@@ -410,6 +411,8 @@ new Point(origin.X + totalWidth, y));
         void MyLogger_TxtBox_Add(object sender, EventArgs e)
         {
             textBox.Text = textBox.Text + Environment.NewLine + Logger.GetLastLog();
+            //Logger.log.ForEach(x => textBox.Text += x.ToString());
+            
         }
         void MyLogger_TxtBox_Clear(object sender, EventArgs e)
         {
