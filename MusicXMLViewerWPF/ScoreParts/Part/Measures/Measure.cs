@@ -37,6 +37,8 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
         private List<Note> notes_list = new List<Note>(); // experimental
         private List<Segment> music_characters = new List<Segment>();
         private Misc.Segments segments = new Misc.Segments();
+        private Dictionary<string, List<Beam>> beams;
+        private List<List<Notations>> nlist = new List<List<Notations>>();
         #endregion
 
         #region Properties
@@ -141,6 +143,7 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
             //{
             //    Logger.Log($"Added segment {item.ToString()}");
             //}
+            SortNotations();
 
         }
 
@@ -156,6 +159,14 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
                     break;
                 default:
                     break;
+            }
+        }
+
+        private void SortNotations()
+        {
+            for (int i = 0; i < nlist.Count; i++)
+            {
+
             }
         }
 
@@ -260,6 +271,15 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
         {
             Note note = new Note(x) { ClefAlter = Clef.ClefAlterNote };
             NotesList.Add(note);
+            if (note.HasBeams)
+            {
+                if (beams == null) beams = new Dictionary<string, List<Beam>>();
+                beams.Add(note.ID, note.BeamsList);
+            }
+            if (note.NotationsList != null)
+            {
+                nlist.Add(note.NotationsList);
+            }
             //! debug; Logger.Log("missing impl for this note");
             Misc.ScoreSystem.Segments.Add(note.ID, note); //! temp_str, new Segment() { ID = temp_str, Segment_type = SegmentType.Chord, Color = Brushes.DarkOliveGreen});
             music_characters.Add(note);//! new Segment() { ID = temp_str, Segment_type = SegmentType.Chord, Color = Brushes.DarkOliveGreen });
