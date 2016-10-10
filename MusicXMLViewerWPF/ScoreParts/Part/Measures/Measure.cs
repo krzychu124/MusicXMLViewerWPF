@@ -246,7 +246,7 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
         /// <param name="x"></param>
         private void XMLExtractDirections(XElement x)
         {
-            Direction direction = new Direction(x);
+            Direction direction = new Direction(x) { MeasureID = ID };
             this.direction.Add(direction);
             Misc.ScoreSystem.Segments.Add(direction.ID, new Segment() { ID = direction.ID, Segment_type = SegmentType.Direction});
            // music_characters.Add(new Segment() { Segment_type = SegmentType.Direction, Color = Brushes.DarkTurquoise });

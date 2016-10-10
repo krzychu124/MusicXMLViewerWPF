@@ -22,6 +22,7 @@ namespace MusicXMLViewerWPF
         private Repeat repeat;
         private Point pos;
         private DrawingVisual visual;
+        private string measureid;
         #endregion
         #region Properties
         public BarlineLocation Location { get { return location; } set { location = value; } } 
@@ -33,6 +34,7 @@ namespace MusicXMLViewerWPF
         public Repeat Repeat { get { return repeat; } }
         public Point Position { get { return pos; } set { pos = value; } }
         public DrawingVisual Visual { get { return visual; } set { visual = value; } }
+        public string MeasureID { get { return measureid; } set { measureid = value; } }
         #endregion
 
         public Barline()
@@ -189,6 +191,7 @@ namespace MusicXMLViewerWPF
             {"tick",BarStyle.tick },
             {"short",BarStyle.shortened },
         };
+        
 
         internal enum BarStyle
         {
@@ -216,9 +219,11 @@ namespace MusicXMLViewerWPF
     {
         private string name = "segno";
         private string _symbol;
+        private string measureid;
 
         public string Name { get { return name; } }
         public string Symbol { get { return _symbol; } }
+        public string MeasureID { get { return measureid; } set { measureid = value; } }
 
         public Segno(IEnumerable<XAttribute> x) : base(x)
         {
@@ -241,9 +246,11 @@ namespace MusicXMLViewerWPF
     {
         private string name = "coda";
         private string _symbol;
+        private string measureid;
 
         public string Name { get { return name; } }
         public string Symbol { get { return _symbol; } }
+        public string MeasureID { get { return measureid; } set { measureid = value; } }
 
         public Coda(IEnumerable<XAttribute> x) : base(x)
         {

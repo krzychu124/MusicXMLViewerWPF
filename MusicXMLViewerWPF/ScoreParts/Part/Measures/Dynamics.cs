@@ -22,6 +22,7 @@ namespace MusicXMLViewerWPF
         public string Placement { get { return placement; } }
         public DynamicType Type { get { return type; } }
         public string Symbol { get { return symbol; } }
+        public string MeasureID { get { return measureid; } set { measureid = value; } }
         public bool isRelative;
 
         public Dynamics(XElement x) : base (x.Attributes())
@@ -154,6 +155,7 @@ namespace MusicXMLViewerWPF
             {DynamicType.sfzp, MusChar.sfzp },
             {DynamicType.z, MusChar.z }
         };
+        private string measureid;
     }
 
     public enum DynamicType

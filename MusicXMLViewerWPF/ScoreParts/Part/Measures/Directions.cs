@@ -24,6 +24,7 @@ namespace MusicXMLViewerWPF
         private int relX; //  unusable, during rework...
         private float offset;
         private int staff;
+        private string measureid;
         #endregion
         #region Properties
         public Dynamics Dynamics { get { return dynamics; } }
@@ -32,6 +33,7 @@ namespace MusicXMLViewerWPF
         public float Offset { get { return offset; } }
         public string Placement { get { return placement; } }
         public string Directive { get { return directive; } }
+        public string MeasureID { get { return measureid; } set { measureid = value; } }
         #endregion
 
         public Direction(XElement x)
@@ -57,7 +59,7 @@ namespace MusicXMLViewerWPF
                             staff = int.Parse(item.Value);
                             break;
                         case "direction-type":
-                            var direction = new Directions(item);
+                            var direction = new Directions(item) { MeasureID = this.MeasureID };
                             directionList.Add(direction);
                             break;
                         case "offset":
@@ -156,6 +158,7 @@ namespace MusicXMLViewerWPF
         private Dynamics dynamics = null;
         private OtherDirection other = null;
         private Words words = null;
+        private string measureid;
 
         public Wedge Wedge { get { return wedge; } }
         public Segno Segno { get { return segno; } }
@@ -164,6 +167,7 @@ namespace MusicXMLViewerWPF
         public Dynamics Dynamics { get { return dynamics; } }
         public OtherDirection Other { get { return other; } }
         public Words Words {  get { return words; } }
+        public string MeasureID { get { return measureid; } set { measureid = value; } }
 
         public Directions(XElement x)
         {
@@ -175,25 +179,25 @@ namespace MusicXMLViewerWPF
                 switch (name)
                 {
                     case "wedge":
-                        wedge = new Wedge(x);
+                        wedge = new Wedge(x) { MeasureID = this.MeasureID };
                         break;
                     case "rehearsal":
-                        rehearsal = new Rehearsal(x);
+                        rehearsal = new Rehearsal(x) { MeasureID = this.MeasureID };
                         break;
                     case "segno":
-                        segno = new Segno(x.Attributes());
+                        segno = new Segno(x.Attributes()) { MeasureID = this.MeasureID };
                         break;
                     case "coda":
-                        coda = new Coda(x.Attributes());
+                        coda = new Coda(x.Attributes()) { MeasureID = this.MeasureID };
                         break;
                     case "dynamics":
-                        dynamics = new Dynamics(x);
+                        dynamics = new Dynamics(x) { MeasureID = this.MeasureID };
                         break;
                     case "words":
-                        words = new Words(x);
+                        words = new Words(x) { MeasureID = this.MeasureID };
                         break;
                     case "other-direction":
-                        other = new OtherDirection(x);
+                        other = new OtherDirection(x) { MeasureID = this.MeasureID };
                         break;
                     default:
                         break;
@@ -207,9 +211,11 @@ namespace MusicXMLViewerWPF
     {
         private string id = "other-direction";
         private string value;
+        private string measureid;
 
         public string Id { get { return id; } }
         public string Value { get { return value; } }
+        public string MeasureID { get { return measureid; } set { measureid = value; } }
 
         public OtherDirection(XElement x) : base (x.Attributes())
         {
@@ -242,6 +248,7 @@ namespace MusicXMLViewerWPF
         private float spread;
         private float dash_length;
         private float space_length;
+        private string measureid;
 
         public string Id { get { return id; } }
         public WedgeType Type { get { return type; } }
@@ -249,6 +256,7 @@ namespace MusicXMLViewerWPF
         public float Spread { get { return spread; } }
         public float DLength { get { return dash_length;  } }
         public float SLength { get { return space_length; } }
+        public string MeasureID { get { return measureid; } set { measureid = value; } }
 
         public Wedge(XElement x) : base (x.Attributes())
         {
@@ -300,9 +308,11 @@ namespace MusicXMLViewerWPF
     {
         private string id = "rehearsal";
         private string value;
+        private string measureid;
 
         public string Id { get { return id; } }
         public string Value { get { return value; } }
+        public string MeasureID { get { return measureid; } set { measureid = value; } }
 
         public Rehearsal(XElement x) : base (x.Attributes())
         {
@@ -342,9 +352,11 @@ namespace MusicXMLViewerWPF
     {
         private string name = "words";
         private string value;
-        
+        private string measureid;
+
         public string Name { get { return name; } }
         public string Value { get { return value; } }
+        public string MeasureID { get { return measureid; } set { measureid = value; } }
 
         public Words(XElement x): base(x.Attributes())
         {
