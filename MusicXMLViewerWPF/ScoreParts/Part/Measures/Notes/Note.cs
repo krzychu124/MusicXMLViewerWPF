@@ -151,7 +151,7 @@ namespace MusicXMLViewerWPF
             
             xmldefinition = x;
             NotePropertyChanged += Note_PropertyChanged;
-            NotePropertyChanged += segment_Properties_Ready;
+            //NotePropertyChanged += segment_Properties_Ready;
             PropertyChanged += Note_PropertyChanged;
             SetSegmentColor(Brushes.DarkOliveGreen);
             Segment_type = SegmentType.Chord;
