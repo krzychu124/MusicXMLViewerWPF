@@ -68,8 +68,19 @@ namespace MusicXMLViewerWPF
         {
             using (DrawingContext dc = visual.RenderOpen())
             {
-                Misc.DrawingHelpers.DrawString(dc, BeatStr, TypeFaces.TimeNumbers, Brushes.Black, Relative_x + Spacer_L, Relative_y, MusicScore.Defaults.Scale.Tenths);
-                Misc.DrawingHelpers.DrawString(dc, BeatTypeStr, TypeFaces.TimeNumbers, Brushes.Black, Relative_x + Spacer_L, Relative_y, MusicScore.Defaults.Scale.Tenths);
+                if (sigType == SignatureType.number)
+                {
+                    Misc.DrawingHelpers.DrawString(dc, BeatStr, TypeFaces.TimeNumbers, Brushes.Black, Relative_x + Spacer_L, Relative_y, MusicScore.Defaults.Scale.Tenths);
+                    Misc.DrawingHelpers.DrawString(dc, BeatTypeStr, TypeFaces.TimeNumbers, Brushes.Black, Relative_x + Spacer_L, Relative_y, MusicScore.Defaults.Scale.Tenths);
+                }
+                if (sigType == SignatureType.common)
+                {
+                    Misc.DrawingHelpers.DrawString(dc, MusChar.CommonTime, TypeFaces.NotesFont, Brushes.Black, Relative_x + Spacer_L, Relative_y - 15, MusicScore.Defaults.Scale.Tenths);
+                }
+                if (sigType == SignatureType.cut)
+                {
+                    Misc.DrawingHelpers.DrawString(dc, MusChar.CutTime, TypeFaces.NotesFont, Brushes.Black, Relative_x + Spacer_L, Relative_y -15, MusicScore.Defaults.Scale.Tenths);
+                }
             }
         }
 
@@ -150,8 +161,8 @@ namespace MusicXMLViewerWPF
     }
     enum SignatureType
     {
+        number,
         common,
         cut,
-        number
     }
 }
