@@ -203,7 +203,7 @@ namespace MusicXMLViewerWPF
                         Logger.Log($"{ID} Note Beam set to {temp_beam.BeamNumber} {temp_beam.BeamType.ToString()} of id {temp_beam.NoteId}");
                         break;
                     case "accidental":
-                        accidental = new Accidental(item);
+                        accidental = new Accidental(item) { NoteID = ID };
                         Logger.Log($"{ID} Note Accidental set to {Accidental.Symbol} {Accidental.AccidentalType.ToString()}");
                         break;
                     case "staff":
@@ -323,6 +323,12 @@ namespace MusicXMLViewerWPF
                     Lyrics.Draw(lyrics);
                     visual.Children.Add(lyrics);
                 }
+                if (Accidental != null)
+                {
+                    DrawingVisual acc_symbol = new DrawingVisual();
+                    Accidental.Draw(acc_symbol);
+                    visual.Children.Add(acc_symbol);
+                }
             }
             else //! If custom stem length - got from XML file
             {
@@ -348,6 +354,12 @@ namespace MusicXMLViewerWPF
                     DrawingVisual lyrics = new DrawingVisual();
                     Lyrics.Draw(lyrics);
                     visual.Children.Add(lyrics);
+                }
+                if (Accidental != null)
+                {
+                    DrawingVisual acc_symbol = new DrawingVisual();
+                    Accidental.Draw(acc_symbol);
+                    visual.Children.Add(acc_symbol);
                 }
             }
 
@@ -424,12 +436,14 @@ namespace MusicXMLViewerWPF
         private AccidentalText accidentaltype;
         private bool iscautionary = false;
         private string symbol = "??";
+        private string noteid;
 
         public XElement XMLDefinition { get { return xmldefinition; } }
         public bool HasParentheses { get { return hasparentheses; } }
         public AccidentalText AccidentalType { get { return accidentaltype; } }
         public bool IsCautionary { get { return iscautionary; } }
         public string Symbol { get { return symbol; } }
+        public string NoteID { get { return noteid; } set { noteid = value; } }
 
         public Accidental(XElement x)
         {
@@ -496,6 +510,15 @@ namespace MusicXMLViewerWPF
                     accidentaltype = AccidentalText.other;
                     Logger.Log($"Accidental not found <{name}>");
                     break;
+            }
+        }
+        public void Draw(DrawingVisual visual)
+        {
+            Note noteposition = (Note)Misc.ScoreSystem.GetSegment(NoteID);
+            Point accidentalposition = new Point(noteposition.NoteHeadPosition.X - 14, noteposition.NoteHeadPosition.Y - 30);
+            using (DrawingContext dc = visual.RenderOpen())
+            {
+                Misc.DrawingHelpers.DrawString(dc, Symbol, TypeFaces.NotesFont, Brushes.Black, (float)accidentalposition.X, (float)accidentalposition.Y, MusicScore.Defaults.Scale.Tenths);
             }
         }
     }
