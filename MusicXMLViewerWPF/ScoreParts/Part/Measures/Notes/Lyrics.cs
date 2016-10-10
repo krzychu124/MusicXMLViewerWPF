@@ -24,7 +24,7 @@ namespace MusicXMLViewerWPF
         private SyllabicType syllabic;
         private string level;
         private XElement xmldefinition;
-
+        private static Point lyricpreviousplace;
         #region Properties
         public string NoteID { get { return noteid; } }
         public int Number { get { return number; } }
@@ -126,10 +126,32 @@ namespace MusicXMLViewerWPF
                 Point noteposition = new Point(actualnote.Relative.X + actualnote.Spacer_L, actualnote.Relative.Y);
                 Point measureposition = actualmeasure.Relative;
                 Point lyricposition = new Point(noteposition.X, measureposition.Y + actualmeasure.Height * 0.85f);
+                Point syllabicline = new Point();
+                if (Syllabic == SyllabicType.begin)
+                {
+                    lyricpreviousplace = lyricposition;
+                }
+                if (Syllabic == SyllabicType.middle)
+                {
+                    float temp = (float)(lyricposition.X - lyricpreviousplace.X) / 2;
+                    syllabicline = new Point(lyricposition.X - temp, lyricposition.Y);
+                    lyricpreviousplace = lyricposition;
+                }
+                if (Syllabic == SyllabicType.end)
+                {
+                    float temp = (float)(lyricposition.X - lyricpreviousplace.X) / 2;
+                    syllabicline = new Point(lyricposition.X - temp, lyricposition.Y);
+                    lyricpreviousplace = new Point();
+                }
+                
                 DrawingVisual lyric = new DrawingVisual();
                 using (DrawingContext dc = lyric.RenderOpen()) //! ignoring syllabic type //temporary//
                 {
-                    Misc.DrawingHelpers.DrawText(dc, this.text, lyricposition, 10f, withsub: false, align: Halign.center, valign: Valign.top);
+                    Misc.DrawingHelpers.DrawText(dc, this.text, lyricposition, 10f, withsub: false, align: Halign.left, valign: Valign.top);
+                    if (Syllabic != SyllabicType.single && Syllabic != SyllabicType.begin)
+                    {
+                        Misc.DrawingHelpers.DrawText(dc, "-", syllabicline, 10f, withsub: false, align: Halign.left, valign: Valign.top);
+                    }
                 }
                 visual.Children.Add(lyric);
             }
