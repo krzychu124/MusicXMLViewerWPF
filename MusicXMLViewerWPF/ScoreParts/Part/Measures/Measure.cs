@@ -50,7 +50,7 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
         public int ElementsCount { get { return elements_count; } }
         public int Number { get { return number; } }
         public List<Barline> Barlines { get { return barlines; } }
-        public List<Direction> Direction { get { return direction; } }
+        public List<Direction> DirectionList { get { return direction; } }
         public List<Note> NotesList { get { return notes_list; } } // Not complete
         public List<Segment> MusicCharacters { get { return music_characters; } }
         public MeasureCoordinates MeasurePosition { get { return measure_pos; } }
@@ -246,9 +246,9 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
         /// <param name="x"></param>
         private void XMLExtractDirections(XElement x)
         {
-            Direction direction = new Direction(x) { MeasureID = ID };
-            this.direction.Add(direction);
-            Misc.ScoreSystem.Segments.Add(direction.ID, new Segment() { ID = direction.ID, Segment_type = SegmentType.Direction});
+            Direction directionobject = new Direction(x, ID);
+            this.direction.Add(directionobject);
+            Misc.ScoreSystem.Segments.Add(directionobject.ID, new Segment() { ID = directionobject.ID, Segment_type = SegmentType.Direction});
            // music_characters.Add(new Segment() { Segment_type = SegmentType.Direction, Color = Brushes.DarkTurquoise });
         }
         /// <summary>
@@ -383,10 +383,10 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
                     Attributes.Draw(visual, p, Width); // visual will be opened inside, good results, maybe changed in the future
                 }
             }
-            if (Direction != null)
+            if (DirectionList != null)
             {
 
-                foreach (var item in Direction)
+                foreach (var item in DirectionList)
                 {
 
                     item.Draw(visual, p);
@@ -485,6 +485,27 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
                     test.Add(t);
                 }
 
+            }
+            if (DirectionList != null)
+            {
+                foreach (var item in DirectionList)
+                {
+                    if (DirectionList != null)
+                    {
+                        item.Draw(visual, Relative);
+
+                        //if (item.DirectionList != null)
+                        //{
+                        //    foreach (var it in item.DirectionList)
+                        //    {
+                        //        if (it.Dynamics != null)
+                        //        {
+                        //            it.Dynamics.Draw(visual);
+                        //        }
+                        //    }
+                        //}
+                    }
+                }
             }
         }
 

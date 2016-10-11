@@ -36,9 +36,10 @@ namespace MusicXMLViewerWPF
         public string MeasureID { get { return measureid; } set { measureid = value; } }
         #endregion
 
-        public Direction(XElement x)
+        public Direction(XElement x, string measureid)
         {
             ID = Misc.RandomGenerator.GetRandomHexNumber();
+            MeasureID = measureid;
             var directions = x;
             placement = null;
             directive = null;
@@ -59,7 +60,7 @@ namespace MusicXMLViewerWPF
                             staff = int.Parse(item.Value);
                             break;
                         case "direction-type":
-                            var direction = new Directions(item) { MeasureID = this.MeasureID };
+                            Directions direction = new Directions(item, MeasureID);
                             directionList.Add(direction);
                             break;
                         case "offset":
@@ -78,6 +79,10 @@ namespace MusicXMLViewerWPF
             typ = DirectionType.dynamics;
             dynamics = dynamic;
             this.placement = placement;
+        }
+        public Direction()
+        {
+
         }
         
         public Direction(string placement, string direct_type, int posY, string type)
@@ -104,47 +109,50 @@ namespace MusicXMLViewerWPF
 
             foreach (var item in directionList)
             {
-                if(item.Coda != null)
-                {
-                    DrawingVisual codaVisual = new DrawingVisual();
-                    item.Coda.Draw(codaVisual, p);
-                    visual.Children.Add(codaVisual);
-                }
+                //if(item.Coda != null)
+                //{
+                //    DrawingVisual codaVisual = new DrawingVisual();
+                //    //! item.Coda.Draw(codaVisual, p);
+                //    item.Coda.Draw(codaVisual);
+                //    visual.Children.Add(codaVisual);
+                //}
 
                 if (item.Rehearsal != null)
                 {
                     DrawingVisual rehearsalVisual = new DrawingVisual();
+
                     item.Rehearsal.Draw(rehearsalVisual, p);
                     visual.Children.Add(rehearsalVisual);
                 }
 
-                if (item.Segno != null)
-                {
-                    DrawingVisual segnoVisual = new DrawingVisual();
-                    item.Segno.Draw(segnoVisual, p);
-                    visual.Children.Add(segnoVisual);
-                }
+                //if (item.Segno != null)
+                //{
+                //    DrawingVisual segnoVisual = new DrawingVisual();
+                //    item.Segno.Draw(segnoVisual, p);
+                //    visual.Children.Add(segnoVisual);
+                //}
 
-                if (item.Dynamics != null)
-                {
-                    DrawingVisual dynamicsVisual = new DrawingVisual();
-                    item.Dynamics.Draw(dynamicsVisual, p);
-                    visual.Children.Add(dynamicsVisual);
-                }
+                //if (item.Dynamics != null)
+                //{
+                //    DrawingVisual dynamicsVisual = new DrawingVisual();
+                //    //item.Dynamics.Draw(dynamicsVisual, p);
+                //    item.Dynamics.Draw(dynamicsVisual);
+                //    visual.Children.Add(dynamicsVisual);
+                //}
 
-                if (item.Other != null)
-                {
-                    DrawingVisual otherVisual = new DrawingVisual();
-                    item.Other.Draw(otherVisual, p);
-                    visual.Children.Add(otherVisual);
-                }
-                
-                if (item.Words != null)
-                {
-                    DrawingVisual wordsVisual = new DrawingVisual();
-                    item.Words.Draw(wordsVisual, p, placement);
-                    visual.Children.Add(wordsVisual);
-                }
+                //if (item.Other != null)
+                //{
+                //    DrawingVisual otherVisual = new DrawingVisual();
+                //    item.Other.Draw(otherVisual, p);
+                //    visual.Children.Add(otherVisual);
+                //}
+
+                //if (item.Words != null)
+                //{
+                //    DrawingVisual wordsVisual = new DrawingVisual();
+                //    item.Words.Draw(wordsVisual, p, placement);
+                //    visual.Children.Add(wordsVisual);
+                //}
             }
         }
     }
@@ -169,8 +177,9 @@ namespace MusicXMLViewerWPF
         public Words Words {  get { return words; } }
         public string MeasureID { get { return measureid; } set { measureid = value; } }
 
-        public Directions(XElement x)
+        public Directions(XElement x, string measureid)
         {
+            MeasureID = measureid;
             var dir = x.Elements();
             foreach (var item in dir)
             {
@@ -203,6 +212,10 @@ namespace MusicXMLViewerWPF
                         break;
                 }
             }
+        }
+        public Directions()
+        {
+
         }
         
     }
@@ -321,6 +334,9 @@ namespace MusicXMLViewerWPF
 
         public void Draw(DrawingVisual visual, Point p)
         {
+            ScoreParts.Part.Measures.Measure measure = (ScoreParts.Part.Measures.Measure)Misc.ScoreSystem.GetMeasureSegment(MeasureID);
+            p = measure.Relative;
+            p.X += DefX;
             Point rehearsalPos = new Point(p.X - this.def_x, p.Y - this.def_y);
             Point rect1 = new Point(rehearsalPos.X - 8, rehearsalPos.Y - 8);
             Point rect2 = new Point(rehearsalPos.X + 8, rehearsalPos.Y + 8);
@@ -380,7 +396,10 @@ namespace MusicXMLViewerWPF
             }
             visual.Children.Add(wordsVisual);
         }
+        public void Draw(DrawingVisual visual)
+        {
 
+        }
     }
 
     public class PositionHelper
