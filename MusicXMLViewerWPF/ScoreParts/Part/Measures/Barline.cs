@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MusicXMLViewerWPF.ScoreParts.Part.Measures;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -256,7 +257,14 @@ namespace MusicXMLViewerWPF
         {
             _symbol = MusChar.Coda;
         }
-        
+        public void Draw(DrawingVisual visual)
+        {
+            Point position = new Point();
+            Measure measure = (Measure)Misc.ScoreSystem.GetMeasureSegment(MeasureID);
+            position = measure.Relative;
+            position.X += DefX;
+            Draw(visual, position);
+        }
         public void Draw(DrawingVisual visual, Point p) 
         {
             DrawingVisual coda = new DrawingVisual();
@@ -558,7 +566,7 @@ namespace MusicXMLViewerWPF
         protected float def_y;
         protected float rel_x;
         protected float rel_y;
-        protected float font_size;
+        protected float font_size = 14;
         protected string font_weight;
         protected Halign h_align;
         protected Valign v_align;
