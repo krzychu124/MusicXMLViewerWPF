@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Media;
 using System.Xml.Linq;
 
 namespace MusicXMLViewerWPF
 {
-    public class Dynamics : EmptyPrintStyle// need rework
+    public class Dynamics : EmptyPrintStyle //? Feature - check if not coliding with other object when drawing
     {
         //public int posX;
        // public int posY;
@@ -17,6 +18,7 @@ namespace MusicXMLViewerWPF
         //public int halign;
         private DynamicType type;
         private string symbol;
+        private string measureid;
 
         public string Other { get { return other; } }
         public string Placement { get { return placement; } }
@@ -25,7 +27,7 @@ namespace MusicXMLViewerWPF
         public string MeasureID { get { return measureid; } set { measureid = value; } }
         public bool isRelative;
 
-        public Dynamics(XElement x) : base (x.Attributes())
+        public Dynamics(XElement x) : base (x.Element("dynamics").Attributes())
         {
             placement = x.Attribute("placement") != null ?  x.Attribute("placement").Value : "below";
             SetDynType(x.Elements().ToList());
@@ -85,7 +87,7 @@ namespace MusicXMLViewerWPF
                 symbol = dynTypeToSymbol_dict[t];
             }
         }
-
+        #region void Draw(DV, Point) not usage for now
         public void Draw(DrawingVisual visual, System.Windows.Point p)
         {
             DrawingVisual dynamic_visual = new DrawingVisual();
@@ -93,6 +95,28 @@ namespace MusicXMLViewerWPF
             {
                 float posY = (float)p.Y + 50f;
                 Misc.DrawingHelpers.DrawString(dc, Symbol, TypeFaces.MeasuresFont, Brushes.Black, (float)p.X, posY, MusicScore.Defaults.Scale.Tenths/2.2f);
+            }
+            visual.Children.Add(dynamic_visual);
+        }
+        #endregion
+
+        public void Draw(DrawingVisual visual)
+        {
+            Point position = new Point();
+            if (DefX != 0)
+            {
+                position.X += DefX;
+            }
+            ScoreParts.Part.Measures.Measure measure = (ScoreParts.Part.Measures.Measure)Misc.ScoreSystem.GetMeasureSegment(MeasureID);
+            position = new Point(position.X + measure.Relative.X, position.Y + measure.Relative.Y);
+            DrawingVisual dynamic_visual = new DrawingVisual();
+            using (DrawingContext dc = dynamic_visual.RenderOpen())
+            {
+                if (Placement == "below")
+                {
+                    position.Y += measure.Height * 0.7;
+                }
+                Misc.DrawingHelpers.DrawString(dc, Symbol, TypeFaces.MeasuresFont, Brushes.Black, (float)position.X, (float)position.Y, MusicScore.Defaults.Scale.Tenths * 0.45f);
             }
             visual.Children.Add(dynamic_visual);
         }
@@ -155,7 +179,6 @@ namespace MusicXMLViewerWPF
             {DynamicType.sfzp, MusChar.sfzp },
             {DynamicType.z, MusChar.z }
         };
-        private string measureid;
     }
 
     public enum DynamicType
