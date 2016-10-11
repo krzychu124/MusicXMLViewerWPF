@@ -143,7 +143,7 @@ namespace MusicXMLViewerWPF
             //var p = from z in doc.Descendants("defaults") select z;
             var pg = from x in xele.Elements("page-layout") select x;
 
-            foreach (var item in pg)
+            foreach (var item in pg)//TODO tests, check carefully page margins
             {
                 page_width = float.Parse(item.Element("page-width").Value, CultureInfo.InvariantCulture);
                 page_height = float.Parse(item.Element("page-height").Value, CultureInfo.InvariantCulture);
