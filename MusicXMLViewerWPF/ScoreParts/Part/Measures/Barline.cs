@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MusicXMLViewerWPF.ScoreParts.Part.Measures;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -22,6 +23,7 @@ namespace MusicXMLViewerWPF
         private Repeat repeat;
         private Point pos;
         private DrawingVisual visual;
+        private string measureid;
         #endregion
         #region Properties
         public BarlineLocation Location { get { return location; } set { location = value; } } 
@@ -33,6 +35,7 @@ namespace MusicXMLViewerWPF
         public Repeat Repeat { get { return repeat; } }
         public Point Position { get { return pos; } set { pos = value; } }
         public DrawingVisual Visual { get { return visual; } set { visual = value; } }
+        public string MeasureID { get { return measureid; } set { measureid = value; } }
         #endregion
 
         public Barline()
@@ -189,6 +192,7 @@ namespace MusicXMLViewerWPF
             {"tick",BarStyle.tick },
             {"short",BarStyle.shortened },
         };
+        
 
         internal enum BarStyle
         {
@@ -216,9 +220,11 @@ namespace MusicXMLViewerWPF
     {
         private string name = "segno";
         private string _symbol;
+        private string measureid;
 
         public string Name { get { return name; } }
         public string Symbol { get { return _symbol; } }
+        public string MeasureID { get { return measureid; } set { measureid = value; } }
 
         public Segno(IEnumerable<XAttribute> x) : base(x)
         {
@@ -241,15 +247,24 @@ namespace MusicXMLViewerWPF
     {
         private string name = "coda";
         private string _symbol;
+        private string measureid;
 
         public string Name { get { return name; } }
         public string Symbol { get { return _symbol; } }
+        public string MeasureID { get { return measureid; } set { measureid = value; } }
 
         public Coda(IEnumerable<XAttribute> x) : base(x)
         {
             _symbol = MusChar.Coda;
         }
-        
+        public void Draw(DrawingVisual visual)
+        {
+            Point position = new Point();
+            Measure measure = (Measure)Misc.ScoreSystem.GetMeasureSegment(MeasureID);
+            position = measure.Relative;
+            position.X += DefX;
+            Draw(visual, position);
+        }
         public void Draw(DrawingVisual visual, Point p) 
         {
             DrawingVisual coda = new DrawingVisual();
@@ -551,7 +566,7 @@ namespace MusicXMLViewerWPF
         protected float def_y;
         protected float rel_x;
         protected float rel_y;
-        protected float font_size;
+        protected float font_size = 14;
         protected string font_weight;
         protected Halign h_align;
         protected Valign v_align;

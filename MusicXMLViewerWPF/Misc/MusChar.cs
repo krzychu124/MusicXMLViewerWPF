@@ -59,7 +59,7 @@ namespace MusicXMLViewerWPF
         #endregion
 
         #region notes
-        public const string Whole = "\uE1D1";// "\U0001D117";
+        public const string Whole = "\uE1D2";// "\U0001D117";
         public const string Half = "\uE1D3";//"\U0001D15E";
         public const string Quarter = "\uE1D5";//"\U0001D15F";
         public const string Eight = "\uE1D7";//"\uE1D7";"\uECA7"
@@ -69,7 +69,7 @@ namespace MusicXMLViewerWPF
         #endregion
 
         #region notes upsidedown
-        public const string WholeU = "\uE1D1";// "\U0001D117";
+        public const string WholeU = "\uE1D2";// "\U0001D117";
         public const string HalfU = "\uE1D4";//"\U0001D15E";
         public const string QuarterU = "\uE1D6";//"\U0001D15F";
         public const string EightU = "\uE1D8";//"\uE1D7";"\uECA7"
@@ -90,6 +90,7 @@ namespace MusicXMLViewerWPF
         #endregion
 
         #region primitives
+        public const string WholeDot = "\uE0A2";
         public const string HalfDot = "\uE0A3";
         public const string QuarterDot = "\uE0A4";
         //public const string DurationDot = "\U0001D157";
@@ -258,7 +259,7 @@ namespace MusicXMLViewerWPF
         }
 
         public static Dictionary<MusSymbolDuration, string> DurationSymbol_Note = new Dictionary<MusSymbolDuration, string>() {
-            { MusSymbolDuration.Whole, Whole},
+            { MusSymbolDuration.Whole, WholeDot}, //! temp //
             { MusSymbolDuration.Half, Half},
             { MusSymbolDuration.Quarter, Quarter},
             { MusSymbolDuration.Eight, Eight},
@@ -268,7 +269,7 @@ namespace MusicXMLViewerWPF
             { MusSymbolDuration.Unknown, "n?" }
         };
         public static Dictionary<string, string> DurationSymbol_Note_S = new Dictionary<string, string>() {
-            { "whole", Whole},
+            { "whole", WholeDot},
             { "half", Half},
             { "quarter", Quarter},
             { "eighth", Eight},
