@@ -39,10 +39,12 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
         private Misc.Segments segments = new Misc.Segments();
         private Dictionary<string, List<Beam>> beams;
         private List<List<Notations>> nlist = new List<List<Notations>>();
+        private Dictionary<int, List<Note>> notesbyvoice;
         #endregion
 
         #region Properties
         public event PropertyChangedEventHandler PropertyChanged;
+        public Dictionary<int, List<Note>> NotesByVoice { get { return notesbyvoice; } set { notesbyvoice = value; } }
         public Attributes Attributes { get { return attributes; } set { attributes = value; } }
         public bool NumberVisible { get { return hasNumberInvisible; } }
         public DrawingVisual Visual { get { return visual; } set { if (value != null) visual = value; } }
@@ -144,7 +146,7 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
             //    Logger.Log($"Added segment {item.ToString()}");
             //}
             SortNotations();
-
+            SortNotesByVoice();
         }
 
         private void Measure_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -167,6 +169,31 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
             for (int i = 0; i < nlist.Count; i++)
             {
 
+            }
+        }
+
+        private void SortNotesByVoice()
+        {
+            if (NotesList.Count != 0)
+            {
+                var voices = NotesList.Select(x => x.Voice).Distinct().ToList();
+                if (voices.Last() != 1)
+                {
+                    notesbyvoice = new Dictionary<int, List<Note>>();
+                    foreach (var voice in voices)
+                    {
+                        int v = voice;
+                        List<Note> nlist = new List<Note>();
+                        foreach (var item in NotesList)
+                        {
+                            if (item.Voice == v)
+                            {
+                                nlist.Add(item);
+                            }
+                        }
+                        NotesByVoice.Add(v, nlist);
+                    }
+                }
             }
         }
 
@@ -340,6 +367,19 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
             if (temp_width > Width) Width = temp_width;
         }
         /// <summary>
+        /// Calculate position of segment according to previous
+        /// </summary>
+        /// <param name="s"></param>
+        /// <returns></returns>
+        private Point Calculate_Current_Position(Segment s)
+        {
+            Point position = Calculated;
+            position.X += s.Width;
+            return position;
+        }
+
+        #region All Drawing Methods usable,ususable,bugged
+        /// <summary>
         /// Drawing method used to draw measure with all contating elements (motes, rest, directions etc.)
         /// </summary>
         /// <param name="surface"></param>
@@ -509,7 +549,7 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
             }
         }
 
-        private void Draw_AllNotes(DrawingVisual rests_vis)
+        private void Draw_AllNotes(DrawingVisual notes_vis)
         {
             if (NotesList.Count != 0)
             {
@@ -519,7 +559,10 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
                 //}
                 foreach(var item in NotesList)
                 {
-                    item.Draw(rests_vis);
+                    if (item.Voice == 1 || item.Voice == 0)
+                    {
+                        item.Draw(notes_vis);
+                    }
                 }
                 //var rests = NotesList.OfType<Rest>();
                 //foreach (var item in rests)
@@ -537,17 +580,6 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
                 item.Draw(vis, item.Color);
                 visual.Children.Add(vis);
             }
-        }
-        /// <summary>
-        /// Calculate position of segment according to previous
-        /// </summary>
-        /// <param name="s"></param>
-        /// <returns></returns>
-        private Point Calculate_Current_Position(Segment s)
-        {
-            Point position = Calculated;
-            position.X += s.Width;
-            return position;
         }
         private void Draw_Directions(DrawingContext dc2, Point p)
         {
@@ -657,6 +689,8 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
             //    }
             //}
         }
+#endregion
+
         /// <summary>
         /// Gets measure lenght for later calculations
         /// </summary>
