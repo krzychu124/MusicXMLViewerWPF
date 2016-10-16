@@ -74,12 +74,14 @@ namespace MusicXMLViewerWPF
         public List<Notations> NotationsList { get { return notationsList; } protected set { notationsList = value; } }
         public Lyrics Lyrics { get { return lyrics; } protected set { lyrics = value; } }
         public MusSymbolDuration SymbolType { get { return symbol_type; } set { symbol_type = value; NotePropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SymbolType))); } }
-        public Pitch Pitch { get { return pitch; } protected set { pitch = value; NotePropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Pitch)));  } }
+        public Pitch Pitch { get { return pitch; } protected set { pitch = value; NotePropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Pitch))); } }
         public Point NoteHeadPosition { get { return noteheadposition; } }
         public Stem Stem { get { return stem; } protected set { stem = value; } }
         public string Symbol { get { return symbol; } protected set { symbol = value; } }
         public string SymbolXMLValue { get { return symbol_value; } set { symbol_value = value; } }
         public XElement XMLDefinition { get { return xmldefinition; } }
+        public Point NoteHeadLeftLink { get { return new Point(NoteHeadPosition.X - (MusicScore.Defaults.Scale.Tenths * 0.225f) / 2, NoteHeadPosition.Y); } }
+        public Point NoteHeadRightLink { get { return new Point(NoteHeadPosition.X + (MusicScore.Defaults.Scale.Tenths * 0.225f) / 2, NoteHeadPosition.Y); } }
         //public new Point Relative { get { return base.Relative; } set { base.Relative = value; NotePropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Relative))); } }
         #endregion
 
@@ -105,7 +107,7 @@ namespace MusicXMLViewerWPF
 
        } */
 
-        
+
         public Note(int measure_id, int id, float pos, Pitch p, int dur, int v, string t, float s, string dir, bool hasStemVal, bool r, int num, string bm, Dictionary<int, string> beamList, int dot, bool notations, List<Notations> n_list)
         {
             isCustomStem = hasStemVal ? true : false;
@@ -146,10 +148,28 @@ namespace MusicXMLViewerWPF
             return c;
         }
 
-        public Note(XElement x) //TODO_H not finished
+        private Point GetNoteHeadPosition(string v)
         {
-            
+            float offset = 0.225f * MusicScore.Defaults.Scale.Tenths; // default offset at scale 40 is 9 so 0.225
+
+            Point result = new Point();
+            if (v == "left")
+            {
+                result = new Point(NoteHeadPosition.X - offset / 2, NoteHeadPosition.Y);
+            }
+            if (v == "right")
+            {
+                result = new Point(NoteHeadPosition.X + offset / 2, NoteHeadPosition.Y);
+            }
+            return result;
+        }
+
+        public Note(XElement x, int clefalter, string id)
+        {
+
             xmldefinition = x;
+            ClefAlter = clefalter;
+            MeasureId = id;
             NotePropertyChanged += Note_PropertyChanged;
             //NotePropertyChanged += segment_Properties_Ready;
             PropertyChanged += Note_PropertyChanged;
@@ -163,7 +183,7 @@ namespace MusicXMLViewerWPF
                 switch (item.Name.LocalName)
                 {
                     case "pitch":
-                        Pitch = new Pitch(item) { ClefAlter = this.ClefAlter } ;
+                        Pitch = new Pitch(item, ClefAlter); //? { ClefAlter = this.ClefAlter };
                         Logger.Log($"{ID} Note Pitch set to s:{Pitch.Step}, o:{Pitch.Octave}, a:{Pitch.Alter}");
                         break;
                     case "duration":
@@ -196,9 +216,10 @@ namespace MusicXMLViewerWPF
                         break;
                     case "beam":
                         IsCustomStem = true;
-                        if (beamlist == null) beamlist = new List<Beam>();
-                        Beam temp_beam =  new Beam(item, this.ID);
-                        beamlist.Add(temp_beam);
+                         if (beamlist == null) beamlist = new List<Beam>();
+                        Beam temp_beam = new Beam(item, this.ID);
+                        BeamsList.Add(temp_beam);
+                        //? beamlist.Add(temp_beam);
                         HasBeams = true;
                         Logger.Log($"{ID} Note Beam set to {temp_beam.BeamNumber} {temp_beam.BeamType.ToString()} of id {temp_beam.NoteId}");
                         break;
@@ -259,7 +280,7 @@ namespace MusicXMLViewerWPF
 
         private void SetCalculatedNotePosition()
         {
-            Calculated_y = Pitch.CalculatedStep * (MusicScore.Defaults.Scale.Tenths * 0.1f) +MusicScore.Defaults.Scale.Tenths * 0.6f;
+            Calculated_y = Pitch.CalculatedStep * (MusicScore.Defaults.Scale.Tenths * 0.1f) + MusicScore.Defaults.Scale.Tenths * 0.6f;
             noteheadposition = new Point(Relative_x + Spacer_L + 5, Relative_y + Calculated_y + 30);
         }
 
@@ -399,13 +420,13 @@ namespace MusicXMLViewerWPF
                     {
                         if (Pitch.CalculatedStep <= -12)//! invert placement of line (from above to below of noteDot
                         {
-                            oddevenstep = Pitch.CalculatedStep +1; 
+                            oddevenstep = Pitch.CalculatedStep + 1;
                         }
                         else
                         {
                             oddevenstep = Pitch.CalculatedStep - 1;
                         }
-                        
+
                     }
                     for (int i = 0; i < lines; i++)
                     {
@@ -427,8 +448,16 @@ namespace MusicXMLViewerWPF
             string result = $"Position {Relative_x.ToString("0.#")}X, {Relative_y.ToString("0.#")}Y, Width: {Width.ToString("0.#")} {Pitch.Step}{Pitch.Octave}";
             return result;
         }
+        //! changed/refactored
+        //private void AddBeam(Beam beam)
+        //{
+        //    if (BeamsList == null)
+        //    {
+        //        beamlist = new Dictionary<int, Beam>();
+        //    }
+        //    beamlist[beam.BeamNumber] = beam;
+        //}
     }
-
     public class Accidental
     {
         private XElement xmldefinition;
@@ -539,6 +568,13 @@ namespace MusicXMLViewerWPF
         public int NoteBeamsCount { get { return beamlist.Count; } }
         public string NoteId { get { return noteid; } }
         
+        /// <summary>
+        /// OBSOLETE .ctor
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="n"></param>
+        /// <param name="p"></param>
+        /// <param name="l"></param>
         public Beam( string type, int n, float p, Dictionary<int, string> l)
         {
             number = n;
@@ -584,7 +620,98 @@ namespace MusicXMLViewerWPF
             }
             return t;
         }
+        
+        public static void Draw(DrawingVisual beam, List<string> beams)
+        {
+            List<List<Beam>> beamlist = new List<List<Beam>>();
+            List<Note> notelist = new List<Note>();
+            try
+            {
+                foreach (var item in beams)
+                {
+                    Note n = (Note)Misc.ScoreSystem.GetSegment(item);
+                    notelist.Add(n);
+                    beamlist.Add(n.BeamsList);
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show($"Exception thrown {e.ToString()}", "Warning - Exception thrown", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+           
+            var l = beamlist.Select(z => z.Select(u => u.BeamNumber).Max()).ToList().Distinct().Max();
+            float offset = 6f;
+            for (int i = 0; i < l; i++) //TODO improve offset while stem_dir_down
+            {
+                int beamnumber = i + 1;
+                Point previous = new Point();
+                Point current = new Point();
+                DrawingVisual segment = new DrawingVisual();
 
+                for (int j = 0; j < notelist.Count; j++)
+                {
+                    float x_with_offset = notelist.ElementAt(j).Stem_dir ? (float)notelist.ElementAt(j).NoteHeadRightLink.X :(float) notelist.ElementAt(j).NoteHeadLeftLink.X;
+                    float y_offset = notelist.ElementAt(j).Stem_dir ? notelist.ElementAt(j).Stem.Length + 14 : notelist.ElementAt(j).Stem.Length + 15; //! this should be substr. from relative_y of note
+                    y_offset -= 25;
+                    if (notelist.ElementAt(j).Stem_dir == false)
+                    {
+                        if (offset > 0)
+                        {
+                            offset = offset * -1;
+                        }
+                    }
+                    else
+                    {
+                        offset = Math.Abs(offset);
+                    }
+                    foreach (var item in notelist.ElementAt(j).BeamsList)
+                    {
+                        if (item.BeamNumber == beamnumber)
+                        {
+                            if (item.BeamType == Beam_type.start)
+                            {
+                                previous.X = x_with_offset;
+                                previous.Y = notelist.ElementAt(j).Relative_y - y_offset;
+                                previous.Y += offset * i;
+                            }
+                            else{
+                                if (item.BeamType == Beam_type.forward)
+                                {
+
+                                }
+                                else
+                                {
+                                    if (item.BeamType == Beam_type.backward)
+                                    {
+
+                                    }
+                                    else
+                                    {
+                                        current.X = x_with_offset;
+                                        current.Y = notelist.ElementAt(j).Relative_y - y_offset;
+                                        current.Y += offset * i;
+                                        DrawingVisual beam_segment = new DrawingVisual();
+                                        Misc.DrawingHelpers.DrawLine(beam_segment, previous, current);
+                                        segment.Children.Add(beam_segment);
+                                        previous.X = x_with_offset;
+                                        previous.Y = notelist.ElementAt(j).Relative_y - y_offset;
+                                       
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                beam.Children.Add(segment);
+            }
+        }
+
+        public override string ToString()
+        {
+            string objecttostring = "";
+            objecttostring = $"{NoteId}: {BeamNumber}, {Position}, {BeamType.ToString()}";
+            return objecttostring;
+        }
         public enum Beam_type
         {
             start,
@@ -608,7 +735,7 @@ namespace MusicXMLViewerWPF
            
     }
 
-    public class Stem
+    public class Stem //TODO_H add auto calculation of stem for beams
     {
         private float length;
         private string direction;
