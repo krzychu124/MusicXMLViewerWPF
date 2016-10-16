@@ -40,6 +40,8 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
         private Dictionary<string, List<Beam>> beams;
         private List<List<Notations>> nlist = new List<List<Notations>>();
         private Dictionary<int, List<Note>> notesbyvoice;
+        private List<List<string>> sortedbeams;
+       // private Dictionary<int,>
         #endregion
 
         #region Properties
@@ -147,6 +149,7 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
             //}
             SortNotations();
             SortNotesByVoice();
+            SortBeamsByNumber();
         }
 
         private void Measure_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -197,6 +200,52 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
             }
         }
 
+        private void SortBeamsByNumber() //TODO_H sorting method not finished, get every beam of number from each note in measure, put to <<note.ID>, <<beam.number>, <list.beamsofnumbers>>> 
+        {
+            if (beams != null)
+            {
+                sortedbeams = new List<List<string>>();
+                List<List<string>> sbeam;
+                int beamseqcount = 0;
+                foreach (var item in beams)
+                {
+                    foreach (var i in item.Value)
+                    {
+                        if (i.BeamNumber == 1 && i.BeamType == Beam.Beam_type.stop)
+                        {
+                            beamseqcount += 1;
+                        }
+                    }
+                }
+                List<string> noteids = new List<string>();
+                sbeam = new List<List<string>>();
+                int index = 1;
+                foreach (var note in beams)
+                {
+
+                    foreach (var item in note.Value)
+                    {
+                        Beam beam = item;
+                        if (beam.BeamNumber == 1)
+                        {
+                            if (beam.BeamType == Beam.Beam_type.next || beam.BeamType == Beam.Beam_type.start)
+                            {
+                                noteids.Add(beam.NoteId);
+                            }
+                            if (beam.BeamType == Beam.Beam_type.stop)
+                            {
+                                noteids.Add(beam.NoteId);
+                                //sortedbeams[index] = new List<string>(noteids);
+                                sortedbeams.Add(new List<string>(noteids));
+                                index++;
+                                noteids.Clear();
+                            }
+                        }
+                    }
+
+                }
+            }
+        }
         /// <summary>
         /// Extract barlines from XML elemnet
         /// </summary>
@@ -296,12 +345,13 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
         /// <param name="x"></param>
         private void XMLExtractNotes(XElement x)
         {
-            Note note = new Note(x) { ClefAlter = Clef.ClefAlterNote, MeasureId = ID };
+            Note note = new Note(x, Clef.ClefAlterNote, ID); //? { ClefAlter = Clef.ClefAlterNote, MeasureId = ID };
             NotesList.Add(note);
             if (note.HasBeams)
             {
                 if (beams == null) beams = new Dictionary<string, List<Beam>>();
                 beams.Add(note.ID, note.BeamsList);
+                //?  beams.Add(note.ID, note.BeamsList);
             }
             if (note.NotationsList != null)
             {
@@ -546,6 +596,14 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
                         //}
                     }
                 }
+            }
+            if (beams != null)
+            {
+                foreach (var item in sortedbeams)
+                {
+                    Beam.Draw(visual, item);
+                }
+                
             }
         }
 
