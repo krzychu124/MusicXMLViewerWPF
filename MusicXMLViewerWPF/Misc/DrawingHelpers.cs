@@ -177,5 +177,25 @@ namespace MusicXMLViewerWPF.Misc
             }
             visual.Children.Add(rectangle);
         }
+        public static void DrawLine(DrawingVisual visual, Point start, Point end, float thickness = 1f, float beamthickness = 3f) //! WorkInProgress
+        {
+            using (DrawingContext dc = visual.RenderOpen())
+            {
+                Pen pen = new Pen(Brushes.Black, thickness);
+                float offset = beamthickness;
+                Point s2 = new Point(start.X, start.Y + offset);         //
+                Point e2 = new Point(end.X, end.Y + offset);         //
+
+                StreamGeometry sg = new StreamGeometry();
+                using (StreamGeometryContext sgc = sg.Open())
+                {
+                    sgc.BeginFigure(start, true, true);
+                    PointCollection points = new PointCollection { end, e2, s2 };
+                    sgc.PolyLineTo(points, true, true);
+                }
+                sg.Freeze();
+                dc.DrawGeometry(Brushes.Black, pen, sg);
+            }
+        }
     }
 }
