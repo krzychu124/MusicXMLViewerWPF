@@ -56,8 +56,9 @@ namespace MusicXMLViewerWPF
             calculateStep();
             getAdditionalLines();
         }
-        public Pitch(XElement x)
+        public Pitch(XElement x, int clefalter)
         {
+            ClefAlter = clefalter;
             foreach (var item in x.Elements())
             {
                 switch (item.Name.LocalName)
