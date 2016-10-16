@@ -290,7 +290,7 @@ namespace MusicXMLViewerWPF
             //DrawCredits(credits);
             //surface.AddVisual(credits);
             // DrawingVisual visual = new DrawingVisual();
-            Parts.ElementAt(1).Value.DrawMeasures(surface);
+            Parts.ElementAt(0).Value.DrawMeasures(surface); //! test
 
             
         }
