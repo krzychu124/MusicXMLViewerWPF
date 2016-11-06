@@ -1,0 +1,23 @@
+﻿<UserControl
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:MusicXMLScore.Page"
+             xmlns:helpers="clr-namespace:MusicXMLScore.Helpers"
+             xmlns:Configuration="clr-namespace:MusicXMLScore.Configuration" xmlns:Log="clr-namespace:MusicXMLScore.Log" x:Class="MusicXMLScore.Page.PageView"
+             mc:Ignorable="d" Height="361.017" Width="584.746">
+    
+    <Grid Margin="5">
+        <Border BorderBrush="Black" BorderThickness="0.5">
+            <Border.Effect >
+                <DropShadowEffect BlurRadius="10" ShadowDepth="1"></DropShadowEffect>
+            </Border.Effect>
+            <Grid>
+        <helpers:CanvasList Background="Beige"/>
+            <RadioButton HorizontalAlignment="Right" GroupName="a" ></RadioButton>
+            </Grid>
+        </Border>
+        <!--<TextBox x:Name="textBox" TextWrapping="Wrap" Text="PageView&#xA;&#xA;&#xA;&#xA;&#xA;&#xA;&#xA;&#xA;&#xA;&#xA;&#xA;&#xA;&#xA;&#xA;&#xA;&#xA;&#xA;PageViewNextPage&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;&#xA;PageViewNextPage&#xD;&#xA;&#xA;PageViewNextPage"/>-->
+    </Grid>
+</UserControl>

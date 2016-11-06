@@ -1,0 +1,12 @@
+﻿<Application x:Class="MusicXMLViewerWPF.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:MusicXMLViewerWPF"
+             StartupUri="MainWindow.xaml">
+    <Application.Resources>
+
+        <FontFamily x:Key="FontFamily1">/WpfApplicationTest;component/Fonts/#Bravura Text</FontFamily>
+        <FontFamily x:Key="FontFamilyBravura">/WpfMusTestViewer;component/Fonts/#Bravura Text</FontFamily>
+
+    </Application.Resources>
+</Application>
