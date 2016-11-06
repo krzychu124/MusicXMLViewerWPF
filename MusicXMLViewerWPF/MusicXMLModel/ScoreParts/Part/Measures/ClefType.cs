@@ -39,14 +39,14 @@ namespace MusicXMLViewerWPF
             switch (x)
             {
                 case Clef.CClef:
-                    symbol = MusChar.CClef;
+                    symbol = MusicalChars.CClef;
 
                     break;
                 case Clef.FClef:
-                    symbol = MusChar.FClef;
+                    symbol = MusicalChars.FClef;
                     break;
                 case Clef.GClef:
-                    symbol = MusChar.GClef;
+                    symbol = MusicalChars.GClef;
                     break;
             }
         }

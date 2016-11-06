@@ -142,7 +142,7 @@ namespace MusicXMLViewerWPF
             var temp = x.Element("part-name-display");
             displaytext = temp.Element("display-text").Value;
             atext = temp.Element("accidental-text").Value == "flat" ? AccidentalText.flat : temp.Element("accidental-text").Value == "sharp" ? AccidentalText.sharp : AccidentalText.natural;
-            accidentalsymbol = atext == AccidentalText.flat ? MusChar.Flat : atext == AccidentalText.sharp ? MusChar.Sharp : MusChar.Natural;
+            accidentalsymbol = atext == AccidentalText.flat ? MusicalChars.Flat : atext == AccidentalText.sharp ? MusicalChars.Sharp : MusicalChars.Natural;
         }
     }
 
@@ -161,7 +161,7 @@ namespace MusicXMLViewerWPF
             var temp = x.Element("part-abbreviation-display");
             displaytext = temp.Element("display-text").Value;
             atext = temp.Element("accidental-text").Value == "flat" ? AccidentalText.flat : temp.Element("accidental-text").Value == "sharp" ? AccidentalText.sharp : AccidentalText.natural;
-            accidentalsymbol = atext == AccidentalText.flat ? MusChar.Flat : atext == AccidentalText.sharp ? MusChar.Sharp : MusChar.Natural;
+            accidentalsymbol = atext == AccidentalText.flat ? MusicalChars.Flat : atext == AccidentalText.sharp ? MusicalChars.Sharp : MusicalChars.Natural;
         }
     }
     public class StaffLayout 

@@ -132,7 +132,7 @@ namespace MusicXMLViewerWPF
                 float[] flat = new float[] { 16, 4, 20, 8, 24, 12, 28 }; // y pos of each flat symbol
                 int padding = isSharp ? 8 : 6; // different padding // difference in width of symbol
                 float[] test = isSharp ? sharp : flat; // assign table o possitions
-                string key = isSharp ? MusChar.Sharp : MusChar.Flat; // assign unicode symbol
+                string key = isSharp ? MusicalChars.Sharp : MusicalChars.Flat; // assign unicode symbol
                 for (int i = 0; i < Math.Abs(num); i++)
                 {
                     Misc.DrawingHelpers.DrawString(dc, key, TypeFaces.NotesFont, color, x + padding * i, y + (test[i] + alt), MusicScore.Defaults.Scale.Tenths); // draw

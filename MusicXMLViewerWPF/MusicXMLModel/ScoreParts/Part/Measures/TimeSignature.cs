@@ -75,11 +75,11 @@ namespace MusicXMLViewerWPF
                 }
                 if (sigType == SignatureType.common)
                 {
-                    Misc.DrawingHelpers.DrawString(dc, MusChar.CommonTime, TypeFaces.NotesFont, Brushes.Black, Relative_x + Spacer_L, Relative_y - 15, MusicScore.Defaults.Scale.Tenths);
+                    Misc.DrawingHelpers.DrawString(dc, MusicalChars.CommonTime, TypeFaces.NotesFont, Brushes.Black, Relative_x + Spacer_L, Relative_y - 15, MusicScore.Defaults.Scale.Tenths);
                 }
                 if (sigType == SignatureType.cut)
                 {
-                    Misc.DrawingHelpers.DrawString(dc, MusChar.CutTime, TypeFaces.NotesFont, Brushes.Black, Relative_x + Spacer_L, Relative_y -15, MusicScore.Defaults.Scale.Tenths);
+                    Misc.DrawingHelpers.DrawString(dc, MusicalChars.CutTime, TypeFaces.NotesFont, Brushes.Black, Relative_x + Spacer_L, Relative_y -15, MusicScore.Defaults.Scale.Tenths);
                 }
             }
         }
@@ -136,27 +136,27 @@ namespace MusicXMLViewerWPF
         }
         private Dictionary<int, string> beat_d = new Dictionary<int, string>()
         {
-            {1,MusChar.one },
-            {2,MusChar.two },
-            {3,MusChar.three },
-            {4,MusChar.four },
-            {5,MusChar.five },
-            {6,MusChar.six },
-            {7,MusChar.seven },
-            {8,MusChar.eight },
-            {9,MusChar.nine },
+            {1,MusicalChars.one },
+            {2,MusicalChars.two },
+            {3,MusicalChars.three },
+            {4,MusicalChars.four },
+            {5,MusicalChars.five },
+            {6,MusicalChars.six },
+            {7,MusicalChars.seven },
+            {8,MusicalChars.eight },
+            {9,MusicalChars.nine },
         };
         private Dictionary<int, string> beat_dic = new Dictionary<int, string>()
         {
-            {1,MusChar.oneT },
-            {2,MusChar.twoT },
-            {3,MusChar.threeT },
-            {4,MusChar.fourT },
-            {5,MusChar.fiveT },
-            {6,MusChar.sixT },
-            {7,MusChar.sevenT },
-            {8,MusChar.eightT },
-            {9,MusChar.nineT },
+            {1,MusicalChars.oneT },
+            {2,MusicalChars.twoT },
+            {3,MusicalChars.threeT },
+            {4,MusicalChars.fourT },
+            {5,MusicalChars.fiveT },
+            {6,MusicalChars.sixT },
+            {7,MusicalChars.sevenT },
+            {8,MusicalChars.eightT },
+            {9,MusicalChars.nineT },
         };
     }
     enum SignatureType

@@ -271,7 +271,7 @@ namespace MusicXMLViewerWPF
         {
 
             setNotationType("fermata");
-            symbol = this.placement ? MusChar.FermataBelow : MusChar.Fermata;
+            symbol = this.placement ? MusicalChars.FermataBelow : MusicalChars.Fermata;
             this.placement = placement == "uprighht" ? false : true;
         }
 
@@ -340,18 +340,18 @@ namespace MusicXMLViewerWPF
         };
         public Dictionary<OrnamentTypes, string> ornament_symbols_string = new Dictionary<OrnamentTypes, string>() {
             {OrnamentTypes.other, "?or" },
-            {OrnamentTypes.trillmark, MusChar.trillmark },
-            {OrnamentTypes.delayed_turn, MusChar.delayed_turn},
-            {OrnamentTypes.inverted_turn, MusChar.inverted_turn},
-            {OrnamentTypes.delayed_inverted_turn, MusChar.delayed_inverted_turn },
-            {OrnamentTypes.turn, MusChar.turn},
-            {OrnamentTypes.vertical_turn, MusChar.vertical_turn },
-            {OrnamentTypes.shake, MusChar.shake },
-            {OrnamentTypes.wavy_line, MusChar.wavy_line},
-            {OrnamentTypes.mordent, MusChar.mordent },
-            {OrnamentTypes.inverted_mordent, MusChar.inverted_mordent },
-            {OrnamentTypes.schleifer, MusChar.schleifer},
-            {OrnamentTypes.tremolo, MusChar.tremolo },
+            {OrnamentTypes.trillmark, MusicalChars.trillmark },
+            {OrnamentTypes.delayed_turn, MusicalChars.delayed_turn},
+            {OrnamentTypes.inverted_turn, MusicalChars.inverted_turn},
+            {OrnamentTypes.delayed_inverted_turn, MusicalChars.delayed_inverted_turn },
+            {OrnamentTypes.turn, MusicalChars.turn},
+            {OrnamentTypes.vertical_turn, MusicalChars.vertical_turn },
+            {OrnamentTypes.shake, MusicalChars.shake },
+            {OrnamentTypes.wavy_line, MusicalChars.wavy_line},
+            {OrnamentTypes.mordent, MusicalChars.mordent },
+            {OrnamentTypes.inverted_mordent, MusicalChars.inverted_mordent },
+            {OrnamentTypes.schleifer, MusicalChars.schleifer},
+            {OrnamentTypes.tremolo, MusicalChars.tremolo },
         };  // dictionary of symbols // first need to add them to MusChar.cs
     }
 

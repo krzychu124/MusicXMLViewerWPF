@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MusicXMLViewerWPF
 {
-    class MusChar           ///add ornaments unicode symbols
+    class MusicalChars           ///add ornaments unicode symbols
     {
         private static string to_utf8(string s)
         {
@@ -17,7 +17,7 @@ namespace MusicXMLViewerWPF
         //public static string Staff5L = to_utf8("\u1d110");
         #region clefs
         public const string FClef = "\uE062";
-        public static string GClef = "\uE050";//"\ue050";//"\U0001D11E";
+        public const string GClef = "\uE050";//"\ue050";//"\U0001D11E";
         public const string CClef = "\uE05C";
         #endregion
 

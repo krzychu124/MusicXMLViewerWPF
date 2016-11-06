@@ -288,7 +288,7 @@ namespace MusicXMLViewerWPF
             float[] flat = new float[] { 16, 4, 20, 8, 24, 12, 28 };
             int padding = isSharp ? 8 : 6;
             float[] test = isSharp ? sharp : flat;
-            string key = isSharp ? MusChar.Sharp : MusChar.Flat;
+            string key = isSharp ? MusicalChars.Sharp : MusicalChars.Flat;
             for (int i = 0; i < num; i++)
             {
                 DrawString(dc, key, TypeFaces.NotesFont, Brushes.Black, x + padding * i, test[i] + alt, size);
@@ -448,21 +448,21 @@ namespace MusicXMLViewerWPF
             
                 for (int i = 0; i < num; i++)
                 {
-                    DrawString(dc, MusChar.Staff5L, TypeFaces.NotesFont, Brushes.Black, x, y, scale);
+                    DrawString(dc, MusicalChars.Staff5L, TypeFaces.NotesFont, Brushes.Black, x, y, scale);
                     x += 32;
                 }
 
                 if (fill != 0)
                 {
-                    DrawString(dc, MusChar.Staff5L, TypeFaces.NotesFont, Brushes.Black, -32 + x + fill, y, scale);
+                    DrawString(dc, MusicalChars.Staff5L, TypeFaces.NotesFont, Brushes.Black, -32 + x + fill, y, scale);
                 }
             if (left_bar == true)
             {
-                DrawString(dc, MusChar.RegularBar, TypeFaces.NotesFont, Brushes.Black, (float)p.X, y, scale);
+                DrawString(dc, MusicalChars.RegularBar, TypeFaces.NotesFont, Brushes.Black, (float)p.X, y, scale);
             }
             if (right_bar == true)
             {
-                DrawString(dc, MusChar.RegularBar, TypeFaces.NotesFont, Brushes.Black, (float)p.X + l, y, scale);
+                DrawString(dc, MusicalChars.RegularBar, TypeFaces.NotesFont, Brushes.Black, (float)p.X + l, y, scale);
             }
         }
         public void GetMeasureDraw(DrawingContext dc, int num)
@@ -474,18 +474,18 @@ namespace MusicXMLViewerWPF
             int s = 0;
             for (int i = 0; i < n; i++)
             {
-                DrawString(dc, MusChar.Staff5L, TypeFaces.MeasuresFont, Brushes.Black, x +s,(float)m.Start.Y, Scale);
-                DrawString(dc, MusChar.Staff5Ls, TypeFaces.MeasuresFont, Brushes.Black, x + s+24, (float)m.Start.Y, Scale);
+                DrawString(dc, MusicalChars.Staff5L, TypeFaces.MeasuresFont, Brushes.Black, x +s,(float)m.Start.Y, Scale);
+                DrawString(dc, MusicalChars.Staff5Ls, TypeFaces.MeasuresFont, Brushes.Black, x + s+24, (float)m.Start.Y, Scale);
                 s += 32;
             }
             if (f != 0)
             {
-                DrawString(dc, MusChar.Staff5L, TypeFaces.MeasuresFont, Brushes.Black, (float)m.e.X - 32, (float)m.e.Y, Scale);
-                DrawString(dc, MusChar.Staff5Ls, TypeFaces.MeasuresFont, Brushes.Black, (float)m.e.X - 8, (float)m.Start.Y, Scale);
+                DrawString(dc, MusicalChars.Staff5L, TypeFaces.MeasuresFont, Brushes.Black, (float)m.e.X - 32, (float)m.e.Y, Scale);
+                DrawString(dc, MusicalChars.Staff5Ls, TypeFaces.MeasuresFont, Brushes.Black, (float)m.e.X - 8, (float)m.Start.Y, Scale);
             }
-            DrawString(dc,MusChar.RegularBar,TypeFaces.MeasuresFont,Brushes.Black,m.Start,Scale);
-            DrawString(dc, MusChar.RegularBar, TypeFaces.MeasuresFont, Brushes.Black, m.End, Scale);
-            if (m.LastInLine) DrawString(dc, MusChar.RegularBar, TypeFaces.MeasuresFont, Brushes.Black, m.End, Scale);
+            DrawString(dc,MusicalChars.RegularBar,TypeFaces.MeasuresFont,Brushes.Black,m.Start,Scale);
+            DrawString(dc, MusicalChars.RegularBar, TypeFaces.MeasuresFont, Brushes.Black, m.End, Scale);
+            if (m.LastInLine) DrawString(dc, MusicalChars.RegularBar, TypeFaces.MeasuresFont, Brushes.Black, m.End, Scale);
 
 
 

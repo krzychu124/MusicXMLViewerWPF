@@ -121,7 +121,7 @@ namespace MusicXMLViewerWPF
             voice = v;
             stem_dir = dir == "up" ? false : true;
             symbol_type = SymbolDuration.d_type(t);
-            symbol = MusChar.getNoteSymbol(t, stem_dir);
+            symbol = MusicalChars.getNoteSymbol(t, stem_dir);
             isRest = r;
             stem_f = s;
             this.dot = dot;
@@ -298,7 +298,7 @@ namespace MusicXMLViewerWPF
                     Logger.Log($"{sender.ToString()} SymbolType set");
                     break;
                 case "Stem_dir":
-                    Symbol = MusChar.getNoteSymbol(SymbolXMLValue, Stem_dir);
+                    Symbol = MusicalChars.getNoteSymbol(SymbolXMLValue, Stem_dir);
                     Logger.Log($"{sender.ToString()}, Stem direction set");
                     break;
                 case "Relative":
@@ -323,7 +323,7 @@ namespace MusicXMLViewerWPF
                 using (DrawingContext dc = note.RenderOpen())
                 {
                     //Relative_y = 310;  //! Pitch.CalculatedStep * (MusicScore.Defaults.Scale.Tenths * 0.1f)) + MusicScore.Defaults.Scale.Tenths * 0.6f
-                    Misc.DrawingHelpers.DrawString(dc, MusChar.QuarterDot, TypeFaces.NotesFont, Color, Relative_x + Spacer_L, Relative_y + Calculated_y, MusicScore.Defaults.Scale.Tenths);
+                    Misc.DrawingHelpers.DrawString(dc, MusicalChars.QuarterDot, TypeFaces.NotesFont, Color, Relative_x + Spacer_L, Relative_y + Calculated_y, MusicScore.Defaults.Scale.Tenths);
                 }
                 visual.Children.Add(note);
                 DrawAdditionalLines(visual);
@@ -334,7 +334,7 @@ namespace MusicXMLViewerWPF
                     DrawingVisual dot = new DrawingVisual();
                     using (DrawingContext dc = dot.RenderOpen())
                     {
-                        DrawingHelpers.DrawString(dc, MusChar.Dot, TypeFaces.NotesFont, Brushes.Black, notepositionX + 15, notepositionY - dot_placement, MusicScore.Defaults.Scale.Tenths);
+                        DrawingHelpers.DrawString(dc, MusicalChars.Dot, TypeFaces.NotesFont, Brushes.Black, notepositionX + 15, notepositionY - dot_placement, MusicScore.Defaults.Scale.Tenths);
                     }
                     visual.Children.Add(dot);
                 }
@@ -366,7 +366,7 @@ namespace MusicXMLViewerWPF
                     DrawingVisual dot = new DrawingVisual();
                     using (DrawingContext dc = dot.RenderOpen())
                     {
-                        DrawingHelpers.DrawString(dc, MusChar.Dot, TypeFaces.NotesFont, Brushes.Black, notepositionX + 15, notepositionY - dot_placement, MusicScore.Defaults.Scale.Tenths);
+                        DrawingHelpers.DrawString(dc, MusicalChars.Dot, TypeFaces.NotesFont, Brushes.Black, notepositionX + 15, notepositionY - dot_placement, MusicScore.Defaults.Scale.Tenths);
                     }
                     visual.Children.Add(dot);
                 }
@@ -434,7 +434,7 @@ namespace MusicXMLViewerWPF
                         DrawingVisual addlinesbetween = new DrawingVisual();
                         using (DrawingContext dc = addlinesbetween.RenderOpen())
                         {
-                            Misc.DrawingHelpers.DrawString(dc, MusChar.NoteLine, TypeFaces.NotesFont, Color, Relative_x + Spacer_L * 0.8f, (Relative_y + step * (MusicScore.Defaults.Scale.Tenths * 0.1f)) + MusicScore.Defaults.Scale.Tenths * 0.6f, MusicScore.Defaults.Scale.Tenths);
+                            Misc.DrawingHelpers.DrawString(dc, MusicalChars.NoteLine, TypeFaces.NotesFont, Color, Relative_x + Spacer_L * 0.8f, (Relative_y + step * (MusicScore.Defaults.Scale.Tenths * 0.1f)) + MusicScore.Defaults.Scale.Tenths * 0.6f, MusicScore.Defaults.Scale.Tenths);
                         }
                         missinglines.Children.Add(addlinesbetween);
                     }
@@ -497,19 +497,19 @@ namespace MusicXMLViewerWPF
             switch (accidentaltype)
             {
                 case AccidentalText.natural:
-                    symbol = MusChar.Natural;
+                    symbol = MusicalChars.Natural;
                     break;
                 case AccidentalText.flat:
-                    symbol = MusChar.Flat;
+                    symbol = MusicalChars.Flat;
                     break;
                 case AccidentalText.sharp:
-                    symbol = MusChar.Sharp;
+                    symbol = MusicalChars.Sharp;
                     break;
                 case AccidentalText.doublesharp:
-                    symbol = MusChar.DoubleSharp;
+                    symbol = MusicalChars.DoubleSharp;
                     break;
                 case AccidentalText.flatflat:
-                    symbol = MusChar.DoubleFlat;
+                    symbol = MusicalChars.DoubleFlat;
                     break;
                 default:
                     break;

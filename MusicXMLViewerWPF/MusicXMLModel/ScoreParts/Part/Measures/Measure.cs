@@ -668,13 +668,13 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
 
             for (int i = 0; i < num; i++)
             {
-                Misc.DrawingHelpers.DrawString(dc, MusChar.Staff5L, TypeFaces.NotesFont, Brushes.Black, X + s, Y, Scale);
+                Misc.DrawingHelpers.DrawString(dc, MusicalChars.Staff5L, TypeFaces.NotesFont, Brushes.Black, X + s, Y, Scale);
                 s += 24;
             }
 
             if (filling != 0)
             {
-                Misc.DrawingHelpers.DrawString(dc, MusChar.Staff5L, TypeFaces.NotesFont, Brushes.Black, X + (Width-24), Y, Scale);
+                Misc.DrawingHelpers.DrawString(dc, MusicalChars.Staff5L, TypeFaces.NotesFont, Brushes.Black, X + (Width-24), Y, Scale);
             }
             if (IsFirstInLine)
             {

@@ -63,7 +63,7 @@ namespace MusicXMLViewerWPF
             switch (e.PropertyName)
             {
                 case "SymbolType":
-                    Symbol = MusChar.getRestSymbol(SymbolXMLValue);
+                    Symbol = MusicalChars.getRestSymbol(SymbolXMLValue);
                     Logger.Log($"Rest symbol is {Symbol}");
                     break;
                 default:
@@ -89,7 +89,7 @@ namespace MusicXMLViewerWPF
             duration = d;
             voice = v;
             ismeasurerest = restType;
-            duration_symbol = MusChar.getRestSymbol(t);
+            duration_symbol = MusicalChars.getRestSymbol(t);
             hasDot = dot;
         }
         public Rest(int m_num,int id,int d, int v, bool restType)
