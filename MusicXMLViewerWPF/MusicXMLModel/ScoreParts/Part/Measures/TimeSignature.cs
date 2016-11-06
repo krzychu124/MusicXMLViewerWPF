@@ -84,7 +84,7 @@ namespace MusicXMLViewerWPF
             }
         }
 
-        public TimeSignature(int beats, int beats_type,string symbol, int num)
+        public TimeSignature(int beats, int beats_type,string symbol = "", int num = 0)
         {
 
             SetTimeType(symbol);

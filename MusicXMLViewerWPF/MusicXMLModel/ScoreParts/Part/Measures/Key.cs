@@ -101,7 +101,7 @@ namespace MusicXMLViewerWPF
             DrawingVisual key = new DrawingVisual();
             using (DrawingContext dc = key.RenderOpen())
             {
-                Brush KeyColor = (SolidColorBrush)new BrushConverter().ConvertFromString(AdditionalAttributes.Color);
+                Brush KeyColor = Brushes.Black;//? (SolidColorBrush)new BrushConverter().ConvertFromString(AdditionalAttributes.Color);
                 Draw_Key(dc, Relative, clef_type, (int)Fifths, color:KeyColor);  //! Experimental
             }
             visual.Children.Add(key);

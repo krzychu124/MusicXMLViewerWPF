@@ -657,7 +657,7 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
         /// </summary>
         /// <param name="dc"></param>
         /// <param name="StartPoint"></param>
-        private void Draw_Measure(DrawingContext dc, Point StartPoint)
+        public void Draw_Measure(DrawingContext dc, Point StartPoint)
         {
             float Scale = MusicScore.Defaults.Scale.Tenths;
             float num = GetMeasureLength(Width);

@@ -17,7 +17,7 @@ namespace MusicXMLViewerWPF.Defaults
         private Appearance appearance;
         private Dictionary<string,ScoreFonts> fonts = new Dictionary<string,ScoreFonts>();
         
-        public Scale Scale { get { return scale; } }
+        public Scale Scale { get { return scale; } set { scale = value; } }
         public Page Page { get { return page; } }
         public SystemLayout SystemLayout { get { return system_layout; } }    
         public StaffLayout StaffLayout { get { return staff_layout; } }
