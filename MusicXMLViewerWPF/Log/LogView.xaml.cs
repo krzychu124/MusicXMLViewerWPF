@@ -13,23 +13,17 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace MusicXMLScore
+namespace MusicXMLScore.Log
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for LogView.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class LogView : UserControl
     {
-        public MainWindow()
+        public LogView()
         {
             InitializeComponent();
-            this.DataContext = new MainWindowViewModel();
-        }
-        protected override void OnClosed(EventArgs e)
-        {
-            base.OnClosed(e);
-
-            Application.Current.Shutdown();
+            this.DataContext = new LogViewModel();
         }
     }
 }
