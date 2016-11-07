@@ -88,6 +88,7 @@
     <Compile Include="Helpers\CanvasList.cs" />
     <Compile Include="Helpers\DrawingMethods.cs" />
     <Compile Include="Helpers\PreviewCanvas.cs" />
+    <Compile Include="Helpers\PreviewSettings.cs" />
     <Compile Include="Helpers\TypeFaces.cs" />
     <Compile Include="Log\LoggIt.cs" />
     <Compile Include="Log\LogView.xaml.cs">
@@ -126,7 +127,7 @@
     <Compile Include="MusicXMLModel\ScoreParts\Part\Measures\Key.cs" />
     <Compile Include="MusicXMLModel\Misc\LoadCharsToViewPort.cs" />
     <Compile Include="MusicXMLModel\Misc\LoadDocToClasses.cs" />
-    <Compile Include="MusicXMLModel\Misc\MusChar.cs" />
+    <Compile Include="MusicXMLModel\Misc\MusicalChars.cs" />
     <Compile Include="MusicXMLModel\MusicScore.cs" />
     <Compile Include="MusicXMLModel\ScoreParts\Part\Measures\Measure.cs" />
     <Compile Include="MusicXMLModel\ScoreParts\Part\Measures\SegmentType.cs" />

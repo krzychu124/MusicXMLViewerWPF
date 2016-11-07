@@ -129,34 +129,34 @@ namespace MusicXMLViewerWPF
                 switch (style)
                 {
                     case BarStyle.regular:
-                        Misc.DrawingHelpers.DrawString(dc, MusChar.RegularBar, TypeFaces.MeasuresFont, Brushes.Black, loc, (float)p.Y, scale);
+                        Misc.DrawingHelpers.DrawString(dc, MusicalChars.RegularBar, TypeFaces.MeasuresFont, Brushes.Black, loc, (float)p.Y, scale);
                         break;
                     case BarStyle.dotted:
-                        Misc.DrawingHelpers.DrawString(dc, MusChar.DottedBar, TypeFaces.MeasuresFont, Brushes.Black, loc, (float)p.Y, scale);
+                        Misc.DrawingHelpers.DrawString(dc, MusicalChars.DottedBar, TypeFaces.MeasuresFont, Brushes.Black, loc, (float)p.Y, scale);
                         break;
                     case BarStyle.dashed:
-                        Misc.DrawingHelpers.DrawString(dc, MusChar.DashedBar, TypeFaces.MeasuresFont, Brushes.Black, loc, (float)p.Y, scale);
+                        Misc.DrawingHelpers.DrawString(dc, MusicalChars.DashedBar, TypeFaces.MeasuresFont, Brushes.Black, loc, (float)p.Y, scale);
                         break;
                     case BarStyle.heavy:
-                        Misc.DrawingHelpers.DrawString(dc, MusChar.HeavyBar, TypeFaces.MeasuresFont, Brushes.Black, loc, (float)p.Y, scale);
+                        Misc.DrawingHelpers.DrawString(dc, MusicalChars.HeavyBar, TypeFaces.MeasuresFont, Brushes.Black, loc, (float)p.Y, scale);
                         break;
                     case BarStyle.light_light:
-                        Misc.DrawingHelpers.DrawString(dc, MusChar.LightLightBar, TypeFaces.MeasuresFont, Brushes.Black, loc - 3.5f, (float)p.Y, scale);
+                        Misc.DrawingHelpers.DrawString(dc, MusicalChars.LightLightBar, TypeFaces.MeasuresFont, Brushes.Black, loc - 3.5f, (float)p.Y, scale);
                         break;
                     case BarStyle.light_heavy:
-                        Misc.DrawingHelpers.DrawString(dc, MusChar.LightHeavyBar, TypeFaces.MeasuresFont, Brushes.Black, loc - 7, (float)p.Y, scale);
+                        Misc.DrawingHelpers.DrawString(dc, MusicalChars.LightHeavyBar, TypeFaces.MeasuresFont, Brushes.Black, loc - 7, (float)p.Y, scale);
                         break;
                     case BarStyle.heavy_light:
-                        Misc.DrawingHelpers.DrawString(dc, MusChar.HeavyLightBar, TypeFaces.MeasuresFont, Brushes.Black, loc - 3, (float)p.Y, scale);
+                        Misc.DrawingHelpers.DrawString(dc, MusicalChars.HeavyLightBar, TypeFaces.MeasuresFont, Brushes.Black, loc - 3, (float)p.Y, scale);
                         break;
                     case BarStyle.heavy_heavy:
-                        Misc.DrawingHelpers.DrawString(dc, MusChar.HeavyHeavyBar, TypeFaces.MeasuresFont, Brushes.Black, loc, (float)p.Y, scale);
+                        Misc.DrawingHelpers.DrawString(dc, MusicalChars.HeavyHeavyBar, TypeFaces.MeasuresFont, Brushes.Black, loc, (float)p.Y, scale);
                         break;
                     case BarStyle.tick:
-                        Misc.DrawingHelpers.DrawString(dc, MusChar.TickBar, TypeFaces.MeasuresFont, Brushes.Black, loc, (float)p.Y-4, scale);
+                        Misc.DrawingHelpers.DrawString(dc, MusicalChars.TickBar, TypeFaces.MeasuresFont, Brushes.Black, loc, (float)p.Y-4, scale);
                         break;
                     case BarStyle.shortened:
-                        Misc.DrawingHelpers.DrawString(dc, MusChar.ShortBar, TypeFaces.MeasuresFont, Brushes.Black, loc, (float)p.Y+12, scale);
+                        Misc.DrawingHelpers.DrawString(dc, MusicalChars.ShortBar, TypeFaces.MeasuresFont, Brushes.Black, loc, (float)p.Y+12, scale);
                         break;
                     default:
                         break;
@@ -169,7 +169,7 @@ namespace MusicXMLViewerWPF
                         float location = Repeat.Direction == Repeat.RepeatDirection.forward ? 7f : -12f;
                         if (Repeat.Winged == null) //Repeat.Winged.Type == Winged.WingType.none || 
                         {
-                            Misc.DrawingHelpers.DrawString(dc, MusChar.RepeatDots, TypeFaces.MeasuresFont, Brushes.Black, loc + location, (float)p.Y, scale);
+                            Misc.DrawingHelpers.DrawString(dc, MusicalChars.RepeatDots, TypeFaces.MeasuresFont, Brushes.Black, loc + location, (float)p.Y, scale);
                         }
                     }
                     visual.Children.Add(visualForRepeats);
@@ -229,7 +229,7 @@ namespace MusicXMLViewerWPF
         public Segno(IEnumerable<XAttribute> x) : base(x)
         {
             //TODO_L missing implementation
-            _symbol = MusChar.Segno;
+            _symbol = MusicalChars.Segno;
         }
 
         public void Draw(DrawingVisual visual, Point p)
@@ -255,7 +255,7 @@ namespace MusicXMLViewerWPF
 
         public Coda(IEnumerable<XAttribute> x) : base(x)
         {
-            _symbol = MusChar.Coda;
+            _symbol = MusicalChars.Coda;
         }
         public void Draw(DrawingVisual visual)
         {

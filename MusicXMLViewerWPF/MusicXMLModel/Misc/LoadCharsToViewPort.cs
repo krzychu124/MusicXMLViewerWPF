@@ -150,7 +150,7 @@ namespace MusicXMLViewerWPF
                     if (n.ElementAt(i).HasDot) //has dot
                     {
                         int z = Math.Abs(n.ElementAt(i).Pitch.CalculatedStep) % 2 == 1 ? 0 : 3; // calcutale Y offset of dot // if note at line or between
-                        DrawString(dc, MusChar.Dot, TypeFaces.NotesFont, Brushes.Black, new Point(x + 14, y + z), Measures.Scale); //draw
+                        DrawString(dc, MusicalChars.Dot, TypeFaces.NotesFont, Brushes.Black, new Point(x + 14, y + z), Measures.Scale); //draw
                     }
                     if (n.ElementAt(i).HasBeams) //has beams
                     {
@@ -168,13 +168,13 @@ namespace MusicXMLViewerWPF
 
                         if (n.ElementAt(i).SymbolType == MusSymbolDuration.Half) // check if half-note // draw note dot
                         {
-                            DrawString(dc, MusChar.HalfDot, TypeFaces.NotesFont, Brushes.Black, new Point(x, y), Measures.Scale);
+                            DrawString(dc, MusicalChars.HalfDot, TypeFaces.NotesFont, Brushes.Black, new Point(x, y), Measures.Scale);
                             dc.DrawLine(pen, new Point(x + xoff, yl), new Point(x + xoff, measy - stemlength + yoff));
                         }
                         else
                         {
 
-                            DrawString(dc, MusChar.QuarterDot, TypeFaces.NotesFont, Brushes.Black, new Point(x, y), Measures.Scale);
+                            DrawString(dc, MusicalChars.QuarterDot, TypeFaces.NotesFont, Brushes.Black, new Point(x, y), Measures.Scale);
                             dc.DrawLine(pen, new Point(x + xoff, yl), new Point(x + xoff, stemlength)); 
                             
                         }
@@ -449,7 +449,7 @@ namespace MusicXMLViewerWPF
                 float[] flat = new float[] { 16, 4, 20, 8, 24, 12, 28 }; // y pos of each flat symbol
                 int padding = isSharp ? 8 : 6; // different padding // difference in width of symbol
                 float[] test = isSharp ? sharp : flat; // assign table o possitions
-                string key = isSharp ? MusChar.Sharp : MusChar.Flat; // assign unicode symbol
+                string key = isSharp ? MusicalChars.Sharp : MusicalChars.Flat; // assign unicode symbol
                 for (int i = 0; i < Math.Abs(num); i++)
                 {
                     DrawString(dc, key, TypeFaces.NotesFont, Brushes.Black, x + 25 + padding * i, y + (test[i] + alt), size ); // draw

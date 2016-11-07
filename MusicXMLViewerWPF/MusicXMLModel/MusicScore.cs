@@ -88,7 +88,7 @@ namespace MusicXMLViewerWPF
 
         #region public static properties (read-only)
         public static string Title { get { return title; } }
-        public static Defaults.Defaults Defaults { get { return defaults; } }
+        public static Defaults.Defaults Defaults { get { return defaults; } set { defaults = value; } }
         public static Dictionary<string, ScoreParts.Part.Part> Parts { get { return parts; } }
         public static Identification.Identification Identification { get { return identification; } }
         public static List<Credit.Credit> CreditList { get { return credits; } }

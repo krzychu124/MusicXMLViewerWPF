@@ -134,28 +134,37 @@ namespace MusicXMLViewerWPF.Defaults
         }
         private void initDefaultDistances()
         {
-            distances.Add("hyphen", 60f);
-            distances.Add("beam", 8f);
+            if (Distances.Count == 0)
+            {
+                distances.Add("hyphen", 60f);
+                distances.Add("beam", 8f);
+            }
         }
 
         private void initDefaultNoteSizes()
         {
-            noteSizes.Add("grace", 60f);
-            noteSizes.Add("cue", 60f);
+            if (NoteSizes.Count == 0)
+            {
+                noteSizes.Add("grace", 60f);
+                noteSizes.Add("cue", 60f);
+            }
         }
 
         private void initDefaultLineWidths()
         {
-            lineWidths.Add("stem", 1.4583f);
-            lineWidths.Add("beam", 5f);
-            lineWidths.Add("staff", 1.4583f);
-            lineWidths.Add("light barline", 1.4583f);
-            lineWidths.Add("heavy barline", 5f);
-            lineWidths.Add("leger", 1.4583f);
-            lineWidths.Add("ending", 1.4583f);
-            lineWidths.Add("wedge", 1.4583f);
-            lineWidths.Add("enclosure", 1.4583f);
-            lineWidths.Add("tuplet bracket", 1.4583f);
+            if (LineWidths.Count == 0)
+            {
+                lineWidths.Add("stem", 1.4583f);
+                lineWidths.Add("beam", 5f);
+                lineWidths.Add("staff", 1.4583f);
+                lineWidths.Add("light barline", 1.4583f);
+                lineWidths.Add("heavy barline", 5f);
+                lineWidths.Add("leger", 1.4583f);
+                lineWidths.Add("ending", 1.4583f);
+                lineWidths.Add("wedge", 1.4583f);
+                lineWidths.Add("enclosure", 1.4583f);
+                lineWidths.Add("tuplet bracket", 1.4583f);
+            }
         }
 
         public static void Clear()

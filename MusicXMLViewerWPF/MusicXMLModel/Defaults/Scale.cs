@@ -31,6 +31,12 @@ namespace MusicXMLViewerWPF.Defaults
         {
             XMLFiller(x);
         }
+
+        public void Set(float new_scale_tenths)
+        {
+            tenths = new_scale_tenths;
+            millimeters = new_scale_tenths / 0.176389f;
+        }
         public IEnumerable<XElement> XMLExtractor()
         {
             var x = LoadDocToClasses.Document;

@@ -80,7 +80,7 @@ namespace MusicXMLViewerWPF
             DrawingVisual visual = new DrawingVisual();
             using (DrawingContext dc = visual.RenderOpen())
             {
-                LoadCharsToViewPort.DrawString(dc, MusChar.CClef, TypeFaces.NotesFont, Brushes.Black, 0f, 10.0f, 40.0f);
+                LoadCharsToViewPort.DrawString(dc, MusicalChars.CClef, TypeFaces.NotesFont, Brushes.Black, 0f, 10.0f, 40.0f);
 
                 FormattedText ft = new FormattedText(Text, CultureInfo.CurrentCulture, FlowDirection.LeftToRight, Typeface, FontSize, Foreground);
                 Geometry geometry = ft.BuildGeometry(new Point(0.0, 0.0));

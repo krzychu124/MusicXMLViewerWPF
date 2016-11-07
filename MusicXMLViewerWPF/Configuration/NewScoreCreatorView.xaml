@@ -57,7 +57,7 @@
                         </Grid.RowDefinitions>
                         <Grid Grid.Row="0">
                             <RadioButton x:Name="radioButtonClef" GroupName="GroupClef" HorizontalAlignment="Left" Margin="0,32,0,0" VerticalAlignment="Top" IsChecked="{Binding CurrentClefOption, ConverterParameter=regularclef, Converter={StaticResource enumConverter}}"/>
-                            <ComboBox x:Name="comboBoxClef" ItemsSource="{Binding ClefType}" SelectedValue="{Binding SelectedClef}" FontFamily="{StaticResource BravuraText}" FontSize="35" IsEnabled="{Binding ElementName=radioButtonClef, Path=IsChecked}" HorizontalAlignment="Left" Margin="19,10,0,0" VerticalAlignment="Top" Width="71" Height="61"/>
+                            <ComboBox x:Name="comboBoxClef" ItemsSource="{Binding ClefTypeListS}" SelectedValue="{Binding SelectedClefS}" FontFamily="{StaticResource BravuraText}" FontSize="35" IsEnabled="{Binding ElementName=radioButtonClef, Path=IsChecked}" HorizontalAlignment="Left" Margin="19,10,0,0" VerticalAlignment="Top" Width="71" Height="61"/>
                             <RadioButton x:Name="radioButtonGuitar" GroupName="GroupClef" HorizontalAlignment="Left" Margin="116,32,0,0" VerticalAlignment="Top" IsChecked="{Binding CurrentClefOption, ConverterParameter=tablature, Converter={StaticResource enumConverter}}"/>
                             <!--<Canvas HorizontalAlignment="Left" Height="61" Margin="135,10,0,0" VerticalAlignment="Top" Width="60" Background="Gray"/>-->
                             <Border BorderThickness="0.5" BorderBrush="Gray" Margin="136,10,10,0">
@@ -96,7 +96,7 @@
                             <Canvas.InputBindings>
                                 <MouseBinding Gesture="LeftClick" Command="{Binding CanvasClick}" CommandParameter="{Binding RelativeSource={RelativeSource Self}}"/>
                             </Canvas.InputBindings>
-                            <ContentPresenter Content="{Binding CList}"/>
+                            <ContentPresenter Content="{Binding ConfigurationPreview}"/>
                         </Canvas>
                     </Grid>
 

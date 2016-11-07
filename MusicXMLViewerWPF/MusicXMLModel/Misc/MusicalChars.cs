@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MusicXMLViewerWPF
 {
-    class MusChar           ///add ornaments unicode symbols
+    class MusicalChars           ///add ornaments unicode symbols
     {
         private static string to_utf8(string s)
         {
@@ -17,7 +17,7 @@ namespace MusicXMLViewerWPF
         //public static string Staff5L = to_utf8("\u1d110");
         #region clefs
         public const string FClef = "\uE062";
-        public static string GClef = "\uE050";//"\ue050";//"\U0001D11E";
+        public const string GClef = "\uE050";//"\ue050";//"\U0001D11E";
         public const string CClef = "\uE05C";
         #endregion
 
@@ -199,8 +199,8 @@ namespace MusicXMLViewerWPF
         public const string six = "\uF565";
         public const string seven = "\uF567";
         public const string eight = "\uF569";
-        public const string nine = "\uF56B";
-        public const string zero = "\uF56D";
+        public const string nine = "\uf466"; //! e089"; //! "\uF56B"; 
+        public const string zero = "\uF559";
         #endregion
         #region time beats
         public const string oneT = "\uF55A";

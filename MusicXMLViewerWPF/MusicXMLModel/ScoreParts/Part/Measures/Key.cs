@@ -89,11 +89,12 @@ namespace MusicXMLViewerWPF
 
         public void Draw(DrawingVisual visual, Point p, ClefType sign)
         {
-            using (DrawingContext dc = visual.RenderOpen())
+            DrawingVisual key = new DrawingVisual();
+            using (DrawingContext dc = key.RenderOpen())
             {
                 Draw_Key(dc,p,sign,(int)Fifths);
             }
-            
+            visual.Children.Add(key);
         }
 
         public void Draw(DrawingVisual visual)
@@ -101,15 +102,16 @@ namespace MusicXMLViewerWPF
             DrawingVisual key = new DrawingVisual();
             using (DrawingContext dc = key.RenderOpen())
             {
-                Brush KeyColor = (SolidColorBrush)new BrushConverter().ConvertFromString(AdditionalAttributes.Color);
+                Brush KeyColor = Brushes.Black;//? (SolidColorBrush)new BrushConverter().ConvertFromString(AdditionalAttributes.Color);
                 Draw_Key(dc, Relative, clef_type, (int)Fifths, color:KeyColor);  //! Experimental
             }
             visual.Children.Add(key);
         }
-    
+
         public static void Draw_Key(DrawingContext dc, Point p, ClefType sign, int num = 0, Brush color = null) //TODO improve with clef sign....
         {
-            int alt = -16;
+            float scale = MusicScore.Defaults.Scale.Tenths;
+            float alt = -0.4f * scale;
             // num = 4;// test
             if (color == null)
             {
@@ -119,26 +121,27 @@ namespace MusicXMLViewerWPF
             {
                 // do nothing if key is sharp/flat-less
             }
-            if (sign != null)
+            if (sign != null) //0.4f * scale
             {
-                alt = sign.Sign == ClefType.Clef.GClef ? -16 : sign.Sign == ClefType.Clef.CClef ? -12 : -8;// 0= Gclef 4= Cclef 8= Fclef
+                alt = sign.Sign == ClefType.Clef.GClef ? -0.4f * scale : sign.Sign == ClefType.Clef.CClef ? -0.3f * scale : -0.2f * scale;// 0= Gclef 4= Cclef 8= Fclef
             }
-            else
+
+            bool isSharp = num > 0 ? true : false;  //check if sharp or flat key
+            float x = (float)p.X; // x pos of measure
+            float y = (float)p.Y; // y pos of measure
+            float[] sharp = new float[] { 2, 12, -2, 8, 20, 4, 16 }; // y pos of each sharp symbol
+            float[] sharp_s = new float[] { 0.05f * scale, 0.3f * scale, -0.05f * scale, 0.2f * scale, 0.5f * scale, 0.1f * scale, 0.4f * scale}; //! with scale factor
+            float[] flat = new float[] { 16, 4, 20, 8, 24, 12, 28 }; // y pos of each flat symbol
+            float[] flat_s = new float[] { 0.4f * scale, 0.1f * scale, 0.5f * scale, 0.2f * scale, 0.6f * scale, 0.3f * scale, 0.7f * scale}; //! with scale factor
+            float padding = isSharp ? 0.2f * scale : 0.15f * scale; // different padding // difference in width of symbol
+            float[] test = isSharp ? sharp_s : flat_s; // assign table o possitions
+            string key = isSharp ? MusicalChars.Sharp : MusicalChars.Flat; // assign unicode symbol
+            for (int i = 0; i < Math.Abs(num); i++)
             {
-                bool isSharp = num > 0 ? true : false;  //check if sharp or flat key
-                float x = (float)p.X; // x pos of measure
-                float y = (float)p.Y; // y pos of measure
-                float[] sharp = new float[] { 2, 12, -2, 8, 20, 4, 16 }; // y pos of each sharp symbol
-                float[] flat = new float[] { 16, 4, 20, 8, 24, 12, 28 }; // y pos of each flat symbol
-                int padding = isSharp ? 8 : 6; // different padding // difference in width of symbol
-                float[] test = isSharp ? sharp : flat; // assign table o possitions
-                string key = isSharp ? MusChar.Sharp : MusChar.Flat; // assign unicode symbol
-                for (int i = 0; i < Math.Abs(num); i++)
-                {
-                    Misc.DrawingHelpers.DrawString(dc, key, TypeFaces.NotesFont, color, x + padding * i, y + (test[i] + alt), MusicScore.Defaults.Scale.Tenths); // draw
-                }
+                Misc.DrawingHelpers.DrawString(dc, key, TypeFaces.NotesFont, color, x + padding * i, y + (test[i] + alt), MusicScore.Defaults.Scale.Tenths); // draw
             }
         }
+        
     
 
         private void SetFifths(int i)
@@ -147,6 +150,16 @@ namespace MusicXMLViewerWPF
             {
                 this.fifths = FifthDic[i];
             }
+        }
+        private static Dictionary<string, Fifths> fiftsmajorresolver = new Dictionary<string, Fifths> { ["C"] = Fifths.C, ["G"] = Fifths.G, ["D"] = Fifths.D, ["A"] = Fifths.A, ["E"] = Fifths.E, ["B"] = Fifths.B, ["F\u266f"] = Fifths.Fs, ["C\u266f"] = Fifths.Cs, ["F"] = Fifths.F, ["B\u266d"] = Fifths.Bb, ["E\u266d"] = Fifths.Eb, ["A\u266d"] = Fifths.Ab, ["D\u266d"] = Fifths.Db, ["G\u266d"] = Fifths.Gb, ["C\u266d"] = Fifths.Cb };
+        public static Fifths GetFifths(string s)
+        {
+            Fifths f = Fifths.C;
+            if (fiftsmajorresolver.ContainsKey(s))
+            {
+                f = fiftsmajorresolver[s];
+            }
+            return f;
         }
         private static Dictionary<int, Fifths> FifthDic=new Dictionary<int, Fifths> {
             { -1, Fifths.F },
@@ -160,7 +173,10 @@ namespace MusicXMLViewerWPF
             { 3,Fifths.A },
             { 4,Fifths.E },
             { 5,Fifths.B },
+            { 6,Fifths.Fs },
+            { 7,Fifths.Cs },
             { -6,Fifths.Gb },
+            { -7,Fifths.Cb }
         };
     }
     enum Fifths
@@ -171,6 +187,9 @@ namespace MusicXMLViewerWPF
         A =3,
         E =4,
         B =5,
+        Fs =6,
+        Cs = 7,
+        Cb =-7,
         Gb =-6,
         Db =-5,
         Ab =-4,
