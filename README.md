@@ -7,11 +7,11 @@ I don't know how did you get here but if you are brave, you can check it out.
 -Spagetti code warning !!!
 ```
 
-**_Everything here is an experiment here so everything could be changed in the future and will be for sure._**
+**_Everything here is an experiment here so everything could be changed completely in the future._**
 #### Main goal of this project is learn/improve _C#_ by programming something bigger than calculator.
 ---
 I hope this program:
--  will work
+-  will work as expected
 -  hopefully look like "_simple_" music score editor
 -  and of course be useful somehow 
 
@@ -19,20 +19,20 @@ I hope this program:
 ___
 
 
-**Currently under developement:**       60-70% Done.  ~~Works quite good but that's not enough for me.~~ 
+###**Currently under developement:**
    - [x] ~~MusicXML reader // quite time consuming to implement // Absolute minimum to represent notes //~~ **Done**
+   - [ ] **MusicXML Reader** - improvements
+   - [ ] **Refactoring project according to MVVM pattern**
+   - [ ] **BasicUI Layout**
 
-   - [ ] **Under Developement** Methods for drawing  // Complete refactoring // A lot more complicated than i thought :)
- 
-**Next: (have to learn this first):**  0% only ideas for now :/
+###**Next:**
 
    - [ ] Basic interaction with drawn/loaded Music Score
 
-**Then:**                                               
+###**Then:**                                               
   - [ ] Saving changes made on loaded Music Score back to MusicXML file // Serialization?? I have to check it later ;) 
     
-**At the end:**  
+###**At the end:**  
   - [ ] Add each object using only mouse 
   - [ ] Maybe simple printing to PDF, XPS or something else
- 
-**Sorry for my English if something is not understandable**
+
