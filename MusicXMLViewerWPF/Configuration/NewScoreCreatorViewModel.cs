@@ -20,6 +20,7 @@ namespace MusicXMLScore.Configuration
         four = 4,
         eight = 8,
         sixteen = 16,
+        twentyfour = 24,
         thirtytwo = 32,
         sixtyfour = 64,
     }
@@ -48,11 +49,11 @@ namespace MusicXMLScore.Configuration
         #region fields
         private bool customsetting;
         private ClefTypeOptions currentclefoption = Configuration.ClefTypeOptions.regularclef;
-        private Dictionary<int, TimeSigBeatTime> timebeatlist = new Dictionary<int, TimeSigBeatTime>() { [1] = TimeSigBeatTime.one, [2] = TimeSigBeatTime.two, [4] = TimeSigBeatTime.four, [8] = TimeSigBeatTime.eight, [16] = TimeSigBeatTime.sixteen, [32] = TimeSigBeatTime.thirtytwo, [64] = TimeSigBeatTime.sixtyfour };
+        private Dictionary<int, TimeSigBeatTime> timebeatlist = new Dictionary<int, TimeSigBeatTime>() { [1] = TimeSigBeatTime.one, [2] = TimeSigBeatTime.two, [4] = TimeSigBeatTime.four, [8] = TimeSigBeatTime.eight, [16] = TimeSigBeatTime.sixteen, [24] = TimeSigBeatTime.twentyfour, [32] = TimeSigBeatTime.thirtytwo, [64] = TimeSigBeatTime.sixtyfour };
         private Helpers.PreviewCanvas canvaslist = new Helpers.PreviewCanvas();
         private Helpers.PreviewCanvas keypreview = new Helpers.PreviewCanvas();
         private int measurescount = 32;
-        private int timesigtimeval = 4;
+        private uint timesigtimeval = 4;
         private KeyValuePair<int, TimeSigBeatTime> selectedtimebeats = new KeyValuePair<int, TimeSigBeatTime>(4, TimeSigBeatTime.four);
         private KeyValuePair<string, ClefType> selectedclef = new KeyValuePair<string, Configuration.ClefType>(MusicalChars.GClef, Configuration.ClefType.GClef);
         private static Helpers.PreviewCanvas previewcanvas;
@@ -76,7 +77,7 @@ namespace MusicXMLScore.Configuration
         public Helpers.PreviewCanvas KeyPreview { get { return keypreview; } }
         public Helpers.PreviewCanvas PreviewCanvas { get { return previewcanvas; } set { previewcanvas = value; } }
         public int MeasuresCount { get { return measurescount; } set { measurescount = value; } }
-        public int TimeSigTime { get { return timesigtimeval; } set { if (value != timesigtimeval) { timesigtimeval = value; NotifyPropertyChanged(nameof(TimeSigTime)); } } }
+        public uint TimeSigTime { get { return timesigtimeval; } set { if (value != timesigtimeval) { timesigtimeval = value; NotifyPropertyChanged(nameof(TimeSigTime)); } } }
         public KeyValuePair<ImageSource, ClefType> SelectedClefType { get; set; }
         public KeyValuePair<int, TimeSigBeatTime> SelectedTimeBeats { get { return selectedtimebeats; } set { selectedtimebeats = value; NotifyPropertyChanged(nameof(SelectedTimeBeats)); } }
         public List<string> ClefType { get { return cleftype_; } }
@@ -104,13 +105,15 @@ namespace MusicXMLScore.Configuration
             OptionsWindowCommand = new RelayCommand(OnOpionsWindow, () => CustomSettings);
             AddVisualCommand = new RelayCommand(OnAddVisual);
             CanvasClick = new RelayCommand(OnCanvasClick);
-            SetKeySymbolList();
             InitPreview();
+            SetKeySymbolList();
+            
         }
 
         private void InitPreview()
         {
             MusicScore.Defaults = new MusicXMLViewerWPF.Defaults.Defaults();
+            MusicScore.Defaults.Scale.Set(60);
         }
 
         private void NewScoreCreatorViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -127,6 +130,9 @@ namespace MusicXMLScore.Configuration
                     break;
                 case "KeySymbolList":
                     SelectedKeySymbol = KeySymbolList.ElementAt(0);
+                    break;
+                case "SelectedKeySymbol":
+                    UpdatePreview();
                     break;
                 case "SelectedClef":
                     UpdatePreview();
@@ -148,28 +154,31 @@ namespace MusicXMLScore.Configuration
         private void UpdatePreview() //TODO_H rework to auto scale "coord * factor"
         {
             ConfigurationPreview.ClearVisuals();
-            Point key = new Point(80,20);
-            Point clef = new Point(20, 20);
-            Point timesig = new Point(50, 20);
-            Point measure = new Point(10, 20);
+            float scale = MusicScore.Defaults.Scale.Tenths;
+            Point key = new Point(2*scale, 0.5 * scale);
+            Point clef = new Point(0.5*scale, 0.5 * scale);
+            Point timesig = new Point(1.25*scale, 0.5 * scale);
+            Point measure = new Point(0.25*scale, 0.5 * scale);
             DrawingVisual k_d = new DrawingVisual();
             DrawingVisual c_d = new DrawingVisual();
             DrawingVisual t_d = new DrawingVisual();
             DrawingVisual m = new DrawingVisual();
-            MusicXMLViewerWPF.ScoreParts.Part.Measures.Measure meae = new MusicXMLViewerWPF.ScoreParts.Part.Measures.Measure() { Width = 100 };
+            MusicXMLViewerWPF.ScoreParts.Part.Measures.Measure meae = new MusicXMLViewerWPF.ScoreParts.Part.Measures.Measure() { Width = 3f * scale};
             using(DrawingContext dc= m.RenderOpen())
             {
                 meae.Draw_Measure(dc, measure);
             }
-            MusicXMLViewerWPF.Key k = new MusicXMLViewerWPF.Key(1,"major",0);
+            int fifths = (int)MusicXMLViewerWPF.Key.GetFifths(SelectedKeySymbol);
+            MusicXMLViewerWPF.Key k = new MusicXMLViewerWPF.Key(fifths,"major",0);
             string cl = SelectedClefS.Value == Configuration.ClefType.GClef ? "G" : SelectedClefS.Value == Configuration.ClefType.FClef ? "F" : "C";
+            MusicXMLViewerWPF.ClefType ct = new MusicXMLViewerWPF.ClefType(cl);
             Clef c = new Clef(cl,2,0);
             string ttype = CurrentTimeSigOption == TimeSigSettingOptions.standard ? "" : CurrentTimeSigOption.ToString();
-            TimeSignature t = new TimeSignature(TimeSigTime, (int)SelectedTimeBeats.Value, ttype);
+            TimeSignature t = new TimeSignature((int)TimeSigTime, (int)SelectedTimeBeats.Value, ttype);
             k.Relative = key;
             c.Relative = clef;
             t.Relative = timesig;
-            k.Draw(k_d);
+            k.Draw(k_d, k.Relative, ct);
             c.Draw(c_d);
             t.Draw(t_d);
             ConfigurationPreview.AddVisual(m);

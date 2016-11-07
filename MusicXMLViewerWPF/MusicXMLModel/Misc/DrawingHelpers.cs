@@ -19,6 +19,10 @@ namespace MusicXMLViewerWPF.Misc
         {
 
         }
+        public static void DrawFormattedString(DrawingContext dc, FormattedText ft, Point position)
+        {
+            dc.DrawText(ft, position);
+        }
         public static void DrawText(DrawingContext dc, string text, Point position, float font_size, Halign align = Halign.right, Valign valign = Valign.middle, string font_weight = null, bool withsub = true, Brush color = null)
         {
             color = color == null ? Brushes.Black : color;

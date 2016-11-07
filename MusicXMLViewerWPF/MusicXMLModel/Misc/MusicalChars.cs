@@ -199,8 +199,8 @@ namespace MusicXMLViewerWPF
         public const string six = "\uF565";
         public const string seven = "\uF567";
         public const string eight = "\uF569";
-        public const string nine = "\uF56B";
-        public const string zero = "\uF56D";
+        public const string nine = "\uf466"; //! e089"; //! "\uF56B"; 
+        public const string zero = "\uF559";
         #endregion
         #region time beats
         public const string oneT = "\uF55A";

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Media;
 using System.Xml.Linq;
 
@@ -70,16 +71,21 @@ namespace MusicXMLViewerWPF
             {
                 if (sigType == SignatureType.number)
                 {
-                    Misc.DrawingHelpers.DrawString(dc, BeatStr, TypeFaces.TimeNumbers, Brushes.Black, Relative_x + Spacer_L, Relative_y, MusicScore.Defaults.Scale.Tenths);
-                    Misc.DrawingHelpers.DrawString(dc, BeatTypeStr, TypeFaces.TimeNumbers, Brushes.Black, Relative_x + Spacer_L, Relative_y, MusicScore.Defaults.Scale.Tenths);
+                    Point p = new Point(Relative_x + Spacer_L, Relative_y);
+                    FormattedText fbt = new FormattedText(BeatTypeStr, System.Threading.Thread.CurrentThread.CurrentUICulture, FlowDirection.LeftToRight, TypeFaces.TimeNumbers, MusicScore.Defaults.Scale.Tenths, Brushes.Black);
+                    fbt.TextAlignment = TextAlignment.Center;
+                    FormattedText fb = new FormattedText(BeatStr, System.Threading.Thread.CurrentThread.CurrentUICulture, FlowDirection.LeftToRight, TypeFaces.TimeNumbers, MusicScore.Defaults.Scale.Tenths, Brushes.Black);
+                    fb.TextAlignment = TextAlignment.Center;
+                    Misc.DrawingHelpers.DrawFormattedString(dc, fb, p);
+                    Misc.DrawingHelpers.DrawFormattedString(dc, fbt, p);
                 }
                 if (sigType == SignatureType.common)
                 {
-                    Misc.DrawingHelpers.DrawString(dc, MusicalChars.CommonTime, TypeFaces.NotesFont, Brushes.Black, Relative_x + Spacer_L, Relative_y - 15, MusicScore.Defaults.Scale.Tenths);
+                    Misc.DrawingHelpers.DrawString(dc, MusicalChars.CommonTime, TypeFaces.NotesFont, Brushes.Black, Relative_x + Spacer_L, Relative_y - 0.4f * MusicScore.Defaults.Scale.Tenths, MusicScore.Defaults.Scale.Tenths);
                 }
                 if (sigType == SignatureType.cut)
                 {
-                    Misc.DrawingHelpers.DrawString(dc, MusicalChars.CutTime, TypeFaces.NotesFont, Brushes.Black, Relative_x + Spacer_L, Relative_y -15, MusicScore.Defaults.Scale.Tenths);
+                    Misc.DrawingHelpers.DrawString(dc, MusicalChars.CutTime, TypeFaces.NotesFont, Brushes.Black, Relative_x + Spacer_L, Relative_y - 0.4f * MusicScore.Defaults.Scale.Tenths, MusicScore.Defaults.Scale.Tenths);
                 }
             }
         }
@@ -113,16 +119,38 @@ namespace MusicXMLViewerWPF
         }
         private void SetBeatTime(int i)
         {
-            if (beat_dic.ContainsKey(i))
+            if (i < 10)
             {
-                this.beats_type_str = beat_dic[i];
+                if (beat_dic.ContainsKey(i))
+                {
+                    this.beats_type_str = beat_dic[i];
+                }
+            }
+            else
+            {
+                char[] chars = BeatsType.ToString().ToCharArray();
+                foreach (var item in chars)
+                {
+                    beats_type_str += beat_dic[int.Parse(item.ToString())] +"   ";
+                }
             }
         }
         private void SetBeat(int i)
         {
-            if (beat_d.ContainsKey(i))
+            if (i < 10)
             {
-                this.beats_str = beat_d[i];
+                if (beat_d.ContainsKey(i))
+                {
+                    this.beats_str = beat_d[i];
+                }
+            }
+            else
+            {
+                char[] chars = Beats.ToString().ToCharArray();
+                foreach (var item in chars)
+                {
+                    beats_str += beat_d[int.Parse(item.ToString())] + "   ";
+                }
             }
         }
         public string GetNumber(int i)
@@ -136,6 +164,7 @@ namespace MusicXMLViewerWPF
         }
         private Dictionary<int, string> beat_d = new Dictionary<int, string>()
         {
+            {0,MusicalChars.zero },
             {1,MusicalChars.one },
             {2,MusicalChars.two },
             {3,MusicalChars.three },
@@ -148,6 +177,7 @@ namespace MusicXMLViewerWPF
         };
         private Dictionary<int, string> beat_dic = new Dictionary<int, string>()
         {
+            {0,MusicalChars.zeroT },
             {1,MusicalChars.oneT },
             {2,MusicalChars.twoT },
             {3,MusicalChars.threeT },
