@@ -86,7 +86,8 @@
     <Compile Include="Converters\StarWidthConverter.cs" />
     <Compile Include="Converters\ToTypeEqualityConverter.cs" />
     <Compile Include="Helpers\CanvasList.cs" />
-    <Compile Include="Helpers\DrawingMethods.cs" />
+    <Compile Include="Helpers\DrawingHelpers.cs" />
+    <Compile Include="Helpers\Mediator.cs" />
     <Compile Include="Helpers\PreviewCanvas.cs" />
     <Compile Include="Helpers\PreviewSettings.cs" />
     <Compile Include="Helpers\TypeFaces.cs" />
@@ -117,7 +118,7 @@
     <Compile Include="MusicXMLModel\ScoreParts\Part\Measures\Barline.cs" />
     <Compile Include="MusicXMLModel\Defaults\SystemLayout.cs" />
     <Compile Include="MusicXMLModel\Misc\Calc.cs" />
-    <Compile Include="MusicXMLModel\Misc\CanvasList.cs" />
+    <Compile Include="MusicXMLModel\Misc\CanvasL.cs" />
     <Compile Include="MusicXMLModel\ScoreParts\Part\Measures\ClefType.cs" />
     <Compile Include="MusicXMLModel\Defaults\Appearance.cs" />
     <Compile Include="MusicXMLModel\Defaults\Scale.cs" />
