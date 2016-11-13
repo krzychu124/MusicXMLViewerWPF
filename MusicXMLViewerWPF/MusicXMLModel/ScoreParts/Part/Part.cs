@@ -229,7 +229,7 @@ namespace MusicXMLViewerWPF.ScoreParts.Part
             }
         }
         
-        public void DrawMeasures(CanvasList surface)
+        public void DrawMeasures(CanvasL surface)
         {
             Point start = new Point();
             if (measure_margin_helper.Count != 0)

@@ -9,11 +9,25 @@ using System.Windows.Media;
 
 namespace MusicXMLScore.Helpers
 {
-    class CanvasList : Panel
+    class CanvasList : Canvas
     {
         //private VisualCollection visuals;
         private List<Visual> visuals = new List<Visual>();
         
+        public CanvasList() : base()
+        {
+
+        }
+        /// <summary>
+        /// Sets Width and Height of Canvas
+        /// </summary>
+        /// <param name="width"></param>
+        /// <param name="height"></param>
+        public CanvasList(double width, double height) : base()
+        {
+            this.Width = width;
+            this.Height = height;
+        }
         protected override Visual GetVisualChild(int index)
         {
             return visuals[index];
@@ -25,7 +39,10 @@ namespace MusicXMLScore.Helpers
                 return visuals.Count;
             }
         }
-
+        /// <summary>
+        /// Adds visual to Visual, VisualChild and LogicalChild collection 
+        /// </summary>
+        /// <param name="visual"></param>
         public void AddVisual(Visual visual)
         {
             visuals.Add(visual);
@@ -33,7 +50,10 @@ namespace MusicXMLScore.Helpers
             base.AddVisualChild(visual);
             base.AddLogicalChild(visual);
         }
-
+        /// <summary>
+        /// Removes visual from Visual, VisualChild and LogicalChild collection
+        /// </summary>
+        /// <param name="visual"></param>
         public void DeleteVisual(Visual visual)
         {
             visuals.Remove(visual);
@@ -41,6 +61,10 @@ namespace MusicXMLScore.Helpers
             base.RemoveVisualChild(visual);
             base.RemoveLogicalChild(visual);
         }
+
+        /// <summary>
+        /// Clears all Visual Collections
+        /// </summary>
         public void ClearVisuals()
         {
             int x = VisualChildrenCount;

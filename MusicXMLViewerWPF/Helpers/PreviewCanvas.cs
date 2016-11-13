@@ -23,7 +23,7 @@ namespace MusicXMLScore.Helpers
             DrawingVisual vis = new DrawingVisual();
             using (DrawingContext dc = vis.RenderOpen())
             {
-                DrawingMethods.DrawString(dc, "test", TypeFaces.TextFont, Brushes.Black, 20f, 15f, 20f);
+                DrawingHelpers.DrawString(dc, "test", TypeFaces.TextFont, Brushes.Black, 20f, 15f, 20f);
             }
             this.AddVisual(vis);
         }
@@ -50,7 +50,7 @@ namespace MusicXMLScore.Helpers
             DrawingVisual vis = new DrawingVisual();
             using (DrawingContext dc = vis.RenderOpen())
             {
-                DrawingMethods.DrawString(dc, "test2", TypeFaces.TextFont, Brushes.Black, 35f, 45f, 20f);
+                DrawingHelpers.DrawString(dc, "test2", TypeFaces.TextFont, Brushes.Black, 35f, 45f, 20f);
             }
             //this.AddVisual(vis);
         }

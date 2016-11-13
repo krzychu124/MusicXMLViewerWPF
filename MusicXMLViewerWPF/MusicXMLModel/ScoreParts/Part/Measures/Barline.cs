@@ -96,7 +96,7 @@ namespace MusicXMLViewerWPF
             }
         
         }
-        public void Draw(CanvasList surface, Point p)
+        public void Draw(CanvasL surface, Point p)
         {
             
         }
@@ -361,7 +361,7 @@ namespace MusicXMLViewerWPF
         {
             type = s == "start" ? EndingType.start : s == "stop" ? EndingType.stop : EndingType.discontinue; 
         }
-        public void Draw(Point p, float width, CanvasList surface)
+        public void Draw(Point p, float width, CanvasL surface)
         {
             
             

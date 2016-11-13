@@ -417,7 +417,7 @@ namespace MusicXMLViewerWPF
 
             */
         }
-        public void DrawMeasures(CanvasList Surface, DrawingVisual visual, int num)
+        public void DrawMeasures(CanvasL Surface, DrawingVisual visual, int num)
         {
 
             if (MeasureList_Loaded)
