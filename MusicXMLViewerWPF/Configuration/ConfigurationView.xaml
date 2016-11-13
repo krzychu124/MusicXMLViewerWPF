@@ -8,14 +8,81 @@
         Title="ConfigurationView" Height="422.828" Width="453.008">
     <Grid>
         <!--<local:PageSettingsView HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="258" Height="243"/>-->
-        <TabControl x:Name="tabControl" HorizontalAlignment="Left" Height="391" VerticalAlignment="Top" Width="439">
+        <TabControl x:Name="tabControl" Margin="0,0,-2,-7">
             <TabItem Header="Page Settings">
-                <Grid Background="#FFE5E5E5">
-                    <local:PageSettingsView HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="258" Height="243"/>
+                <Grid >
+                    <local:PageSettingsView Margin="2,2,0,0"/>
                 </Grid>
             </TabItem>
             <TabItem Header="TabItem">
-                <Grid Background="#FFE5E5E5"/>
+                <Grid Background="#FFE5E5E5">
+                    <WrapPanel>
+                        <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                            <Canvas Width="auto" Height="auto" Background="Red"/>
+                            <StackPanel Orientation="Horizontal" Panel.ZIndex="0" Margin="5" >
+                                <Canvas Width="30" Height="70" Background="GreenYellow"/>
+                                <Canvas Width="30" Height="70" Background="Green"/>
+                                <Canvas Width="30" Height="70" Background="Goldenrod"/>
+                            </StackPanel>
+                        </Grid>
+                        <Canvas Width="100" Height="70" Background="Beige">
+                            <StackPanel Orientation="Horizontal">
+                                <Canvas Width="30" Height="70" Background="GreenYellow"/>
+                                <Canvas Width="30" Height="70" Background="Green"/>
+                                <Canvas Width="30" Height="70" Background="Goldenrod"/>
+                            </StackPanel>
+                        </Canvas>
+                        <Canvas Width="100" Height="70" Background="Beige">
+                            <StackPanel Orientation="Horizontal">
+                                <Canvas Width="30" Height="70" Background="GreenYellow"/>
+                                <Canvas Width="30" Height="70" Background="Green"/>
+                                <Canvas Width="30" Height="70" Background="Goldenrod"/>
+                            </StackPanel>
+                        </Canvas>
+                        <Canvas Width="100" Height="70" Background="Beige">
+                            <StackPanel Orientation="Horizontal">
+                                <Canvas Width="30" Height="70" Background="GreenYellow"/>
+                                <Canvas Width="30" Height="70" Background="Green"/>
+                                <Canvas Width="30" Height="70" Background="Goldenrod"/>
+                            </StackPanel>
+                        </Canvas>
+                        <Canvas Width="100" Height="70" Background="Beige">
+                            <StackPanel Orientation="Horizontal">
+                                <Canvas Width="30" Height="70" Background="GreenYellow"/>
+                                <Canvas Width="30" Height="70" Background="Green"/>
+                                <Canvas Width="30" Height="70" Background="Goldenrod"/>
+                            </StackPanel>
+                        </Canvas>
+                        <Canvas Width="100" Height="70" Background="Beige">
+                            <StackPanel Orientation="Horizontal">
+                                <Canvas Width="30" Height="70" Background="GreenYellow"/>
+                                <Canvas Width="30" Height="70" Background="Green"/>
+                                <Canvas Width="30" Height="70" Background="Goldenrod"/>
+                            </StackPanel>
+                        </Canvas>
+                        <Canvas Width="100" Height="70" Background="Beige">
+                            <StackPanel Orientation="Horizontal">
+                                <Canvas Width="30" Height="70" Background="GreenYellow"/>
+                                <Canvas Width="30" Height="70" Background="Green"/>
+                                <Canvas Width="30" Height="70" Background="Goldenrod"/>
+                            </StackPanel>
+                        </Canvas>
+                        <Canvas Width="100" Height="70" Background="Beige">
+                            <StackPanel Orientation="Horizontal">
+                                <Canvas Width="30" Height="70" Background="GreenYellow"/>
+                                <Canvas Width="30" Height="70" Background="Green"/>
+                                <Canvas Width="30" Height="70" Background="Goldenrod"/>
+                            </StackPanel>
+                        </Canvas>
+                        <Canvas Width="100" Height="70" Background="Beige">
+                            <StackPanel Orientation="Horizontal">
+                                <Canvas Width="30" Height="70" Background="GreenYellow"/>
+                                <Canvas Width="30" Height="70" Background="Green"/>
+                                <Canvas Width="30" Height="70" Background="Goldenrod"/>
+                            </StackPanel>
+                        </Canvas>
+                    </WrapPanel>
+                </Grid>
             </TabItem>
         </TabControl>
 

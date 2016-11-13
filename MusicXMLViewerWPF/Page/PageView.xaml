@@ -6,16 +6,21 @@
              xmlns:local="clr-namespace:MusicXMLScore.Page"
              xmlns:helpers="clr-namespace:MusicXMLScore.Helpers"
              xmlns:Configuration="clr-namespace:MusicXMLScore.Configuration" xmlns:Log="clr-namespace:MusicXMLScore.Log" x:Class="MusicXMLScore.Page.PageView"
-             mc:Ignorable="d" Height="361.017" Width="584.746">
+             mc:Ignorable="d" Height="350" Width="600">
     
-    <Grid Margin="5">
+    <Grid Margin="5" Width="Auto" Height="Auto">
         <Border BorderBrush="Black" BorderThickness="0.5">
-            <Border.Effect >
-                <DropShadowEffect BlurRadius="10" ShadowDepth="1"></DropShadowEffect>
-            </Border.Effect>
             <Grid>
-        <helpers:CanvasList Background="Beige"/>
-            <RadioButton HorizontalAlignment="Right" GroupName="a" ></RadioButton>
+                <ItemsControl ItemsSource="{Binding List}" Background="Transparent" Margin="20">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel x:Name="ItemsPanelContainer" Orientation="{Binding Orientation}" HorizontalAlignment="Left" IsItemsHost="true" ClipToBounds="false">
+                            </WrapPanel>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
+                <RadioButton HorizontalAlignment="Right" VerticalAlignment="Top" FlowDirection="RightToLeft" GroupName="a" Width="50" Height="25" Content="Rbtn"></RadioButton>
+                <Button Content="test" Command="{Binding TestCommand}" HorizontalAlignment="Left" VerticalAlignment="Top"  Width="40" Height="20"/>
             </Grid>
         </Border>
         <!--<TextBox x:Name="textBox" TextWrapping="Wrap" Text="PageView&#xA;&#xA;&#xA;&#xA;&#xA;&#xA;&#xA;&#xA;&#xA;&#xA;&#xA;&#xA;&#xA;&#xA;&#xA;&#xA;&#xA;PageViewNextPage&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;&#xA;PageViewNextPage&#xD;&#xA;&#xA;PageViewNextPage"/>-->
