@@ -52,7 +52,7 @@
                                 </DropShadowEffect>
                             </Border.Effect>
                             <!--<Viewbox Stretch="None" Height="Auto" Width="Auto">-->
-                            <local:CanvasList Width="Auto" x:Name="drawingSurface"  Background="Beige" ClipToBounds="True" Margin="10,10,17,10" MinWidth="900" MinHeight="380" ScrollViewer.CanContentScroll="True" />
+                            <local:CanvasL Width="Auto" x:Name="drawingSurface"  Background="Beige" ClipToBounds="True" Margin="10,10,17,10" MinWidth="900" MinHeight="380" ScrollViewer.CanContentScroll="True" />
                             <!--</Viewbox>-->
                             <!-- Temporary A4 dimensions to make scrolling working-->
                         <!-- <local:testview   /> -->

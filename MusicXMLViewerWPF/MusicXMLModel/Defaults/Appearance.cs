@@ -78,19 +78,40 @@ namespace MusicXMLViewerWPF.Defaults
                     {
                         string s = item.Attribute("type").Value;
                         float v = float.Parse(item.Value, CultureInfo.InvariantCulture);
-                        lineWidths.Add(s, v);
+                        if (lineWidths.ContainsKey(s))
+                        {
+                            lineWidths[s] = v;
+                        }
+                        else
+                        {
+                            lineWidths.Add(s, v);
+                        }
                     }
                     if (item.Name.LocalName == "note-size") //search for <note-size>
                     {
                         string s = item.Attribute("type").Value;
                         float v = float.Parse(item.Value, CultureInfo.InvariantCulture);
-                        noteSizes.Add(s, v);
+                        if (noteSizes.ContainsKey(s))
+                        {
+                            noteSizes[s] = v;
+                        }
+                        else
+                        {
+                            noteSizes.Add(s, v);
+                        }
                     }
                     if (item.Name.LocalName == "distance") //search for <ldistance>
                     {
                         string s = item.Attribute("type").Value;
                         float v = float.Parse(item.Value, CultureInfo.InvariantCulture);
-                        distances.Add(s, v);
+                        if (distances.ContainsKey(s))
+                        {
+                            distances[s] = v;
+                        }
+                        else
+                        {
+                            distances.Add(s, v);
+                        }
                     }
 
                 }
@@ -99,27 +120,48 @@ namespace MusicXMLViewerWPF.Defaults
 
         public void initFromXElement(XElement x)
         {
-            var appearance = x.Elements(); 
-                                           
+            var appearance = x.Elements();
+
             foreach (var item in appearance)
             {
                 if (item.Name.LocalName == "line-width") //search for <line-width>
                 {
                     string s = item.Attribute("type").Value;
                     float v = float.Parse(item.Value, CultureInfo.InvariantCulture);
-                    lineWidths.Add(s, v);
+                    if (lineWidths.ContainsKey(s))
+                    {
+                        lineWidths[s] = v;
+                    }
+                    else
+                    {
+                        lineWidths.Add(s, v);
+                    }
                 }
                 if (item.Name.LocalName == "note-size") //search for <note-size>
                 {
                     string s = item.Attribute("type").Value;
                     float v = float.Parse(item.Value, CultureInfo.InvariantCulture);
-                    noteSizes.Add(s, v);
+                    if (noteSizes.ContainsKey(s))
+                    {
+                        noteSizes[s] = v;
+                    }
+                    else
+                    {
+                        noteSizes.Add(s, v);
+                    }
                 }
                 if (item.Name.LocalName == "distance") //search for <ldistance>
                 {
                     string s = item.Attribute("type").Value;
                     float v = float.Parse(item.Value, CultureInfo.InvariantCulture);
-                    distances.Add(s, v);
+                    if (distances.ContainsKey(s))
+                    {
+                        distances[s] = v;
+                    }
+                    else
+                    {
+                        distances.Add(s, v);
+                    }
                 }
 
             }

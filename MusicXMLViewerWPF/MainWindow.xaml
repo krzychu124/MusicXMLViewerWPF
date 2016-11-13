@@ -20,7 +20,7 @@
         <DockPanel Grid.Row="0">
             <Menu IsMainMenu="True" Height="20" VerticalAlignment="Top" DockPanel.Dock="Top" Width="Auto" >
                 <MenuItem Header="File" >
-                    <MenuItem Header="New Score" Command="{Binding NewScoreCommand}"/>
+                    <MenuItem Header="New Score" Command="{Binding NewScoreCommand}" IsEnabled="False"/>
                     <MenuItem Header="New Score with creator" Command="{Binding NewScoreCreatorCommand}"/>
                     <Separator/>
                     <MenuItem Header="Open File" Command="{Binding OpenFileCommand}"/>
@@ -28,14 +28,16 @@
                         <MenuItem Header="Open Last File"/>
                     </MenuItem>
                     <Separator/>
-                    <MenuItem Header="Save"/>
-                    <MenuItem Header="Save as ..."/>
+                    <MenuItem Header="Close File" Command="{Binding CloseFileCommand}"/>
+                    <Separator/>
+                    <MenuItem Header="Save" IsEnabled="False"/>
+                    <MenuItem Header="Save as ..." IsEnabled="False"/>
                     <Separator/>
                     <MenuItem Header="Options" Command="{Binding OpenOptionsWindowCommand}"/>
                     <Separator/>
                     <MenuItem Header="Exit" Command="{Binding ExitCommand}"/>
                 </MenuItem>
-                <MenuItem Header="Edit">
+                <MenuItem Header="Edit" IsEnabled="False">
                     <MenuItem Header="Undo"/>
                     <MenuItem Header="Redo"/>
                     <Separator/>
@@ -47,39 +49,44 @@
                     <MenuItem Header="Select All"/>
                 </MenuItem>
                 <MenuItem Header="View">
-                    <MenuItem Header="Logger" IsCheckable="True"/>
+                    <MenuItem Header="Logger" IsCheckable="True" IsEnabled="False"/>
+                    <MenuItem Header="OldView" Command="{Binding OldViewCommand}"/>
                 </MenuItem>
                 <MenuItem Header="Add">
                     <MenuItem Header="Measure" Command="{Binding AddMeasureCommand}"/>
-                    <MenuItem Header="Text"/>
-                    <MenuItem Header="Frame"/>
+                    <MenuItem Header="Text" IsEnabled="False"/>
+                    <MenuItem Header="Frame" IsEnabled="False"/>
                     <MenuItem Header="CustomButton" Command="{Binding CustomButtonCommand}"/>
                 </MenuItem>
-                <MenuItem Header="Layout">
-                    <MenuItem Header="Page Settings"/>
+                <MenuItem Header="Layout" IsEnabled="False">
+                    <MenuItem Header="Page Settings" />
                 </MenuItem>
-                <MenuItem Header="Style">
+                <MenuItem Header="Style" IsEnabled="False">
                     <MenuItem Header="General"/>
                     <MenuItem Header="Text"/>
                     <Separator/>
                     <MenuItem Header="Load Style"/>
                     <MenuItem Header="Save Style"/>
                 </MenuItem>
-                <MenuItem Header="Help">
+                <MenuItem Header="Help" IsEnabled="False">
                     <MenuItem Header="Get Help"/>
                 </MenuItem>
             </Menu>
         </DockPanel>
-        <ScrollViewer Grid.Row="1" CanContentScroll="True" VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Disabled">
+        <ScrollViewer Grid.Row="1" CanContentScroll="True" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
             <!--Content="{Binding Pages}"-->
             <!--<Page:PageView Margin="0,0,0,0" Height="361" Width="807"/>-->
-            <ItemsControl ItemsSource="{Binding Pages}" Background="LightGray" HorizontalAlignment="Center">
+            <Border>
+                <Border.Effect>
+                    <DropShadowEffect BlurRadius="10" ShadowDepth="2"/>
+                </Border.Effect>
+            <ItemsControl ItemsSource="{Binding Pages}" Background="Beige" HorizontalAlignment="Center">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <WrapPanel x:Name="ItemsPanelContainer" Orientation="{Binding Orientation}"/>
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
-            </ItemsControl>
+            </ItemsControl></Border>
             <!--<StackPanel Orientation="{Binding Orientation}">
                 <TextBlock Width="200" Height="200" Background="Beige">
                 </TextBlock>

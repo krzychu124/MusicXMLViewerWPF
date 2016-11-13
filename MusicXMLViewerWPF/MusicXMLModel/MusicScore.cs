@@ -15,7 +15,7 @@ namespace MusicXMLViewerWPF
     class MusicScore : INotifyPropertyChanged
     {
         #region static variables
-        protected static CanvasList Surface;
+        protected static CanvasL Surface;
         protected static string title;
         protected static Defaults.Defaults defaults; 
         protected static Dictionary<string, ScoreParts.Part.Part> parts = new Dictionary<string, ScoreParts.Part.Part>() { };
@@ -279,12 +279,12 @@ namespace MusicXMLViewerWPF
         /// Gets Canvas surface for Drawing
         /// </summary>
         /// <param name="s"></param>
-        public static void GetSurfce (CanvasList s)
+        public static void GetSurfce (CanvasL s)
         {
             Surface = s;
         }
 
-        public static void Draw(CanvasList surface)
+        public static void Draw(CanvasL surface)
         {
             //DrawingVisual credits = new DrawingVisual();
             //DrawCredits(credits);

@@ -74,6 +74,11 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
 
         }
 
+        public Measure(double width)
+        {
+            this.Width = (float)width;
+        }
+
         public Measure(XElement x)
         {
             ID = Misc.RandomGenerator.GetRandomHexNumber();
@@ -434,7 +439,7 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
         /// </summary>
         /// <param name="surface"></param>
         /// <param name="p"></param>
-        public void Draw(CanvasList surface,Point p) // drawing method
+        public void Draw(CanvasL surface,Point p) // drawing method
         {
             Position = p;
 
@@ -678,8 +683,17 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
             }
             if (IsFirstInLine)
             {
-                Misc.DrawingHelpers.DrawText(dc, Number.ToString(), new Point(Relative_x + 5f, Relative_y - 5f), 10f, withsub: false, color: Brushes.Black, font_weight:"regular");
+                //Misc.DrawingHelpers.DrawText(dc, Number.ToString(), new Point(Relative_x + 5f, Relative_y - 5f), 10f, withsub: false, color: Brushes.Black, font_weight:"regular");
             }
+        }
+        public void Draw_Measure(DrawingVisual dv, Point p)
+        {
+            DrawingVisual m = new DrawingVisual();
+            using (DrawingContext dc = m.RenderOpen())
+            {
+                Draw_Measure(dc, p);
+            }
+            dv.Children.Add(m);
         }
         /// <summary>
         /// Method for Drawing barlines !!DEPRECIATED!!

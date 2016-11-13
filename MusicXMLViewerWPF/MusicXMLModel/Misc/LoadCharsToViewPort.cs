@@ -28,12 +28,12 @@ namespace MusicXMLViewerWPF
                 start = isS;
             }
         }
-        CanvasList surface;
+        CanvasL surface;
         
-        public CanvasList Surface { get { return surface; } set{ surface = value; } }
+        public CanvasL Surface { get { return surface; } set{ surface = value; } }
         public LoadCharsToViewPort()
         { }
-        public LoadCharsToViewPort(CanvasList list)
+        public LoadCharsToViewPort(CanvasL list)
         {
             Surface = list;
         }
@@ -366,7 +366,7 @@ namespace MusicXMLViewerWPF
             d.DrawGeometry(Brushes.Black, pen, sg);
         }
 
-        public static void Draw_Slur(CanvasList surface,Point p1, Point p2, bool direction, bool isDash = false)
+        public static void Draw_Slur(CanvasL surface,Point p1, Point p2, bool direction, bool isDash = false)
         {
             sbyte dir = direction ? (sbyte) 1 : (sbyte) -1; // set direction of slur
             Pen pen = new Pen(Brushes.Black, 1);

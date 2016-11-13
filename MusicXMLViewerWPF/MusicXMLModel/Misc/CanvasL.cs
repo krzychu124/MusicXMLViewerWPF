@@ -9,7 +9,7 @@ using System.Windows.Media;
 
 namespace MusicXMLViewerWPF
 {
-    class CanvasList : Grid
+    class CanvasL : Grid
     { 
         private List<Visual> visuals = new List<Visual>();
 

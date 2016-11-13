@@ -151,7 +151,7 @@ namespace MusicXMLScore.Configuration
             }
         }
 
-        private void UpdatePreview() //TODO_H rework to auto scale "coord * factor"
+        private void UpdatePreview()
         {
             ConfigurationPreview.ClearVisuals();
             float scale = MusicScore.Defaults.Scale.Tenths;
@@ -192,7 +192,7 @@ namespace MusicXMLScore.Configuration
             DrawingVisual vis = new DrawingVisual();
             using (DrawingContext dc = vis.RenderOpen())
             {
-                Helpers.DrawingMethods.DrawString(dc, "test2", Helpers.TypeFaces.TextFont, Brushes.Black, 35f, 45f, 20f);
+                Helpers.DrawingHelpers.DrawString(dc, "test2", Helpers.TypeFaces.TextFont, Brushes.Black, 35f, 45f, 20f);
             }
             return vis;
         }
