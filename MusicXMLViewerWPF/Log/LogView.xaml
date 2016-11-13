@@ -10,7 +10,20 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <converters:StarWidthConverter x:Key="starWidthConverter"/>
+
+            <HierarchicalDataTemplate x:Key="NodeTemplate" ItemsSource="{Binding XPath=./*}">
+            <TextBlock x:Name="nodetext"/>
+            <HierarchicalDataTemplate.Triggers>
+                <DataTrigger Binding="{Binding Path=NodeType}" Value="Element">
+                    <Setter TargetName="nodetext" Property="Text"
+                        Value="{Binding Path=Name}" />
+                </DataTrigger>
+            </HierarchicalDataTemplate.Triggers>
+        </HierarchicalDataTemplate>
         </ResourceDictionary>
+        
+
+        
     </UserControl.Resources>
     <Grid>
         <TabControl x:Name="tabControl" TabStripPlacement="Left">
@@ -95,6 +108,19 @@
                             </GridView>
                         </ListView.View>
                     </ListView>
+                </Border>
+            </TabItem>
+            <TabItem Header="XML File">
+                <Border BorderBrush="Gray" BorderThickness="0.5">
+                    <!--<TreeView ItemsSource="{Binding XMLLoadedFile, XPath=.}"></TreeView>-->
+                    <Grid Margin="4">
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <TreeView Name="trvItems" Grid.Row="0" ItemTemplate="{StaticResource NodeTemplate}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" DataContext="{Binding XMLLoadedFile}" ItemsSource="{Binding XPath=.}" VirtualizingStackPanel.IsVirtualizing="False" VirtualizingStackPanel.VirtualizationMode="Standard" />
+
+                    </Grid>
                 </Border>
             </TabItem>
         </TabControl>
