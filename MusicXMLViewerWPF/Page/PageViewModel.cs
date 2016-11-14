@@ -61,13 +61,13 @@ namespace MusicXMLScore.Page
                 {
                     if (item.Type == MusicXMLViewerWPF.Credit.CreditType.title)
                     {
-                        TextBlock tb = TBlock(item.CreditWords.Value, dp.Width, item.Height, item.CreditWords.FontSize, item.CreditWords.FontWeight, HorizontalAlignment.Center, TextAlignment.Center);
+                        TextBlock tb = TBlock(item.CreditWords.Value, dp.Width, item.Height, item.CreditWords.FontSize, String.IsNullOrEmpty(item.CreditWords.FontWeight)? "normal": item.CreditWords.FontWeight, HorizontalAlignment.Center, TextAlignment.Center);
                         DockPanel.SetDock(tb, Dock.Top);
                         dp.Children.Add(tb);
                     }
                     if (item.Type == MusicXMLViewerWPF.Credit.CreditType.subtitle)
                     {
-                        TextBlock tb = TBlock(item.CreditWords.Value, dp.Width, item.Height, item.CreditWords.FontSize, item.CreditWords.FontWeight, HorizontalAlignment.Center, TextAlignment.Center);
+                        TextBlock tb = TBlock(item.CreditWords.Value, dp.Width, item.Height, item.CreditWords.FontSize, String.IsNullOrEmpty(item.CreditWords.FontWeight) ? "normal" : item.CreditWords.FontWeight, HorizontalAlignment.Center, TextAlignment.Center);
                         //DockPanel.SetDock(tb, Dock.Top);
                         dp.Children.Add(tb);
                     }
@@ -129,6 +129,9 @@ namespace MusicXMLScore.Page
                             stckp.Children.Add(time);
                         }
                     }
+                    DrawingVisual gv = new DrawingVisual();
+                    DrawRect(gv, new Rect(new Point(), new Size(grid.Width, grid.Height)), Brushes.Black);
+                    cl.AddVisual(gv);
                     grid.Children.Add(cl);
                     grid.Children.Add(stckp);
                     List.Add(grid);
