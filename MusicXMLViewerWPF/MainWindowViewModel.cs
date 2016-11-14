@@ -60,7 +60,7 @@ namespace MusicXMLScore
         private void OnAddMeasure()
         {
             Page.PageView page = new Page.PageView();
-            page.Width = w;
+            page.Width = PageWidth;
             page.Height = h;
             Pages.Add(page);
         }
@@ -107,6 +107,7 @@ namespace MusicXMLScore
             Log.LoggIt.Log("File has been closed");
             Mediator.NotifyColleagues("XmlFileLoaded", new XmlDataProvider());
             XmlFileLoaded = false;
+            Pages.Clear();
         }
         private void OnExitApp()
         {
@@ -121,7 +122,7 @@ namespace MusicXMLScore
         #endregion
 
         #region Fields
-        private float w = 1500;
+        private double w = 1500;
         private float h = 1900;
         private bool xmlfileloaded;
         private ObservableCollection<Page.PageView> pages = new ObservableCollection<Page.PageView>();
@@ -138,7 +139,8 @@ namespace MusicXMLScore
         public RelayCommand OpenFileCommand { get; set; }
         public RelayCommand OldViewCommand { get; set; }
         public RelayCommand CloseFileCommand { get; set; }
-
+        public double PageWidth { get { return w; } set {  if(w!= value) { w = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PageWidth))); } } }
+        public double PageWidthL { get { if (Pages.Count != 0) { return Pages.ElementAt(0).Width; } else { return w; } } set { foreach (var p in Pages) { p.Width = value; } } }
         public bool XmlFileLoaded { get { return xmlfileloaded; } set { if (xmlfileloaded != value) xmlfileloaded = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(XmlFileLoaded)));  } }
         public Orientation Orientation { get { return orientation; } set { if (orientation != value) orientation = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Orientation))); } }
         
