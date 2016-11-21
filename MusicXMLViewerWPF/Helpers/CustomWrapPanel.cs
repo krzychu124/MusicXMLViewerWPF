@@ -22,12 +22,13 @@ namespace MusicXMLScore.Helpers
         }
 
         #region Dependency Properties
+
         public static readonly DependencyProperty StretchItemsInRowProperty =
             DependencyProperty.Register(
                 "StretchItemsInRow",
                 typeof(bool),
                 typeof(CustomWrapPanel),
-                new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.AffectsMeasure, new PropertyChangedCallback(OnStretchItemsInRowChanged), new CoerceValueCallback(CorerceStretchItemsInRow)),
+                new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.AffectsRender, new PropertyChangedCallback(OnStretchItemsInRowChanged), new CoerceValueCallback(CorerceStretchItemsInRow)),
                 new ValidateValueCallback(IsStretchItemsInRowValid)
                 );
 
@@ -36,10 +37,10 @@ namespace MusicXMLScore.Helpers
                 "LastItemRowStretch",
                 typeof(bool),
                 typeof(CustomWrapPanel),
-                new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.AffectsMeasure, new PropertyChangedCallback(OnLastItemRowStretchChanged), new CoerceValueCallback(CoerceLastItemRowStretch)),
+                new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.AffectsRender, new PropertyChangedCallback(OnLastItemRowStretchChanged), new CoerceValueCallback(CoerceLastItemRowStretch)),
                 new ValidateValueCallback(IsLastRowItemStretchValid));
 
-        public static readonly DependencyProperty ItemHeightCProperty =
+        public static readonly DependencyProperty ItemHeightProperty =
                 DependencyProperty.Register(
                         "ItemHeight",
                         typeof(double),
@@ -47,7 +48,7 @@ namespace MusicXMLScore.Helpers
                         new FrameworkPropertyMetadata( Double.NaN, FrameworkPropertyMetadataOptions.AffectsMeasure),
                         new ValidateValueCallback(IsWidthHeightValid));
 
-        public static readonly DependencyProperty ItemWidthCProperty =
+        public static readonly DependencyProperty ItemWidthProperty =
                 DependencyProperty.Register(
                         "ItemWidth",
                         typeof(double),
@@ -56,18 +57,26 @@ namespace MusicXMLScore.Helpers
                                 Double.NaN,
                                 FrameworkPropertyMetadataOptions.AffectsMeasure),
                         new ValidateValueCallback(IsWidthHeightValid));
+
+        public static DependencyProperty BreakRowProperty =
+            DependencyProperty.RegisterAttached(
+                "BreakRow",
+                typeof(bool),
+                typeof(CustomWrapPanel),
+                new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange));
+               //? new ValidateValueCallback(IsBreakRowValid));
         #endregion
 
         public double ItemHeight
         {
-            get { return (double)GetValue(ItemHeightCProperty); }
-            set { SetValue(ItemHeightCProperty, value); }
+            get { return (double)GetValue(ItemHeightProperty); }
+            set { SetValue(ItemHeightProperty, value); }
         }
 
         public double ItemWidth
         {
-            get { return (double)GetValue(ItemWidthCProperty); }
-            set { SetValue(ItemWidthCProperty, value); }
+            get { return (double)GetValue(ItemWidthProperty); }
+            set { SetValue(ItemWidthProperty, value); }
         }
 
         public bool LastItemRowStretch
@@ -80,6 +89,21 @@ namespace MusicXMLScore.Helpers
         {
             get { return (bool)GetValue(StretchItemsInRowProperty); }
             set { SetValue(StretchItemsInRowProperty, value); }
+        }
+
+        public static void SetBreakRow(UIElement element, bool value)
+        {
+            element.SetValue(BreakRowProperty, value);
+        }
+
+        public static bool GetBreakRow(UIElement element)
+        {
+            return (bool)element.GetValue(BreakRowProperty);
+        }
+
+        private static bool IsBreakRowValid(object value)
+        {
+            return value is bool;
         }
 
         private static bool IsWidthHeightValid(object value)
@@ -102,12 +126,14 @@ namespace MusicXMLScore.Helpers
         {
             CustomWrapPanel value = (CustomWrapPanel)d;
             d.CoerceValue(LastItemRowStretchProperty);
+            value.InvalidateVisual();
         }
 
         private static void OnLastItemRowStretchChanged(DependencyObject d , DependencyPropertyChangedEventArgs e)
         {
             CustomWrapPanel value = (CustomWrapPanel)d;
             d.CoerceValue(StretchItemsInRowProperty);
+            value.InvalidateVisual();
         }
 
         private static object CorerceStretchItemsInRow(DependencyObject d, object value)
@@ -116,14 +142,14 @@ namespace MusicXMLScore.Helpers
             bool b = (bool)value;
             if (b == true && c.LastItemRowStretch == b)
             {
-                return false;
+                return value;
             }
             else
             {
                 return value;
             }
         }
-
+        private int x = 100;
         private static object CoerceLastItemRowStretch(DependencyObject d, object value)
         {
             CustomWrapPanel c = (CustomWrapPanel)d;
@@ -138,54 +164,310 @@ namespace MusicXMLScore.Helpers
             }
         }
 
-        private struct UVSize
-        {
-            internal UVSize(Orientation orientation, double width, double height)
-            {
-                U = V = 0d;
-                _orientation = orientation;
-                Width = width;
-                Height = height;
-            }
+        //private struct UVSiz
+        //{
+        //    internal UVSiz(Orientation orientation, double width, double height)
+        //    {
+        //        U = V = 0d;
+        //        _orientation = orientation;
+        //        Width = width;
+        //        Height = height;
+        //    }
 
-            internal UVSize(Orientation orientation)
-            {
-                U = V = 0d;
-                _orientation = orientation;
-            }
+        //    internal UVSiz(Orientation orientation)
+        //    {
+        //        U = V = 0d;
+        //        _orientation = orientation;
+        //    }
 
-            internal double U;
-            internal double V;
-            private Orientation _orientation;
+        //    internal double U;
+        //    internal double V;
+        //    private Orientation _orientation;
 
-            internal double Width
-            {
-                get { return (_orientation == Orientation.Horizontal ? U : V); }
-                set { if (_orientation == Orientation.Horizontal) U = value; else V = value; }
-            }
-            internal double Height
-            {
-                get { return (_orientation == Orientation.Horizontal ? V : U); }
-                set { if (_orientation == Orientation.Horizontal) V = value; else U = value; }
-            }
-        }
+        //    internal double Width
+        //    {
+        //        get { return (_orientation == Orientation.Horizontal ? U : V); }
+        //        set { if (_orientation == Orientation.Horizontal) U = value; else V = value; }
+        //    }
+        //    internal double Height
+        //    {
+        //        get { return (_orientation == Orientation.Horizontal ? V : U); }
+        //        set { if (_orientation == Orientation.Horizontal) V = value; else U = value; }
+        //    }
+        //}
 
         protected override Size MeasureOverride(Size constraint)
         {
-            Size curLineSize = new Size();
-            Size panelSize = new Size();
-            Size givenConstraint = new Size(constraint.Width, constraint.Height);
+            Size childsconstraint = new Size() { Width = constraint.Width, Height = constraint.Height };
+            Size panelsize = new Size(constraint.Width, 0);
+            Size linesize = new Size();
+            int linestart = 0;
+            int lineend = 0;
+
+            UIElementCollection childrens = InternalChildren;
+            int count = childrens.Count;
+
+            for (int i = 0; i < count; i++)
+            {
+                UIElement child = childrens[i];
+                if (child == null) continue;
+                child.Measure(constraint);
+
+                Size childSize = child.DesiredSize;
+                if(GreaterThan(linesize.Width + childSize.Width, childsconstraint.Width))
+                {
+                    panelsize.Height += linesize.Height;
+                    double offset = panelsize.Width - linesize.Width;
+                    magain(panelsize, linesize, linestart, lineend);
+                    linesize = childSize;
+                    linestart = i;
+                }
+                else
+                {
+                    linesize.Width += childSize.Width;
+                    linesize.Height = Math.Max(childSize.Height, linesize.Height);
+                    lineend = i;
+                }
+            }
+            if (linesize.Width < panelsize.Width)
+            {
+                magain(panelsize, linesize, linestart, lineend);
+                //double offset = panelsize.Width - linesize.Width;
+                //double divisor = lineend - linestart != 0 ? lineend - linestart : 0;
+                //double childoffset = offset / ++divisor;
+                //for (int i = linestart; i < lineend; i++)
+                //{
+                //    UIElement child = childrens[i];
+                //    if (child == null) continue;
+                //    Size childSize = child.DesiredSize;
+                //    child.Measure(new Size(0, 0));
+                //    child.Measure(new Size(childSize.Width + childoffset, childSize.Height));
+                //}
+                panelsize.Height += linesize.Height;
+            }
+            panelsize.Height += linesize.Height;
+            return panelsize;
+            //return MO(constraint);
+
+            //Orientation o = Orientation;
+            //OrientedSize curLineSize = new OrientedSize(o);
+            //OrientedSize panelSize = new OrientedSize(o);
+            //OrientedSize maxSize = new OrientedSize(o, constraint.Width, constraint.Height);
+            //int linebegin = 0;
+            //int lineend = 0;
+            //double itemWidth = ItemWidth;
+            //double itemHeight = ItemHeight;
+            //bool itemWidthSet = !double.IsNaN(itemWidth); //! has fixed width
+            //bool itemHeightSet = !double.IsNaN(itemHeight); //! has fixed height
+
+            //Size childConstraint = new Size(
+            //    (itemWidthSet ? itemWidth : constraint.Width),
+            //    (itemHeightSet ? itemHeight : constraint.Height));
+
+            //UIElementCollection children = InternalChildren;
+            //lineend = children.Count;
+            //for (int i = 0, count = children.Count; i < count; i++)
+            //{
+            //    UIElement child = children[i] as UIElement;
+            //    if (child == null) continue;
+
+            //    //Flow passes its own constrint to children
+            //    child.Measure(childConstraint);
+            //    //this is the size of the child
+            //    OrientedSize elementSize = new OrientedSize(o, 
+            //        (itemWidthSet ? itemWidth : child.DesiredSize.Width),
+            //        (itemHeightSet ? itemHeight : child.DesiredSize.Height));
+
+            //    if (GreaterThan(curLineSize.Direct + elementSize.Direct, maxSize.Direct)) //need to switch to another line
+            //    {
+            //        panelSize.Direct = Math.Max(curLineSize.Direct, panelSize.Direct);
+            //        panelSize.Indirect += curLineSize.Indirect;
+            //        MeasureAgain(linebegin, count, maxSize.Direct, maxSize.Direct - curLineSize.Direct);
+            //        curLineSize = elementSize;
+            //        //child.Measure(childConstraint);
+            //        if (GreaterThan(elementSize.Direct, maxSize.Direct)) //the element is wider then the constrint - give it a separate line                    
+            //        {
+            //            panelSize.Direct = Math.Max(elementSize.Direct, panelSize.Direct);
+            //            panelSize.Indirect += elementSize.Indirect;
+            //            //MeasureAgain(linebegin, ++count, maxSize.Direct, maxSize.Direct - curLineSize.Direct);
+            //            curLineSize = new OrientedSize(o);
+            //        }
+            //        linebegin = i;
+            //    }
+            //    else //continue to accumulate a line
+            //    {
+            //        curLineSize.Direct += elementSize.Direct;
+            //        curLineSize.Indirect = Math.Max(elementSize.Indirect, curLineSize.Indirect);
+                    
+            //    }
+            //}
+
+            ////the last line size, if any should be added
+            //panelSize.Direct = Math.Max(curLineSize.Direct, panelSize.Direct);
+            //panelSize.Indirect += curLineSize.Indirect;
+
+            ////go from UV space to W/H space
+            ////? panelSize.Width, panelSize.Height
+            //return new Size(panelSize.Width, panelSize.Height);
+        }
+        private void magain(Size panelsize, Size linesize, int linestart, int lineend)
+        {
+            double offset = panelsize.Width - linesize.Width;
+            double divisor = lineend - linestart != 0 ? lineend - linestart : 0;
+            double childoffset = offset / ++divisor;
+            for (int i = linestart; i < lineend; i++)
+            {
+                UIElement child = InternalChildren[i];
+                if (child == null) continue;
+                Size childSize = child.DesiredSize;
+                //child.Measure(new Size());
+                double calculated = childSize.Width + offset;
+                child.Measure(new Size(calculated, childSize.Height));
+            }
+        }
+
+        protected override Size ArrangeOverride(Size finalSize)
+        {
+            //int lineBegin = 0;
+            //Orientation o = Orientation;
+            //OrientedSize curLineSize = new OrientedSize(o);
+            //OrientedSize maxSize = new OrientedSize(o, finalSize.Width, finalSize.Height);
+
+            //double itemWidth = ItemWidth;
+            //double itemHeight = ItemHeight;
+            //double accumulatedHeight = 0;
+            //double itemU = (Orientation == Orientation.Horizontal ? itemWidth : itemHeight);
+
+            //bool itemWidthSet = !double.IsNaN(itemWidth);
+            //bool itemHeightSet = !double.IsNaN(itemHeight);
+            //bool useItemU = (Orientation == Orientation.Horizontal ? itemWidthSet : itemHeightSet);
+
+            //double indirectOffset = 0.0;
+            //double? directDelta = (o == Orientation.Horizontal) ?
+            //    (itemWidthSet ? (double?)itemWidth : null) :
+            //    (itemHeightSet ? (double?)ItemHeight : null);
+
+            //UIElementCollection children = InternalChildren;
+            //int count = children.Count;
+            //for (int lineEnd = 0; lineEnd < count; lineEnd++)
+            //{
+            //    UIElement child = children[lineEnd] as UIElement;
+            //    if (child == null) continue;
+
+            //    OrientedSize elementSize = new OrientedSize(o, 
+            //        (itemWidthSet ? itemWidth : child.DesiredSize.Width),
+            //        (itemHeightSet ? itemHeight : child.DesiredSize.Height));
+
+            //    if (GreaterThan(curLineSize.Direct + elementSize.Direct, maxSize.Direct)) //need to switch to another line
+            //    {
+            //        if (StretchItemsInRow)
+            //        {
+            //            arrangeLine(accumulatedHeight, curLineSize.Height, lineBegin, lineEnd, useItemU, itemU);
+            //        }
+            //        else
+            //        {
+            //            arrangeLineWithScale(lineBegin, lineEnd, directDelta, maxSize.Direct, indirectOffset, curLineSize.Indirect);
+            //        }
+
+            //        indirectOffset += curLineSize.Indirect;
+            //        accumulatedHeight += curLineSize.Indirect;
+            //        curLineSize = elementSize;
+
+            //        if (GreaterThan(elementSize.Direct, maxSize.Direct)) //the element is wider then the constraint - give it a separate line                    
+            //        {
+            //            //switch to next line which only contain one element
+            //            if (StretchItemsInRow)
+            //            {
+            //                arrangeLine(accumulatedHeight, elementSize.Height, lineEnd, ++lineEnd, useItemU, itemU);
+            //            }
+            //            else
+            //            {
+            //                arrangeLineWithScale(lineEnd, ++lineEnd, directDelta, maxSize.Direct, indirectOffset, elementSize.Indirect);
+            //            }
+            //            indirectOffset += elementSize.Indirect;
+            //            accumulatedHeight += elementSize.Indirect;
+            //            curLineSize = new OrientedSize(o);
+            //        }
+            //        lineBegin = lineEnd;
+            //    }
+            //    else //continue to accumulate a line
+            //    {
+            //        curLineSize.Direct += elementSize.Direct;
+            //        curLineSize.Indirect = Math.Max(elementSize.Indirect, curLineSize.Indirect);
+            //    }
+            //}
+
+            ////arrange the last line, if any
+            //if (lineBegin < children.Count)
+            //{
+            //    if (StretchItemsInRow)
+            //    {
+            //        arrangeLine(accumulatedHeight, curLineSize.Height, lineBegin, children.Count, useItemU, itemU);
+            //    }
+            //    else
+            //    {
+            //        arrangeLineWithScale(lineBegin, count, directDelta, maxSize.Direct, indirectOffset, curLineSize.Indirect);
+            //    }
+            //}
+
+            //return new Size(finalSize.Width, finalSize.Height);
+            int linestart = 0;
+            Size currentlinesize = new Size();
+            Size maxlinesize = new Size(finalSize.Width, finalSize.Height);
+            double accheight = 0;
+            int lineend = 0;
+            UIElementCollection children = InternalChildren;
+            int count = children.Count;
+            for (int i = 0; i < count; i++)
+            {
+                lineend = i;
+                UIElement child = children[i] as UIElement;
+                if (child == null) continue;
+                currentlinesize.Height = child.DesiredSize.Height;
+                if (GreaterThan(currentlinesize.Width + child.DesiredSize.Width, maxlinesize.Width))
+                {
+                    double offset = maxlinesize.Width - currentlinesize.Width;
+                    arrangeLine(accheight, child.DesiredSize.Height, linestart, lineend, false, 0.0, true, offset);
+                    accheight += child.DesiredSize.Height;
+                    currentlinesize.Width = child.DesiredSize.Width;
+                    linestart = lineend;
+                }
+                else
+                {
+                    currentlinesize.Width += child.DesiredSize.Width;
+                }
+            }
+            if (linestart < count)
+            {
+                arrangeLine(accheight, currentlinesize.Height, linestart, count, false, 0.0, true, maxlinesize.Width - currentlinesize.Width);
+            }
+            return new Size(maxlinesize.Width, accheight);
+            //return AO(finalSize);
+        }
+
+        private void AL()
+        {
+          
+        }
+        private Size MO(Size constraint)
+        {
+            Orientation o = Orientation;
+            OrientedSize curLineSize = new OrientedSize(o);
+            OrientedSize panelSize = new OrientedSize(o);
+            OrientedSize maxSize = new OrientedSize(o, constraint.Width, constraint.Height);
+            int linebegin = 0;
+            int lineend = 0;
             double itemWidth = ItemWidth;
             double itemHeight = ItemHeight;
-            bool itemWidthSet = !double.IsNaN(itemWidth);
-            bool itemHeightSet = !double.IsNaN(itemHeight);
+            bool itemWidthSet = !double.IsNaN(itemWidth); //! has fixed width
+            bool itemHeightSet = !double.IsNaN(itemHeight); //! has fixed height
 
             Size childConstraint = new Size(
                 (itemWidthSet ? itemWidth : constraint.Width),
                 (itemHeightSet ? itemHeight : constraint.Height));
 
             UIElementCollection children = InternalChildren;
-
+            lineend = children.Count;
             for (int i = 0, count = children.Count; i < count; i++)
             {
                 UIElement child = children[i] as UIElement;
@@ -193,126 +475,280 @@ namespace MusicXMLScore.Helpers
 
                 //Flow passes its own constrint to children
                 child.Measure(childConstraint);
-
-                //this is the size of the child in UV space
-                Size sz = new Size(
+                //this is the size of the child
+                OrientedSize elementSize = new OrientedSize(o,
                     (itemWidthSet ? itemWidth : child.DesiredSize.Width),
                     (itemHeightSet ? itemHeight : child.DesiredSize.Height));
 
-                if (GreaterThan(curLineSize.Width + sz.Width, givenConstraint.Width)) //need to switch to another line
+                if (GreaterThan(curLineSize.Direct + elementSize.Direct, maxSize.Direct)) //need to switch to another line
                 {
-                    panelSize.Width = Math.Max(curLineSize.Width, panelSize.Width);
-                    panelSize.Height += curLineSize.Height;
-                    curLineSize = sz;
-
-                    if (GreaterThan(sz.Width, givenConstraint.Width)) //the element is wider then the constrint - give it a separate line                    
+                    panelSize.Direct = Math.Max(curLineSize.Direct, panelSize.Direct);
+                    panelSize.Indirect += curLineSize.Indirect;
+                    MeasureAgain(linebegin, count, maxSize.Direct, maxSize.Direct - curLineSize.Direct);
+                    curLineSize = elementSize;
+                    //child.Measure(childConstraint);
+                    if (GreaterThan(elementSize.Direct, maxSize.Direct)) //the element is wider then the constrint - give it a separate line                    
                     {
-                        panelSize.Width = Math.Max(sz.Width, panelSize.Width);
-                        panelSize.Height += sz.Height;
-                        curLineSize = new Size();
+                        panelSize.Direct = Math.Max(elementSize.Direct, panelSize.Direct);
+                        panelSize.Indirect += elementSize.Indirect;
+                        //MeasureAgain(linebegin, ++count, maxSize.Direct, maxSize.Direct - curLineSize.Direct);
+                        curLineSize = new OrientedSize(o);
                     }
+                    linebegin = i;
                 }
                 else //continue to accumulate a line
                 {
-                    curLineSize.Width += sz.Width;
-                    curLineSize.Height = Math.Max(sz.Height, curLineSize.Height);
+                    curLineSize.Direct += elementSize.Direct;
+                    curLineSize.Indirect = Math.Max(elementSize.Indirect, curLineSize.Indirect);
+
                 }
             }
 
             //the last line size, if any should be added
-            panelSize.Width = Math.Max(curLineSize.Width, panelSize.Width);
-            panelSize.Height += curLineSize.Height;
+            panelSize.Direct = Math.Max(curLineSize.Direct, panelSize.Direct);
+            panelSize.Indirect += curLineSize.Indirect;
 
             //go from UV space to W/H space
+            //? panelSize.Width, panelSize.Height
             return new Size(panelSize.Width, panelSize.Height);
         }
 
-        /// <summary>
-        /// <see cref="FrameworkElement.ArrangeOverride"/>
-        /// </summary>
-        protected override Size ArrangeOverride(Size finalSize)
+        private Size AO(Size finalSize)
         {
-            int firstInLine = 0;
+            int lineBegin = 0;
+            Orientation o = Orientation;
+            OrientedSize curLineSize = new OrientedSize(o);
+            OrientedSize maxSize = new OrientedSize(o, finalSize.Width, finalSize.Height);
+
             double itemWidth = ItemWidth;
             double itemHeight = ItemHeight;
-            double accumulatedV = 0;
+            double accumulatedHeight = 0;
             double itemU = (Orientation == Orientation.Horizontal ? itemWidth : itemHeight);
-            Size curLineSize = new Size();
-            Size givenFinalSize = new Size(finalSize.Width, finalSize.Height);
+
             bool itemWidthSet = !double.IsNaN(itemWidth);
             bool itemHeightSet = !double.IsNaN(itemHeight);
             bool useItemU = (Orientation == Orientation.Horizontal ? itemWidthSet : itemHeightSet);
 
-            UIElementCollection children = InternalChildren;
+            double indirectOffset = 0.0;
+            double? directDelta = (o == Orientation.Horizontal) ?
+                (itemWidthSet ? (double?)itemWidth : null) :
+                (itemHeightSet ? (double?)ItemHeight : null);
 
-            for (int i = 0, count = children.Count; i < count; i++)
+            UIElementCollection children = InternalChildren;
+            int count = children.Count;
+            for (int lineEnd = 0; lineEnd < count; lineEnd++)
             {
-                UIElement child = children[i] as UIElement;
+                UIElement child = children[lineEnd] as UIElement;
                 if (child == null) continue;
 
-                Size sz = new Size(
+                OrientedSize elementSize = new OrientedSize(o,
                     (itemWidthSet ? itemWidth : child.DesiredSize.Width),
                     (itemHeightSet ? itemHeight : child.DesiredSize.Height));
 
-                if (GreaterThan(curLineSize.Width + sz.Width, givenFinalSize.Width)) //need to switch to another line
+                if (GreaterThan(curLineSize.Direct + elementSize.Direct, maxSize.Direct)) //need to switch to another line
                 {
-                    arrangeLine(accumulatedV, curLineSize.Height, firstInLine, i, useItemU, itemU);
+                    if (StretchItemsInRow)
+                    {
+                        arrangeLine(accumulatedHeight, curLineSize.Height, lineBegin, lineEnd, useItemU, itemU);
+                    }
+                    else
+                    {
+                        arrangeLineWithScale(lineBegin, lineEnd, directDelta, maxSize.Direct, indirectOffset, curLineSize.Indirect);
+                    }
 
-                    accumulatedV += curLineSize.Height;
-                    curLineSize = sz;
+                    indirectOffset += curLineSize.Indirect;
+                    accumulatedHeight += curLineSize.Indirect;
+                    curLineSize = elementSize;
 
-                    if (GreaterThan(sz.Width, givenFinalSize.Width)) //the element is wider then the constraint - give it a separate line                    
+                    if (GreaterThan(elementSize.Direct, maxSize.Direct)) //the element is wider then the constraint - give it a separate line                    
                     {
                         //switch to next line which only contain one element
-                        arrangeLine(accumulatedV, sz.Height, i, ++i, useItemU, itemU);
-
-                        accumulatedV += sz.Height;
-                        curLineSize = new Size();
+                        if (StretchItemsInRow)
+                        {
+                            arrangeLine(accumulatedHeight, elementSize.Height, lineEnd, ++lineEnd, useItemU, itemU);
+                        }
+                        else
+                        {
+                            arrangeLineWithScale(lineEnd, ++lineEnd, directDelta, maxSize.Direct, indirectOffset, elementSize.Indirect);
+                        }
+                        indirectOffset += elementSize.Indirect;
+                        accumulatedHeight += elementSize.Indirect;
+                        curLineSize = new OrientedSize(o);
                     }
-                    firstInLine = i;
+                    lineBegin = lineEnd;
                 }
                 else //continue to accumulate a line
                 {
-                    curLineSize.Width += sz.Width;
-                    curLineSize.Height = Math.Max(sz.Height, curLineSize.Height);
+                    curLineSize.Direct += elementSize.Direct;
+                    curLineSize.Indirect = Math.Max(elementSize.Indirect, curLineSize.Indirect);
                 }
             }
 
             //arrange the last line, if any
-            if (firstInLine < children.Count)
+            if (lineBegin < children.Count)
             {
-                arrangeLine(accumulatedV, curLineSize.Height, firstInLine, children.Count, useItemU, itemU);
+                if (StretchItemsInRow)
+                {
+                    arrangeLine(accumulatedHeight, curLineSize.Height, lineBegin, children.Count, useItemU, itemU);
+                }
+                else
+                {
+                    arrangeLineWithScale(lineBegin, count, directDelta, maxSize.Direct, indirectOffset, curLineSize.Indirect);
+                }
             }
 
-            return finalSize;
+            return new Size(finalSize.Width, finalSize.Height);
         }
 
-        private void arrangeLine(double v, double lineV, int start, int end, bool useItemU, double itemU)
+        private void MeasureAgain(int b, int e, double width, double offset)
         {
-            double u = 0;
-            bool isHorizontal = (Orientation == Orientation.Horizontal);
-
             UIElementCollection children = InternalChildren;
-            for (int i = start; i < end; i++)
+            double d_w = 0.0;
+            double d_h = 0.0;
+            double accumulatedwidth = 0.0;
+            for (int i = b; i < e; i++)
             {
-                UIElement child = children[i] as UIElement;
-                if (child != null)
+                UIElement child = children[i];
+               // accumulatedwidth += child.DesiredSize.Width;
+            }
+            if (accumulatedwidth > width)
+            {
+                int u = 0;
+            }
+            for (int i = b; i < e; i++)
+            {
+                UIElement child = children[i];
+                //child.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+                d_w = double.PositiveInfinity; //! child.DesiredSize.Width;
+                d_h = child.DesiredSize.Height;
+                child.Measure(new Size(d_w + offset, d_h));
+                accumulatedwidth += child.DesiredSize.Width;
+                if (accumulatedwidth > width) return;
+            }
+        }
+
+
+        private void arrangeLine(double height, double lineHeight, int start, int end, bool useItemU, double itemU, bool scale = false, double lineoffset = 0)
+        {
+            if (scale == false)
+            {
+                double width = 0;
+                bool isHorizontal = (Orientation == Orientation.Horizontal);
+
+                UIElementCollection children = InternalChildren;
+                for (int i = start; i < end; i++)
                 {
-                    Size childSize = new Size(child.DesiredSize.Width, child.DesiredSize.Height);
-                    double layoutSlotU = (useItemU ? itemU : childSize.Width);
-                    child.Arrange(new Rect(
-                        (isHorizontal ? u : v),
-                        (isHorizontal ? v : u),
-                        (isHorizontal ? layoutSlotU : lineV),
-                        (isHorizontal ? lineV : layoutSlotU)));
-                    u += layoutSlotU;
+                    UIElement child = children[i] as UIElement;
+                    if (child != null)
+                    {
+                        Size childSize = new Size(child.DesiredSize.Width, child.DesiredSize.Height);
+                        double layoutSlotWidth = (useItemU ? itemU : childSize.Width);
+                        child.Arrange(new Rect(
+                            (isHorizontal ? width : height),
+                            (isHorizontal ? height : width),
+                            (isHorizontal ? layoutSlotWidth : lineHeight),
+                            (isHorizontal ? lineHeight : layoutSlotWidth)));
+                        width += layoutSlotWidth;
+                    }
+                }
+            }
+            else
+            {
+                double width = 0;
+                UIElementCollection children = InternalChildren;
+                double offset = end - start != 0 ? end - start : 1;
+                double itemoffset = lineoffset / offset;
+                for (int i = start; i < end; i++)
+                {
+                    UIElement child = children[i] as UIElement;
+                    if (child != null)
+                    {
+                        Size childSize = new Size(child.DesiredSize.Width, child.DesiredSize.Height);
+                        child.Arrange(new Rect(
+                            width, height,
+                            childSize.Width + itemoffset, lineHeight
+                            ));
+                        width += childSize.Width + itemoffset;
+                    }
                 }
             }
         }
+
+        private void arrangeLineWithScale(int lineBegin, int lineEnd, double? directDelta, double directMaximum, double indirectOffset, double indirectGrowth)
+        {
+            //double width = 0;
+            //bool isHorizontal = (Orientation == Orientation.Horizontal);
+
+            //UIElementCollection children = InternalChildren;
+            //for (int i = start; i < end; i++)
+            //{
+            //    UIElement child = children[i] as UIElement;
+            //    if (child != null)
+            //    {
+            //        Size childSize = new Size(child.DesiredSize.Width, child.DesiredSize.Height);
+            //        double layoutSlotWidth = (useItemU ? itemU : childSize.Width);
+            //        child.Arrange(new Rect(
+            //            (isHorizontal ? width : height),
+            //            (isHorizontal ? height : width),
+            //            (isHorizontal ? layoutSlotWidth : lineHeight),
+            //            (isHorizontal ? lineHeight : layoutSlotWidth)));
+            //        width += layoutSlotWidth;
+            //    }
+            //}
+
+            Orientation o = Orientation;
+            bool isHorizontal = o == Orientation.Horizontal;
+            UIElementCollection childrens = Children;
+            double expectedLength = 0.0;
+            double itemCount = 0.0;
+            double itemLength = isHorizontal ? ItemWidth : ItemHeight;
+
+            if (LastItemRowStretch && !double.IsNaN(itemLength))
+            {
+                itemCount = Math.Floor(directMaximum / itemLength);
+                expectedLength = itemCount * itemLength;
+            }
+            else
+            {
+                itemCount = lineEnd - lineBegin;
+                for (int index= lineBegin; index < lineEnd; index++)
+                {
+                    UIElement element = childrens[index];
+                    OrientedSize elementSize = new OrientedSize(o, element.DesiredSize.Width, element.DesiredSize.Height);
+
+                    double directGrowth = directDelta != null ?
+                        directDelta.Value : elementSize.Direct;
+                    expectedLength += directGrowth;
+                }
+            }
+
+            // define extra space
+            double directExtraSpace = directMaximum - expectedLength;
+            double directExtraSpacePart = directExtraSpace / (itemCount + 1.0);
+            double directOffset = directExtraSpacePart;
+
+            for (int index = lineBegin; index < lineEnd; index++)
+            {
+                UIElement element = childrens[index];
+                OrientedSize elementSize = new OrientedSize(o, element.DesiredSize.Width, element.DesiredSize.Height);
+
+                double directGrowth = directDelta != null ?
+                    directDelta.Value : elementSize.Direct;
+
+                Rect rectangle = isHorizontal ?
+                    new Rect(directOffset, indirectOffset, directGrowth, indirectGrowth) :
+                    new Rect(indirectOffset, directOffset, indirectGrowth, directGrowth);
+                element.Arrange(rectangle);
+
+                directOffset += directGrowth + directExtraSpacePart;
+            }
+        }
+
         public static bool GreaterThan(double value1, double value2)
         {
             return (value1 > value2) && !AreClose(value1, value2);
         }
+
         public static bool AreClose(double value1, double value2)
         {
             //in case they are Infinities (then epsilon check does not work)
@@ -322,6 +758,7 @@ namespace MusicXMLScore.Helpers
             double delta = value1 - value2;
             return (-eps < delta) && (eps > delta);
         }
+
         const double DBL_EPSILON = 2.2204460492503131e-016;
     }
 }

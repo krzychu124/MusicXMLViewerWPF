@@ -6,26 +6,40 @@
              xmlns:local="clr-namespace:MusicXMLScore.Page"
              xmlns:helpers="clr-namespace:MusicXMLScore.Helpers"
              xmlns:Configuration="clr-namespace:MusicXMLScore.Configuration" xmlns:Log="clr-namespace:MusicXMLScore.Log" x:Class="MusicXMLScore.Page.PageView"
-             mc:Ignorable="d" Height="350" Width="600" x:Name="uc">
-    
+             mc:Ignorable="d" Height="350" Width="800" x:Name="uc">
+
     <Grid Margin="5" x:Name="gridmain" Width="Auto" Height="Auto">
         <Border BorderBrush="Black" BorderThickness="0.5">
-            <Grid>
+            <Grid >
                 <Grid.RowDefinitions>
                     <RowDefinition Height="20"/>
+                    <RowDefinition Height="250"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
-                <Slider Margin="60,0,60,0" Grid.Row="0" Value="{Binding Width, ElementName=uc}" Maximum="2000" Minimum="300"></Slider>
-                <ItemsControl Grid.Row="1" ItemsSource="{Binding List}" Background="Transparent" Margin="20">
+                <DockPanel>
+
+                    <Button DockPanel.Dock="Left" Content="test" Command="{Binding TestCommand}" HorizontalAlignment="Left" VerticalAlignment="Top"  Width="40" Height="20"/>
+
+                    <CheckBox x:Name="clirs" DockPanel.Dock="Left"  Content="LIRS" Width="45" IsChecked="False"/>
+                    <CheckBox x:Name="csiir" DockPanel.Dock="Left" Content="SIIR" Width="45" IsChecked="True"/>
+                    <Slider DockPanel.Dock="Left" Value="{Binding Width, ElementName=uc}" Maximum="2000" Minimum="300" Width="350"></Slider>
+                    <RadioButton DockPanel.Dock="Right" FlowDirection="RightToLeft" GroupName="a" Width="50" Height="25" Content="Rbtn"></RadioButton>
+                </DockPanel>
+
+                <ItemsControl Grid.Row="2" ItemsSource="{Binding List}" Background="Transparent" Margin="20">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <helpers:CustomWrapPanel x:Name="ItemsPanelContainer" HorizontalAlignment="Left" IsItemsHost="true" ClipToBounds="false" LastItemRowStretch="False" StretchItemsInRow="False">
+                            <helpers:CustomWrapPanel x:Name="ItemsPanelContainer" HorizontalAlignment="Left" IsItemsHost="true" ClipToBounds="false" LastItemRowStretch="False" StretchItemsInRow="true">
                             </helpers:CustomWrapPanel>
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
                 </ItemsControl>
-                <RadioButton HorizontalAlignment="Right" VerticalAlignment="Top" FlowDirection="RightToLeft" GroupName="a" Width="50" Height="25" Content="Rbtn"></RadioButton>
-                <Button Content="test" Command="{Binding TestCommand}" HorizontalAlignment="Left" VerticalAlignment="Top"  Width="40" Height="20"/>
+                <helpers:CustomWrapPanel x:Name="cwp" Grid.Row="1" Grid.RowSpan="9" ClipToBounds="False" LastItemRowStretch="{Binding ElementName=clirs, Path=IsChecked}" StretchItemsInRow="{Binding ElementName=csiir, Path=IsChecked}" Height="250" VerticalAlignment="Top">
+                    <helpers:StaffLineCanvas Height="100" IsHitTestVisible="True" MouseLeftButtonDown="StaffLineCanvas_MouseLeftButtonDown"></helpers:StaffLineCanvas>
+                    <helpers:StaffLineCanvas Height="100" IsHitTestVisible="True" MouseLeftButtonDown="StaffLineCanvas_MouseLeftButtonDown" helpers:CustomWrapPanel.BreakRow="True" />
+                    <helpers:StaffLineCanvas Height="100" />
+                    <!--Width="{Binding ElementName=uc, Path=ActualWidth}"-->
+                </helpers:CustomWrapPanel>
             </Grid>
         </Border>
         <!--<TextBox x:Name="textBox" TextWrapping="Wrap" Text="PageView&#xA;&#xA;&#xA;&#xA;&#xA;&#xA;&#xA;&#xA;&#xA;&#xA;&#xA;&#xA;&#xA;&#xA;&#xA;&#xA;&#xA;PageViewNextPage&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;&#xA;PageViewNextPage&#xD;&#xA;&#xA;PageViewNextPage"/>-->

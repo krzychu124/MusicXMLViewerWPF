@@ -28,7 +28,7 @@ namespace MusicXMLScore
             NewScoreCreatorCommand = new RelayCommand(OnNewScoreCreator);
             AddMeasureCommand = new RelayCommand(OnAddMeasure);
             CustomButtonCommand = new RelayCommand(OnCustomButtonCommand);
-            OpenFileCommand = new RelayCommand(OnOpenFileCommand);
+            OpenFileCommand = new RelayCommand<string>(s => OnOpenFileCommand(s));
             OldViewCommand = new RelayCommand(OnOldViewCommand);
             CloseFileCommand = new RelayCommand(OnCloseFile, () => XmlFileLoaded);
         }
@@ -73,26 +73,37 @@ namespace MusicXMLScore
                 Orientation = Orientation.Vertical;
         }
 
-        private void OnOpenFileCommand()
+        private void OnOpenFileCommand(object parameter)
         {
-            Microsoft.Win32.OpenFileDialog dialog = new Microsoft.Win32.OpenFileDialog();
-            dialog.Filter = "MusicXML files|*.xml";
-            if (dialog.ShowDialog() == true)
+            XmlRead xmlReader = new XmlRead();
+            XmlDataProvider provider = new XmlDataProvider();
+            string filedestination = "";
+            if (parameter == null)
             {
-                XmlRead xmlReader = new XmlRead();
-                xmlReader.File_path = dialog.FileName;
-                Console.WriteLine("Loading file>> " + dialog.FileName);
-                Log.LoggIt.Log($"Loading file: {xmlReader.File_path}", Log.LogType.Info);
-                XmlDataProvider provider = new XmlDataProvider();
-                provider.Source = new Uri(dialog.FileName, UriKind.Absolute);
-                provider.XPath = "./*";
-                Mediator.NotifyColleagues("XmlFileLoaded", provider); //! Notify MainWindowVM that file was loaded and send it to display content
-                XDocument Doc = XDocument.Load(dialog.FileName, LoadOptions.SetLineInfo);
-                Log.LoggIt.Log($"File has been loaded", Log.LogType.Info);
-                XmlFileLoaded = true;
-                MusicScore mus_score = new MusicScore(Doc);
-                UpdateSize();
+                Microsoft.Win32.OpenFileDialog dialog = new Microsoft.Win32.OpenFileDialog();
+                dialog.Filter = "MusicXML files|*.xml";
+                if (dialog.ShowDialog() == true)
+                {
+                    filedestination = dialog.FileName;
+                }
             }
+            else
+            {
+                filedestination = parameter as string;
+            }
+            xmlReader.File_path = filedestination;
+            Console.WriteLine("Loading file>> " + filedestination);
+            Log.LoggIt.Log($"Loading file: {xmlReader.File_path}", Log.LogType.Info);
+
+            provider.Source = new Uri(filedestination, UriKind.Absolute);
+            provider.XPath = "./*";
+            Mediator.NotifyColleagues("XmlFileLoaded", provider); //! Notify MainWindowVM that file was loaded and send it to display content
+            XDocument Doc = XDocument.Load(filedestination, LoadOptions.SetLineInfo);
+            Log.LoggIt.Log($"File has been loaded", Log.LogType.Info);
+            XmlFileLoaded = true;
+            MusicScore mus_score = new MusicScore(Doc);
+            UpdateSize();
+
         }
 
         private void OnOldViewCommand()
@@ -136,7 +147,7 @@ namespace MusicXMLScore
         public RelayCommand ExitCommand { get; set; }
         public RelayCommand NewScoreCreatorCommand { get; set; }
         public RelayCommand CustomButtonCommand { get; set; }
-        public RelayCommand OpenFileCommand { get; set; }
+        public RelayCommand <string> OpenFileCommand { get; set; }
         public RelayCommand OldViewCommand { get; set; }
         public RelayCommand CloseFileCommand { get; set; }
         public double PageWidth { get { return w; } set {  if(w!= value) { w = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PageWidth))); } } }

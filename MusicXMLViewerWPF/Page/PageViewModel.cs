@@ -21,6 +21,7 @@ namespace MusicXMLScore.Page
         private CanvasList pagecontent = new CanvasList();
         private Orientation orientation = Orientation.Horizontal;
         private ObservableCollection<UIElement> list = new ObservableCollection<UIElement>();
+        private ObservableCollection<UIElement> list2 = new ObservableCollection<UIElement>();
         private Random rndom = new Random();
         private bool fileloaded;
         #endregion
@@ -44,6 +45,7 @@ namespace MusicXMLScore.Page
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
         public CanvasList PageContent { get { return pagecontent; } set { pagecontent = value; } }
         public ObservableCollection<UIElement> List { get { return list; } }
+        public ObservableCollection<UIElement> List2 { get { return list2; } }
         public Orientation Orientation { get { return orientation; } set { orientation = value; PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(Orientation))); } }
         public RelayCommand TestCommand { get; set; }
         public bool FileLoaded { get { return fileloaded; } private set { if (fileloaded != value) fileloaded = value; PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(FileLoaded))); } }
@@ -55,7 +57,7 @@ namespace MusicXMLScore.Page
             if (MusicScore.CreditList.Count > 0)
             {
                 DockPanel dp = new DockPanel();
-                dp.Width = MusicScore.Defaults.Page.Width;
+                dp.MinWidth = 1500;
                 dp.Height = 100;
                 foreach (var item in MusicScore.CreditList)
                 {
@@ -85,13 +87,17 @@ namespace MusicXMLScore.Page
                 {
                     Grid grid = new Grid();
                     grid.Height = 100;
-                    grid.Width = item.Width;
+                    grid.MinWidth = item.Width;
                     CanvasList cl = new CanvasList(grid.Width, grid.Height);
-                    cl.Background = Brushes.Beige;
+                    cl.Background = Brushes.Transparent;
                     DrawingVisual dv = new DrawingVisual();
                     item.Draw_Measure(dv, new Point(0, 20));
+                    StaffLineCanvas slc = new StaffLineCanvas();
                     cl.AddVisual(dv);
+                    grid.SizeChanged += Grid_SizeChanged;
                     StackPanel stckp = new StackPanel();
+                    stckp.SizeChanged += Grid_SizeChanged;
+                    stckp.Tag = "sp";
                     stckp.Orientation = Orientation.Horizontal;
                     if (item.Attributes != null)
                     {
@@ -132,9 +138,37 @@ namespace MusicXMLScore.Page
                     DrawingVisual gv = new DrawingVisual();
                     DrawRect(gv, new Rect(new Point(), new Size(grid.Width, grid.Height)), Brushes.Black);
                     cl.AddVisual(gv);
+                    //grid.Children.Add(slc);
                     grid.Children.Add(cl);
                     grid.Children.Add(stckp);
                     List.Add(grid);
+                }
+                list2 = new ObservableCollection<UIElement>(List );
+               // PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(List2)));
+            }
+        }
+
+        private void Grid_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            var x = sender.GetType();
+            if (x.Name == "Grid")
+            {
+
+                var g = sender as Grid;
+                var s = new Size(g.Width, g.Height);
+                if (e.NewSize != s)
+                {
+                    int i = 0;
+                }
+            }
+            if (x.Name == "StackPanel")
+            {
+                var g = sender as StackPanel;
+                var s = new Size(g.Width, g.Height);
+                var nn = new Size(double.NaN, double.NaN);
+                if (e.NewSize != s && s == nn)
+                {
+                    int i = 0;
                 }
             }
         }
