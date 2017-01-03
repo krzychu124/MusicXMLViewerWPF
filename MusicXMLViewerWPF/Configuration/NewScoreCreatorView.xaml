@@ -69,26 +69,26 @@
                         </Grid>
                     </Grid>
                 </GroupBox>
-                <GroupBox Grid.Row="1" Grid.Column="1" Header="Key" Margin="5,1,0,0">
-                    <Grid HorizontalAlignment="Left" Height="144" VerticalAlignment="Top" Width="212">
-                        <ComboBox x:Name="comboBoxKeyType" HorizontalAlignment="Left" Margin="10,18,0,0" SelectedValuePath="Content" SelectedValue="{Binding SelectedKeyMode}" VerticalAlignment="Top" Width="56">
+                <GroupBox Grid.Column="1" Header="Key" Margin="5,119,0,46" Grid.RowSpan="2">
+                    <Grid HorizontalAlignment="Left" Width="212" Margin="0,0,0,1">
+                        <ComboBox x:Name="comboBoxKeyType" HorizontalAlignment="Left" Margin="10,18,0,0" SelectedValuePath="Content" SelectedValue="{Binding SelectedKeyMode}" VerticalAlignment="Top" Width="76">
                             <ComboBoxItem Name="Minor" >Minor</ComboBoxItem>
                             <ComboBoxItem Name="Major">Major</ComboBoxItem>
                         </ComboBox>
-                        <ComboBox x:Name="comboBoxKeySharpFlat" HorizontalAlignment="Left" Margin="10,112,0,0" SelectedValuePath="Content" SelectedValue="{Binding SelectedKeyType}" VerticalAlignment="Top" Width="56">
+                        <ComboBox x:Name="comboBoxKeySharpFlat" HorizontalAlignment="Left" Margin="10,112,0,0" SelectedValuePath="Content" SelectedValue="{Binding SelectedKeyType}" VerticalAlignment="Top" Width="76">
                             <ComboBoxItem Name="Sharp">Sharp</ComboBoxItem>
                             <ComboBoxItem Name="Flat">Flat</ComboBoxItem>
                             <ComboBoxItem Name="None">None</ComboBoxItem>
                         </ComboBox>
-                        <ComboBox x:Name="comboBoxKeySymbol" HorizontalAlignment="Left" Margin="10,64,0,0" ItemsSource="{Binding KeySymbolList, Mode=OneWay}" SelectedValue="{Binding SelectedKeySymbol}"  VerticalAlignment="Top" Width="56"/>
-                        <Border x:Name="CanvasBorder" BorderBrush="Gray" BorderThickness="0.5" Margin="71,10,10,25">
-                            <Canvas HorizontalAlignment="Left"  VerticalAlignment="Top" Height="124" Margin="1,1,-2,-17" Width="131">
+                        <ComboBox x:Name="comboBoxKeySymbol" HorizontalAlignment="Left" Margin="10,64,0,0" ItemsSource="{Binding KeySymbolList, Mode=OneWay}" SelectedValue="{Binding SelectedKeySymbol}"  VerticalAlignment="Top" Width="76"/>
+                        <Border x:Name="CanvasBorder" BorderBrush="Gray" BorderThickness="0.5" Margin="91,10,10,10">
+                            <Canvas HorizontalAlignment="Left"  VerticalAlignment="Top" Height="104" Margin="10,10,0,0" Width="91">
                                 <ContentPresenter Content="{Binding KeyPreview}"/>
                             </Canvas>
                         </Border>
                     </Grid>
                 </GroupBox>
-                <GroupBox Grid.Column="1" x:Name="groupBox" Header="Preview" HorizontalAlignment="Left" VerticalAlignment="Top" Height="165" Width="224" Margin="5,0,0,0">
+                <GroupBox Grid.Column="1" x:Name="groupBox" Header="Preview" HorizontalAlignment="Left" VerticalAlignment="Top" Height="114" Width="224" Margin="5,0,0,0">
                     <Grid>
                         <!--<helpers:PreviewCanvas x:Name="canvasTest" Width="220" Height="40" VerticalAlignment="Top"></helpers:PreviewCanvas>-->
                         <!--<helpers:PreviewCanvas x:Name="canvasTest2" Width="220" Height="70" VerticalAlignment="Bottom"></helpers:PreviewCanvas>-->
@@ -112,7 +112,7 @@
                         <ComboBox x:Name="comboBoxBeatType" ItemsSource="{Binding TimeBeatList}" DisplayMemberPath="Key" SelectedValue="{Binding SelectedTimeBeats}" IsEnabled="{Binding IsChecked, ElementName=radioButtonStdType}"  HorizontalAlignment="Left" Margin="10,37,0,0" VerticalAlignment="Top" Width="60"/>
                     </Grid>
                 </GroupBox>
-                <Button x:Name="button" Content="Button" Command="{Binding AddVisualCommand}" HorizontalAlignment="Left" Margin="30,153,0,0" VerticalAlignment="Top" Width="74" Grid.Column="1" Grid.RowSpan="2"/>
+                <Button x:Name="button" Content="Button" Command="{Binding AddVisualCommand}" HorizontalAlignment="Left" Margin="149,137,0,0" VerticalAlignment="Top" Width="74" Grid.Column="1" Grid.Row="1"/>
                 <!--<helpers:CanvasList/>-->
             </Grid>
         </GroupBox>
