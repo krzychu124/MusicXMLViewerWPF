@@ -180,6 +180,7 @@ namespace MusicXMLScore.Configuration
             TimeSignature t = new TimeSignature((int)TimeSigTime, (int)SelectedTimeBeats.Value, ttype);
             Barline br = new Barline() { Style = Barline.BarStyle.light_light };
             Rest r = new Rest("whole", new Point( 3.5f* scale, 0.5 * scale));
+
             br.DrawBarline(b_d, new Point(4.5f * scale , 0.5 * scale), 5f);
             r.Draw(r_d);
             k.Relative = key;
