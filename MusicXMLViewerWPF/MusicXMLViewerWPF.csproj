@@ -107,6 +107,7 @@
     <Compile Include="MainWindowViewModel.cs" />
     <Compile Include="MusicXMLModel\Credit\Credit.cs" />
     <Compile Include="MusicXMLModel\Defaults\Defaults.cs" />
+    <Compile Include="MusicXMLModel\Helpers\Generators.cs" />
     <Compile Include="MusicXMLModel\Identification\Identification.cs" />
     <Compile Include="MusicXMLModel\Misc\DrawingHelpers.cs" />
     <Compile Include="MusicXMLModel\Misc\IAutoPosition.cs" />
@@ -161,6 +162,10 @@
       <DependentUpon>Window1.xaml</DependentUpon>
     </Compile>
     <Compile Include="MusicXMLModel\Work\Work.cs" />
+    <Compile Include="Page\CreditsView.xaml.cs">
+      <DependentUpon>CreditsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Page\CreditsViewModel.cs" />
     <Compile Include="Page\PageView.xaml.cs">
       <DependentUpon>PageView.xaml</DependentUpon>
     </Compile>
@@ -199,6 +204,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="MusicXMLModel\Misc\NoUsage\Window1.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Page\CreditsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
