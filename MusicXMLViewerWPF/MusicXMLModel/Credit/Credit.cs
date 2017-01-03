@@ -24,6 +24,41 @@ namespace MusicXMLViewerWPF.Credit
         public static Segment titlesegment = new Segment();
         #endregion
 
+        #region Attachable Properties
+        public static readonly DependencyProperty CreditTypeProperty = DependencyProperty.RegisterAttached("CreditType",
+            typeof(CreditType), typeof(Credit), new FrameworkPropertyMetadata(null));
+
+        public static string GetCreditTypeProperty(UIElement element)
+        {
+            if (element == null)
+                throw new ArgumentNullException("element");
+            return (string)element.GetValue(CreditTypeProperty);
+        }
+        public static void SetCreditTypeProperty(UIElement element, string value)
+        {
+            if (element == null)
+                throw new ArgumentNullException("element");
+            element.SetValue(CreditTypeProperty, value);
+        }
+
+
+        public static readonly DependencyProperty CreditPlacementProperty = DependencyProperty.RegisterAttached("CreditPlacement",
+            typeof(string), typeof(Credit), new FrameworkPropertyMetadata(null));
+
+        public static string GetCreditPlacementProperty(UIElement element)
+        {
+            if (element == null)
+                throw new ArgumentNullException("element");
+            return (string)element.GetValue(CreditPlacementProperty);
+        }
+        public static void SetCreditPlacementProperty(UIElement element, string value)
+        {
+            if (element == null)
+                throw new ArgumentNullException("element");
+            element.SetValue(CreditPlacementProperty, value);
+        }
+        #endregion
+
         #region Public properties read-only
         public CreditWords CreditWords { get { return credit_words; } }
         public int PageNumber { get { return page; } }
@@ -140,14 +175,23 @@ namespace MusicXMLViewerWPF.Credit
 
     enum CreditType
     {
-        none,
         page_number,
         title,
         subtitle,
-        composer,
-        arranger,
+        composer = 6,
         lyricist,
-        rights
+        separator = 8,
+        arranger,
+        intrumentname,
+        rights = 20,
+        other = 100,
+        none = 1000
+    }
+    
+    enum CreditPlacement
+    {
+        header,
+        footer
     }
 
     internal class CreditWords : EmptyPrintStyle

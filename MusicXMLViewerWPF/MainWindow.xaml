@@ -27,7 +27,7 @@
                     <Separator/>
                     <MenuItem Header="Open File" Command="{Binding OpenFileCommand}"/>
                     <MenuItem Header="Open Last">
-                        <MenuItem Header="Open Last File"/>
+                        <MenuItem Header="Echigo-Jishi.xml" Command="{Binding OpenFileCommand}" CommandParameter="C:\Users\Krzychu124\Desktop\xml_test_samples\Echigo-Jishi.xml"/>
                     </MenuItem>
                     <Separator/>
                     <MenuItem Header="Close File" Command="{Binding CloseFileCommand}"/>

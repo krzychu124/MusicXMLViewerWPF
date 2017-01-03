@@ -39,6 +39,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -89,8 +90,10 @@
     <Compile Include="Helpers\CustomWrapPanel.cs" />
     <Compile Include="Helpers\DrawingHelpers.cs" />
     <Compile Include="Helpers\Mediator.cs" />
+    <Compile Include="Helpers\OrientedSize.cs" />
     <Compile Include="Helpers\PreviewCanvas.cs" />
     <Compile Include="Helpers\PreviewSettings.cs" />
+    <Compile Include="Helpers\StaffLineCanvas.cs" />
     <Compile Include="Helpers\TypeFaces.cs" />
     <Compile Include="Log\LoggIt.cs" />
     <Compile Include="Log\LogView.xaml.cs">
@@ -104,6 +107,7 @@
     <Compile Include="MainWindowViewModel.cs" />
     <Compile Include="MusicXMLModel\Credit\Credit.cs" />
     <Compile Include="MusicXMLModel\Defaults\Defaults.cs" />
+    <Compile Include="MusicXMLModel\Helpers\Generators.cs" />
     <Compile Include="MusicXMLModel\Identification\Identification.cs" />
     <Compile Include="MusicXMLModel\Misc\DrawingHelpers.cs" />
     <Compile Include="MusicXMLModel\Misc\IAutoPosition.cs" />
@@ -158,6 +162,10 @@
       <DependentUpon>Window1.xaml</DependentUpon>
     </Compile>
     <Compile Include="MusicXMLModel\Work\Work.cs" />
+    <Compile Include="Page\CreditsView.xaml.cs">
+      <DependentUpon>CreditsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Page\CreditsViewModel.cs" />
     <Compile Include="Page\PageView.xaml.cs">
       <DependentUpon>PageView.xaml</DependentUpon>
     </Compile>
@@ -196,6 +204,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="MusicXMLModel\Misc\NoUsage\Window1.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Page\CreditsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

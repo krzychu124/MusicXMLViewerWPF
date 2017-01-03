@@ -662,9 +662,10 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
         /// </summary>
         /// <param name="dc"></param>
         /// <param name="StartPoint"></param>
-        public void Draw_Measure(DrawingContext dc, Point StartPoint)
+        public void Draw_Measure(DrawingContext dc, Point StartPoint, Brush color = null)
         {
-            float Scale = MusicScore.Defaults.Scale.Tenths;
+            if (color == null) color = Brushes.Black;
+            float Scale = 40f;  //! MusicScore.Defaults.Scale.Tenths;
             float num = GetMeasureLength(Width);
             float filling = GetStaffLinesFilling(Width);
             float X = (float)StartPoint.X;
@@ -673,13 +674,13 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
 
             for (int i = 0; i < num; i++)
             {
-                Misc.DrawingHelpers.DrawString(dc, MusicalChars.Staff5L, TypeFaces.NotesFont, Brushes.Black, X + s, Y, Scale);
+                Misc.DrawingHelpers.DrawString(dc, MusicalChars.Staff5L, TypeFaces.NotesFont, color, X + s, Y, Scale);
                 s += 24;
             }
 
             if (filling != 0)
             {
-                Misc.DrawingHelpers.DrawString(dc, MusicalChars.Staff5L, TypeFaces.NotesFont, Brushes.Black, X + (Width-24), Y, Scale);
+                Misc.DrawingHelpers.DrawString(dc, MusicalChars.Staff5L, TypeFaces.NotesFont, color, X + (Width-24), Y, Scale);
             }
             if (IsFirstInLine)
             {
