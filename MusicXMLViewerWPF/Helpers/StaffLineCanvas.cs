@@ -21,7 +21,11 @@ namespace MusicXMLScore.Helpers
             SizeChanged += StaffLineCanvas_SizeChanged;
             
         }
+        public void InitStaffLine()
+        {
 
+        }
+        
         private void StaffLineCanvas_SizeChanged(object sender, System.Windows.SizeChangedEventArgs e)
         {
            // InvalidateMeasure();
@@ -46,7 +50,7 @@ namespace MusicXMLScore.Helpers
         public MusicXMLViewerWPF.ScoreParts.Part.Measures.Measure m =new MusicXMLViewerWPF.ScoreParts.Part.Measures.Measure();
         protected override void OnRender(DrawingContext dc)
         {
-            base.OnRender(dc);
+            //base.OnRender(dc);
             
             
         }

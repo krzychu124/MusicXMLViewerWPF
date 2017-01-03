@@ -212,9 +212,15 @@ namespace MusicXMLScore.Helpers
                 UIElement child = childrens[i];
                 if (child == null) continue;
                 child.Measure(constraint);
-
+                StaffLineCanvas s = childrens[i] as StaffLineCanvas;
+                bool childbreaksrow = false;
+                if (s != null)
+                {
+                    object breakrow = s.GetValue(CustomWrapPanel.BreakRowProperty);
+                    childbreaksrow = (bool)breakrow;
+                }
                 Size childSize = child.DesiredSize;
-                if(GreaterThan(linesize.Width + childSize.Width, childsconstraint.Width))
+                if(GreaterThan(linesize.Width + childSize.Width, childsconstraint.Width) || childbreaksrow == true)
                 {
                     panelsize.Height += linesize.Height;
                     double offset = panelsize.Width - linesize.Width;
@@ -423,8 +429,15 @@ namespace MusicXMLScore.Helpers
                 lineend = i;
                 UIElement child = children[i] as UIElement;
                 if (child == null) continue;
+                StaffLineCanvas s = children[i] as StaffLineCanvas;
+                bool childbreaksrow = false;
+                if (s != null)
+                {
+                    object breakrow = s.GetValue(CustomWrapPanel.BreakRowProperty);
+                    childbreaksrow = (bool)breakrow;
+                }
                 currentlinesize.Height = child.DesiredSize.Height;
-                if (GreaterThan(currentlinesize.Width + child.DesiredSize.Width, maxlinesize.Width))
+                if (GreaterThan(currentlinesize.Width + child.DesiredSize.Width, maxlinesize.Width) || childbreaksrow == true)
                 {
                     double offset = maxlinesize.Width - currentlinesize.Width;
                     arrangeLine(accheight, child.DesiredSize.Height, linestart, lineend, false, 0.0, true, offset);
