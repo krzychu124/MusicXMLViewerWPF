@@ -66,6 +66,7 @@ namespace MusicXMLScore.Configuration
         private string selectedkeytype = "Flat";
         private TimeSigSettingOptions currenttimesig = TimeSigSettingOptions.standard;
         private Helpers.PreviewSettings ps;
+        private static MusicXMLViewerWPF.Defaults.Defaults defaults = new MusicXMLViewerWPF.Defaults.Defaults();
         #endregion
 
         #region properties
@@ -113,7 +114,7 @@ namespace MusicXMLScore.Configuration
         private void InitPreview()
         {
             MusicScore.Defaults = new MusicXMLViewerWPF.Defaults.Defaults();
-            MusicScore.Defaults.Scale.Set(60);
+            //MusicScore.Defaults.Scale.Set(40);
         }
 
         private void NewScoreCreatorViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -154,7 +155,7 @@ namespace MusicXMLScore.Configuration
         private void UpdatePreview()
         {
             ConfigurationPreview.ClearVisuals();
-            float scale = MusicScore.Defaults.Scale.Tenths;
+            float scale = defaults.Scale.Tenths;
             Point key = new Point(2*scale, 0.5 * scale);
             Point clef = new Point(0.5*scale, 0.5 * scale);
             Point timesig = new Point(1.25*scale, 0.5 * scale);
