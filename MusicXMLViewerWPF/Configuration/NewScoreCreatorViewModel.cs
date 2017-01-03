@@ -163,8 +163,10 @@ namespace MusicXMLScore.Configuration
             DrawingVisual k_d = new DrawingVisual();
             DrawingVisual c_d = new DrawingVisual();
             DrawingVisual t_d = new DrawingVisual();
+            DrawingVisual b_d = new DrawingVisual();
+            DrawingVisual r_d = new DrawingVisual();
             DrawingVisual m = new DrawingVisual();
-            MusicXMLViewerWPF.ScoreParts.Part.Measures.Measure meae = new MusicXMLViewerWPF.ScoreParts.Part.Measures.Measure() { Width = 3f * scale};
+            MusicXMLViewerWPF.ScoreParts.Part.Measures.Measure meae = new MusicXMLViewerWPF.ScoreParts.Part.Measures.Measure() { Width = 4.5f * scale};
             using(DrawingContext dc= m.RenderOpen())
             {
                 meae.Draw_Measure(dc, measure);
@@ -176,6 +178,11 @@ namespace MusicXMLScore.Configuration
             Clef c = new Clef(cl,2,0);
             string ttype = CurrentTimeSigOption == TimeSigSettingOptions.standard ? "" : CurrentTimeSigOption.ToString();
             TimeSignature t = new TimeSignature((int)TimeSigTime, (int)SelectedTimeBeats.Value, ttype);
+            Barline br = new Barline() { Style = Barline.BarStyle.light_light };
+            Rest r = new Rest("whole", new Point( 3.5f* scale, 0.5 * scale));
+
+            br.DrawBarline(b_d, new Point(4.5f * scale , 0.5 * scale), 5f);
+            r.Draw(r_d);
             k.Relative = key;
             c.Relative = clef;
             t.Relative = timesig;
@@ -186,6 +193,8 @@ namespace MusicXMLScore.Configuration
             ConfigurationPreview.AddVisual(k_d);
             ConfigurationPreview.AddVisual(c_d);
             ConfigurationPreview.AddVisual(t_d);
+            ConfigurationPreview.AddVisual(r_d);
+            ConfigurationPreview.AddVisual(b_d);
         }
         
         public DrawingVisual AddVis()

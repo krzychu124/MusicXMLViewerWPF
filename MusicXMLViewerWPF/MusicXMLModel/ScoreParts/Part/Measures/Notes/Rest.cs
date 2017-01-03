@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Media;
 using System.Xml.Linq;
 
@@ -100,6 +101,14 @@ namespace MusicXMLViewerWPF
             duration = d;
             voice = v;
             ismeasurerest = restType;
+        }
+
+        public Rest(string duration, Point pos)
+        {
+            NotePropertyChanged += Rest_RestPropertyChanged;
+            Relative = pos;
+            SymbolXMLValue = duration;
+            SymbolType = SymbolDuration.d_type(duration);
         }
 
         public void MeasureRestDuration(int duration)
