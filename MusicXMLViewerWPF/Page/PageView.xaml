@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:MusicXMLScore.Page"
              xmlns:helpers="clr-namespace:MusicXMLScore.Helpers"
+             xmlns:credit ="clr-namespace:MusicXMLViewerWPF.Credit"
              xmlns:Configuration="clr-namespace:MusicXMLScore.Configuration" xmlns:Log="clr-namespace:MusicXMLScore.Log" x:Class="MusicXMLScore.Page.PageView"
              mc:Ignorable="d" Height="350" Width="800" x:Name="uc">
 
@@ -13,7 +14,9 @@
             <Grid >
                 <Grid.RowDefinitions>
                     <RowDefinition Height="20"/>
-                    <RowDefinition Height="250"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <DockPanel>
@@ -25,8 +28,9 @@
                     <Slider DockPanel.Dock="Left" Value="{Binding Width, ElementName=uc}" Maximum="2000" Minimum="300" Width="350"></Slider>
                     <RadioButton DockPanel.Dock="Right" FlowDirection="RightToLeft" GroupName="a" Width="50" Height="25" Content="Rbtn"></RadioButton>
                 </DockPanel>
-
-                <ItemsControl Grid.Row="2" ItemsSource="{Binding List}" Background="Transparent" Margin="20">
+                <local:CreditsView Grid.Row="1" VerticalAlignment="Top" Width="auto" Height="Auto"/>
+                <TextBox Grid.Row="4" Name="RightsTextBox" Text="Copyrights" TextAlignment="Center" FontSize="16" Margin="0,0,0,20" VerticalAlignment="Bottom" Background="Transparent" BorderThickness="0"/>
+                <ItemsControl Grid.Row="3" ItemsSource="{Binding List}" Background="Transparent" VerticalAlignment="Top" Margin="20">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <helpers:CustomWrapPanel x:Name="ItemsPanelContainer" HorizontalAlignment="Left" IsItemsHost="true" ClipToBounds="false" LastItemRowStretch="False" StretchItemsInRow="true">
@@ -34,10 +38,11 @@
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
                 </ItemsControl>
-                <helpers:CustomWrapPanel x:Name="cwp" Grid.Row="1" Grid.RowSpan="9" ClipToBounds="False" LastItemRowStretch="{Binding ElementName=clirs, Path=IsChecked}" StretchItemsInRow="{Binding ElementName=csiir, Path=IsChecked}" Height="250" VerticalAlignment="Top">
-                    <helpers:StaffLineCanvas Height="100" IsHitTestVisible="True" MouseLeftButtonDown="StaffLineCanvas_MouseLeftButtonDown"></helpers:StaffLineCanvas>
-                    <helpers:StaffLineCanvas Height="100" IsHitTestVisible="True" MouseLeftButtonDown="StaffLineCanvas_MouseLeftButtonDown" helpers:CustomWrapPanel.BreakRow="True" />
-                    <helpers:StaffLineCanvas Height="100" />
+                
+                <helpers:CustomWrapPanel x:Name="cwp" Grid.Row="2" Grid.RowSpan="2" ClipToBounds="False" VerticalAlignment="Top" LastItemRowStretch="{Binding ElementName=clirs, Path=IsChecked}" StretchItemsInRow="{Binding ElementName=csiir, Path=IsChecked}" Margin="0,0,0,69">
+                    <helpers:StaffLineCanvas Height="100" IsHitTestVisible="True" MouseLeftButtonDown="StaffLineCanvas_MouseLeftButtonDown"/>
+                    <helpers:StaffLineCanvas Height="100" IsHitTestVisible="True" MouseLeftButtonDown="StaffLineCanvas_MouseLeftButtonDown" />
+                    <helpers:StaffLineCanvas Height="100" helpers:CustomWrapPanel.BreakRow="True"/>
                     <!--Width="{Binding ElementName=uc, Path=ActualWidth}"-->
                 </helpers:CustomWrapPanel>
             </Grid>

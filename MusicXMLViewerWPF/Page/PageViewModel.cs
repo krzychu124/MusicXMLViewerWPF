@@ -88,6 +88,10 @@ namespace MusicXMLScore.Page
                     Grid grid = new Grid();
                     grid.Height = 100;
                     grid.MinWidth = item.Width;
+                    if (item.IsFirstInLine)
+                    {
+                        grid.SetValue(CustomWrapPanel.BreakRowProperty, true);
+                    }
                     CanvasList cl = new CanvasList(grid.Width, grid.Height);
                     cl.Background = Brushes.Transparent;
                     DrawingVisual dv = new DrawingVisual();
