@@ -22,6 +22,8 @@ namespace MusicXMLViewerWPF
         }
         public ClefType(Clef c)
         {
+            sign_s = "Clef " + c;
+            sign = c;
             setSymbol(c);
         }
         

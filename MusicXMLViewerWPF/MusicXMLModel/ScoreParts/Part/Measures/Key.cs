@@ -6,10 +6,13 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using System.Xml.Linq;
+using MusicXMLScore.Helpers;
+using MusicXMLViewerWPF.Misc;
+using System.ComponentModel;
 
 namespace MusicXMLViewerWPF
 {
-    class Key : Segment, Misc.IDrawableMusicalChar//  MusicalChars //TODO_L implement missing properties 
+    class Key : Segment, Misc.IDrawableMusicalObject//  MusicalChars //TODO_L implement missing properties 
     {
         #region Fields
         private EmptyPrintStyle additional_attributes;
@@ -19,6 +22,9 @@ namespace MusicXMLViewerWPF
         private Fifths fifths;
         private Mode mode;
         private ClefType clef_type;
+        private bool loadstatus;
+        private CanvasList drawablemusicalobject;
+        private DrawableMusicalObjectStatus drawableobjectstatus;
         #endregion
         #region Properties
         public EmptyPrintStyle AdditionalAttributes { get { return additional_attributes; } }
@@ -28,21 +34,32 @@ namespace MusicXMLViewerWPF
         public Fifths Fifths { get { return fifths; } }
         public Mode Mode { get { return mode; } }
         public SegmentType CharacterType { get { return SegmentType.KeySig; } }
+        public new PropertyChangedEventHandler PropertyChanged = delegate { };
+
+        public CanvasList DrawableMusicalObject { get { return drawablemusicalobject; }  set { drawablemusicalobject = value; } }
+        public DrawableMusicalObjectStatus DrawableObjectStatus { get { return drawableobjectstatus; } private set { if (drawableobjectstatus != value) drawableobjectstatus = value; PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(DrawableObjectStatus))); } }
+        public bool Loaded { get { return loadstatus; } private set { if (loadstatus != value) loadstatus = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Loaded))); } }
         #endregion
 
-        public Key( int fifths, string mode, int num)
+        public Key( int fifths, string mode ="major", int num = 0):base()
         {
+            PropertyChanged += KeyPropertyChanged;
             //this.musicalcharacter = fifths < 0 ? "b" : fifths > 0 ? "#" : " ";
             isSharp = false;
             isSharp = fifths > 0 ? true : fifths < 0 ? false : isNatural = true;
             SetFifths(fifths);
             SetMode(mode);
             //this.type = MusSymbolType.Key;
+            Width = Math.Abs((int)Fifths) * 10f;
+            Height = 60;
             this.measure_num = num;
+            Segment_type = SegmentType.KeySig;
+            Loaded = true;
         }
 
         public Key(XElement x)
         {
+            PropertyChanged += KeyPropertyChanged;
             ID = Misc.RandomGenerator.GetRandomHexNumber();
             Segment_type = SegmentType.KeySig;
             additional_attributes = new EmptyPrintStyle(x.Attributes());
@@ -66,9 +83,30 @@ namespace MusicXMLViewerWPF
             isNatural = false;
             isSharp = false;
             isSharp = fifths > 0 ? true : fifths < 0 ? false : isNatural = true;
-            Width = Math.Abs((int)Fifths) * 7f;
+            Width = Math.Abs((int)Fifths) * 7.5f;
             clef_type = Clef.Sign_static;
             //recalculate_spacers();
+        }
+
+        private void KeyPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case "Loaded":
+                    if (Loaded)
+                    {
+                        InitDrawableObject();
+                    }
+                    break;
+                case "DrawableObjectStatus":
+                    if (DrawableObjectStatus == DrawableMusicalObjectStatus.reload)
+                    {
+                        ReloadDrawableObject();
+                    }
+                    break;
+                default:
+                    break;
+            }
         }
 
         private void SetMode(string s)
@@ -161,6 +199,26 @@ namespace MusicXMLViewerWPF
             }
             return f;
         }
+
+        public void InitDrawableObject()
+        {
+            if (Loaded)
+            {
+                DrawableMusicalObject = new CanvasList(this.Width, this.Height);
+                DrawingVisual key = new DrawingVisual();
+                Draw(key);
+                DrawableMusicalObject.AddVisual(key);
+                DrawableObjectStatus = DrawableMusicalObjectStatus.ready;
+            }
+        }
+
+        public void ReloadDrawableObject()
+        {
+            DrawableMusicalObject.ClearVisuals();
+            DrawableObjectStatus = DrawableMusicalObjectStatus.notready;
+            InitDrawableObject();
+        }
+
         private static Dictionary<int, Fifths> FifthDic=new Dictionary<int, Fifths> {
             { -1, Fifths.F },
             { -2, Fifths.Bb },

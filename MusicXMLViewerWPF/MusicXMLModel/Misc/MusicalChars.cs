@@ -248,7 +248,7 @@ namespace MusicXMLViewerWPF
 
         public static string getRestSymbol(string s)
         {
-            MusSymbolDuration m = SymbolDuration.d_type(s);
+            MusSymbolDuration m = SymbolDuration.DurStrToMusSymbol(s);
             s = "??";
             if (DurationSymbol_Rest.ContainsKey(m))
             {

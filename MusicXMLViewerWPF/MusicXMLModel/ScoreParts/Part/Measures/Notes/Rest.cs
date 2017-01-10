@@ -11,7 +11,7 @@ using System.Xml.Linq;
 
 namespace MusicXMLViewerWPF
 {
-    class Rest : Note, IAutoPosition
+    class Rest : Note, IAutoPosition, IDrawableMusicalObject
     {
         // private int dots; inherited
         // private int multimeasure;
@@ -21,8 +21,11 @@ namespace MusicXMLViewerWPF
         private bool ismeasurerest;
         private int measure_num;
         private string duration_symbol;
+        private bool loadstatus;
         public static List<Rest> RestList = new List<Rest>();
 
+        private MusicXMLScore.Helpers.CanvasList drawablemusicalobject;
+        private DrawableMusicalObjectStatus dobjectstatus;
         //public bool HasDot { get { return hasDot; } } inherited
         //public int Duration { get { return duration; } } inherited
         //public int MeasureId { get { return measure_num; } } inherited
@@ -31,10 +34,13 @@ namespace MusicXMLViewerWPF
         public bool IsMeasureRest { get { return ismeasurerest; } }
         public float X { get { return posX; } }
         public int CharId { get { return id; } }
-        public event PropertyChangedEventHandler RestPropertyChanged;
-
+        public event PropertyChangedEventHandler RestPropertyChanged = delegate { };
+        public override MusicXMLScore.Helpers.CanvasList DrawableMusicalObject { get { return drawablemusicalobject; } set { if (value != null) drawablemusicalobject = value; } }
+        public new DrawableMusicalObjectStatus DrawableObjectStatus { get { return dobjectstatus; } private set { if (dobjectstatus != value) dobjectstatus = value; RestPropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(DrawableObjectStatus))); } } 
+        public new bool Loaded { get { return loadstatus; } private set { loadstatus = value; RestPropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Loaded))); } }
         public Rest(XElement x)
         {
+            RestPropertyChanged += Rest_RestPropertyChanged1;
             SetSegmentColor(Brushes.DarkMagenta);
             NotePropertyChanged += Rest_RestPropertyChanged;
             ID = Misc.RandomGenerator.GetRandomHexNumber();
@@ -42,9 +48,8 @@ namespace MusicXMLViewerWPF
             duration = int.Parse(x.Element("duration").Value);
             voice = int.Parse(x.Element("voice").Value);
             SymbolXMLValue = x.Element("type") != null ? x.Element("type").Value : null;
-            SymbolType = SymbolXMLValue != null ? SymbolDuration.d_type(SymbolXMLValue) : MusSymbolDuration.Unknown;
+            SymbolType = SymbolXMLValue != null ? SymbolDuration.DurStrToMusSymbol(SymbolXMLValue) : MusSymbolDuration.Unknown;
             //Symbol = MusChar.getRestSymbol(SymbolXMLValue);
-            Width = 10f;
             isRest = true;
             if (x.Element("rest").HasAttributes) //! Checks if rest lasts whole measure duration
             {
@@ -56,7 +61,28 @@ namespace MusicXMLViewerWPF
             {
                 ismeasurerest = false;
             }
-            
+            Loaded = true;
+        }
+
+        private void Rest_RestPropertyChanged1(object sender, PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case "Loaded":
+                    if (Loaded)
+                    {
+                        InitDrawableObject();
+                    }
+                    break;
+                case "DrawableObjectStatus":
+                    if (DrawableObjectStatus == DrawableMusicalObjectStatus.reload)
+                    {
+                        ReloadDrawableObject();
+                    }
+                    break;
+                default:
+                    break;
+            }
         }
 
         private void Rest_RestPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -79,7 +105,6 @@ namespace MusicXMLViewerWPF
             RestPropertyChanged += Rest_RestPropertyChanged;
             RestPropertyChanged += Note_PropertyChanged;
             Segment_type = SegmentType.Rest;
-            Width = 10f;
         }
         public Rest(int m_num,int id,int d, int v, string t, float x, bool restType, bool dot = false)
         {
@@ -105,15 +130,40 @@ namespace MusicXMLViewerWPF
 
         public Rest(string duration, Point pos)
         {
+            RestPropertyChanged += Rest_RestPropertyChanged1;
             NotePropertyChanged += Rest_RestPropertyChanged;
+            ID = Misc.RandomGenerator.GetRandomHexNumber();
             Relative = pos;
             SymbolXMLValue = duration;
-            SymbolType = SymbolDuration.d_type(duration);
+            SymbolType = SymbolDuration.DurStrToMusSymbol(duration);
+            Segment_type = SegmentType.Rest;
+            CalculateDimensions();
+            Loaded = true;
+        }
+
+        public void InitDrawableObject()
+        {
+            
+            if (Loaded)
+            {
+                DrawableMusicalObject = new MusicXMLScore.Helpers.CanvasList(this.Width, this.Height) { Tag = ID };
+                DrawingVisual dv = new DrawingVisual();
+                Draw(dv);
+                DrawableMusicalObject.AddVisual(dv);
+                DrawableObjectStatus = DrawableMusicalObjectStatus.ready;
+            }
+        }
+
+        public void ReloadDrawableObject()
+        {
+            DrawableMusicalObject.ClearVisuals();
+            DrawableObjectStatus = DrawableMusicalObjectStatus.notready;
+            InitDrawableObject();
         }
 
         public void MeasureRestDuration(int duration)
         {
-
+            throw new NotImplementedException();
 
         }
         public static void ExtractRests()

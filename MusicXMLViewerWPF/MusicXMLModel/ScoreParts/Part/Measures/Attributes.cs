@@ -20,16 +20,16 @@ namespace MusicXMLViewerWPF
         private Clef clef;
         private Key key;
         private MeasureStyle measure_style;
-        private TimeSignature time;
+        private TimeSignature timesig;
         private Transpose transpose;
         private uint instruments;
         private uint staves = 1; // info how much staffs in part
         private static Clef _clef;
 
-        public Clef Clef { get { return clef; } }
-        public Key Key { get { return key; } }
+        public Clef Clef { get { return clef; } set { if (value != null) clef = value; } }
+        public Key Key { get { return key; } set { if (value != null) key = value; } } 
         public MeasureStyle MeasureStyle { get { return measure_style; } }
-        public TimeSignature Time { get { return time; } }
+        public TimeSignature Time { get { return timesig; } set { if (value != null) timesig = value; } } 
         public Transpose Transpose { get { return transpose; } }
         public uint Instruments { get { return instruments; } }
         public uint Staves { get { return staves; } }
@@ -55,7 +55,7 @@ namespace MusicXMLViewerWPF
                         measure_style = new MeasureStyle(item);
                         break;
                     case "time":
-                        time = new TimeSignature(item);
+                        timesig = new TimeSignature(item);
                         break;
                     case "transpose":
                         transpose = new Transpose(item);
@@ -74,6 +74,14 @@ namespace MusicXMLViewerWPF
         public Attributes(Clef clef)
         {
             this.clef = clef;
+        }
+        public Attributes(TimeSignature timesig)
+        {
+            this.Time = timesig;
+        }
+        public Attributes(Key keysig)
+        {
+            Key = keysig;
         }
 
         public void Draw(DrawingVisual visual)

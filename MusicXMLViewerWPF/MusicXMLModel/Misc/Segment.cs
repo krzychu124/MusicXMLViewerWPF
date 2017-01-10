@@ -11,7 +11,7 @@ using System.Windows.Media;
 
 namespace MusicXMLViewerWPF
 {
-    public class Segment : INotifyPropertyChanged, IDrawableMusicalChar
+    public class Segment : INotifyPropertyChanged//, IDrawableMusicalObject
     {
         #region protected fields
         private float width;
@@ -174,7 +174,7 @@ namespace MusicXMLViewerWPF
             if (Segment_type == SegmentType.Clef)
             {
                 left = 5f;
-                right = 28f;
+                right = 20f;
             }
             if (Segment_type == SegmentType.KeySig)
             {
@@ -184,12 +184,12 @@ namespace MusicXMLViewerWPF
             if (Segment_type == SegmentType.TimeSig)
             {
                 left = 5f;
-                right = 20f;
+                right = 15f;
             }
             if (Segment_type == SegmentType.Rest)
             {
-                left = 6f;
-                right = 12f;
+                left = 10f;
+                right = 10f;
             }
             if (Segment_type == SegmentType.Direction)
             {
