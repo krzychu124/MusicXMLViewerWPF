@@ -87,13 +87,17 @@
     <Compile Include="Converters\StarWidthConverter.cs" />
     <Compile Include="Converters\ToTypeEqualityConverter.cs" />
     <Compile Include="Helpers\CanvasList.cs" />
+    <Compile Include="Helpers\CustomCanvas.cs" />
+    <Compile Include="Helpers\CustomSystemPanel.cs" />
     <Compile Include="Helpers\CustomWrapPanel.cs" />
     <Compile Include="Helpers\DrawingHelpers.cs" />
+    <Compile Include="Helpers\DrawingVisualPlus.cs" />
     <Compile Include="Helpers\Mediator.cs" />
     <Compile Include="Helpers\OrientedSize.cs" />
     <Compile Include="Helpers\PreviewCanvas.cs" />
     <Compile Include="Helpers\PreviewSettings.cs" />
     <Compile Include="Helpers\StaffLineCanvas.cs" />
+    <Compile Include="Helpers\test.cs" />
     <Compile Include="Helpers\TypeFaces.cs" />
     <Compile Include="Log\LoggIt.cs" />
     <Compile Include="Log\LogView.xaml.cs">
@@ -111,7 +115,7 @@
     <Compile Include="MusicXMLModel\Identification\Identification.cs" />
     <Compile Include="MusicXMLModel\Misc\DrawingHelpers.cs" />
     <Compile Include="MusicXMLModel\Misc\IAutoPosition.cs" />
-    <Compile Include="MusicXMLModel\Misc\IDrawableMusicalChar.cs" />
+    <Compile Include="MusicXMLModel\Misc\IDrawableMusicalObject.cs" />
     <Compile Include="MusicXMLModel\Misc\LineBreak.cs" />
     <Compile Include="MusicXMLModel\Misc\LoadFile.cs" />
     <Compile Include="MusicXMLModel\Misc\MeasureSystem.cs" />
@@ -166,6 +170,10 @@
       <DependentUpon>CreditsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Page\CreditsViewModel.cs" />
+    <Compile Include="Page\CustomSystemView.xaml.cs">
+      <DependentUpon>CustomSystemView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Page\CustomSystemViewModel.cs" />
     <Compile Include="Page\PageView.xaml.cs">
       <DependentUpon>PageView.xaml</DependentUpon>
     </Compile>
@@ -208,6 +216,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Page\CreditsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Page\CustomSystemView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
