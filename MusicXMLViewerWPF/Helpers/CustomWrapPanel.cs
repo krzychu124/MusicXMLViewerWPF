@@ -22,7 +22,7 @@ namespace MusicXMLScore.Helpers
         }
 
         #region Dependency Properties
-
+        
         public static readonly DependencyProperty StretchItemsInRowProperty =
             DependencyProperty.Register(
                 "StretchItemsInRow",
@@ -101,6 +101,11 @@ namespace MusicXMLScore.Helpers
             return (bool)element.GetValue(BreakRowProperty);
         }
 
+        public void AddChild(UIElement child)
+        {
+            this.Children.Add(child);
+        }
+
         private static bool IsBreakRowValid(object value)
         {
             return value is bool;
@@ -164,6 +169,7 @@ namespace MusicXMLScore.Helpers
             }
         }
 
+
         //private struct UVSiz
         //{
         //    internal UVSiz(Orientation orientation, double width, double height)
@@ -198,6 +204,7 @@ namespace MusicXMLScore.Helpers
 
         protected override Size MeasureOverride(Size constraint)
         {
+            base.MeasureOverride(constraint);
             Size childsconstraint = new Size() { Width = constraint.Width, Height = constraint.Height };
             Size panelsize = new Size(constraint.Width, 0);
             Size linesize = new Size();
@@ -206,19 +213,19 @@ namespace MusicXMLScore.Helpers
 
             UIElementCollection childrens = InternalChildren;
             int count = childrens.Count;
-
             for (int i = 0; i < count; i++)
             {
                 UIElement child = childrens[i];
                 if (child == null) continue;
+
                 child.Measure(constraint);
-                StaffLineCanvas s = childrens[i] as StaffLineCanvas;
                 bool childbreaksrow = false;
-                if (s != null)
+                object breakrow = child.GetValue(CustomWrapPanel.BreakRowProperty);
+                if (breakrow != null)
                 {
-                    object breakrow = s.GetValue(CustomWrapPanel.BreakRowProperty);
                     childbreaksrow = (bool)breakrow;
                 }
+                
                 Size childSize = child.DesiredSize;
                 if(GreaterThan(linesize.Width + childSize.Width, childsconstraint.Width) || childbreaksrow == true)
                 {
@@ -238,17 +245,6 @@ namespace MusicXMLScore.Helpers
             if (linesize.Width < panelsize.Width)
             {
                 magain(panelsize, linesize, linestart, lineend);
-                //double offset = panelsize.Width - linesize.Width;
-                //double divisor = lineend - linestart != 0 ? lineend - linestart : 0;
-                //double childoffset = offset / ++divisor;
-                //for (int i = linestart; i < lineend; i++)
-                //{
-                //    UIElement child = childrens[i];
-                //    if (child == null) continue;
-                //    Size childSize = child.DesiredSize;
-                //    child.Measure(new Size(0, 0));
-                //    child.Measure(new Size(childSize.Width + childoffset, childSize.Height));
-                //}
                 panelsize.Height += linesize.Height;
             }
             panelsize.Height += linesize.Height;
@@ -332,7 +328,7 @@ namespace MusicXMLScore.Helpers
             }
         }
 
-        protected override Size ArrangeOverride(Size finalSize)
+        protected override Size ArrangeOverride(Size finalSize) //TODO_I needs improvements
         {
             //int lineBegin = 0;
             //Orientation o = Orientation;
@@ -429,11 +425,10 @@ namespace MusicXMLScore.Helpers
                 lineend = i;
                 UIElement child = children[i] as UIElement;
                 if (child == null) continue;
-                StaffLineCanvas s = children[i] as StaffLineCanvas;
                 bool childbreaksrow = false;
-                if (s != null)
-                {
-                    object breakrow = s.GetValue(CustomWrapPanel.BreakRowProperty);
+                object breakrow = child.GetValue(CustomWrapPanel.BreakRowProperty);
+                if (breakrow != null)
+                { 
                     childbreaksrow = (bool)breakrow;
                 }
                 currentlinesize.Height = child.DesiredSize.Height;
