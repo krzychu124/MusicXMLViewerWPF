@@ -17,7 +17,7 @@ namespace MusicXMLViewerWPF
         #region static variables
         protected static CanvasL Surface;
         protected static string title;
-        protected static Defaults.Defaults defaults; 
+        protected static Defaults.Defaults defaults = new MusicXMLViewerWPF.Defaults.Defaults(); 
         protected static Dictionary<string, ScoreParts.Part.Part> parts = new Dictionary<string, ScoreParts.Part.Part>() { };
         protected static Identification.Identification identification; 
         protected static List<Credit.Credit> credits = new List<Credit.Credit>();
@@ -86,7 +86,7 @@ namespace MusicXMLViewerWPF
         }
         #endregion
 
-        #region public static properties (read-only)
+        #region public static properties
         public static string Title { get { return title; } }
         public static Defaults.Defaults Defaults { get { return defaults; } set { defaults = value; } }
         public static Dictionary<string, ScoreParts.Part.Part> Parts { get { return parts; } }
