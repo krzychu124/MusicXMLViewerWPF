@@ -65,7 +65,6 @@ namespace MusicXMLScore.Configuration
         private string selectedkeysymbol;
         private string selectedkeytype = "Flat";
         private TimeSigSettingOptions currenttimesig = TimeSigSettingOptions.standard;
-        private Helpers.PreviewSettings ps;
         private static MusicXMLViewerWPF.Defaults.Defaults defaults = new MusicXMLViewerWPF.Defaults.Defaults();
         #endregion
 
@@ -94,7 +93,7 @@ namespace MusicXMLScore.Configuration
         public string SelectedKeyType { get { return selectedkeytype; } set { if (selectedkeytype == value) return; selectedkeytype = value; NotifyPropertyChanged(nameof(SelectedKeyType)); } }
         public string TimeSigTimeSource { get; set; }
         public TimeSigSettingOptions CurrentTimeSigOption { get { return currenttimesig; } set { if (value != currenttimesig) { currenttimesig = value; NotifyPropertyChanged(nameof(CurrentTimeSigOption)); } } }
-        public Helpers.PreviewSettings PreviewSettings { get { return ps; } set { ps = value; } }
+        
 
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
         public void NotifyPropertyChanged(string name) { PropertyChanged(this, new PropertyChangedEventArgs(name)); }
@@ -218,7 +217,7 @@ namespace MusicXMLScore.Configuration
             //PreviewCanvas.AddVisual(AddVis());
             canvaslist.AddVisual(AddVis());
             keypreview.StaffLine();
-            SimpleLogger.SimpleLog.Log("Button test"+ canvaslist.Count);
+            SimpleLogger.SimpleLog.Log("Button test"+ canvaslist);
             //SimpleLogger.SimpleLog.ShowLogFile();
         }
 
