@@ -9,14 +9,14 @@ using System.Windows.Media;
 
 namespace MusicXMLScore.Helpers
 {
-    class CanvasList : Canvas
+    class CanvasList : Panel
     {
         //private VisualCollection visuals;
         private List<Visual> visuals = new List<Visual>();
-        
+        public List<Visual> Visuals { get { return visuals; } }
         public CanvasList() : base()
         {
-
+            
         }
         /// <summary>
         /// Sets Width and Height of Canvas
@@ -30,6 +30,8 @@ namespace MusicXMLScore.Helpers
         }
         protected override Visual GetVisualChild(int index)
         {
+            if (index < 0 || index >= VisualChildrenCount)
+                throw new ArgumentOutOfRangeException();
             return visuals[index];
         }
         protected override int VisualChildrenCount
@@ -49,6 +51,23 @@ namespace MusicXMLScore.Helpers
 
             base.AddVisualChild(visual);
             base.AddLogicalChild(visual);
+            //Measure(new Size(Width, Height));
+        }
+
+        public Visual FindVisualByTag(string tag)
+        {
+            foreach (var item in Visuals)
+            {
+                var dvp = item as DrawingVisualPlus;
+                if (dvp != null)
+                {
+                    if (dvp.Tag == tag)
+                    {
+                        return item;
+                    }
+                }
+            }
+            return null;
         }
         /// <summary>
         /// Removes visual from Visual, VisualChild and LogicalChild collection
@@ -74,7 +93,5 @@ namespace MusicXMLScore.Helpers
             }
         }
         public int Count { get { return visuals.Count; } }
-
-
     }
 }

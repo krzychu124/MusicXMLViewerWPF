@@ -23,9 +23,9 @@ namespace MusicXMLViewerWPF
     }
     public static class SymbolDuration
     {
-        public static MusSymbolDuration d_type(string t)
+        public static MusSymbolDuration DurStrToMusSymbol(string t)
         {
-
+            //t = t.ToLower();
             switch (t)
             {
                 case "whole":
@@ -54,6 +54,30 @@ namespace MusicXMLViewerWPF
                     
             }
 
+        }
+        public static string MusSymbolToDurStr(MusSymbolDuration m)
+        {
+            switch (m)
+            {
+                case MusSymbolDuration.Whole:
+                    return "whole";
+                case MusSymbolDuration.Half:
+                    return "half";
+                case MusSymbolDuration.Quarter:
+                    return "quarter";
+                case MusSymbolDuration.Unknown:
+                    return "";
+                case MusSymbolDuration.Eight:
+                    return "eighth";
+                case MusSymbolDuration.Sixteen:
+                    return "16th";
+                case MusSymbolDuration.d32nd:
+                    return "32nd";
+                case MusSymbolDuration.d64th:
+                    return "64th";
+                default:
+                    return "";
+            }
         }
 
     }

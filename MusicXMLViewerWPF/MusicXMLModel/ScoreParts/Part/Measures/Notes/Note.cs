@@ -11,10 +11,11 @@ using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Xml;
 using System.Xml.Linq;
+using MusicXMLScore.Helpers;
 
 namespace MusicXMLViewerWPF
 {
-    class Note : Segment, IAutoPosition
+    class Note : Segment, IAutoPosition, IDrawableMusicalObject
     { //Need to be reworked !! 1)little improvements done
         #region fields
         protected Accidental accidental;
@@ -46,7 +47,10 @@ namespace MusicXMLViewerWPF
         protected string symbol;
         protected string symbol_value;
         protected XElement xmldefinition;
-        public event PropertyChangedEventHandler NotePropertyChanged;
+        public event PropertyChangedEventHandler NotePropertyChanged = delegate { };
+        private CanvasList drawablemusicalobject;
+        private DrawableMusicalObjectStatus drawableobjectstatus;
+        private bool loadstatus;
         #endregion
 
         #region properties
@@ -82,6 +86,13 @@ namespace MusicXMLViewerWPF
         public XElement XMLDefinition { get { return xmldefinition; } }
         public Point NoteHeadLeftLink { get { return new Point(NoteHeadPosition.X - (MusicScore.Defaults.Scale.Tenths * 0.225f) / 2, NoteHeadPosition.Y); } }
         public Point NoteHeadRightLink { get { return new Point(NoteHeadPosition.X + (MusicScore.Defaults.Scale.Tenths * 0.225f) / 2, NoteHeadPosition.Y); } }
+
+        #region IDrawableMusicalObject
+        public virtual CanvasList DrawableMusicalObject { get { return drawablemusicalobject; }  set { drawablemusicalobject = value; } }
+        public DrawableMusicalObjectStatus DrawableObjectStatus { get { return drawableobjectstatus; } private set { if (drawableobjectstatus != value) drawableobjectstatus = value; NotePropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(DrawableObjectStatus))); } }
+        public bool Loaded { get { return loadstatus; } private set { if (loadstatus != value) loadstatus = value; NotePropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(Loaded))); } }
+        #endregion
+
         //public new Point Relative { get { return base.Relative; } set { base.Relative = value; NotePropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Relative))); } }
         #endregion
 
@@ -107,7 +118,26 @@ namespace MusicXMLViewerWPF
 
        } */
 
-
+        /// <summary>
+        /// Deprecated
+        /// </summary>
+        /// <param name="measure_id"></param>
+        /// <param name="id"></param>
+        /// <param name="pos"></param>
+        /// <param name="p"></param>
+        /// <param name="dur"></param>
+        /// <param name="v"></param>
+        /// <param name="t"></param>
+        /// <param name="s"></param>
+        /// <param name="dir"></param>
+        /// <param name="hasStemVal"></param>
+        /// <param name="r"></param>
+        /// <param name="num"></param>
+        /// <param name="bm"></param>
+        /// <param name="beamList"></param>
+        /// <param name="dot"></param>
+        /// <param name="notations"></param>
+        /// <param name="n_list"></param>
         public Note(int measure_id, int id, float pos, Pitch p, int dur, int v, string t, float s, string dir, bool hasStemVal, bool r, int num, string bm, Dictionary<int, string> beamList, int dot, bool notations, List<Notations> n_list)
         {
             isCustomStem = hasStemVal ? true : false;
@@ -120,7 +150,7 @@ namespace MusicXMLViewerWPF
             duration = dur;
             voice = v;
             stem_dir = dir == "up" ? false : true;
-            symbol_type = SymbolDuration.d_type(t);
+            symbol_type = SymbolDuration.DurStrToMusSymbol(t);
             symbol = MusicalChars.getNoteSymbol(t, stem_dir);
             isRest = r;
             stem_f = s;
@@ -132,6 +162,29 @@ namespace MusicXMLViewerWPF
             defaultStem = CalculateStem();
             hasNotations = notations;
             notationsList = n_list;
+        }
+
+        public Note(Pitch p, int duration)
+        {
+            NotePropertyChanged += Note_PropertyChanged;
+            Pitch = p;
+            Duration = duration;
+            Segment_type = SegmentType.Chord;
+            SymbolXMLValue = "quarter";
+            SymbolType = SymbolDuration.DurStrToMusSymbol(SymbolXMLValue);
+            if (Stem == null)
+            {
+                if (Pitch.CalculatedStep <= -7)
+                {
+                    Stem_dir = false;
+                }
+                else
+                {
+                    Stem_dir = true;
+                }
+            }
+            SetCalculatedNotePosition();
+            Loaded = true;
         }
 
         private void CalculatePitch(Pitch p)
@@ -195,7 +248,7 @@ namespace MusicXMLViewerWPF
                         break;
                     case "type":
                         SymbolXMLValue = item.Value;
-                        SymbolType = SymbolXMLValue != null ? SymbolDuration.d_type(SymbolXMLValue) : MusSymbolDuration.Unknown;
+                        SymbolType = SymbolXMLValue != null ? SymbolDuration.DurStrToMusSymbol(SymbolXMLValue) : MusSymbolDuration.Unknown;
                         Logger.Log($" {ID} Note Type set to {SymbolXMLValue}");
                         break;
                     case "stem":
@@ -305,6 +358,18 @@ namespace MusicXMLViewerWPF
                     SetCalculatedNotePosition();
                     Logger.Log("Recalculated NoteSymbol and Notehead positions");
                     break;
+                case "Loaded":
+                    if (Loaded)
+                    {
+                        InitDrawableObject();
+                    }
+                    break;
+                case "DrawableObjectStatus":
+                    if (DrawableObjectStatus == DrawableMusicalObjectStatus.reload)
+                    {
+                        ReloadDrawableObject();
+                    }
+                    break;
                 default:
                     Logger.Log($"NotePorpertyChanged for {e.PropertyName} not implenmented");
                     break;
@@ -334,7 +399,7 @@ namespace MusicXMLViewerWPF
                     DrawingVisual dot = new DrawingVisual();
                     using (DrawingContext dc = dot.RenderOpen())
                     {
-                        DrawingHelpers.DrawString(dc, MusicalChars.Dot, TypeFaces.NotesFont, Brushes.Black, notepositionX + 15, notepositionY - dot_placement, MusicScore.Defaults.Scale.Tenths);
+                        Misc.DrawingHelpers.DrawString(dc, MusicalChars.Dot, TypeFaces.NotesFont, Brushes.Black, notepositionX + 15, notepositionY - dot_placement, MusicScore.Defaults.Scale.Tenths);
                     }
                     visual.Children.Add(dot);
                 }
@@ -366,7 +431,7 @@ namespace MusicXMLViewerWPF
                     DrawingVisual dot = new DrawingVisual();
                     using (DrawingContext dc = dot.RenderOpen())
                     {
-                        DrawingHelpers.DrawString(dc, MusicalChars.Dot, TypeFaces.NotesFont, Brushes.Black, notepositionX + 15, notepositionY - dot_placement, MusicScore.Defaults.Scale.Tenths);
+                        Misc.DrawingHelpers.DrawString(dc, MusicalChars.Dot, TypeFaces.NotesFont, Brushes.Black, notepositionX + 15, notepositionY - dot_placement, MusicScore.Defaults.Scale.Tenths);
                     }
                     visual.Children.Add(dot);
                 }
@@ -447,6 +512,25 @@ namespace MusicXMLViewerWPF
         {
             string result = $"Position {Relative_x.ToString("0.#")}X, {Relative_y.ToString("0.#")}Y, Width: {Width.ToString("0.#")} {Pitch.Step}{Pitch.Octave}";
             return result;
+        }
+
+        public void InitDrawableObject()
+        {
+            if (Loaded)
+            {
+                DrawableMusicalObject = new CanvasList(this.Width, this.Height);
+                DrawingVisual note = new DrawingVisual();
+                Draw(note);
+                DrawableMusicalObject.AddVisual(note);
+                DrawableObjectStatus = DrawableMusicalObjectStatus.ready;
+            }
+        }
+
+        public void ReloadDrawableObject()
+        {
+            DrawableMusicalObject.ClearVisuals();
+            DrawableObjectStatus = DrawableMusicalObjectStatus.notready;
+            InitDrawableObject();
         }
         //! changed/refactored
         //private void AddBeam(Beam beam)
@@ -735,7 +819,7 @@ namespace MusicXMLViewerWPF
            
     }
 
-    public class Stem //TODO_H add auto calculation of stem for beams
+    public class Stem //TODO add auto calculation of stem for beams
     {
         private float length;
         private string direction;

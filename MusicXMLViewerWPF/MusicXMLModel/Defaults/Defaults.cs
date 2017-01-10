@@ -10,7 +10,7 @@ namespace MusicXMLViewerWPF.Defaults
 {
     class Defaults 
     {
-        private Scale scale;
+        private Scale scale = new Scale();
         private Page page;
         private SystemLayout system_layout;
         private StaffLayout staff_layout;

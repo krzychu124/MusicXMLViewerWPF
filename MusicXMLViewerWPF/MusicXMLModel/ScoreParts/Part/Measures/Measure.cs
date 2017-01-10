@@ -28,7 +28,10 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
         private MeasureCoordinates measure_pos;
         private Point pos;
         private Print print_properties;
-        private bool is_first_in_line = false;
+        //
+        private bool firstinrow = false;
+        private XElement xelementsource;
+        private Segment segment;
         #endregion
 
         #region Collections
@@ -55,21 +58,19 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
         public int Number { get { return number; } }
         public List<Barline> Barlines { get { return barlines; } }
         public List<Direction> DirectionList { get { return direction; } }
-        public List<Note> NotesList { get { return notes_list; } } // Not complete
+        public List<Note> NotesList { get { return notes_list; } set { if (value != null) notes_list = value; } } // Not complete
         public List<Segment> MusicCharacters { get { return music_characters; } }
         public MeasureCoordinates MeasurePosition { get { return measure_pos; } }
         public Point Position { get { return pos; } set { if (value != null) pos = value; } }
         public Print PrintProperties { get { return print_properties; } }
-        public bool IsFirstInLine { get { return is_first_in_line; } set { is_first_in_line = value; }  }
+        public bool IsFirstInLine { get { return firstinrow; } set { firstinrow = value; }  }
         public new Point Relative { get { return base.Relative; } set { base.Relative = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Relative))); } }
+        //
+        public XElement XElementSource { get { return xelementsource; } set { if (value != null) xelementsource = value; } }
+        public Segment Segment { get { return segment; } set { if (value != null) segment = value; } }
         #endregion
 
         public Measure()
-        {
-
-        }
-
-        public Measure(XElement x, Point position)
         {
 
         }
@@ -82,6 +83,7 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
         public Measure(XElement x)
         {
             ID = Misc.RandomGenerator.GetRandomHexNumber();
+            XElementSource = x;
             XMLExtractMeasureInfo(x);
             //PropertyChanged += segment_Properties_Ready;
             PropertyChanged += Measure_PropertyChanged;
@@ -152,7 +154,7 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
             //{
             //    Logger.Log($"Added segment {item.ToString()}");
             //}
-            SortNotations();
+            SortNotations(); // missing impl
             SortNotesByVoice();
             SortBeamsByNumber();
         }
@@ -205,7 +207,7 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
             }
         }
 
-        private void SortBeamsByNumber() //TODO_H sorting method not finished, get every beam of number from each note in measure, put to <<note.ID>, <<beam.number>, <list.beamsofnumbers>>> 
+        private void SortBeamsByNumber() //TODO_L sorting method not finished, get every beam of number from each note in measure, put to <<note.ID>, <<beam.number>, <list.beamsofnumbers>>> 
         {
             if (beams != null)
             {
@@ -251,6 +253,75 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
                 }
             }
         }
+
+        #region Simple Musical Object Add-Methods
+        /// <summary>
+        /// Adds Rest to measure
+        /// </summary>
+        /// <param name="duration"></param>
+        /// <param name="durationsymbol"></param>
+        public void AddRest(string duration, MusSymbolDuration durationsymbol = MusSymbolDuration.Unknown)
+        {
+            if (durationsymbol != MusSymbolDuration.Unknown)
+            {
+                duration = SymbolDuration.MusSymbolToDurStr(durationsymbol);
+            }
+            Rest rest = new Rest(duration, new Point());
+            NotesList.Add(rest);
+            
+        }
+        
+        public void AddNote(Pitch pitch, int duration)
+        {
+            Note n = new Note(pitch, duration);
+            NotesList.Add(n);
+        }
+
+        public void AddClef(ClefType ct, int line = 0)
+        {
+            Clef c = new Clef(ct, line);
+            if (Attributes != null)
+            {
+                Attributes.Clef = c;
+            }
+            else
+            {
+                Attributes = new Attributes(c);
+            }
+        }
+
+        public void AddTimeSig(int beat, int beattype, SignatureType signaturetype = SignatureType.number)
+        {
+            TimeSignature ts = new TimeSignature(beat, beattype, signaturetype);
+            if (Attributes != null)
+            {
+                Attributes.Time = ts;
+            }
+            else
+            {
+                Attributes = new Attributes(ts);
+            }
+        }
+
+        public void AddBarline()
+        {
+           // throw new NotImplementedException();
+        }
+
+        public void AddKeySig()
+        {
+            Key ks = new Key(2, "major");
+            if (Attributes != null)
+            {
+                Attributes.Key = ks;
+            }
+            else
+            {
+                Attributes = new Attributes(ks);
+            }
+        }
+#endregion
+
         /// <summary>
         /// Extract barlines from XML elemnet
         /// </summary>
@@ -407,6 +478,16 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
             //number = Convert.ToInt32(x.Attribute("number").Value);
             hasNumberInvisible = x.Attribute("implicit") != null ? x.Attribute("implicit").Value == "yes" ? true : false : false; // TODO_L not sure if itll work - very rare usage
         }
+
+        /// <summary>
+        /// Check measure for errors ( to many notes/wrong durations )
+        /// </summary>
+        /// <returns></returns>
+        private bool IntegrityCheck()
+        {
+            throw new NotImplementedException();
+            //return true;
+        }
         /// <summary>
         /// Method calculating measure width according to number and type of elements which contains
         /// </summary>
@@ -539,7 +620,7 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
 
         public void Draw(DrawingVisual visual, Point p)
         {
-            // maybe rework to use that approach
+            throw new NotImplementedException();// maybe rework to use that approach
         }
         /// <summary>
         /// Draw Mesure (inside segment) - test
@@ -549,7 +630,8 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
         {
             using (DrawingContext dc = visual.RenderOpen())
             {
-                Point temp = new Point(Calculated_x, Calculated_y);
+                //Point temp = new Point(Calculated_x, Calculated_y);
+                Point temp = new Point(0,0);
                 CalculateXPosCharacter(temp);
                 Draw_Measure(dc, temp);
             }
@@ -695,6 +777,14 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
                 Draw_Measure(dc, p);
             }
             dv.Children.Add(m);
+        }
+        
+        public void DrawMeasureStaff(DrawingVisual dv)
+        {
+            using (DrawingContext dc = dv.RenderOpen())
+            {
+                Draw_Measure(dc, new Point(0, 0));
+            }
         }
         /// <summary>
         /// Method for Drawing barlines !!DEPRECIATED!!

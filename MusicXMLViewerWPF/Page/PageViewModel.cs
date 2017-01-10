@@ -93,7 +93,7 @@ namespace MusicXMLScore.Page
                         grid.SetValue(CustomWrapPanel.BreakRowProperty, true);
                     }
                     CanvasList cl = new CanvasList(grid.Width, grid.Height);
-                    cl.Background = Brushes.Transparent;
+                    //cl.Background = Brushes.Transparent;
                     DrawingVisual dv = new DrawingVisual();
                     item.Draw_Measure(dv, new Point(0, 20));
                     StaffLineCanvas slc = new StaffLineCanvas();
@@ -222,7 +222,7 @@ namespace MusicXMLScore.Page
             DrawRect(dv, new Rect(0,0, w, h), DrawingHelpers.PickBrush());
             test.AddVisual(dv);
             test.Width = dv.DescendantBounds.Width;
-            test.Background = DrawingHelpers.PickBrush();
+           // test.Background = DrawingHelpers.PickBrush();
             return test;
         }
 

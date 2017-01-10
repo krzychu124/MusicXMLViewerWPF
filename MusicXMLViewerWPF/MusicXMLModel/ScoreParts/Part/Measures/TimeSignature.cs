@@ -6,10 +6,13 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using System.Xml.Linq;
+using MusicXMLScore.Helpers;
+using MusicXMLViewerWPF.Misc;
+using System.ComponentModel;
 
 namespace MusicXMLViewerWPF
 {
-    public class TimeSignature : Segment, Misc.IDrawableMusicalChar // MusicalChars // TODO_L test timesig class
+    class TimeSignature : Segment, IDrawableMusicalObject// MusicalChars // TODO_L test timesig class
     {
         private EmptyPrintStyle additional_attributes;
         private int beats;
@@ -19,6 +22,10 @@ namespace MusicXMLViewerWPF
         private SignatureType sigType;
         private string beats_str;
         private string beats_type_str;
+        private bool loadstatus;
+        private CanvasList drawablemusicalobject;
+        private DrawableMusicalObjectStatus dmusicalobjstatus;
+        
 
         public EmptyPrintStyle AdditionalAttributes { get { return additional_attributes; } }
         public int Beats { get { return beats; } }
@@ -27,9 +34,16 @@ namespace MusicXMLViewerWPF
         public string BeatStr { get { return beats_str; } }
         public string BeatTypeStr { get { return beats_type_str; } }
         public SegmentType CharacterType { get { return SegmentType.TimeSig; } }
+
+        public CanvasList DrawableMusicalObject { get { return drawablemusicalobject; }  set { drawablemusicalobject = value; } }
+        public DrawableMusicalObjectStatus DrawableObjectStatus { get { return dmusicalobjstatus; } private set { if (dmusicalobjstatus != value) dmusicalobjstatus = value; } } 
+        public bool Loaded { get { return loadstatus; } private set { if (loadstatus != value) loadstatus = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Loaded))); } } //TODO_I notif
+        public new PropertyChangedEventHandler PropertyChanged = delegate { };
+
         //TODO_L implement missing properties, separator,interchangeable
         public TimeSignature(XElement x)
         {
+            this.PropertyChanged += TimeSigPropertyChanged;
             ID = Misc.RandomGenerator.GetRandomHexNumber();
             Segment_type = SegmentType.TimeSig;
             additional_attributes = new EmptyPrintStyle(x.Attributes());
@@ -63,6 +77,44 @@ namespace MusicXMLViewerWPF
             }
             SetBeatTime(beats_type);
             SetBeat(beats);
+            Loaded = true;
+        }
+
+        private void TimeSigPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case "Loaded":
+                    if (Loaded)
+                    {
+                        InitDrawableObject();
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// Set beat and beat_time. If time signature is common / cut  -   beat / beattime doesn't matter
+        /// </summary>
+        /// <param name="beats"></param>
+        /// <param name="beat_type"></param>
+        /// <param name="stype"></param>
+        public TimeSignature(int beats, int beat_type, SignatureType stype = SignatureType.number)
+        {
+            PropertyChanged += TimeSigPropertyChanged;
+            ID = Misc.RandomGenerator.GetRandomHexNumber();
+            sigType = stype;
+            if (stype == SignatureType.number)
+            {
+                this.beats = beats;
+                this.beats_type = beat_type;
+                SetBeatTime(beats_type);
+                SetBeat(beats);
+            }
+            Segment_type = SegmentType.TimeSig;
+            Loaded = true;
         }
 
         public void Draw(DrawingVisual visual)
@@ -162,6 +214,26 @@ namespace MusicXMLViewerWPF
             }
             return number;
         }
+
+        public void InitDrawableObject()
+        {
+            if (Loaded)
+            {
+                DrawableMusicalObject = new CanvasList(this.Width, this.Height);
+                DrawingVisual visual = new DrawingVisual();
+                Draw(visual);
+                DrawableMusicalObject.AddVisual(visual);
+                DrawableObjectStatus = DrawableMusicalObjectStatus.ready;
+            }
+        }
+
+        public void ReloadDrawableObject()
+        {
+            DrawableMusicalObject.ClearVisuals();
+            DrawableObjectStatus = DrawableMusicalObjectStatus.notready;
+            InitDrawableObject();
+        }
+
         private Dictionary<int, string> beat_d = new Dictionary<int, string>()
         {
             {0,MusicalChars.zero },

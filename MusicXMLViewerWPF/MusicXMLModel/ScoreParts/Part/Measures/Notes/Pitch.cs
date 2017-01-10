@@ -34,13 +34,13 @@ namespace MusicXMLViewerWPF
         {
 
         }
-        public Pitch(string s,int o)
+        public Pitch(string step,int octave)
         {
-            step = s;
-            octave = o;
+            this.step = step;
+            this.octave = octave;
             alter = 0;
-            getStep(s);
             getStep(step);
+            getStep(this.step);
             getPitch(_step);
             calculateStep();
             getAdditionalLines();
