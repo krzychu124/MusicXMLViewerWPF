@@ -13,6 +13,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
 using System.Xml.Linq;
+using MusicXMLScore.Page;
 
 namespace MusicXMLScore
 {
@@ -21,7 +22,6 @@ namespace MusicXMLScore
         public MainWindowViewModel()
         {
             PropertyChanged += MainWindowViewModel_PropertyChanged;
-            //SimpleLog.SetLogFile(".\\Log", "MyLog_", writeText:true);
             SimpleLog.Info("Test logging started.");
             OpenOptionsWindowCommand = new RelayCommand(OnOpenOptionWindow);
             ExitCommand = new RelayCommand(OnExitApp);
@@ -59,10 +59,9 @@ namespace MusicXMLScore
 
         private void OnAddMeasure()
         {
-            Page.PageView page = new Page.PageView();
-            page.Width = PageWidth;
-            page.Height = h;
-            Pages.Add(page);
+            int i = TabsCreated.Count + 1;
+            TabItem ti = new TabItem() { Header = "Tab " + i, Content= new PagesControllerView(), DataContext = new PagesControllerViewModel()};
+            TabsCreated.Add(ti);
         }
         
         private void OnCustomButtonCommand()
@@ -86,6 +85,7 @@ namespace MusicXMLScore
                 {
                     filedestination = dialog.FileName;
                 }
+                else { return; }
             }
             else
             {
@@ -118,7 +118,8 @@ namespace MusicXMLScore
             Log.LoggIt.Log("File has been closed");
             Mediator.NotifyColleagues("XmlFileLoaded", new XmlDataProvider());
             XmlFileLoaded = false;
-            Pages.Clear();
+            //Pages.Clear();
+            TabsCreated.Clear();
         }
         private void OnExitApp()
         {
@@ -134,15 +135,17 @@ namespace MusicXMLScore
 
         #region Fields
         private double w = 1500;
-        private float h = 1900;
+        private double h = 1900;
         private bool xmlfileloaded;
-        private ObservableCollection<Page.PageView> pages = new ObservableCollection<Page.PageView>();
+        private ObservableCollection<PageView> pages = new ObservableCollection<PageView>();
         private Orientation orientation = Orientation.Horizontal;
+        private ObservableCollection<TabItem> tabscreated = new ObservableCollection<TabItem>();
         #endregion
 
         #region Properties, Commands
         public RelayCommand AddMeasureCommand { get; set; }
-        public ObservableCollection<Page.PageView> Pages { get { return pages; } set { pages = value; } }
+        //public ObservableCollection<Page.PageView> Pages { get { return pages; } set { if (value != null) { pages = value; } } }
+        public ObservableCollection<TabItem> TabsCreated { get { return tabscreated; } set { if (value != null) { tabscreated = value; } } }
         public RelayCommand OpenOptionsWindowCommand { get; set; }
         public RelayCommand ExitCommand { get; set; }
         public RelayCommand NewScoreCreatorCommand { get; set; }
@@ -150,8 +153,10 @@ namespace MusicXMLScore
         public RelayCommand <string> OpenFileCommand { get; set; }
         public RelayCommand OldViewCommand { get; set; }
         public RelayCommand CloseFileCommand { get; set; }
-        public double PageWidth { get { return w; } set {  if(w!= value) { w = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PageWidth))); } } }
-        public double PageWidthL { get { if (Pages.Count != 0) { return Pages.ElementAt(0).Width; } else { return w; } } set { foreach (var p in Pages) { p.Width = value; } } }
+
+        public double PageWidth { get { return w; } set {  if (w!= value) { w = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PageWidth))); } } }
+        public double PageHeight { get { return h; } set { if (h != value) { h = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PageHeight))); } } } 
+       // public double PageWidthL { get { if (Pages.Count != 0) { return Pages.ElementAt(0).Width; } else { return w; } } set { foreach (var p in Pages) { p.Width = value; } } }
         public bool XmlFileLoaded { get { return xmlfileloaded; } set { if (xmlfileloaded != value) xmlfileloaded = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(XmlFileLoaded)));  } }
         public Orientation Orientation { get { return orientation; } set { if (orientation != value) orientation = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Orientation))); } }
         

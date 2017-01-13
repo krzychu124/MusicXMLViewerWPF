@@ -88,11 +88,13 @@
     <Compile Include="Converters\ToTypeEqualityConverter.cs" />
     <Compile Include="Helpers\CanvasList.cs" />
     <Compile Include="Helpers\CustomCanvas.cs" />
-    <Compile Include="Helpers\CustomSystemPanel.cs" />
+    <Compile Include="Helpers\CustomPartSystem.cs" />
+    <Compile Include="Helpers\DrawableMeasure.cs" />
     <Compile Include="Helpers\CustomWrapPanel.cs" />
     <Compile Include="Helpers\DrawingHelpers.cs" />
     <Compile Include="Helpers\DrawingVisualPlus.cs" />
     <Compile Include="Helpers\Mediator.cs" />
+    <Compile Include="Helpers\ModelWrapper.cs" />
     <Compile Include="Helpers\OrientedSize.cs" />
     <Compile Include="Helpers\PreviewCanvas.cs" />
     <Compile Include="Helpers\PreviewSettings.cs" />
@@ -174,6 +176,10 @@
       <DependentUpon>CustomSystemView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Page\CustomSystemViewModel.cs" />
+    <Compile Include="Page\PagesControllerView.xaml.cs">
+      <DependentUpon>PagesControllerView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Page\PagesControllerViewModel.cs" />
     <Compile Include="Page\PageView.xaml.cs">
       <DependentUpon>PageView.xaml</DependentUpon>
     </Compile>
@@ -220,6 +226,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Page\CustomSystemView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Page\PagesControllerView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

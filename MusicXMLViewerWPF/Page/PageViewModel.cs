@@ -20,10 +20,12 @@ namespace MusicXMLScore.Page
         #region Private Fiels
         private CanvasList pagecontent = new CanvasList();
         private Orientation orientation = Orientation.Horizontal;
-        private ObservableCollection<UIElement> list = new ObservableCollection<UIElement>();
-        private ObservableCollection<UIElement> list2 = new ObservableCollection<UIElement>();
+        private ObservableCollection<CustomPartSystem> partsystems = new ObservableCollection<CustomPartSystem>();
         private Random rndom = new Random();
         private bool fileloaded;
+        private string tabViewName = "Name1";
+        private ObservableCollection<TextBlock> tabContent = new ObservableCollection<TextBlock>();
+
         #endregion
 
         #region Contructors
@@ -35,122 +37,123 @@ namespace MusicXMLScore.Page
             if (FileLoaded)
             {
 
-                GenerateMeasures();
+               // GenerateMeasures();
             }
         }
 
         #endregion
 
         #region Properties
+        public string TabName { get { return tabViewName; } set { tabViewName = value; PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(TabName))); } }
+        public ObservableCollection<TextBlock> TabContent { get { return tabContent; } }
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
         public CanvasList PageContent { get { return pagecontent; } set { pagecontent = value; } }
-        public ObservableCollection<UIElement> List { get { return list; } }
-        public ObservableCollection<UIElement> List2 { get { return list2; } }
+        public ObservableCollection<CustomPartSystem> List { get { return partsystems; } }
         public Orientation Orientation { get { return orientation; } set { orientation = value; PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(Orientation))); } }
         public RelayCommand TestCommand { get; set; }
         public bool FileLoaded { get { return fileloaded; } private set { if (fileloaded != value) fileloaded = value; PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(FileLoaded))); } }
         #endregion
 
         #region Methods
-        private void GenerateCredits()
-        {
-            if (MusicScore.CreditList.Count > 0)
-            {
-                DockPanel dp = new DockPanel();
-                dp.MinWidth = 1500;
-                dp.Height = 100;
-                foreach (var item in MusicScore.CreditList)
-                {
-                    if (item.Type == MusicXMLViewerWPF.Credit.CreditType.title)
-                    {
-                        TextBlock tb = TBlock(item.CreditWords.Value, dp.Width, item.Height, item.CreditWords.FontSize, String.IsNullOrEmpty(item.CreditWords.FontWeight)? "normal": item.CreditWords.FontWeight, HorizontalAlignment.Center, TextAlignment.Center);
-                        DockPanel.SetDock(tb, Dock.Top);
-                        dp.Children.Add(tb);
-                    }
-                    if (item.Type == MusicXMLViewerWPF.Credit.CreditType.subtitle)
-                    {
-                        TextBlock tb = TBlock(item.CreditWords.Value, dp.Width, item.Height, item.CreditWords.FontSize, String.IsNullOrEmpty(item.CreditWords.FontWeight) ? "normal" : item.CreditWords.FontWeight, HorizontalAlignment.Center, TextAlignment.Center);
-                        //DockPanel.SetDock(tb, Dock.Top);
-                        dp.Children.Add(tb);
-                    }
-                }
+        //private void GenerateCredits()
+        //{
+        //    if (MusicScore.CreditList.Count > 0)
+        //    {
+        //        DockPanel dp = new DockPanel();
+        //        dp.MinWidth = 1500;
+        //        dp.Height = 100;
+        //        foreach (var item in MusicScore.CreditList)
+        //        {
+        //            if (item.Type == MusicXMLViewerWPF.Credit.CreditType.title)
+        //            {
+        //                TextBlock tb = TBlock(item.CreditWords.Value, dp.Width, item.Height, item.CreditWords.FontSize, String.IsNullOrEmpty(item.CreditWords.FontWeight)? "normal": item.CreditWords.FontWeight, HorizontalAlignment.Center, TextAlignment.Center);
+        //                DockPanel.SetDock(tb, Dock.Top);
+        //                dp.Children.Add(tb);
+        //            }
+        //            if (item.Type == MusicXMLViewerWPF.Credit.CreditType.subtitle)
+        //            {
+        //                TextBlock tb = TBlock(item.CreditWords.Value, dp.Width, item.Height, item.CreditWords.FontSize, String.IsNullOrEmpty(item.CreditWords.FontWeight) ? "normal" : item.CreditWords.FontWeight, HorizontalAlignment.Center, TextAlignment.Center);
+        //                //DockPanel.SetDock(tb, Dock.Top);
+        //                dp.Children.Add(tb);
+        //            }
+        //        }
 
-                List.Add(dp);
-            }
-        }
-        private void GenerateMeasures()
-        {
-            if (MusicScore.Parts.Count != 0)
-            {
-                float scale = MusicScore.Defaults.Scale.Tenths;
-                foreach (var item in MusicScore.Parts.ElementAt(0).Value.MeasureSegmentList)
-                {
-                    Grid grid = new Grid();
-                    grid.Height = 100;
-                    grid.MinWidth = item.Width;
-                    if (item.IsFirstInLine)
-                    {
-                        grid.SetValue(CustomWrapPanel.BreakRowProperty, true);
-                    }
-                    CanvasList cl = new CanvasList(grid.Width, grid.Height);
-                    //cl.Background = Brushes.Transparent;
-                    DrawingVisual dv = new DrawingVisual();
-                    item.Draw_Measure(dv, new Point(0, 20));
-                    StaffLineCanvas slc = new StaffLineCanvas();
-                    cl.AddVisual(dv);
-                    grid.SizeChanged += Grid_SizeChanged;
-                    StackPanel stckp = new StackPanel();
-                    stckp.SizeChanged += Grid_SizeChanged;
-                    stckp.Tag = "sp";
-                    stckp.Orientation = Orientation.Horizontal;
-                    if (item.Attributes != null)
-                    {
-                        if (item.Attributes.Clef != null && item.IsFirstInLine)
-                        {
-                            var c = item.Attributes.Clef;
-                            CanvasList clef = new CanvasList(c.Width, grid.Height);
-                            Point clefp = new Point(0.5 * scale, 0.5 * scale);
-                            DrawingVisual cv = new DrawingVisual();
-                            c.Relative = clefp;
-                            c.Draw(cv);
-                            clef.AddVisual(cv);
-                            stckp.Children.Add(clef);
-                        }
-                        if (item.Attributes.Key != null)
-                        {
-                            var k = item.Attributes.Key;
-                            CanvasList key = new CanvasList(k.Width, grid.Height);
-                            Point keyp = new Point(0.5 * scale, 0.5 * scale);
-                            DrawingVisual kv = new DrawingVisual();
-                            k.Relative = keyp;
-                            k.Draw(kv);
-                            key.AddVisual(kv);
-                            stckp.Children.Add(key);
-                        }
-                        if (item.Attributes.Time != null && item.IsFirstInLine)
-                        {
-                            var t = item.Attributes.Time;
-                            CanvasList time = new CanvasList(t.Width, grid.Height);
-                            Point timep = new Point(0.5 * scale, 0.5 * scale);
-                            DrawingVisual tv = new DrawingVisual();
-                            t.Relative = timep;
-                            t.Draw(tv);
-                            time.AddVisual(tv);
-                            stckp.Children.Add(time);
-                        }
-                    }
-                    DrawingVisual gv = new DrawingVisual();
-                    DrawRect(gv, new Rect(new Point(), new Size(grid.Width, grid.Height)), Brushes.Black);
-                    cl.AddVisual(gv);
-                    //grid.Children.Add(slc);
-                    grid.Children.Add(cl);
-                    grid.Children.Add(stckp);
-                    List.Add(grid);
-                }
-                list2 = new ObservableCollection<UIElement>(List );
-               // PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(List2)));
-            }
-        }
+        //        List.Add(dp);
+        //    }
+        //}
+        //private void GenerateMeasures()
+        //{
+        //    if (MusicScore.Parts.Count != 0)
+        //    {
+        //        float scale = MusicScore.Defaults.Scale.Tenths;
+        //        foreach (var item in MusicScore.Parts.ElementAt(0).Value.MeasureSegmentList)
+        //        {
+        //            Grid grid = new Grid();
+        //            grid.Height = 100;
+        //            grid.MinWidth = item.Width;
+        //            if (item.IsFirstInLine)
+        //            {
+        //                grid.SetValue(CustomWrapPanel.BreakRowProperty, true);
+        //            }
+        //            CanvasList cl = new CanvasList(grid.Width, grid.Height);
+        //            //cl.Background = Brushes.Transparent;
+        //            DrawingVisual dv = new DrawingVisual();
+        //            item.Draw_Measure(dv, new Point(0, 20));
+        //            StaffLineCanvas slc = new StaffLineCanvas();
+        //            cl.AddVisual(dv);
+        //            grid.SizeChanged += Grid_SizeChanged;
+        //            StackPanel stckp = new StackPanel();
+        //            stckp.SizeChanged += Grid_SizeChanged;
+        //            stckp.Tag = "sp";
+        //            stckp.Orientation = Orientation.Horizontal;
+        //            if (item.Attributes != null)
+        //            {
+        //                if (item.Attributes.Clef != null && item.IsFirstInLine)
+        //                {
+        //                    var c = item.Attributes.Clef;
+        //                    CanvasList clef = new CanvasList(c.Width, grid.Height);
+        //                    Point clefp = new Point(0.5 * scale, 0.5 * scale);
+        //                    DrawingVisual cv = new DrawingVisual();
+        //                    c.Relative = clefp;
+        //                    c.Draw(cv);
+        //                    clef.AddVisual(cv);
+        //                    stckp.Children.Add(clef);
+        //                }
+        //                if (item.Attributes.Key != null)
+        //                {
+        //                    var k = item.Attributes.Key;
+        //                    CanvasList key = new CanvasList(k.Width, grid.Height);
+        //                    Point keyp = new Point(0.5 * scale, 0.5 * scale);
+        //                    DrawingVisual kv = new DrawingVisual();
+        //                    k.Relative = keyp;
+        //                    k.Draw(kv);
+        //                    key.AddVisual(kv);
+        //                    stckp.Children.Add(key);
+        //                }
+        //                if (item.Attributes.Time != null && item.IsFirstInLine)
+        //                {
+        //                    var t = item.Attributes.Time;
+        //                    CanvasList time = new CanvasList(t.Width, grid.Height);
+        //                    Point timep = new Point(0.5 * scale, 0.5 * scale);
+        //                    DrawingVisual tv = new DrawingVisual();
+        //                    t.Relative = timep;
+        //                    t.Draw(tv);
+        //                    time.AddVisual(tv);
+        //                    stckp.Children.Add(time);
+        //                }
+        //            }
+        //            DrawingVisual gv = new DrawingVisual();
+        //            DrawRect(gv, new Rect(new Point(), new Size(grid.Width, grid.Height)), Brushes.Black);
+        //            cl.AddVisual(gv);
+        //            //grid.Children.Add(slc);
+        //            grid.Children.Add(cl);
+        //            grid.Children.Add(stckp);
+        //            List.Add(grid);
+        //        }
+        //        list2 = new ObservableCollection<UIElement>(List );
+        //       // PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(List2)));
+        //    }
+        //}
 
         private void Grid_SizeChanged(object sender, SizeChangedEventArgs e)
         {
@@ -236,8 +239,8 @@ namespace MusicXMLScore.Page
         #region Commands, Action<>, Func<>
         private void OnTestCommand()
         {
-            GenerateCredits();
-            GenerateMeasures();
+           // GenerateCredits();
+          //  GenerateMeasures();
             
             //if (Orientation == Orientation.Vertical)
             //    Orientation = Orientation.Horizontal;
