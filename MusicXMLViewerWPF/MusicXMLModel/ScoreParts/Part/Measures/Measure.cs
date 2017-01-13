@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MusicXMLScore.Helpers;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
@@ -32,6 +33,8 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
         private bool firstinrow = false;
         private XElement xelementsource;
         private Segment segment;
+        private DrawableMeasure drawableMeasure;
+        private bool loaded;
         #endregion
 
         #region Collections
@@ -68,6 +71,8 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
         //
         public XElement XElementSource { get { return xelementsource; } set { if (value != null) xelementsource = value; } }
         public Segment Segment { get { return segment; } set { if (value != null) segment = value; } }
+        public DrawableMeasure DrawableMeasure { get { return drawableMeasure; } private set { drawableMeasure = value; } }
+        public bool Loaded { get { return loaded; } private set { if (loaded != value) { loaded = value; PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(Loaded))); } } }
         #endregion
 
         public Measure()
@@ -157,6 +162,7 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
             SortNotations(); // missing impl
             SortNotesByVoice();
             SortBeamsByNumber();
+            Loaded = true;
         }
 
         private void Measure_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -168,6 +174,9 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
                     {
                         item.SetRelativePos(Relative_x + item.Calculated_x, Relative_y);
                     }
+                    break;
+                case "Loaded":
+                    DrawableMeasure = new DrawableMeasure(this);
                     break;
                 default:
                     break;
@@ -630,8 +639,8 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
         {
             using (DrawingContext dc = visual.RenderOpen())
             {
-                //Point temp = new Point(Calculated_x, Calculated_y);
-                Point temp = new Point(0,0);
+                Point temp = new Point(Calculated_x, Calculated_y); //TODO_I changed for testbuild
+                //Point temp = new Point(0,0);
                 CalculateXPosCharacter(temp);
                 Draw_Measure(dc, temp);
             }

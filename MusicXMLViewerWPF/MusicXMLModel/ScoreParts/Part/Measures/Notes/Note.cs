@@ -305,6 +305,7 @@ namespace MusicXMLViewerWPF
             }
             //! Logger.Log(XMLDefinition.ToString());
             //
+            Loaded = true;
         }
 
         private void GetNotations(XElement notations)
@@ -412,7 +413,7 @@ namespace MusicXMLViewerWPF
                 if (Accidental != null)
                 {
                     DrawingVisual acc_symbol = new DrawingVisual();
-                    Accidental.Draw(acc_symbol);
+                    //Accidental.Draw(acc_symbol);
                     visual.Children.Add(acc_symbol);
                 }
             }
@@ -444,7 +445,7 @@ namespace MusicXMLViewerWPF
                 if (Accidental != null)
                 {
                     DrawingVisual acc_symbol = new DrawingVisual();
-                    Accidental.Draw(acc_symbol);
+                    //Accidental.Draw(acc_symbol);
                     visual.Children.Add(acc_symbol);
                 }
             }

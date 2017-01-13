@@ -14,11 +14,13 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="20"/>
             <RowDefinition Height="20"/>
+            <RowDefinition Height="4*"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="5"/>
             <RowDefinition Height=".2*"/>
             <RowDefinition Height="20"/>
         </Grid.RowDefinitions>
+        
         <DockPanel Grid.Row="0">
             <Menu IsMainMenu="True" Height="20" VerticalAlignment="Top" DockPanel.Dock="Top" Width="Auto" >
                 <MenuItem Header="File" >
@@ -75,15 +77,18 @@
                 </MenuItem>
             </Menu>
         </DockPanel>
+        
         <Slider Grid.Row="1" Maximum="1900" Minimum="200" Value="{Binding PageWidthL}"/>
-        <ScrollViewer Grid.Row="2" CanContentScroll="True" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-            <!--Content="{Binding Pages}"-->
-            <!--<Page:PageView Margin="0,0,0,0" Height="361" Width="807"/>-->
+        
+        <TabControl  Margin="10" Grid.Row="2" ItemsSource="{Binding TabsCreated}" >
+        </TabControl>
+        
+        <ScrollViewer Grid.Row="3" CanContentScroll="True" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
             <Border>
                 <Border.Effect>
                     <DropShadowEffect BlurRadius="10" ShadowDepth="2"/>
                 </Border.Effect>
-                <ItemsControl ItemsSource="{Binding Pages}" Background="Beige" HorizontalAlignment="Left">
+                <ItemsControl ItemsSource="{Binding Pages2}" Background="Beige" HorizontalAlignment="Left">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <WrapPanel x:Name="ItemsPanelContainer" />
@@ -91,14 +96,12 @@
                     </ItemsControl.ItemsPanel>
                 </ItemsControl>
             </Border>
-            <!--<StackPanel Orientation="{Binding Orientation}">
-                <TextBlock Width="200" Height="200" Background="Beige">
-                </TextBlock>
-                <TextBlock Width="200" Height="200" Background="AliceBlue"></TextBlock>
-            </StackPanel>-->
         </ScrollViewer>
-        <GridSplitter Grid.Row="3" Height="5" HorizontalAlignment="Stretch"></GridSplitter>
-        <Log:LogView Grid.Row="4" Margin="0,0,0,0"/>
-        <StatusBar Grid.Row="5" Height="20">Status Bar...</StatusBar>
+        
+        <GridSplitter Grid.Row="4" Height="5" HorizontalAlignment="Stretch"></GridSplitter>
+        
+        <Log:LogView Grid.Row="5" Margin="0,0,0,0"/>
+        
+        <StatusBar Grid.Row="6" Height="20">Status Bar...</StatusBar>
     </Grid>
 </Window>

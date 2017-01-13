@@ -15,7 +15,7 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="20"/>
                     <RowDefinition Height="40"/>
-                    <RowDefinition Height="200"/>
+                    <RowDefinition Height="*"/>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="*"/>
@@ -30,7 +30,7 @@
                 </DockPanel>
                 <local:CreditsView Grid.Row="1" VerticalAlignment="Top" Width="auto" Height="Auto"/>
                 <TextBox Grid.Row="6" Name="RightsTextBox" Text="Copyrights" TextAlignment="Center" FontSize="16" Margin="0,0,0,20" VerticalAlignment="Bottom" Background="Transparent" BorderThickness="0"/>
-                <helpers:CustomWrapPanel x:Name="cwppanel" Orientation="Horizontal" Grid.Row="2" Height="300">
+                <helpers:CustomWrapPanel x:Name="cwppanel" Orientation="Horizontal" Grid.Row="5" Height="300">
                     <helpers:PreviewSettings />
                     <StackPanel Orientation="Horizontal">
                         <helpers:PreviewSettings />
@@ -44,11 +44,12 @@
                             <helpers:PreviewSettings />
                         </StackPanel>
                     </Canvas>
-                    <helpers:CustomSystemPanel  IsHitTestVisible="True" MouseLeftButtonDown="StaffLineCanvas_MouseLeftButtonDown"/>
-                    <helpers:CustomSystemPanel  IsHitTestVisible="True" MouseLeftButtonDown="StaffLineCanvas_MouseLeftButtonDown" />
-                    <helpers:CustomSystemPanel  IsHitTestVisible="True" MouseLeftButtonDown="StaffLineCanvas_MouseLeftButtonDown" />
-                    <helpers:CustomSystemPanel  IsHitTestVisible="True" MouseLeftButtonDown="StaffLineCanvas_MouseLeftButtonDown" />
+                    <!--<helpers:DrawableMeasure  IsHitTestVisible="True" MouseLeftButtonDown="StaffLineCanvas_MouseLeftButtonDown"/>
+                    <helpers:DrawableMeasure  IsHitTestVisible="True" MouseLeftButtonDown="StaffLineCanvas_MouseLeftButtonDown" />
+                    <helpers:DrawableMeasure  IsHitTestVisible="True" MouseLeftButtonDown="StaffLineCanvas_MouseLeftButtonDown" />
+                    <helpers:DrawableMeasure  IsHitTestVisible="True" MouseLeftButtonDown="StaffLineCanvas_MouseLeftButtonDown" />-->
                 </helpers:CustomWrapPanel>
+                <helpers:CustomPartSystem Grid.Row="2" Margin="20"/>
             </Grid>
         </Border>
     </Grid>

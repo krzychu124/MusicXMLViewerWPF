@@ -86,6 +86,7 @@ namespace MusicXMLViewerWPF
             Width = Math.Abs((int)Fifths) * 7.5f;
             clef_type = Clef.Sign_static;
             //recalculate_spacers();
+            Loaded = true;
         }
 
         private void KeyPropertyChanged(object sender, PropertyChangedEventArgs e)

@@ -14,10 +14,10 @@ using System.Xml.Linq;
 
 namespace MusicXMLScore.Helpers
 {
-    class CustomSystemPanel : CustomCanvas
+    class DrawableMeasure : CustomCanvas
     {
-        bool drawbounds = true;
-        MusicXMLViewerWPF.ScoreParts.Part.Measures.Measure m = new MusicXMLViewerWPF.ScoreParts.Part.Measures.Measure();
+        private bool drawbounds = true; //! needs rework to dependency
+        private Measure m;
         private CanvasList above_staffline = new CanvasList();
         private CanvasList below_Staffline = new CanvasList();
         private ObservableCollection<CanvasList> lyricslist = new ObservableCollection<CanvasList>();
@@ -27,13 +27,16 @@ namespace MusicXMLScore.Helpers
         private double directionsabovemulti = 0.05;
         private double directionsbelowmulti = 0.7;
         private double lyricsmulti = 0.85;
-        public CustomSystemPanel()
+        public DrawableMeasure(Measure m)
         {
             this.SizeChanged += CustomSystemPanel_SizeChanged;
-            AddMeasure(s);
+            this.m = m;
+            this.Width = m.Width;
+            this.Height = 60;
+            //AddMeasure(s);
             GenerateStaffLine(staffline); //! Draws staffline of measure
             Children.Add(staffline);
-            AddFewObjects();
+            //AddFewObjects();
             measure_content.VerticalAlignment = VerticalAlignment.Top;
             AddNotes(measure_content);
             Children.Add(measure_content);
@@ -89,7 +92,7 @@ namespace MusicXMLScore.Helpers
             {
                 if (m.Attributes.Clef != null)
                 {
-                    sp.Children.Add(m.Attributes.Clef.DrawableMusicalObject);
+                    //sp.Children.Add(m.Attributes.Clef.DrawableMusicalObject);
                 }
                 if (m.Attributes.Key != null)
                 {
@@ -137,7 +140,7 @@ namespace MusicXMLScore.Helpers
                 cl.DeleteVisual(cl.FindVisualByTag("staffline"));
             }
             double w = ActualWidth;
-            Measure m = new MusicXMLViewerWPF.ScoreParts.Part.Measures.Measure(w);
+            //Measure m = new MusicXMLViewerWPF.ScoreParts.Part.Measures.Measure(w);
             DrawingVisualPlus dv = new DrawingVisualPlus() { Tag = "staffline" };
             m.Draw_Measure(dv, new Point(0, measurestaffYmulti* ActualHeight));
             cl.Width = ActualWidth;
