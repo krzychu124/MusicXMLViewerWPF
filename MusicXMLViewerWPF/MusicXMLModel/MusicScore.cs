@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MusicXMLScore.Helpers;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -118,7 +119,8 @@ namespace MusicXMLViewerWPF
                 Logger.Log("Error while loading file");
             }
 
-            Misc.ScoreSystem ss = new Misc.ScoreSystem(); 
+            Misc.ScoreSystem ss = new Misc.ScoreSystem();
+            Mediator.NotifyColleagues("MSLoad", true);
         }
         #endregion
         /// <summary>
@@ -126,7 +128,7 @@ namespace MusicXMLViewerWPF
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void MusicScore_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        public void MusicScore_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
             {
@@ -274,6 +276,11 @@ namespace MusicXMLViewerWPF
                     }
                 }
             }
+        }
+
+        public static Dictionary<string,ScoreParts.Part.Part> GetParts()
+        {
+            return parts;
         }
         /// <summary>
         /// Gets Canvas surface for Drawing

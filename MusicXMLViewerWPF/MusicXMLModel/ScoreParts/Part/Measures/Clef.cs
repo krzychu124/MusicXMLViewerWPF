@@ -78,6 +78,7 @@ namespace MusicXMLViewerWPF
             }
             cl = this;
             SetClefAlterNote();
+            Loaded = true;
         }
 
         private void ClefPropertyChanged(object sender, PropertyChangedEventArgs e)
