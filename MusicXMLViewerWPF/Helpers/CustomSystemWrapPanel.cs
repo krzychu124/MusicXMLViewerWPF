@@ -7,10 +7,10 @@ using System.Windows;
 using System.Windows.Controls;
 namespace MusicXMLScore.Helpers
 {
-    public class CustomWrapPanel : Panel
+    public class CustomSystemWrapPanel : Panel
     {
         private Orientation _orientation;
-        public CustomWrapPanel():base()
+        public CustomSystemWrapPanel():base()
         {
             _orientation = Orientation.Horizontal;
         }
@@ -22,29 +22,33 @@ namespace MusicXMLScore.Helpers
         }
 
         #region Dependency Properties
-        
+        /// <summary>
+        /// Items in row will be stretched equally to fill avaliable row space. Don't use along with StretchLastItemProperty
+        /// </summary>
         public static readonly DependencyProperty StretchItemsInRowProperty =
             DependencyProperty.Register(
                 "StretchItemsInRow",
                 typeof(bool),
-                typeof(CustomWrapPanel),
+                typeof(CustomSystemWrapPanel),
                 new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.AffectsRender, new PropertyChangedCallback(OnStretchItemsInRowChanged), new CoerceValueCallback(CorerceStretchItemsInRow)),
                 new ValidateValueCallback(IsStretchItemsInRowValid)
                 );
-
-        public static readonly DependencyProperty LastItemRowStretchProperty =
+        /// <summary>
+        /// Last item in every row will be stretched to fill avaliable row space. Don't use along with StretchItemsInRowProperty
+        /// </summary>
+        public static readonly DependencyProperty StretchLastItemInRowProperty =
             DependencyProperty.Register(
-                "LastItemRowStretch",
+                "StretchLastItemInRow",
                 typeof(bool),
-                typeof(CustomWrapPanel),
-                new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.AffectsRender, new PropertyChangedCallback(OnLastItemRowStretchChanged), new CoerceValueCallback(CoerceLastItemRowStretch)),
+                typeof(CustomSystemWrapPanel),
+                new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.AffectsRender, new PropertyChangedCallback(OnStretchLastItemInRowChanged), new CoerceValueCallback(CoerceStretchLastItemInRow)),
                 new ValidateValueCallback(IsLastRowItemStretchValid));
 
         public static readonly DependencyProperty ItemHeightProperty =
                 DependencyProperty.Register(
                         "ItemHeight",
                         typeof(double),
-                        typeof(CustomWrapPanel),
+                        typeof(CustomSystemWrapPanel),
                         new FrameworkPropertyMetadata( Double.NaN, FrameworkPropertyMetadataOptions.AffectsMeasure),
                         new ValidateValueCallback(IsWidthHeightValid));
 
@@ -52,17 +56,28 @@ namespace MusicXMLScore.Helpers
                 DependencyProperty.Register(
                         "ItemWidth",
                         typeof(double),
-                        typeof(CustomWrapPanel),
-                        new FrameworkPropertyMetadata(
-                                Double.NaN,
-                                FrameworkPropertyMetadataOptions.AffectsMeasure),
+                        typeof(CustomSystemWrapPanel),
+                        new FrameworkPropertyMetadata(Double.NaN, FrameworkPropertyMetadataOptions.AffectsMeasure),
                         new ValidateValueCallback(IsWidthHeightValid));
-
-        public static DependencyProperty BreakRowProperty =
+        /// <summary>
+        /// Stops stretching this item content
+        /// </summary>
+        public static DependencyProperty PreventItemMeasureArrangeProperty =
+                DependencyProperty.RegisterAttached(
+                        "PreventItemMeasureArrange",
+                        typeof(bool),
+                        typeof(CustomSystemWrapPanel),
+                        new FrameworkPropertyMetadata(
+                                false, 
+                                FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange));
+        /// <summary>
+        /// Breaks row and moves item to next row
+        /// </summary>
+        public static DependencyProperty BreakSystemRowProperty =
             DependencyProperty.RegisterAttached(
-                "BreakRow",
+                "BreakSystemRow",
                 typeof(bool),
-                typeof(CustomWrapPanel),
+                typeof(CustomSystemWrapPanel),
                 new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange));
                //? new ValidateValueCallback(IsBreakRowValid));
         #endregion
@@ -79,10 +94,10 @@ namespace MusicXMLScore.Helpers
             set { SetValue(ItemWidthProperty, value); }
         }
 
-        public bool LastItemRowStretch
+        public bool StretchLastItemInRow
         {
-            get { return (bool)GetValue(LastItemRowStretchProperty); }
-            set { SetValue(LastItemRowStretchProperty, value); }
+            get { return (bool)GetValue(StretchLastItemInRowProperty); }
+            set { SetValue(StretchLastItemInRowProperty, value); }
         }
 
         public bool StretchItemsInRow
@@ -91,14 +106,24 @@ namespace MusicXMLScore.Helpers
             set { SetValue(StretchItemsInRowProperty, value); }
         }
 
-        public static void SetBreakRow(UIElement element, bool value)
+        public static void SetPreventItemMeasureArrange(UIElement element, bool value)
         {
-            element.SetValue(BreakRowProperty, value);
+            element.SetValue(PreventItemMeasureArrangeProperty, value);
         }
 
-        public static bool GetBreakRow(UIElement element)
+        public static bool GetPreventItemMeasureArrange(UIElement element)
         {
-            return (bool)element.GetValue(BreakRowProperty);
+            return (bool)element.GetValue(PreventItemMeasureArrangeProperty);
+        }
+
+        public static void SetBreakSystemRow(UIElement element, bool value)
+        {
+            element.SetValue(BreakSystemRowProperty, value);
+        }
+
+        public static bool GetBreakSystemRow(UIElement element)
+        {
+            return (bool)element.GetValue(BreakSystemRowProperty);
         }
 
         public void AddChild(UIElement child)
@@ -106,7 +131,12 @@ namespace MusicXMLScore.Helpers
             this.Children.Add(child);
         }
 
-        private static bool IsBreakRowValid(object value)
+        private static bool IsBreakRowValid(object value) //! Validation suspended for now
+        {
+            return value is bool;
+        }
+
+        private static bool PreventItemMeasureArrange(object value)
         {
             return value is bool;
         }
@@ -129,23 +159,23 @@ namespace MusicXMLScore.Helpers
 
         private static void OnStretchItemsInRowChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            CustomWrapPanel value = (CustomWrapPanel)d;
-            d.CoerceValue(LastItemRowStretchProperty);
+            CustomSystemWrapPanel value = (CustomSystemWrapPanel)d;
+            d.CoerceValue(StretchLastItemInRowProperty);
             value.InvalidateVisual();
         }
 
-        private static void OnLastItemRowStretchChanged(DependencyObject d , DependencyPropertyChangedEventArgs e)
+        private static void OnStretchLastItemInRowChanged(DependencyObject d , DependencyPropertyChangedEventArgs e)
         {
-            CustomWrapPanel value = (CustomWrapPanel)d;
+            CustomSystemWrapPanel value = (CustomSystemWrapPanel)d;
             d.CoerceValue(StretchItemsInRowProperty);
             value.InvalidateVisual();
         }
 
         private static object CorerceStretchItemsInRow(DependencyObject d, object value)
         {
-            CustomWrapPanel c = (CustomWrapPanel)d;
+            CustomSystemWrapPanel c = (CustomSystemWrapPanel)d;
             bool b = (bool)value;
-            if (b == true && c.LastItemRowStretch == b)
+            if (b == true && c.StretchLastItemInRow == b)
             {
                 return value;
             }
@@ -155,9 +185,9 @@ namespace MusicXMLScore.Helpers
             }
         }
         private int x = 100;
-        private static object CoerceLastItemRowStretch(DependencyObject d, object value)
+        private static object CoerceStretchLastItemInRow(DependencyObject d, object value)
         {
-            CustomWrapPanel c = (CustomWrapPanel)d;
+            CustomSystemWrapPanel c = (CustomSystemWrapPanel)d;
             bool b = (bool)value;
             if (b == true && c.StretchItemsInRow == b)
             {
@@ -220,7 +250,7 @@ namespace MusicXMLScore.Helpers
 
                 child.Measure(constraint);
                 bool childbreaksrow = false;
-                object breakrow = child.GetValue(CustomWrapPanel.BreakRowProperty);
+                object breakrow = child.GetValue(CustomSystemWrapPanel.BreakSystemRowProperty);
                 if (breakrow != null)
                 {
                     childbreaksrow = (bool)breakrow;
@@ -328,7 +358,7 @@ namespace MusicXMLScore.Helpers
             }
         }
 
-        protected override Size ArrangeOverride(Size finalSize) //TODO_I needs improvements
+        protected override Size ArrangeOverride(Size finalSize) //TODO_I needs improvements WiP
         {
             //int lineBegin = 0;
             //Orientation o = Orientation;
@@ -426,7 +456,7 @@ namespace MusicXMLScore.Helpers
                 UIElement child = children[i] as UIElement;
                 if (child == null) continue;
                 bool childbreaksrow = false;
-                object breakrow = child.GetValue(CustomWrapPanel.BreakRowProperty);
+                object breakrow = child.GetValue(CustomSystemWrapPanel.BreakSystemRowProperty);
                 if (breakrow != null)
                 { 
                     childbreaksrow = (bool)breakrow;
@@ -711,7 +741,7 @@ namespace MusicXMLScore.Helpers
             double itemCount = 0.0;
             double itemLength = isHorizontal ? ItemWidth : ItemHeight;
 
-            if (LastItemRowStretch && !double.IsNaN(itemLength))
+            if (StretchLastItemInRow && !double.IsNaN(itemLength))
             {
                 itemCount = Math.Floor(directMaximum / itemLength);
                 expectedLength = itemCount * itemLength;

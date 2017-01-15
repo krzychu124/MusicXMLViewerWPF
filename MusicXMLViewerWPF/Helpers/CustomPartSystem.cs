@@ -43,23 +43,24 @@ namespace MusicXMLScore.Helpers
         private void AddParts()
         {
             if (Loaded)
-            {
-                if (MusicXMLViewerWPF.MusicScore.isLoaded)
+            {//TODO_L Refactor needed
+               /*if (MusicXMLViewerWPF.MusicScore.isLoaded) 
                 {
-                    var list = MusicXMLViewerWPF.MusicScore.GetParts();
-                    int count = list.ElementAt(0).Value.MeasureSegmentList.Count;
-                    partslist = new Dictionary<string, List<Measure>>();
-                    foreach (var item in list)
-                    {
-                        string id = item.Key;
-                        List<Measure> temp = new List<Measure>();
-                        for (int i = 0; i < 7; i++)
-                        {
-                            temp.Add(item.Value.MeasureSegmentList.ElementAt(i));
-                        }
-                        partslist.Add(id, temp);
-                    }
-                }
+                    //throw new NotImplementedException();
+                    //var list = MusicXMLViewerWPF.MusicScore.GetParts();
+                    //int count = list.ElementAt(0).Value.MeasureSegmentList.Count;
+                    //partslist = new Dictionary<string, List<Measure>>();
+                    //foreach (var item in list)
+                    //{
+                    //    string id = item.Key;
+                    //    List<Measure> temp = new List<Measure>();
+                    //    for (int i = 0; i < 7; i++)
+                    //    {
+                    //        temp.Add(item.Value.MeasureSegmentList.ElementAt(i));
+                    //    }
+                    //    partslist.Add(id, temp);
+                    //}
+                }*/
             }
         }
 
