@@ -30,7 +30,7 @@
                 </DockPanel>
                 <local:CreditsView Grid.Row="1" VerticalAlignment="Top" Width="auto" Height="Auto"/>
                 <TextBox Grid.Row="6" Name="RightsTextBox" Text="Copyrights" TextAlignment="Center" FontSize="16" Margin="0,0,0,20" VerticalAlignment="Bottom" Background="Transparent" BorderThickness="0"/>
-                <helpers:CustomWrapPanel x:Name="cwppanel" Orientation="Horizontal" Grid.Row="5" Height="300">
+                <helpers:CustomSystemWrapPanel x:Name="cwppanel" Orientation="Horizontal" Grid.Row="5" Height="300">
                     <helpers:PreviewSettings />
                     <StackPanel Orientation="Horizontal">
                         <helpers:PreviewSettings />
@@ -48,7 +48,7 @@
                     <helpers:DrawableMeasure  IsHitTestVisible="True" MouseLeftButtonDown="StaffLineCanvas_MouseLeftButtonDown" />
                     <helpers:DrawableMeasure  IsHitTestVisible="True" MouseLeftButtonDown="StaffLineCanvas_MouseLeftButtonDown" />
                     <helpers:DrawableMeasure  IsHitTestVisible="True" MouseLeftButtonDown="StaffLineCanvas_MouseLeftButtonDown" />-->
-                </helpers:CustomWrapPanel>
+                </helpers:CustomSystemWrapPanel>
                 <helpers:CustomPartSystem Grid.Row="2" Margin="20"/>
             </Grid>
         </Border>

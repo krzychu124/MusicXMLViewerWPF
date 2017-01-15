@@ -23,7 +23,7 @@ namespace MusicXMLScore.Page
         public PagesControllerView()
         {
             InitializeComponent();
-            this.DataContext = new PagesControllerViewModel();
+            //this.DataContext = new PagesControllerViewModel();
         }
     }
 }

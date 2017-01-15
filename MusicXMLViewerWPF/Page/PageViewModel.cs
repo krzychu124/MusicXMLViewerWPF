@@ -29,10 +29,10 @@ namespace MusicXMLScore.Page
         #endregion
 
         #region Contructors
-        public PageViewModel() // todo get view dimensions !!!
+        public PageViewModel() // todo_l get view dimensions !!!
         {
             TestCommand = new RelayCommand(OnTestCommand);
-            Mediator.Register("IsFileLoaded", OnFileLoaded); // todo add unregister on view close
+            Mediator.Register("IsFileLoaded", OnFileLoaded); // todo_l add unregister on view close
             //! ------------------------------------------
             if (FileLoaded)
             {
@@ -165,7 +165,7 @@ namespace MusicXMLScore.Page
                 var s = new Size(g.Width, g.Height);
                 if (e.NewSize != s)
                 {
-                    int i = 0;
+                    //int i = 0;
                 }
             }
             if (x.Name == "StackPanel")
@@ -175,7 +175,7 @@ namespace MusicXMLScore.Page
                 var nn = new Size(double.NaN, double.NaN);
                 if (e.NewSize != s && s == nn)
                 {
-                    int i = 0;
+                    //int i = 0;
                 }
             }
         }

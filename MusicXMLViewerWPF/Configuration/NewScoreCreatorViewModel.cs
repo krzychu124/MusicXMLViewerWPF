@@ -112,7 +112,7 @@ namespace MusicXMLScore.Configuration
 
         private void InitPreview()
         {
-            MusicScore.Defaults = new MusicXMLViewerWPF.Defaults.Defaults();
+           //TODO check if necessary ==> MusicScore.Defaults = new MusicXMLViewerWPF.Defaults.Defaults();
             //MusicScore.Defaults.Scale.Set(40);
         }
 

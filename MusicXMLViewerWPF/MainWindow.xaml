@@ -24,8 +24,8 @@
         <DockPanel Grid.Row="0">
             <Menu IsMainMenu="True" Height="20" VerticalAlignment="Top" DockPanel.Dock="Top" Width="Auto" >
                 <MenuItem Header="File" >
-                    <MenuItem Header="New Score" Command="{Binding NewScoreCommand}" IsEnabled="False"/>
-                    <MenuItem Header="New Score with creator" Command="{Binding NewScoreCreatorCommand}"/>
+                    <MenuItem Header="Create Default Score" Command="{Binding NewDefaultScoreCreatorCommand}"/>
+                    <MenuItem Header="Create Custom Score" Command="{Binding NewCustomScoreCreatorCommand}"/>
                     <Separator/>
                     <MenuItem Header="Open File" Command="{Binding OpenFileCommand}"/>
                     <MenuItem Header="Open Last">
@@ -54,7 +54,7 @@
                 </MenuItem>
                 <MenuItem Header="View">
                     <MenuItem Header="Logger" IsCheckable="True" IsEnabled="False"/>
-                    <MenuItem Header="OldView" Command="{Binding OldViewCommand}"/>
+                    <MenuItem Header="OldView (Deprecated-Unsupported)" Command="{Binding OldViewCommand}"/>
                 </MenuItem>
                 <MenuItem Header="Add">
                     <MenuItem Header="Measure" Command="{Binding AddMeasureCommand}"/>
@@ -80,7 +80,7 @@
         
         <Slider Grid.Row="1" Maximum="1900" Minimum="200" Value="{Binding PageWidthL}"/>
         
-        <TabControl  Margin="10" Grid.Row="2" ItemsSource="{Binding TabsCreated}" >
+        <TabControl  Margin="10" Grid.Row="2" ItemsSource="{Binding TabsCreated}" SelectedItem="{Binding SelectedTabItem}">
         </TabControl>
         
         <ScrollViewer Grid.Row="3" CanContentScroll="True" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
