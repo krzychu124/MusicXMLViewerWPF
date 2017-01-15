@@ -11,7 +11,7 @@ using System.Xml.Linq;
 
 namespace MusicXMLViewerWPF
 {
-    class Barline :  Segment, IDrawable, IXMLExtract
+    class Barline :  Segment, IDrawable, IXMLExtract // todo ixmlextrack removeal
     {
         #region Fields
         private BarlineLocation location;
@@ -57,10 +57,10 @@ namespace MusicXMLViewerWPF
             segno = null;
             ending = null;
             repeat = null;
-            XMLFiller(x);
+            ExtractXElement(x);
         }
 
-        public void XMLFiller(XElement x)
+        public void ExtractXElement(XElement x)
         {
             //x = x.Element("barline") != null ? x.Element("barline") : null;
 
@@ -122,7 +122,7 @@ namespace MusicXMLViewerWPF
         public DrawingVisual DrawBarline(DrawingVisual visual, Point p, float width)
         {
             Position = p;
-            float scale = MusicScore.Defaults.Scale.Tenths;
+            float scale = 40; //! Temporary change **needs refactoring** MusicScore.Defaults.Scale.Tenths;
             using (DrawingContext dc = visual.RenderOpen())
             {
                 float loc = location == BarlineLocation.left ? (float)p.X : (float)p.X + width;
@@ -237,12 +237,11 @@ namespace MusicXMLViewerWPF
             DrawingVisual segno = new DrawingVisual();
             using (DrawingContext dc = segno.RenderOpen())
             {
-                Misc.DrawingHelpers.DrawString(dc, Symbol, TypeFaces.MeasuresFont, Brushes.Black, (float)p.X - DefX - 8, (float)p.Y - this.DefY -20, MusicScore.Defaults.Scale.Tenths / 1.5f);
+                Misc.DrawingHelpers.DrawString(dc, Symbol, TypeFaces.MeasuresFont, Brushes.Black, (float)p.X - DefX - 8, (float)p.Y - this.DefY -20, 40 / 1.5f); //TODO Implement scale **Refactor needed** MusicScore.Defaults.Scale.Tenths
             }
             visual.Children.Add(segno);
         }
     }
-
     public class Coda : EmptyPrintStyle
     {
         private string name = "coda";
@@ -270,12 +269,11 @@ namespace MusicXMLViewerWPF
             DrawingVisual coda = new DrawingVisual();
             using (DrawingContext dc = coda.RenderOpen())
             {
-                Misc.DrawingHelpers.DrawString(dc, Symbol, TypeFaces.MeasuresFont, Brushes.Black, (float)p.X - this.DefX - 10, (float)p.Y - this.DefY -20, MusicScore.Defaults.Scale.Tenths / 1.5f);
+                Misc.DrawingHelpers.DrawString(dc, Symbol, TypeFaces.MeasuresFont, Brushes.Black, (float)p.X - this.DefX - 10, (float)p.Y - this.DefY -20, 40 / 1.5f); //TODO Scale refactor - MusicScore.Defaults.Scale.Tenths 
             }
             visual.Children.Add(coda);
         }
     }
-
     public class Fermata : EmptyPrintStyle
     {
         private string name = "fermata";
@@ -300,12 +298,11 @@ namespace MusicXMLViewerWPF
             DrawingVisual fermata = new DrawingVisual();
             using (DrawingContext dc = fermata.RenderOpen())
             {
-                Misc.DrawingHelpers.DrawString(dc, Symbol, TypeFaces.MeasuresFont, Brushes.Black, (float)p.X - this.DefX, (float)p.Y - this.DefY, MusicScore.Defaults.Scale.Tenths / 2);
+                Misc.DrawingHelpers.DrawString(dc, Symbol, TypeFaces.MeasuresFont, Brushes.Black, (float)p.X - this.DefX, (float)p.Y - this.DefY, 40 / 2); //TODO MusicScore.Defaults.Scale.Tenths
             }
             visual.Children.Add(fermata);
         }
     }
-
     class Ending : EmptyPrintStyle
     {
         private int measure_number;
@@ -440,8 +437,6 @@ namespace MusicXMLViewerWPF
             }
         }
     }
-    
-    
     class Repeat 
     {
         private int times;
@@ -476,7 +471,7 @@ namespace MusicXMLViewerWPF
         {
             if (Winged != null)
             {
-                //UNDONE incomplete
+                throw new NotImplementedException();
             }
         }
 
@@ -486,7 +481,7 @@ namespace MusicXMLViewerWPF
             forward
         }
     }
-    class Winged :  IDrawable, IXMLExtract
+    class Winged :  IDrawable, IXMLExtract //todo ixmllextract removal
     {
         private WingType type;
         private string s_type;
@@ -529,7 +524,7 @@ namespace MusicXMLViewerWPF
             var xel =  XMLExtractor();
             foreach (var item in xel)
             {
-                XMLFiller(item);
+                ExtractXElement(item);
             }
             
         }
@@ -541,7 +536,7 @@ namespace MusicXMLViewerWPF
             return z;
         }
 
-        public void XMLFiller(XElement x)
+        public void ExtractXElement(XElement x)
         {
 
         }

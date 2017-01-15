@@ -116,7 +116,7 @@ namespace MusicXMLViewerWPF
                 using (DrawingContext dc = clefVisual.RenderOpen())
                 {
                     string symbol = Clef.Sign.Symbol;
-                    Misc.DrawingHelpers.DrawString(dc, symbol, TypeFaces.MeasuresFont, Brushes.Black, currentX, currentY, MusicScore.Defaults.Scale.Tenths);
+                    Misc.DrawingHelpers.DrawString(dc, symbol, TypeFaces.MeasuresFont, Brushes.Black, currentX, currentY, 40); //todo scale
                     currentX += 25f;
                 }
                 visual.Children.Add(clefVisual);
@@ -146,8 +146,8 @@ namespace MusicXMLViewerWPF
                 {
                     string beats = Time.BeatStr;
                     string beats_type = Time.BeatTypeStr;
-                    Misc.DrawingHelpers.DrawString(dc, beats, TypeFaces.TimeNumbers, Brushes.Black, currentX, currentY , MusicScore.Defaults.Scale.Tenths);
-                    Misc.DrawingHelpers.DrawString(dc, beats_type, TypeFaces.TimeNumbers, Brushes.Black, currentX, currentY , MusicScore.Defaults.Scale.Tenths);
+                    Misc.DrawingHelpers.DrawString(dc, beats, TypeFaces.TimeNumbers, Brushes.Black, currentX, currentY , 40); //TODO scale
+                    Misc.DrawingHelpers.DrawString(dc, beats_type, TypeFaces.TimeNumbers, Brushes.Black, currentX, currentY , 40);
                 }
                 visual.Children.Add(timeVisual);
             }

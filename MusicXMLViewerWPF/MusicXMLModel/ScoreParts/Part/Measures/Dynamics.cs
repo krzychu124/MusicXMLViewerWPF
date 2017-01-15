@@ -9,7 +9,7 @@ using System.Xml.Linq;
 
 namespace MusicXMLViewerWPF
 {
-    public class Dynamics : EmptyPrintStyle //? Feature - check if not coliding with other object when drawing
+    public class Dynamics : EmptyPrintStyle //? Feature - check if not coliding with other object when drawing  //TODO 
     {
         //public int posX;
        // public int posY;
@@ -94,7 +94,7 @@ namespace MusicXMLViewerWPF
             using (DrawingContext dc = dynamic_visual.RenderOpen())
             {
                 float posY = (float)p.Y + 50f;
-                Misc.DrawingHelpers.DrawString(dc, Symbol, TypeFaces.MeasuresFont, Brushes.Black, (float)p.X, posY, MusicScore.Defaults.Scale.Tenths/2.2f);
+                Misc.DrawingHelpers.DrawString(dc, Symbol, TypeFaces.MeasuresFont, Brushes.Black, (float)p.X, posY, 40/2.2f);
             }
             visual.Children.Add(dynamic_visual);
         }
@@ -116,7 +116,7 @@ namespace MusicXMLViewerWPF
                 {
                     position.Y += measure.Height * 0.7;
                 }
-                Misc.DrawingHelpers.DrawString(dc, Symbol, TypeFaces.MeasuresFont, Brushes.Black, (float)position.X, (float)position.Y, MusicScore.Defaults.Scale.Tenths * 0.45f);
+                Misc.DrawingHelpers.DrawString(dc, Symbol, TypeFaces.MeasuresFont, Brushes.Black, (float)position.X, (float)position.Y, 40 * 0.45f);
             }
             visual.Children.Add(dynamic_visual);
         }

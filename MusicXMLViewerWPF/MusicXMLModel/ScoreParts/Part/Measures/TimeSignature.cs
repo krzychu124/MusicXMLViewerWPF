@@ -12,7 +12,7 @@ using System.ComponentModel;
 
 namespace MusicXMLViewerWPF
 {
-    class TimeSignature : Segment, IDrawableMusicalObject// MusicalChars // TODO_L test timesig class
+    class TimeSignature : Segment, IDrawableMusicalObject// MusicalChars // TODO_I Scale Refactor needed // test timesig class
     {
         private EmptyPrintStyle additional_attributes;
         private int beats;
@@ -37,7 +37,7 @@ namespace MusicXMLViewerWPF
 
         public CanvasList DrawableMusicalObject { get { return drawablemusicalobject; }  set { drawablemusicalobject = value; } }
         public DrawableMusicalObjectStatus DrawableObjectStatus { get { return dmusicalobjstatus; } private set { if (dmusicalobjstatus != value) dmusicalobjstatus = value; } } 
-        public bool Loaded { get { return loadstatus; } private set { if (loadstatus != value) loadstatus = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Loaded))); } } //TODO_I notif
+        public bool Loaded { get { return loadstatus; } private set { if (loadstatus != value) loadstatus = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Loaded))); } }
         public new PropertyChangedEventHandler PropertyChanged = delegate { };
 
         //TODO_L implement missing properties, separator,interchangeable
@@ -124,20 +124,20 @@ namespace MusicXMLViewerWPF
                 if (sigType == SignatureType.number)
                 {
                     Point p = new Point(Relative_x , Relative_y);
-                    FormattedText fbt = new FormattedText(BeatTypeStr, System.Threading.Thread.CurrentThread.CurrentUICulture, FlowDirection.LeftToRight, TypeFaces.TimeNumbers, MusicScore.Defaults.Scale.Tenths, Brushes.Black);
+                    FormattedText fbt = new FormattedText(BeatTypeStr, System.Threading.Thread.CurrentThread.CurrentUICulture, FlowDirection.LeftToRight, TypeFaces.TimeNumbers, 40, Brushes.Black);
                     fbt.TextAlignment = TextAlignment.Center;
-                    FormattedText fb = new FormattedText(BeatStr, System.Threading.Thread.CurrentThread.CurrentUICulture, FlowDirection.LeftToRight, TypeFaces.TimeNumbers, MusicScore.Defaults.Scale.Tenths, Brushes.Black);
+                    FormattedText fb = new FormattedText(BeatStr, System.Threading.Thread.CurrentThread.CurrentUICulture, FlowDirection.LeftToRight, TypeFaces.TimeNumbers, 40, Brushes.Black);
                     fb.TextAlignment = TextAlignment.Center;
                     Misc.DrawingHelpers.DrawFormattedString(dc, fb, p);
                     Misc.DrawingHelpers.DrawFormattedString(dc, fbt, p);
                 }
                 if (sigType == SignatureType.common)
                 {
-                    Misc.DrawingHelpers.DrawString(dc, MusicalChars.CommonTime, TypeFaces.NotesFont, Brushes.Black, Relative_x , Relative_y - 0.4f * MusicScore.Defaults.Scale.Tenths, MusicScore.Defaults.Scale.Tenths);
+                    Misc.DrawingHelpers.DrawString(dc, MusicalChars.CommonTime, TypeFaces.NotesFont, Brushes.Black, Relative_x , Relative_y - 0.4f * 40, 40);
                 }
                 if (sigType == SignatureType.cut)
                 {
-                    Misc.DrawingHelpers.DrawString(dc, MusicalChars.CutTime, TypeFaces.NotesFont, Brushes.Black, Relative_x , Relative_y - 0.4f * MusicScore.Defaults.Scale.Tenths, MusicScore.Defaults.Scale.Tenths);
+                    Misc.DrawingHelpers.DrawString(dc, MusicalChars.CutTime, TypeFaces.NotesFont, Brushes.Black, Relative_x , Relative_y - 0.4f * 40, 40);
                 }
             }
         }

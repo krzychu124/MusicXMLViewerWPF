@@ -8,7 +8,7 @@ using System.Windows.Media;
 
 namespace MusicXMLViewerWPF.Misc
 {
-    class LineBreak
+    class LineBreak //TODO_: refactor == remove possible
     {
         float _x;
         float _y;
@@ -22,7 +22,8 @@ namespace MusicXMLViewerWPF.Misc
 
         public LineBreak(float x, float y)
         {
-            _x = MusicScore.Defaults.Page.Width - MusicScore.Defaults.Page.Margins.Right + 20f;
+            Page p = new Page();
+            _x = p.Width - p.Margins.Right + 20f;
             //_x = x;
             _y = y;
             break_type = BreakType.line;

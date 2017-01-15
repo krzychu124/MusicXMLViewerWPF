@@ -9,19 +9,19 @@ using System.Xml.Linq;
 namespace MusicXMLViewerWPF.Defaults
 {
 
-    public class SystemLayout // looks good //
+    public class SystemLayout //! looks good 
     {
-        private float left_margin;
-        private float right_margin;
-        private float system_distance;
-        private float top_system_distance;
-        private SystemDivider system_dividers;
+        private float leftMargin;
+        private float rightMargin;
+        private float systemDistance;
+        private float topSystemDistance;
+        private SystemDivider systemDividers;
 
-        public float LeftRelative { get { return left_margin; } }
-        public float RightRelative { get { return right_margin; } }
-        public float SystemDistance { get { return system_distance; } }
-        public float TopSystemDistance { get { return top_system_distance; } }
-        public SystemDivider Dividers { get { return system_dividers; } }
+        public float LeftRelative { get { return leftMargin; } }
+        public float RightRelative { get { return rightMargin; } }
+        public float SystemDistance { get { return systemDistance; } }
+        public float TopSystemDistance { get { return topSystemDistance; } }
+        public SystemDivider Dividers { get { return systemDividers; } }
 
         public SystemLayout()
         {
@@ -30,41 +30,41 @@ namespace MusicXMLViewerWPF.Defaults
 
         public SystemLayout(XElement x)
         {
-            getSystemLayout(x);
+            GetSystemLayout(x);
         }
 
         private void initDefaultValues()
         {
-            left_margin = 0;
-            right_margin = 0;
-            system_distance = 0;
-            top_system_distance = 0;
+            leftMargin = 0;
+            rightMargin = 0;
+            systemDistance = 0;
+            topSystemDistance = 0;
         }
 
         public SystemLayout(float l, float r, float s, float t, SystemDivider d)
         {
-            left_margin = l;
-            right_margin = r;
-            system_distance = s;
-            top_system_distance = t;
-            system_dividers = d;
+            leftMargin = l;
+            rightMargin = r;
+            systemDistance = s;
+            topSystemDistance = t;
+            systemDividers = d;
         }
 
-        private void getSystemLayout()
+        private void GetSystemLayout()
         {
             XDocument doc = LoadDocToClasses.Document;
             var s = from z in doc.Descendants("defaults") select z;
             var sl = from x in s.Elements("system-layout") select x;
             foreach (var item in sl)
             {
-                left_margin = (float)Convert.ToDouble(item.Element("system-margins").Element("left-margin").Value);
-                right_margin = (float)Convert.ToDouble(item.Element("system-margins").Element("right-margin").Value);
-                system_distance = (float)Convert.ToDouble(item.Element("system-distance").Value);
-                top_system_distance = (float)Convert.ToDouble(item.Element("top-system-distance").Value);
+                leftMargin = (float)Convert.ToDouble(item.Element("system-margins").Element("left-margin").Value);
+                rightMargin = (float)Convert.ToDouble(item.Element("system-margins").Element("right-margin").Value);
+                systemDistance = (float)Convert.ToDouble(item.Element("system-distance").Value);
+                topSystemDistance = (float)Convert.ToDouble(item.Element("top-system-distance").Value);
             }
         }
 
-        private void getSystemLayout(XElement x)
+        private void GetSystemLayout(XElement x)
         {
 
             var sl = x.Elements();
@@ -72,32 +72,32 @@ namespace MusicXMLViewerWPF.Defaults
             {
                 if (item.Name.LocalName == "system-margins")
                 {
-                    left_margin = float.Parse(item.Element("left-margin").Value, CultureInfo.InvariantCulture);
-                    right_margin = float.Parse(item.Element("right-margin").Value, CultureInfo.InvariantCulture);
+                    leftMargin = float.Parse(item.Element("left-margin").Value, CultureInfo.InvariantCulture);
+                    rightMargin = float.Parse(item.Element("right-margin").Value, CultureInfo.InvariantCulture);
                 }
                 if (item.Name.LocalName == "system-distance")
                 {
-                    system_distance = float.Parse(item.Value, CultureInfo.InvariantCulture);
+                    systemDistance = float.Parse(item.Value, CultureInfo.InvariantCulture);
                 }
                 if (item.Name.LocalName == "top-system-distance")
                 {
-                    top_system_distance = float.Parse(item.Value, CultureInfo.InvariantCulture);
+                    topSystemDistance = float.Parse(item.Value, CultureInfo.InvariantCulture);
                 }
             }
         }
 
-        public class SystemDivider // implemented but no use curently // visible object which represent point where group of measures are divided //
+        public class SystemDivider //! implemented but no use curently // visible object which represent point where group of measures are divided //
         {
-            private float left_divider;
-            private float right_divider;
+            private float leftDivider;
+            private float rightDivider;
 
-            public float Left { get { return left_divider; } }
-            public float Right { get { return right_divider; } }
+            public float Left { get { return leftDivider; } }
+            public float Right { get { return rightDivider; } }
 
-            public SystemDivider(float l, float r)
+            public SystemDivider(float left, float right)
             {
-                left_divider = l;
-                right_divider = r;
+                leftDivider = left;
+                rightDivider = right;
             }
         }
 

@@ -25,9 +25,10 @@ namespace MusicXMLViewerWPF.Misc
         }
         public static void DrawText(DrawingContext dc, string text, Point position, float font_size, Halign align = Halign.right, Valign valign = Valign.middle, string font_weight = null, bool withsub = true, Brush color = null)
         {
+            Page p = new Page();
             color = color == null ? Brushes.Black : color;
-            Point page = new Point(MusicScore.Defaults.Page.Width, MusicScore.Defaults.Page.Height);
-            Point page_margins = new Point(0, MusicScore.Defaults.Page.Margins.Bottom);
+            Point page = new Point(p.Width, p.Height); //todo test
+            Point page_margins = new Point(0, p.Margins.Bottom);
             Point calculated_margins = CalculatePosition(page, page_margins); // test
             if (withsub)
             {

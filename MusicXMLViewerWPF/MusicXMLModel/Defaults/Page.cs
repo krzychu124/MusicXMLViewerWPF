@@ -16,18 +16,38 @@ namespace MusicXMLViewerWPF
     {
 
         //public string part_id;
-        private float page_height;
-        private float page_width;
-        private PageMargins page_margins;
+        private float pageHeight;
+        private float pageWidth;
+        private PageMargins pageMargins = new PageMargins();
         private Rect content_space;
         private Rect content_space_for_measures;
 
         public event PropertyChangedEventHandler PropertyChanged;
         public static int num_lines;
         public static List<Margins> line = new List<Margins>();
-        public float Width {  get { return page_width; } }
-        public float Height {  get { return page_height; } }
-        public PageMargins Margins {  get { return page_margins; } }
+        public float Width
+        {
+            get { return pageWidth; }
+            set
+            {
+                if (value != 0)
+                {
+                    pageWidth = value;
+                }
+            }
+        }
+        public float Height
+        {
+            get { return pageHeight; }
+            set
+            {
+                if (value != 0)
+                {
+                    pageHeight = value;
+                }
+            }
+        }
+        public PageMargins Margins {  get { return pageMargins; } set { if (value != null) { pageMargins = value; } } }
         public Rect ContentSpace
         {
             get { return content_space; }
@@ -66,17 +86,14 @@ namespace MusicXMLViewerWPF
                 num_lines = value;
             }
         }
-        //public Page()
-        //{
-        //    GetPageInfo();
-        //}
+
         public Page()
         {
             this.PropertyChanged += Page_PropertyChanged;
-            page_width = 2100f;
-            page_height = 2970f;
-            page_margins = new PageMargins();
-            CalculateContentSpace();
+            pageWidth = 2100f; //! A4 format - vertical
+            pageHeight = 2970f;
+            pageMargins = new PageMargins(); //! Std. page margins
+            //? No usage, to refactoring; CalculateContentSpace();
             //CalculateMeasureContetSpace();
         }
 
@@ -84,10 +101,10 @@ namespace MusicXMLViewerWPF
         {
             switch (e.PropertyName)
             {
-                case "MeasuresContentSpace":
+                case "MeasuresContentSpaceu":
                     Logger.Log($"CSM changed! Nv: {MeasuresContentSpace_str}");
                     break;
-                case "ContentSpace":
+                case "ContentSpaceu":
                     Logger.Log($"CS changed! Nv: {ContentSpace_str}");
                     break;
                 default:
@@ -100,99 +117,69 @@ namespace MusicXMLViewerWPF
         {
             Rect temp = Credit.Credit.Titlesegment.Rectangle;
             MeasuresContentSpace = new Rect(new Point(temp.Left, temp.Bottom), content_space.BottomRight);
-            //MusicScore m = new MusicScore() { ContentSpaceCalculated = true };
             //? content_space_measures = 
         }
 
         private void CalculateContentSpace()
         {
-            Point right_bottom = new Point(page_width - Margins.Right, page_height - Margins.Bottom);
+            Point right_bottom = new Point(pageWidth - Margins.Right, pageHeight - Margins.Bottom);
             ContentSpace = new Rect(new Point(Margins.Left, Margins.Top), right_bottom);
-            MusicScore m = new MusicScore() { ContentSpaceCalculated = true };
+            //MusicScore m = new MusicScore() { ContentSpaceCalculated = true };
         }
 
         public Page(XElement x)
         {
             this.PropertyChanged += Page_PropertyChanged;
-            GetPageInfo(x);
+            InitPage(x);
             
-            CalculateContentSpace();
+            CalculateContentSpace(); //todo remove/refactor
         }
 
         public Page(float h, float w, PageMargins p)
         {
-            page_margins = p;
-            page_height = h;
-            page_width = w;
+            pageMargins = p;
+            pageHeight = h;
+            pageWidth = w;
         }
         
-        public Page(int measure_num, float l_margin, float y_marg)
+        public Page(int measure_num, float l_margin, float y_marg)//todo refactor
         {
             Margins m = new Margins(measure_num,l_margin,y_marg);
             line.Add(m);
         }
-        public Page(int num)
+        public Page(int num) //todo refactor
         {
             Margins m = new Margins(num);
             
             line.Add(m);
         }
-        public void GetPageInfo(XElement xele) // TODO_L more indepth test
+        public void InitPage(XElement xele) // TODO_L more indepth test
         {
-            //XDocument doc = LoadDocToClasses.Document;
-            //var p = from z in doc.Descendants("defaults") select z;
-            var pg = from x in xele.Elements("page-layout") select x;
+            var pageLayoutXElementList = from x in xele.Elements("page-layout") select x;
 
-            foreach (var item in pg)//TODO tests, check carefully page margins
+            foreach (var item in pageLayoutXElementList)//TODO_L tests, check carefully page margins
             {
-                page_width = float.Parse(item.Element("page-width").Value, CultureInfo.InvariantCulture);
-                page_height = float.Parse(item.Element("page-height").Value, CultureInfo.InvariantCulture);
+                pageWidth = float.Parse(item.Element("page-width").Value, CultureInfo.InvariantCulture);
+                pageHeight = float.Parse(item.Element("page-height").Value, CultureInfo.InvariantCulture);
                 var pmargins = item.Elements("page-margins");
                 string type = item.Attribute("type") != null ? item.Attribute("type").Value : "both";
-                page_margins = new PageMargins(type, float.Parse(item.Element("page-margins").Element("left-margin").Value, CultureInfo.InvariantCulture), float.Parse(item.Element("page-margins").Element("right-margin").Value, CultureInfo.InvariantCulture), float.Parse(item.Element("page-margins").Element("top-margin").Value, CultureInfo.InvariantCulture), float.Parse(item.Element("page-margins").Element("bottom-margin").Value, CultureInfo.InvariantCulture));
+                pageMargins = new PageMargins(type, float.Parse(item.Element("page-margins").Element("left-margin").Value, CultureInfo.InvariantCulture), float.Parse(item.Element("page-margins").Element("right-margin").Value, CultureInfo.InvariantCulture), float.Parse(item.Element("page-margins").Element("top-margin").Value, CultureInfo.InvariantCulture), float.Parse(item.Element("page-margins").Element("bottom-margin").Value, CultureInfo.InvariantCulture));
                // Page page = new Page(w,h,pm);
             }
             
         }
-        /* //experiments
-        public  void Refresh()
-        {
-            this.InvalidateMeasure();
-            
-                this.InvalidateArrange();
-                this.InvalidateVisual();
-            
-               
-        }
-
-        public static void DrawString(DrawingContext d, string text, Typeface f, Brush b, float xPos, float yPos, float emSize)
-        {
-            //This function mimics Graphics.DrawString functionality
-            d.DrawText(new FormattedText(text, Thread.CurrentThread.CurrentUICulture, FlowDirection.LeftToRight, f, emSize, b), new Point(xPos, yPos));
-
-        }
-
-        protected override void OnRender(DrawingContext drawingContext)
-        {
-            tblock tb = new tblock();
-            base.OnRender(drawingContext);
-            Console.WriteLine("rendered");
-         //   tb.writeLineToTextBlock("rendered");
-            DrawString(drawingContext, num_lines.ToString(), TypeFaces.NotesFont, Brushes.Black, 120f, 10.0f, 40.0f);
-        }
-        */
         /// <summary>
         /// Gets string values from Rect object (X,Y,Width,Heigth)
         /// </summary>
         /// <param name="rect"></param>
         /// <returns></returns>
-        private string GetString(Rect rect)
+        private string GetString(Rect rect) //? refactor?delete
         {
             string result = $"{rect.X.ToString("0.##")}; {rect.Y.ToString("0.##")}; {rect.Width.ToString("0.##")}; {rect.Height.ToString("0.##")}";
             return result;
         }
     }
-    public class Margins
+    public class Margins //? refactor
     {
         public int measure_num;
         public float left_m;
@@ -217,18 +204,18 @@ namespace MusicXMLViewerWPF
             up_m = relY;
         }
     }
-    public class PageMargins // looks ok
+    public class PageMargins //! looks ok
     {
-        private float bottom_margin;
-        private float left_margin;
-        private float right_margin;
-        private float top_margin;
+        private float bottomMargin;
+        private float leftMargin;
+        private float rightMargin;
+        private float topMargin;
         private MarginType type;
 
-        public float Bottom {  get { return bottom_margin; } }
-        public float Left { get { return left_margin;} }
-        public float Right { get { return right_margin; } }
-        public float Top {  get { return top_margin; } }
+        public float Bottom {  get { return bottomMargin; } }
+        public float Left { get { return leftMargin;} }
+        public float Right { get { return rightMargin; } }
+        public float Top {  get { return topMargin; } }
         public MarginType Type { get { return type; } }
 
         public PageMargins() // default margins
@@ -238,19 +225,19 @@ namespace MusicXMLViewerWPF
 
         public PageMargins(string type, float l, float r, float t,float b)
         {
-            bottom_margin = b;
-            left_margin = l;
-            right_margin = r;
+            bottomMargin = b;
+            leftMargin = l;
+            rightMargin = r;
             this.type = type == "both" ? MarginType.both : type == "odd" ? MarginType.odd : MarginType.even;
-            top_margin = t;
+            topMargin = t;
         }
 
         private void SetDefaultMargins()
         {
-            bottom_margin = 25f;
-            left_margin = 20f;
-            right_margin = 20f;
-            top_margin = 25f;
+            bottomMargin = 25f;
+            leftMargin = 20f;
+            rightMargin = 20f;
+            topMargin = 25f;
             type = MarginType.both;
         }
 
@@ -260,9 +247,5 @@ namespace MusicXMLViewerWPF
             odd,
             even
         }
-    }
-    public class RectExtensions
-    {
-
     }
 }

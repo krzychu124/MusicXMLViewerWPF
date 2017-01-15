@@ -16,9 +16,9 @@ namespace MusicXMLViewerWPF.Defaults
         private static Dictionary<string, float> lineWidths = new Dictionary<string, float>() { };
         private static Dictionary<string, float> noteSizes = new Dictionary<string, float>() { };
 
-        public static Dictionary<string, float> Distances { get { return distances; } }
-        public static Dictionary<string, float> NoteSizes { get { return noteSizes; } }
-        public static Dictionary<string, float> LineWidths { get { return lineWidths; } }
+        public static Dictionary<string, float> Distances { get { return distances; } set { if (value != null) { distances = value; } } }
+        public static Dictionary<string, float> NoteSizes { get { return noteSizes; } set { if (value != null) { noteSizes = value; } } }
+        public static Dictionary<string, float> LineWidths { get { return lineWidths; } set { if (value != null) { lineWidths = value; } } }
 
         public Appearance()
         {
@@ -59,23 +59,15 @@ namespace MusicXMLViewerWPF.Defaults
             return x;
         }
 
-        public void init()
+        public void initFromXElement(XElement x)
         {
-            var x = Misc.LoadFile.Document;
-            if (x == null)
+            var appearance = x.Elements();
+
+            foreach (var item in appearance)
             {
-                //string s = MethodBase.GetCurrentMethod().Name;
-                //Logger.EmptyXDocument(s);
-                Logger.Log("XDocument is empty");
-            }
-            else
-            {
-                var apperance = from z in x.Descendants("defaults") select z.Element("appearance"); //search for <appearance></appearance>
-                var desc = from s in apperance.Elements().Distinct() select s;
-                foreach (var item in desc)
+                switch (item.Name.LocalName)
                 {
-                    if (item.Name.LocalName == "line-width") //search for <line-width>
-                    {
+                    case "line-width": //search for <line-width>
                         string s = item.Attribute("type").Value;
                         float v = float.Parse(item.Value, CultureInfo.InvariantCulture);
                         if (lineWidths.ContainsKey(s))
@@ -86,88 +78,36 @@ namespace MusicXMLViewerWPF.Defaults
                         {
                             lineWidths.Add(s, v);
                         }
-                    }
-                    if (item.Name.LocalName == "note-size") //search for <note-size>
-                    {
-                        string s = item.Attribute("type").Value;
-                        float v = float.Parse(item.Value, CultureInfo.InvariantCulture);
-                        if (noteSizes.ContainsKey(s))
+                        break;
+                    case "note-size": //search for <note-size>
+                        string s1 = item.Attribute("type").Value;
+                        float v1 = float.Parse(item.Value, CultureInfo.InvariantCulture);
+                        if (noteSizes.ContainsKey(s1))
                         {
-                            noteSizes[s] = v;
+                            noteSizes[s1] = v1;
                         }
                         else
                         {
-                            noteSizes.Add(s, v);
+                            noteSizes.Add(s1, v1);
                         }
-                    }
-                    if (item.Name.LocalName == "distance") //search for <ldistance>
-                    {
-                        string s = item.Attribute("type").Value;
-                        float v = float.Parse(item.Value, CultureInfo.InvariantCulture);
-                        if (distances.ContainsKey(s))
+                        break;
+                    case "distance": //search for <ldistance>
+                        string s2 = item.Attribute("type").Value;
+                        float v2 = float.Parse(item.Value, CultureInfo.InvariantCulture);
+                        if (distances.ContainsKey(s2))
                         {
-                            distances[s] = v;
+                            distances[s2] = v2;
                         }
                         else
                         {
-                            distances.Add(s, v);
+                            distances.Add(s2, v2);
                         }
-                    }
-
+                        break;
+                    default:
+                        break;
                 }
             }
         }
-
-        public void initFromXElement(XElement x)
-        {
-            var appearance = x.Elements();
-
-            foreach (var item in appearance)
-            {
-                if (item.Name.LocalName == "line-width") //search for <line-width>
-                {
-                    string s = item.Attribute("type").Value;
-                    float v = float.Parse(item.Value, CultureInfo.InvariantCulture);
-                    if (lineWidths.ContainsKey(s))
-                    {
-                        lineWidths[s] = v;
-                    }
-                    else
-                    {
-                        lineWidths.Add(s, v);
-                    }
-                }
-                if (item.Name.LocalName == "note-size") //search for <note-size>
-                {
-                    string s = item.Attribute("type").Value;
-                    float v = float.Parse(item.Value, CultureInfo.InvariantCulture);
-                    if (noteSizes.ContainsKey(s))
-                    {
-                        noteSizes[s] = v;
-                    }
-                    else
-                    {
-                        noteSizes.Add(s, v);
-                    }
-                }
-                if (item.Name.LocalName == "distance") //search for <ldistance>
-                {
-                    string s = item.Attribute("type").Value;
-                    float v = float.Parse(item.Value, CultureInfo.InvariantCulture);
-                    if (distances.ContainsKey(s))
-                    {
-                        distances[s] = v;
-                    }
-                    else
-                    {
-                        distances.Add(s, v);
-                    }
-                }
-
-            }
-
-        }
-
         private void initFromDefaults()
         {
             initDefaultDistances();

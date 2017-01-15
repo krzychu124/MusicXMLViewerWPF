@@ -147,9 +147,9 @@ namespace MusicXMLViewerWPF
             visual.Children.Add(key);
         }
 
-        public static void Draw_Key(DrawingContext dc, Point p, ClefType sign, int num = 0, Brush color = null) //TODO improve with clef sign....
+        public static void Draw_Key(DrawingContext dc, Point p, ClefType sign, int num = 0, Brush color = null) 
         {
-            float scale = MusicScore.Defaults.Scale.Tenths;
+            float scale = 40; //TODO refactor ** MusicScore.Defaults.Scale.Tenths;
             float alt = -0.4f * scale;
             // num = 4;// test
             if (color == null)
@@ -177,7 +177,7 @@ namespace MusicXMLViewerWPF
             string key = isSharp ? MusicalChars.Sharp : MusicalChars.Flat; // assign unicode symbol
             for (int i = 0; i < Math.Abs(num); i++)
             {
-                Misc.DrawingHelpers.DrawString(dc, key, TypeFaces.NotesFont, color, x + padding * i, y + (test[i] + alt), MusicScore.Defaults.Scale.Tenths); // draw
+                Misc.DrawingHelpers.DrawString(dc, key, TypeFaces.NotesFont, color, x + padding * i, y + (test[i] + alt), 40); //TODO MusicScore.Defaults.Scale.Tenths
             }
         }
         

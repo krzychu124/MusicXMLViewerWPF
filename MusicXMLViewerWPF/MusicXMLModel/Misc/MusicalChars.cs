@@ -238,6 +238,7 @@ namespace MusicXMLViewerWPF
             }
             else
             {
+                if (s == null) return x;
                 if (DurationSymbol_Note_S_R.ContainsKey(s))
                 {
                     x = DurationSymbol_Note_S_R[s];

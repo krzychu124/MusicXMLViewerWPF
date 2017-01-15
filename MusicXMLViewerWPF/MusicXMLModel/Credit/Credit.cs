@@ -15,13 +15,14 @@ namespace MusicXMLViewerWPF.Credit
         #endregion
 
         #region Elements
-        private CreditWords credit_words;
-        private string credit_type;
+        private CreditWords creditWords;
+        private string creditType;
         private CreditType type;
+        private Defaults.Defaults defaults;
         /// <summary>
         /// Segment sace for title, dubtitle, arranger and composer
         /// </summary>
-        public static Segment titlesegment = new Segment();
+        public static Segment titleSegment = new Segment();
         #endregion
 
         #region Attachable Properties
@@ -40,8 +41,6 @@ namespace MusicXMLViewerWPF.Credit
                 throw new ArgumentNullException("element");
             element.SetValue(CreditTypeProperty, value);
         }
-
-
         public static readonly DependencyProperty CreditPlacementProperty = DependencyProperty.RegisterAttached("CreditPlacement",
             typeof(string), typeof(Credit), new FrameworkPropertyMetadata(null));
 
@@ -60,51 +59,44 @@ namespace MusicXMLViewerWPF.Credit
         #endregion
 
         #region Public properties read-only
-        public CreditWords CreditWords { get { return credit_words; } }
+        public CreditWords CreditWords { get { return creditWords; } }
         public int PageNumber { get { return page; } }
-        public string CreditType { get { return credit_type; } }
+        public string CreditType { get { return creditType; } }
         public CreditType Type { get { return type; } }
-        public static Segment Titlesegment { get { return titlesegment; } set { titlesegment = value; } }
+        public static Segment Titlesegment { get { return titleSegment; } set { titleSegment = value; } } //todo remove/refactor
         #endregion
 
-        public Credit(System.Xml.Linq.XElement x)
+        public Credit(System.Xml.Linq.XElement x, Defaults.Defaults d = null )
         {
+            defaults = d == null? new Defaults.Defaults(): d;
             page = x.HasAttributes ? int.Parse(x.Attribute("page").Value) : 1;
-            credit_type = x.Element("credit-type") != null ? x.Element("credit-type").Value : null;
+            creditType = x.Element("credit-type") != null ? x.Element("credit-type").Value : null;
             SetCreditType();
-            credit_words = new CreditWords(x.Element("credit-words"));
-            if (credit_type == null)
+            creditWords = new CreditWords(x.Element("credit-words"));
+            if (creditType == null)
             {
-                if (credit_words.HAlign == Halign.center)
+                if (creditWords.HAlign == Halign.center)
                 {
-                    if (credit_words.VAlign == Valign.top)
+                    if (creditWords.VAlign == Valign.top)
                     {
-                        credit_type = "title";
+                        creditType = "title";
                         SetCreditType();
                     }
-                    if (credit_words.VAlign == Valign.bottom)
+                    if (creditWords.VAlign == Valign.bottom)
                     {
-                        credit_type = "copyrights";
+                        creditType = "copyrights";
                         SetCreditType();
                     }
                 }
             }
-            UpdateSegmentHeight();
+            UpdateSegmentHeight(); //todo remove/refactor
         }
-        /// <summary>
-        /// Set basic properties of Credit segment
-        /// </summary>
-        public static void SetCreditSegment()
+
+        private void SetCreditType() //! converts string credit type to enum
         {
-            Titlesegment.Relative = new Point(MusicScore.Defaults.Page.ContentSpace.X, MusicScore.Defaults.Page.ContentSpace.Y);
-            Titlesegment.Width = (float)MusicScore.Defaults.Page.ContentSpace.Width;
-            Titlesegment.Segment_type = SegmentType.Title;
-        }
-        private void SetCreditType()
-        {
-            if (credit_type != null)
+            if (creditType != null)
             {
-                switch (credit_type)
+                switch (creditType)
                 {
                     case "title":
                         type = MusicXMLViewerWPF.Credit.CreditType.title;
@@ -145,7 +137,7 @@ namespace MusicXMLViewerWPF.Credit
         {
             using (DrawingContext dc = visual.RenderOpen())
             {
-                Point pos = new Point(CreditWords.DefX, MusicScore.Defaults.Page.ContentSpace.Bottom - CreditWords.DefY);
+                Point pos = new Point(CreditWords.DefX, defaults.Page.ContentSpace.Bottom - CreditWords.DefY); //! **Refactored** Point pos = new Point(CreditWords.DefX, MusicScore.Defaults.Page.ContentSpace.Bottom - CreditWords.DefY);
                 FormattedText ft = GetFormattedText(pos);
                 //Misc.DrawingHelpers.DrawText(dc, text, pos, size, align, valign, weight);
                 dc.DrawText(ft, pos);
@@ -168,11 +160,10 @@ namespace MusicXMLViewerWPF.Credit
 
         public void Draw(DrawingVisual visual, Rect rect)
         {
-            //Todo refactoring
+            //Todo_L refactoring
         }
     }
-
-
+    
     enum CreditType
     {
         page_number,
@@ -194,7 +185,7 @@ namespace MusicXMLViewerWPF.Credit
         footer
     }
 
-    internal class CreditWords : EmptyPrintStyle
+    internal class CreditWords : EmptyPrintStyle //! refactoring/removing possible later
     {
         private string value;
 
@@ -202,7 +193,7 @@ namespace MusicXMLViewerWPF.Credit
 
         public CreditWords(System.Xml.Linq.XElement x ) : base (x.Attributes())
         {
-            value = x.Value;
+            this.value = x.Value;
         }
     }
 }

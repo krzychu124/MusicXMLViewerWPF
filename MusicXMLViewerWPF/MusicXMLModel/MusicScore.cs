@@ -1,4 +1,5 @@
 ﻿using MusicXMLScore.Helpers;
+using MusicXMLScore.Log;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,29 +16,27 @@ namespace MusicXMLViewerWPF
     /// </summary>
     class MusicScore : INotifyPropertyChanged
     {
-        #region static variables
-        protected static CanvasL Surface;
-        protected static string title;
-        protected static Defaults.Defaults defaults = new MusicXMLViewerWPF.Defaults.Defaults(); 
-        protected static Dictionary<string, ScoreParts.Part.Part> parts = new Dictionary<string, ScoreParts.Part.Part>() { };
-        protected static Identification.Identification identification; 
-        protected static List<Credit.Credit> credits = new List<Credit.Credit>();
-        protected static List<PartList> musicscoreparts; //= new List<PartList>(); // TODO_L replaced for tests
-        protected static Work.Work work; 
-        protected static XElement file; // <<Loaded XML file>>
-        protected static bool loaded = false;
-        protected static bool credits_loaded = false;
-        protected static bool content_space_calculated = false;
-        protected static bool supports_new_system = false;
-        protected static bool supports_new_page = false;
+        #region Fields
+        private string title;
+        private Defaults.Defaults defaults; //? = new Defaults.Defaults(); ??
+        private Dictionary<string, ScoreParts.Part.Part> parts = new Dictionary<string, ScoreParts.Part.Part>() { };
+        private Identification.Identification identification; 
+        private List<Credit.Credit> credits = new List<Credit.Credit>();
+        private Work.Work work; 
+        private XElement file; // <<Loaded XML file>>
+        private static bool loaded = false;
+        private static bool credits_loaded = false;
+        private static bool content_space_calculated = false;
+        private static bool supports_new_system = false;
+        private static bool supports_new_page = false;
         #endregion
         public event PropertyChangedEventHandler PropertyChanged;
 
         #region helpers
         
-        private static List<Misc.LineBreak> breaks = new List<Misc.LineBreak>();
+        private static List<Misc.LineBreak> breaks = new List<Misc.LineBreak>();//! delete/ refactor
         //private static List<>
-        public static List<Misc.LineBreak> LineBreaks { get { return breaks; } }
+        public static List<Misc.LineBreak> LineBreaks { get { return breaks; } }//! delete/ refactor
         #endregion
         #region properties with Notification
         public bool Loaded
@@ -88,15 +87,14 @@ namespace MusicXMLViewerWPF
         #endregion
 
         #region public static properties
-        public static string Title { get { return title; } }
-        public static Defaults.Defaults Defaults { get { return defaults; } set { defaults = value; } }
-        public static Dictionary<string, ScoreParts.Part.Part> Parts { get { return parts; } }
-        public static Identification.Identification Identification { get { return identification; } }
-        public static List<Credit.Credit> CreditList { get { return credits; } }
-        public static List<PartList> ScoreParts { get { return musicscoreparts; } }
-        public static Work.Work Work { get { return work; } }
-        public static XElement File { get { return file; } }
-        public static bool isLoaded { get { return loaded; } }
+        public string Title { get { return title; } set { if (value != null) { title = value; } } } //todo inpc
+        public Defaults.Defaults Defaults { get { return defaults; } set { if (value != null) { defaults = value; } } } //todo inpc
+        public Dictionary<string, ScoreParts.Part.Part> Parts { get { return parts; } set { if (value != null) { parts = value; } } } //todo inpc 
+        public Identification.Identification Identification { get { return identification; } set { if (value != null) { identification = value; } } }  //todo inpc 
+        public List<Credit.Credit> CreditList { get { return credits; } set { if (value != null) { credits = value; } } }  //todo inpc
+        public Work.Work Work { get { return work; } set { if (value != null) { work = value; } } } //todo inpc
+        public XElement File { get { return file; } set { if (value != null) { file = value; } } } //todo inpc
+        public bool isLoaded { get { return loaded; } } //TODO_L improve
         #endregion
 
         #region ctors.
@@ -107,19 +105,19 @@ namespace MusicXMLViewerWPF
         public MusicScore(XDocument x)
         {
             this.PropertyChanged += MusicScore_PropertyChanged;
+
             file = x.Element("score-partwise");
-            if (file != null)
+            if (file != null) //TODO refactor needed => before pass x here, check compatibility
             {
-                Logger.Log("File Loaded");
+                LoggIt.Log("File Loaded");
                 LoadToClasses();
                 Loaded = true;
             }
             else
             {
-                Logger.Log("Error while loading file");
+                LoggIt.Log("Error while loading file", LogType.Error);
             }
 
-            Misc.ScoreSystem ss = new Misc.ScoreSystem();
             Mediator.NotifyColleagues("MSLoad", true);
         }
         #endregion
@@ -135,7 +133,7 @@ namespace MusicXMLViewerWPF
                 case "CreditsLoaded":
                     if (CreditsLoaded != false)
                     {
-                        Defaults.Page.CalculateMeasureContetSpace();
+                       // Defaults.Page.CalculateMeasureContetSpace();
                         Logger.Log("Credits: ready");
                     }
                     else
@@ -185,7 +183,7 @@ namespace MusicXMLViewerWPF
                     }
                     break;
                 default:
-                    Console.WriteLine($"Not implemented task for {e.PropertyName} property ");
+                    Console.WriteLine($"Not implemented action for {e.PropertyName} property ");
                     break;
             }
         }
@@ -194,9 +192,9 @@ namespace MusicXMLViewerWPF
         {
             title = file.Element("movement-title") != null ? file.Element("movement-title").Value : "No title" ;
             work = file.Element("work") != null ? new Work.Work(file.Element("work")) : null;
-            defaults = file.Element("defaults") != null ? new Defaults.Defaults(file.Element("defaults")) : new MusicXMLViewerWPF.Defaults.Defaults();
+            defaults = file.Element("defaults") != null ? new Defaults.Defaults(file.Element("defaults"), this) : new Defaults.Defaults();
             identification = new Identification.Identification(file.Element("identification"));
-            if (Identification?.Encoding?.Supports != null)
+            if (Identification?.Encoding?.Supports != null) //todo refactor to inpc
             {
                 foreach (var item in Identification.Encoding.Supports)
                 {
@@ -215,22 +213,22 @@ namespace MusicXMLViewerWPF
             }
             foreach (var item in file.Elements("credit"))
             {
-                credits.Add(new Credit.Credit(item));
+                credits.Add(new Credit.Credit(item, Defaults));
             }
-            Credit.Credit.SetCreditSegment();
+            //// Credit.Credit.SetCreditSegment();  refactored
             InitTitleSpaceSegment();
 
             foreach (var item in file.Elements("part"))
             {
                 parts.Add(item.Attribute("id").Value, new ScoreParts.Part.Part(item));
             }
-            if (Parts.Count > 1)
+            if (Parts.Count > 1) //! needs  refactor due to changed drawing system
             {
                 RecalculateMeasuresPosInParts();
             }
             
         }
-        private void RecalculateMeasuresPosInParts() //TODO improve part drawing// better but still no bugless
+        private void RecalculateMeasuresPosInParts() //TODO_L improve part drawing// better but still no bugless
         {
             float staffDistance = 80f;
             float staveDistance = 80f;
@@ -278,20 +276,12 @@ namespace MusicXMLViewerWPF
             }
         }
 
-        public static Dictionary<string,ScoreParts.Part.Part> GetParts()
+        public Dictionary<string,ScoreParts.Part.Part> GetParts()
         {
             return parts;
         }
-        /// <summary>
-        /// Gets Canvas surface for Drawing
-        /// </summary>
-        /// <param name="s"></param>
-        public static void GetSurfce (CanvasL s)
-        {
-            Surface = s;
-        }
 
-        public static void Draw(CanvasL surface)
+        public void Draw(CanvasL surface)
         {
             //DrawingVisual credits = new DrawingVisual();
             //DrawCredits(credits);
@@ -302,7 +292,7 @@ namespace MusicXMLViewerWPF
             
         }
 
-        public static void DrawCredits(DrawingVisual visual)
+        public void DrawCredits(DrawingVisual visual)
         {
             foreach (var item in credits)
             {
@@ -319,14 +309,7 @@ namespace MusicXMLViewerWPF
             clear.Loaded = false;
             clear.CreditsLoaded = false;
             clear.ContentSpaceCalculated = false;
-            title = null;
-            defaults = null;
-            parts.Clear();
-            identification = null;
-            credits.Clear();
             breaks.Clear();
-            work = null;
-            file = null;
             credits_loaded = false;
             MusicXMLViewerWPF.Defaults.Appearance.Clear();
         }
@@ -339,7 +322,7 @@ namespace MusicXMLViewerWPF
         /// <summary>
         /// Fill neccesary properties to properly draw Title/Credits segment
         /// </summary>
-        private static void InitTitleSpaceSegment()
+        private void InitTitleSpaceSegment()
         {
             float space_height = 0f;
             foreach (var item in CreditList)
@@ -364,13 +347,13 @@ namespace MusicXMLViewerWPF
         #region Visual Helpers for easier debugging
         public static void DrawPageRectangle(DrawingVisual visual)
         {
-            Misc.DrawingHelpers.DrawRectangle(visual, new Point(0, 0), new Point(Defaults.Page.Width, Defaults.Page.Height));
+            //Misc.DrawingHelpers.DrawRectangle(visual, new Point(0, 0), new Point(Defaults.Page.Width, Defaults.Page.Height));
         }
 
         public static void DrawMusicScoreMargins(DrawingVisual visual)
         {
-            Point right_down_margin_corner = new Point(Defaults.Page.Width - Defaults.Page.Margins.Right, Defaults.Page.Height - Defaults.Page.Margins.Bottom);
-            Misc.DrawingHelpers.DrawRectangle(visual, new Point(Defaults.Page.Margins.Left, Defaults.Page.Margins.Top), right_down_margin_corner, Brushes.Blue);
+            //Point right_down_margin_corner = new Point(Defaults.Page.Width - Defaults.Page.Margins.Right, Defaults.Page.Height - Defaults.Page.Margins.Bottom);
+            //Misc.DrawingHelpers.DrawRectangle(visual, new Point(Defaults.Page.Margins.Left, Defaults.Page.Margins.Top), right_down_margin_corner, Brushes.Blue);
         }
 
         public static void DrawBreaks(DrawingVisual visual) // drawing break for debugging: line, page, etc.
@@ -382,7 +365,7 @@ namespace MusicXMLViewerWPF
         }
         public static void DrawMusicScoreMeasuresContentSpace(DrawingVisual visual)
         {
-            Misc.DrawingHelpers.DrawRectangle(visual, Defaults.Page.MeasuresContentSpace, Brushes.Red);
+            //Misc.DrawingHelpers.DrawRectangle(visual, Defaults.Page.MeasuresContentSpace, Brushes.Red);
         }
         public static void DrawMusicScoreTitleSpace(DrawingVisual visual)
         {

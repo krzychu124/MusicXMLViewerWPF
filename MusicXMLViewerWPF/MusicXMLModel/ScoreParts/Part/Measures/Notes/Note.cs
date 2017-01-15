@@ -84,8 +84,8 @@ namespace MusicXMLViewerWPF
         public string Symbol { get { return symbol; } protected set { symbol = value; } }
         public string SymbolXMLValue { get { return symbol_value; } set { symbol_value = value; } }
         public XElement XMLDefinition { get { return xmldefinition; } }
-        public Point NoteHeadLeftLink { get { return new Point(NoteHeadPosition.X - (MusicScore.Defaults.Scale.Tenths * 0.225f) / 2, NoteHeadPosition.Y); } }
-        public Point NoteHeadRightLink { get { return new Point(NoteHeadPosition.X + (MusicScore.Defaults.Scale.Tenths * 0.225f) / 2, NoteHeadPosition.Y); } }
+        public Point NoteHeadLeftLink { get { return new Point(NoteHeadPosition.X - (40 * 0.225f) / 2, NoteHeadPosition.Y); } } //TODO MusicScore.Defaults.Scale.Tenths
+        public Point NoteHeadRightLink { get { return new Point(NoteHeadPosition.X + (40 * 0.225f) / 2, NoteHeadPosition.Y); } } //TODO MusicScore.Defaults.Scale.Tenths
 
         #region IDrawableMusicalObject
         public virtual CanvasList DrawableMusicalObject { get { return drawablemusicalobject; }  set { drawablemusicalobject = value; } }
@@ -203,7 +203,7 @@ namespace MusicXMLViewerWPF
 
         private Point GetNoteHeadPosition(string v)
         {
-            float offset = 0.225f * MusicScore.Defaults.Scale.Tenths; // default offset at scale 40 is 9 so 0.225
+            float offset = 0.225f * 40; //TODO Scale // default offset at scale 40 is 9 so 0.225
 
             Point result = new Point();
             if (v == "left")
@@ -334,7 +334,7 @@ namespace MusicXMLViewerWPF
 
         private void SetCalculatedNotePosition()
         {
-            Calculated_y = Pitch.CalculatedStep * (MusicScore.Defaults.Scale.Tenths * 0.1f) + MusicScore.Defaults.Scale.Tenths * 0.6f;
+            Calculated_y = Pitch.CalculatedStep * (40 * 0.1f) + 40 * 0.6f; //TODO MusicScore.Defaults.Scale.Tenths
             noteheadposition = new Point(Relative_x + Spacer_L + 5, Relative_y + Calculated_y + 30);
         }
 
@@ -389,7 +389,7 @@ namespace MusicXMLViewerWPF
                 using (DrawingContext dc = note.RenderOpen())
                 {
                     //Relative_y = 310;  //! Pitch.CalculatedStep * (MusicScore.Defaults.Scale.Tenths * 0.1f)) + MusicScore.Defaults.Scale.Tenths * 0.6f
-                    Misc.DrawingHelpers.DrawString(dc, MusicalChars.QuarterDot, TypeFaces.NotesFont, Color, Relative_x + Spacer_L, Relative_y + Calculated_y, MusicScore.Defaults.Scale.Tenths);
+                    Misc.DrawingHelpers.DrawString(dc, MusicalChars.QuarterDot, TypeFaces.NotesFont, Color, Relative_x + Spacer_L, Relative_y + Calculated_y, 40); //TODO MusicScore.Defaults.Scale.Tenths
                 }
                 visual.Children.Add(note);
                 DrawAdditionalLines(visual);
@@ -400,7 +400,7 @@ namespace MusicXMLViewerWPF
                     DrawingVisual dot = new DrawingVisual();
                     using (DrawingContext dc = dot.RenderOpen())
                     {
-                        Misc.DrawingHelpers.DrawString(dc, MusicalChars.Dot, TypeFaces.NotesFont, Brushes.Black, notepositionX + 15, notepositionY - dot_placement, MusicScore.Defaults.Scale.Tenths);
+                        Misc.DrawingHelpers.DrawString(dc, MusicalChars.Dot, TypeFaces.NotesFont, Brushes.Black, notepositionX + 15, notepositionY - dot_placement, 40); //TODO MusicScore.Defaults.Scale.Tenths
                     }
                     visual.Children.Add(dot);
                 }
@@ -423,7 +423,7 @@ namespace MusicXMLViewerWPF
                 using (DrawingContext dc = note.RenderOpen())
                 {
                     //Relative_y = 310;
-                    Misc.DrawingHelpers.DrawString(dc, Symbol, TypeFaces.NotesFont, Color, Relative_x + Spacer_L, Relative_y + Calculated_y, MusicScore.Defaults.Scale.Tenths);
+                    Misc.DrawingHelpers.DrawString(dc, Symbol, TypeFaces.NotesFont, Color, Relative_x + Spacer_L, Relative_y + Calculated_y, 40);
                 }
                 visual.Children.Add(note);
                 DrawAdditionalLines(visual);
@@ -432,7 +432,7 @@ namespace MusicXMLViewerWPF
                     DrawingVisual dot = new DrawingVisual();
                     using (DrawingContext dc = dot.RenderOpen())
                     {
-                        Misc.DrawingHelpers.DrawString(dc, MusicalChars.Dot, TypeFaces.NotesFont, Brushes.Black, notepositionX + 15, notepositionY - dot_placement, MusicScore.Defaults.Scale.Tenths);
+                        Misc.DrawingHelpers.DrawString(dc, MusicalChars.Dot, TypeFaces.NotesFont, Brushes.Black, notepositionX + 15, notepositionY - dot_placement, 40);
                     }
                     visual.Children.Add(dot);
                 }
@@ -458,7 +458,7 @@ namespace MusicXMLViewerWPF
         }
         private void CalculateWidth()
         {
-            //TODO calulation of with neccessary for segment drawing ( with is calculated according to aditional properties of note: added dots, signs(flat,shaph))
+            //TODO_L calulation of with neccessary for segment drawing ( with is calculated according to aditional properties of note: added dots, signs(flat,shaph))
         }
         /// <summary>
         /// Draws additional lines if note is placed above or below regular 5Lines Staff
@@ -500,7 +500,7 @@ namespace MusicXMLViewerWPF
                         DrawingVisual addlinesbetween = new DrawingVisual();
                         using (DrawingContext dc = addlinesbetween.RenderOpen())
                         {
-                            Misc.DrawingHelpers.DrawString(dc, MusicalChars.NoteLine, TypeFaces.NotesFont, Color, Relative_x + Spacer_L * 0.8f, (Relative_y + step * (MusicScore.Defaults.Scale.Tenths * 0.1f)) + MusicScore.Defaults.Scale.Tenths * 0.6f, MusicScore.Defaults.Scale.Tenths);
+                            Misc.DrawingHelpers.DrawString(dc, MusicalChars.NoteLine, TypeFaces.NotesFont, Color, Relative_x + Spacer_L * 0.8f, (Relative_y + step * (40 * 0.1f)) + 40 * 0.6f, 40); //todo MusicScore.Defaults.Scale.Tenths where: 40
                         }
                         missinglines.Children.Add(addlinesbetween);
                     }
@@ -632,7 +632,7 @@ namespace MusicXMLViewerWPF
             Point accidentalposition = new Point(noteposition.NoteHeadPosition.X - 14, noteposition.NoteHeadPosition.Y - 30);
             using (DrawingContext dc = visual.RenderOpen())
             {
-                Misc.DrawingHelpers.DrawString(dc, Symbol, TypeFaces.NotesFont, Brushes.Black, (float)accidentalposition.X, (float)accidentalposition.Y, MusicScore.Defaults.Scale.Tenths);
+                Misc.DrawingHelpers.DrawString(dc, Symbol, TypeFaces.NotesFont, Brushes.Black, (float)accidentalposition.X, (float)accidentalposition.Y, 40);
             }
         }
     }
@@ -726,7 +726,7 @@ namespace MusicXMLViewerWPF
            
             var l = beamlist.Select(z => z.Select(u => u.BeamNumber).Max()).ToList().Distinct().Max();
             float offset = 6f;
-            for (int i = 0; i < l; i++) //TODO improve offset while stem_dir_down
+            for (int i = 0; i < l; i++) //TODO_L improve offset while stem_dir_down
             {
                 int beamnumber = i + 1;
                 Point previous = new Point();
@@ -820,7 +820,7 @@ namespace MusicXMLViewerWPF
            
     }
 
-    public class Stem //TODO add auto calculation of stem for beams
+    public class Stem //TODO_L add auto calculation of stem for beams
     {
         private float length;
         private string direction;

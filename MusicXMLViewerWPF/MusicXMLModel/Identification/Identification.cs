@@ -49,23 +49,23 @@ namespace MusicXMLViewerWPF.Identification
     internal class Encode
     {
         private string encoder;
-        private string encoding_date;
-        private string encoding_descryption;
-        private string software;
+        private string encodingDate;
+        private string encodingDescryption;
+        private string softwareName;
         private List<Supports> supports;
 
         public string Encoder { get { return encoder; } }
-        public string Encoding_date { get { return encoding_date; } }
-        public string Encoding_descryption { get { return encoding_descryption; } }
-        public string Software { get { return software; } }
+        public string Encoding_date { get { return encodingDate; } }
+        public string Encoding_descryption { get { return encodingDescryption; } }
+        public string Software { get { return softwareName; } }
         public List<Supports> Supports { get { return supports; } }
 
         public Encode(XElement x)
         {
             encoder = x.Element("encoder") != null ? x.Element("encoder").Value : null;
-            encoding_date = x.Element("encoding-date") != null ? x.Element("encoding-date").Value : null;
-            encoding_descryption= x.Element("encoding-descryption") != null ? x.Element("encoding-descryption").Value : null;
-            software = x.Element("software") != null ? x.Element("software").Value : null;
+            encodingDate = x.Element("encoding-date") != null ? x.Element("encoding-date").Value : null;
+            encodingDescryption= x.Element("encoding-descryption") != null ? x.Element("encoding-descryption").Value : null;
+            softwareName = x.Element("software") != null ? x.Element("software").Value : null;
             var temp_support = x.Elements("supports");
             if (temp_support != null) supports = new List<Supports>();
             foreach (var item in temp_support)
@@ -115,13 +115,13 @@ namespace MusicXMLViewerWPF.Identification
     }
     class TypedText
     {
-        private string type_name;
+        private string typeName;
         private string value;
         private string type;
 
         public string Type { get { return type; } }
         public string Value { get { return value; } }
-        public string Type_name { get { return type_name; } set { if (value != null) type_name = value; } }
+        public string Type_name { get { return typeName; } set { if (value != null) typeName = value; } }
 
         public TypedText(XElement x)
         {

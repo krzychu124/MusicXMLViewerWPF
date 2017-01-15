@@ -10,6 +10,7 @@ namespace MusicXMLViewerWPF.Defaults
 {
     class Defaults 
     {
+        private MusicScore musicscore;
         private Scale scale = new Scale();
         private Page page;
         private SystemLayout system_layout;
@@ -24,8 +25,9 @@ namespace MusicXMLViewerWPF.Defaults
         public Appearance Appearance { get { return appearance; } }
         public Dictionary<string,ScoreFonts> Fonts { get { return fonts; } }
 
-        public Defaults(System.Xml.Linq.XElement x)
+        public Defaults(System.Xml.Linq.XElement x, MusicScore ms)
         {
+            musicscore = ms;
             var temp = x;
             scale = new Scale(x.Element("scaling"));
             page = new Page(x);

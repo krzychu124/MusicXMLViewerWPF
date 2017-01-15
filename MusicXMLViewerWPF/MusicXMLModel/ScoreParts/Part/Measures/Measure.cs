@@ -51,7 +51,7 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
         #endregion
 
         #region Properties
-        public event PropertyChangedEventHandler PropertyChanged;
+        public new event PropertyChangedEventHandler PropertyChanged;
         public Dictionary<int, List<Note>> NotesByVoice { get { return notesbyvoice; } set { notesbyvoice = value; } }
         public Attributes Attributes { get { return attributes; } set { attributes = value; } }
         public bool NumberVisible { get { return hasNumberInvisible; } }
@@ -348,7 +348,7 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
         private void XMLExtractAttributes(XElement x)
         {
             attributes =  new Attributes(x);
-            if (Attributes.Clef != null) //Todo Needs rework... WiP
+            if (Attributes.Clef != null) 
             {
                 /*
                 Clef ClefSegment = Attributes.Clef;
@@ -635,7 +635,7 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
         /// Draw Mesure (inside segment) - test
         /// </summary>
         /// <param name="visual"></param>
-        public void Draw(DrawingVisual visual)
+        public new void Draw(DrawingVisual visual)
         {
             using (DrawingContext dc = visual.RenderOpen())
             {
@@ -737,7 +737,7 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
         }
         private void Draw_Directions(DrawingContext dc2, Point p)
         {
-            //UNDONE missing implementation
+            throw new NotImplementedException();
         }
 
         private void Draw_Attributes(DrawingVisual attributes_visual)
@@ -746,7 +746,6 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
             {
                 Attributes.Draw(attributes_visual);
             }
-            //UNDONE missing implementation
         }
         /// <summary>
         /// Method for drawing staff of measure using width begining from StartPoint coords

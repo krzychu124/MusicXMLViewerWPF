@@ -11,6 +11,7 @@ namespace MusicXMLViewerWPF.ScoreParts.Part
     class Part
     {
         private string part_id;
+        private Defaults.Defaults defaults = new Defaults.Defaults();
         private List<Measures.Measure> measure_list = new List<Measures.Measure>();
         private Dictionary<int, Point> measure_margin_helper = new Dictionary<int, Point>() { }; 
         /// <summary> helper list to store coordinates of starting point for every line </summary>
@@ -26,20 +27,20 @@ namespace MusicXMLViewerWPF.ScoreParts.Part
         private List<List<Slur>> slist;
         private List<List<Notations>> nlist;
 
-        public Part(XElement x)
+        public Part(XElement x) //todo_I hard refactoring needed
         {
             part_id = x.Attribute("id").Value;
             Point tempPoint = new Point();
-            Point tempMargins = new Point(MusicScore.Defaults.Page.Margins.Left, MusicScore.Defaults.Page.Margins.Top + MusicScore.Defaults.SystemLayout.TopSystemDistance);
-            float sysdist = MusicScore.Defaults.SystemLayout.SystemDistance;
+            Point tempMargins = new Point(defaults.Page.Margins.Left, defaults.Page.Margins.Top + defaults.SystemLayout.TopSystemDistance);
+            float sysdist = defaults.SystemLayout.SystemDistance;
             var measures = x.Elements();
-            Point measure_location = MusicScore.Defaults.Page.MeasuresContentSpace.TopLeft;
-            float measure_location_left = (float)MusicScore.Defaults.Page.MeasuresContentSpace.X;
-            float measure_system = (float)MusicScore.Defaults.SystemLayout.TopSystemDistance;
+            Point measure_location = defaults.Page.MeasuresContentSpace.TopLeft;
+            float measure_location_left = (float)defaults.Page.MeasuresContentSpace.X;
+            float measure_system = (float)defaults.SystemLayout.TopSystemDistance;
             measure_location.Y += measure_system;
             //! Main loop for searching measures in current part
-            bool test = true;
-            bool test2 = false;
+            bool test = false;
+            bool test2 = true;
             for (int i = 0; i < measures.Count(); i++)
             {
                 XElement item = measures.ElementAt(i);
@@ -58,7 +59,7 @@ namespace MusicXMLViewerWPF.ScoreParts.Part
                             }
                             if (measure.PrintProperties.SystemLayout.LeftRelative != measure_location_left)
                             {
-                                measure_location_left = measure.PrintProperties.SystemLayout.LeftRelative + (float)MusicScore.Defaults.Page.MeasuresContentSpace.Left;
+                                measure_location_left = measure.PrintProperties.SystemLayout.LeftRelative + (float)defaults.Page.MeasuresContentSpace.Left;
                             }
                         }
                         if (measure.PrintProperties.StaffLayoutList.Count != 0)
@@ -74,7 +75,7 @@ namespace MusicXMLViewerWPF.ScoreParts.Part
                     if (measure.IsFirstInLine)
                     {
                         measure_location.X = measure_location_left;
-                        measure_location.Y += MusicScore.Defaults.SystemLayout.SystemDistance;
+                        measure_location.Y += defaults.SystemLayout.SystemDistance;
                         measure.Relative = new Point( measure_location.X, measure_location.Y - 10f); //! Set relative position of measure
                         measure.Calculated = new Point(measure_location.X, measure_location.Y); //! Set calculated relative position of measure
                         measure_location.X += measure.Width;
@@ -95,22 +96,20 @@ namespace MusicXMLViewerWPF.ScoreParts.Part
                 }
                 if (test2)
                 {
-                    measure_list.Add(new Measures.Measure(item)); // 
-
+                    measure_list.Add(new Measures.Measure(item)); 
+                    /*? Refactoring WiP
                     if (i == 0)
                     {
                         if (measure_list.ElementAt(i).PrintProperties != null)
                         {
                             if (measure_list.ElementAt(i).PrintProperties.SystemLayout != null)
                             {
-                                tempPoint = new Point(tempMargins.X + measure_list.ElementAt(i).PrintProperties.SystemLayout.LeftRelative, tempMargins.Y + measure_list.ElementAt(i).PrintProperties.SystemLayout.SystemDistance + MusicScore.Defaults.SystemLayout.TopSystemDistance);
+                                tempPoint = new Point(tempMargins.X + measure_list.ElementAt(i).PrintProperties.SystemLayout.LeftRelative, tempMargins.Y + measure_list.ElementAt(i).PrintProperties.SystemLayout.SystemDistance + 0); TOD0_I needs refactor :: TopMargin where: 0
                             }
                             else
                             {
-                                tempPoint = new Point(tempMargins.X, tempMargins.Y + MusicScore.Defaults.SystemLayout.TopSystemDistance);
+                                tempPoint = new Point(tempMargins.X, tempMargins.Y + defaults.SystemLayout.TopSystemDistance);
                             }
-                            //todo Logger.Log($"Margins {tempMargins.X} {tempMargins.Y}");
-                            //todo Logger.Log($"First point {tempPoint.X} {tempPoint.Y}");
                             measure_margin_helper.Add(measure_list.ElementAt(i).Number, tempPoint);
                             //Logger.Log($"helper_dict measure-page margins {MusicScore.Defaults.Page.Margins.Left}  {MusicScore.Defaults.Page.Margins.Top}");
                         }
@@ -128,11 +127,11 @@ namespace MusicXMLViewerWPF.ScoreParts.Part
                                     tempPoint.Y += measure_list.ElementAt(i).PrintProperties.SystemLayout.SystemDistance;
                                     sysdist = measure_list.ElementAt(i).PrintProperties.SystemLayout.SystemDistance;
                                     measure_margin_helper.Add(measure_list.ElementAt(i).Number, tempPoint);
-                                    //todo Logger.Log($"helper_dict measure nr. {i+1}  changed system layout");
+                                    Logger.Log($"helper_dict measure nr. {i+1}  changed system layout");
                                 }
                                 else
                                 {
-                                    //todo Logger.Log($"helper_dict NewSystem in measure nr. {i + 1}");
+                                    Logger.Log($"helper_dict NewSystem in measure nr. {i + 1}");
                                     measure_margin_helper.Add(measure_list.ElementAt(i).Number, new Point(measure_margin_helper.ElementAt(measure_margin_helper.Count - 1).Value.X, measure_margin_helper.ElementAt(measure_margin_helper.Count - 1).Value.Y + sysdist));
                                 }
                                 //measure_margin_helper.Add(i, new Point(measure_margin_helper.ElementAt(measure_margin_helper.Count).Value.X, measure_margin_helper.ElementAt(measure_margin_helper.Count).Value.Y));
@@ -140,20 +139,20 @@ namespace MusicXMLViewerWPF.ScoreParts.Part
                             else
                             {
                                 //measure_margin_helper.Add(measure_list.ElementAt(i).Number, new Point(measure_margin_helper.ElementAt(measure_margin_helper.Count - 1).Value.X, measure_margin_helper.ElementAt(measure_margin_helper.Count - 1).Value.Y));
-                                //todo Logger.Log($"helper_dict NewSystem value: no in measure nr. {i + 1}");
+                                Logger.Log($"helper_dict NewSystem value: no in measure nr. {i + 1}");
                             }
                             //measure_margin_helper.Add(measure_list.ElementAt(i).Number, measure_margin_helper.ElementAt(measure_margin_helper.Count - 1).Value);
                             //Logger.Log($"helper_dict measure nr. {measure_margin_helper.ElementAt(measure_margin_helper.Count -1).Value.X} {measure_margin_helper.ElementAt(measure_margin_helper.Count -1).Value.Y}");
 
                         }
-                    }
+                    }*/
                 }
             }
             SortNotations();
 
             //foreach (var item in measure_margin_helper) // Only to check if list was filled correctly
             //{
-            //    //todo Logger.Log($"helper_dict measure nr. {item.Key} X: {item.Value.X} Y: {item.Value.Y} "); 
+            //    //todo_l Logger.Log($"helper_dict measure nr. {item.Key} X: {item.Value.X} Y: {item.Value.Y} "); 
             //}
             //foreach (var item in measures)
             //{
@@ -166,7 +165,7 @@ namespace MusicXMLViewerWPF.ScoreParts.Part
                 
         }
 
-        private void SortNotations() //TODO improve, add drawing
+        private void SortNotations() //TODO_l improve, add drawing
         {
             foreach (var item in MeasureSegmentList)
             {
@@ -222,7 +221,7 @@ namespace MusicXMLViewerWPF.ScoreParts.Part
                 if (measure_margin_helper.ContainsKey(measure.Number))
                 {
                     start = measure_margin_helper[measure.Number];
-                    MusicScore.AddBreak(MusicScore.Defaults.Page.Width - (float)start.X, (float)start.Y, "line");
+                    MusicScore.AddBreak(defaults.Page.Width - (float)start.X, (float)start.Y, "line");
                 }
                 measure_pos.Add(new MeasureCoordinates(measure.Number, start, new Point(start.X + measure.Width, start.Y)));
                 start.X += measure.Width;
@@ -261,7 +260,7 @@ namespace MusicXMLViewerWPF.ScoreParts.Part
         }
     }
 
-    public class MeasureCoordinates
+    public class MeasureCoordinates //! not usable class. refactoring WiP
     {
         private int num;
         private Point begin;

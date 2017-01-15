@@ -151,7 +151,10 @@ namespace MusicXMLViewerWPF
             using( DrawingContext dc = clef.RenderOpen())
             {
                 Brush clefColor = Brushes.Black;//? (SolidColorBrush)new BrushConverter().ConvertFromString(AdditionalAttributes.Color);
-                Misc.DrawingHelpers.DrawString(dc, this.Sign.Symbol, TypeFaces.NotesFont, clefColor, Relative_x, Relative_y, MusicScore.Defaults.Scale.Tenths); //! Experimental
+                Misc.DrawingHelpers.DrawString(dc, this.Sign.Symbol, TypeFaces.NotesFont, clefColor, Relative_x, Relative_y, 40); 
+                /**
+                Experimental, Scale dependent
+                **/
             }
             visual.Children.Add(clef);
         }

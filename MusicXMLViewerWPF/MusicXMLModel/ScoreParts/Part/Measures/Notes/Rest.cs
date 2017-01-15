@@ -11,7 +11,7 @@ using System.Xml.Linq;
 
 namespace MusicXMLViewerWPF
 {
-    class Rest : Note, IAutoPosition, IDrawableMusicalObject
+    class Rest : Note, IAutoPosition, IDrawableMusicalObject //TODO_I Scale refactor needed
     {
         // private int dots; inherited
         // private int multimeasure;
@@ -141,7 +141,7 @@ namespace MusicXMLViewerWPF
             Loaded = true;
         }
 
-        public void InitDrawableObject()
+        public new void InitDrawableObject()
         {
             
             if (Loaded)
@@ -154,7 +154,7 @@ namespace MusicXMLViewerWPF
             }
         }
 
-        public void ReloadDrawableObject()
+        public new void ReloadDrawableObject()
         {
             DrawableMusicalObject.ClearVisuals();
             DrawableObjectStatus = DrawableMusicalObjectStatus.notready;
@@ -186,7 +186,7 @@ namespace MusicXMLViewerWPF
                     YPos += 1;
                 }
                 Brush restColor = this.Color;//! (SolidColorBrush)new BrushConverter().ConvertFromString(AdditionalAttributes.Color);
-                Misc.DrawingHelpers.DrawString(dc, this.Symbol, TypeFaces.NotesFont, restColor, Relative_x + Spacer_L, YPos, MusicScore.Defaults.Scale.Tenths); //! Experimental
+                Misc.DrawingHelpers.DrawString(dc, this.Symbol, TypeFaces.NotesFont, restColor, Relative_x + Spacer_L, YPos, 40); //! Experimental
             }
             visual.Children.Add(rest);
         }

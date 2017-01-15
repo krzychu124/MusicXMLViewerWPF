@@ -134,11 +134,11 @@ new Point(origin.X + totalWidth, y));
             }
         }
 
-        private void Button_Click_1(object sender, RoutedEventArgs e)
+        private void Button_Click_1(object sender, RoutedEventArgs e) //TODO_I remove
         {
             if (MusicScore.isLoaded)
             {
-                MusicScore.Draw(drawingSurface);
+                //MusicScore.Draw(drawingSurface);
                 Logger.Log($"Drawn {drawingSurface.Count_()} visuals");
             }
             else
@@ -223,13 +223,14 @@ new Point(origin.X + totalWidth, y));
             }
         }
 
-        private void test2_Click(object sender, RoutedEventArgs e)
+       private void test2_Click(object sender, RoutedEventArgs e)
         {
-            
+            /*
             if (MusicScore.isLoaded)
             {
-                drawingSurface.Width = MusicScore.Defaults.Page.Width;
-                drawingSurface.Height = MusicScore.Defaults.Page.Height;
+                Page p = new Page();
+                drawingSurface.Width = p.Width; //ToDO test
+                drawingSurface.Height = p.Height;
                 if (MusicScore.Parts.ElementAt(0).Value.SlurList != null)
                 {
                     foreach (var item in MusicScore.Parts.ElementAt(0).Value.SlurList)
@@ -251,7 +252,7 @@ new Point(origin.X + totalWidth, y));
             {
                 Logger.Log("Please load XML file first");
             }
-            
+          */  
         }
         private void test3_Click(object sender, RoutedEventArgs e)
         {
@@ -300,41 +301,41 @@ new Point(origin.X + totalWidth, y));
 
         }
 
-        private void test6_Click(object sender, RoutedEventArgs e)
+        private void test6_Click(object sender, RoutedEventArgs e) //? not usable after refactoring
         {
             if (MusicScore.isLoaded)
             {
                 //LoadCharsToViewPort sur = new LoadCharsToViewPort(drawingSurface);
                 //sur.AddNotes();
-                Page page = MusicScore.Defaults.Page;
+                Page page = new Page(); //TODO refactor ==> MusicScore.Defaults.Page;
                 string credit = Credit.Credit.Titlesegment.Rectangle.ToString();
                 Logger.Log("Space inside margins "+page.ContentSpace_str); //? content space inside margins
                 Logger.Log("Space without titlle "+ page.MeasuresContentSpace_str); //? content space avaliable for drawing measures
                 Logger.Log("Space for title, credits " + credit); //? credit space dimensions
-                foreach (var item in MusicScore.Parts)
-                {
-                    foreach (var item2 in item.Value.MeasureSegmentList)
-                    {
-                        DrawingVisual segment_vis = new DrawingVisual();
-                        item2.Draw(segment_vis, Brushes.Blue, DashStyles.Solid);
-                        //! DEBUG
-                        /* DrawingVisual debug_coords = new DrawingVisual();
-                       using (DrawingContext dc = debug_coords.RenderOpen()) //! Debug info
-                       {
-                           Misc.DrawingHelpers.DrawText(dc, item.Relative_str, new Point(item.Relative.X + 10f, item.Relative.Y + 15f), 10, font_weight: "regular", withsub:false, align: Halign.left);
-                           Misc.DrawingHelpers.DrawText(dc, item.Width.ToString() + "px width", new Point(item.Relative.X + 10f, item.Relative.Y + 28f), 10, withsub: false, color: Brushes.DarkGray, align: Halign.left);
-                       }
-                       drawingSurface.AddVisual(debug_coords);
-                       */
-                        DrawingVisual item_vis = new DrawingVisual();
-                        item2.Draw(item_vis);
-                        drawingSurface.AddVisual(item_vis);
-                        //drawingSurface.AddVisual(segment_vis);
-                    }
-                    DrawingVisual credits = new DrawingVisual();
-                    MusicScore.DrawCredits(credits);
-                    drawingSurface.AddVisual(credits);
-                }
+                //foreach (var item in MusicScore.Parts) 
+                //{
+                //    foreach (var item2 in item.Value.MeasureSegmentList)
+                //    {
+                //        DrawingVisual segment_vis = new DrawingVisual();
+                //        item2.Draw(segment_vis, Brushes.Blue, DashStyles.Solid);
+                //        //! DEBUG
+                //        /* DrawingVisual debug_coords = new DrawingVisual();
+                //       using (DrawingContext dc = debug_coords.RenderOpen()) //! Debug info
+                //       {
+                //           Misc.DrawingHelpers.DrawText(dc, item.Relative_str, new Point(item.Relative.X + 10f, item.Relative.Y + 15f), 10, font_weight: "regular", withsub:false, align: Halign.left);
+                //           Misc.DrawingHelpers.DrawText(dc, item.Width.ToString() + "px width", new Point(item.Relative.X + 10f, item.Relative.Y + 28f), 10, withsub: false, color: Brushes.DarkGray, align: Halign.left);
+                //       }
+                //       drawingSurface.AddVisual(debug_coords);
+                //       */
+                //        DrawingVisual item_vis = new DrawingVisual();
+                //        item2.Draw(item_vis);
+                //        drawingSurface.AddVisual(item_vis);
+                //        //drawingSurface.AddVisual(segment_vis);
+                //    }
+                //    DrawingVisual credits = new DrawingVisual();
+                //    MusicScore.DrawCredits(credits);
+                //    drawingSurface.AddVisual(credits);
+                //}
             }
             else
             {

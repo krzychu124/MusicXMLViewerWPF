@@ -7,9 +7,9 @@ using System.Xml.Linq;
 
 namespace MusicXMLViewerWPF
 {
-    interface IXMLExtract
+    interface IXMLExtract // todo remove/refactor
     {
         //IEnumerable<XElement> XMLExtractor(); //extract xelement from xml
-        void XMLFiller(XElement x);     //extract values,attributes // make and fill class instance with them
+        void ExtractXElement(XElement x);     //extract values,attributes // make and fill class instance with them
     }
 }
