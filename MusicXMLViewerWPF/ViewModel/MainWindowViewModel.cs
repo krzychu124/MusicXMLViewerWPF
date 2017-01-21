@@ -14,10 +14,11 @@ using System.Windows.Data;
 using System.Windows.Media;
 using System.Xml.Linq;
 using MusicXMLScore.Page;
+using GalaSoft.MvvmLight;
 
-namespace MusicXMLScore
+namespace MusicXMLScore.ViewModel
 {
-    class MainWindowViewModel : INotifyPropertyChanged
+    public class MainWindowViewModel : ViewModelBase
     {
         public MainWindowViewModel()
         {
@@ -156,7 +157,8 @@ namespace MusicXMLScore
         private void OnCloseFile()
         {
             //MusicScore.Clear();
-            Log.LoggIt.Log("File has been closed");
+            var name = SelectedTabItem.DataContext as Page.PagesControllerViewModel;
+            Log.LoggIt.Log($"File {name.Title} has been closed");
             Mediator.NotifyColleagues("XmlFileLoaded", new XmlDataProvider());
             XmlFileLoaded = false;
             //Pages.Clear();
@@ -197,19 +199,56 @@ namespace MusicXMLScore
             set {
                 if (value != selectedTabItem)
                 {
-                    selectedTabItem = value;
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SelectedTabItem)));
+                    Set(() => SelectedTabItem, ref selectedTabItem, value);
                 }
             }
         }
 
-        public double PageWidth { get { return w; } set {  if (w!= value) { w = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PageWidth))); } } }
-        public double PageHeight { get { return h; } set { if (h != value) { h = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PageHeight))); } } } 
+        public double PageWidth
+        {
+            get { return w; }
+            set {
+                if (w != value)
+                {
+                    Set(() => PageWidth, ref w, value);
+                }
+            }
+        }// w = value;  PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PageWidth))); } } }
+        public double PageHeight
+        {
+            get { return h; }
+            set
+            {
+                if (h != value)
+                {
+                    Set(() => PageHeight, ref h, value);
+                }
+            }
+        } //h = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PageHeight))); } } } 
        // public double PageWidthL { get { if (Pages.Count != 0) { return Pages.ElementAt(0).Width; } else { return w; } } set { foreach (var p in Pages) { p.Width = value; } } }
-        public bool XmlFileLoaded { get { return xmlfileloaded; } set { if (xmlfileloaded != value) xmlfileloaded = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(XmlFileLoaded)));  } }
-        public Orientation Orientation { get { return orientation; } set { if (orientation != value) orientation = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Orientation))); } }
-        
-        public event PropertyChangedEventHandler PropertyChanged;
+        public bool XmlFileLoaded
+        {
+            get { return xmlfileloaded; }
+            set
+            {
+                if (xmlfileloaded != value)
+                {
+                    Set(() => XmlFileLoaded, ref xmlfileloaded, value);
+                }
+            }
+        }
+        public Orientation Orientation
+        {
+            get { return orientation; }
+            set
+            {
+                if (orientation != value)
+                {
+                    Set(() => Orientation, ref orientation, value);
+                }
+            }
+        }
+        //public event PropertyChangedEventHandler PropertyChanged;
         #endregion
     }
 }

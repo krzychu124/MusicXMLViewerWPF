@@ -5,9 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace MusicXMLScore
+namespace MusicXMLScore.Helpers
 {
-    class RelayCommand : ICommand
+    public class RelayCommand : ICommand
     {
         Action _TargetExecuteMethod;
         Func<bool> _TargetCanExecuteMethod;

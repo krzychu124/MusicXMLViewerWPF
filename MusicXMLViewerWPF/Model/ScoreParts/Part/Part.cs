@@ -13,15 +13,12 @@ namespace MusicXMLViewerWPF.ScoreParts.Part
         private string part_id;
         private Defaults.Defaults defaults = new Defaults.Defaults();
         private List<Measures.Measure> measure_list = new List<Measures.Measure>();
-        private Dictionary<int, Point> measure_margin_helper = new Dictionary<int, Point>() { }; 
-        /// <summary> helper list to store coordinates of starting point for every line </summary>
-        private List<MeasureCoordinates> measure_pos = new List<MeasureCoordinates>();
+        private Dictionary<int, Point> measure_margin_helper = new Dictionary<int, Point>() { };
         private List<Measures.Measure> measure_segment_list = new List<Measures.Measure>(); //! segmemt test
 
         public string Id { get { return part_id; } }
         public List<Measures.Measure> MeasureList { get { return measure_list; } }
         public Dictionary<int,Point> MarginHelper { get { return measure_margin_helper; } }
-        public List<MeasureCoordinates> PositionHelper { get { return measure_pos; } }
         public List<Measures.Measure> MeasureSegmentList { get { return measure_segment_list; } } //! segment test
         public List<List<Slur>> SlurList { get { return slist; } }
         private List<List<Slur>> slist;
@@ -30,7 +27,6 @@ namespace MusicXMLViewerWPF.ScoreParts.Part
         public Part(XElement x) //todo_I hard refactoring needed
         {
             part_id = x.Attribute("id").Value;
-            Point tempPoint = new Point();
             Point tempMargins = new Point(defaults.Page.Margins.Left, defaults.Page.Margins.Top + defaults.SystemLayout.TopSystemDistance);
             float sysdist = defaults.SystemLayout.SystemDistance;
             var measures = x.Elements();
@@ -160,7 +156,7 @@ namespace MusicXMLViewerWPF.ScoreParts.Part
             //}
             if (measure_margin_helper.Count != 0)
             {
-                FillPositionHelper();
+               // FillPositionHelper();
             }
                 
         }
@@ -211,23 +207,6 @@ namespace MusicXMLViewerWPF.ScoreParts.Part
                 }
             }
         }
-        private void FillPositionHelper()
-        {
-            Point start = new Point();
-            start.X = measure_margin_helper.ElementAt(0).Value.X;
-            start.Y = measure_margin_helper.ElementAt(0).Value.Y;
-            foreach (var measure in measure_list)
-            {
-                if (measure_margin_helper.ContainsKey(measure.Number))
-                {
-                    start = measure_margin_helper[measure.Number];
-                    MusicScore.AddBreak(defaults.Page.Width - (float)start.X, (float)start.Y, "line");
-                }
-                measure_pos.Add(new MeasureCoordinates(measure.Number, start, new Point(start.X + measure.Width, start.Y)));
-                start.X += measure.Width;
-            }
-        }
-        
         public void DrawMeasures(CanvasL surface)
         {
             Point start = new Point();
@@ -257,24 +236,6 @@ namespace MusicXMLViewerWPF.ScoreParts.Part
                 start.X += measure.Width;
                 
             }
-        }
-    }
-
-    public class MeasureCoordinates //! not usable class. refactoring WiP
-    {
-        private int num;
-        private Point begin;
-        private Point end;
-
-        public int Number { get { return num; } }
-        public Point Start { get { return begin; } }
-        public Point End { get { return end; } }
-
-        public MeasureCoordinates(int measure_number, Point start_point, Point end_point)
-        {
-            num = measure_number;
-            begin = start_point;
-            end = end_point;
         }
     }
 }

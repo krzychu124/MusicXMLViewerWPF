@@ -23,7 +23,6 @@ namespace MusicXMLScore
         public MainWindow()
         {
             InitializeComponent();
-            this.DataContext = new MainWindowViewModel();
         }
         protected override void OnClosed(EventArgs e)
         {

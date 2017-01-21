@@ -1,4 +1,5 @@
-﻿using MusicXMLScore.Helpers;
+﻿using GalaSoft.MvvmLight;
+using MusicXMLScore.Helpers;
 using MusicXMLScore.Log;
 using System;
 using System.Collections.Generic;
@@ -14,7 +15,7 @@ namespace MusicXMLViewerWPF
 {   /// <summary>
     /// Main class, storage for everything which needs to be drawn
     /// </summary>
-    class MusicScore : INotifyPropertyChanged
+    class MusicScore : ObservableObject
     {
         #region Fields
         private string title;
@@ -30,13 +31,9 @@ namespace MusicXMLViewerWPF
         private static bool supports_new_system = false;
         private static bool supports_new_page = false;
         #endregion
-        public event PropertyChangedEventHandler PropertyChanged;
 
         #region helpers
         
-        private static List<Misc.LineBreak> breaks = new List<Misc.LineBreak>();//! delete/ refactor
-        //private static List<>
-        public static List<Misc.LineBreak> LineBreaks { get { return breaks; } }//! delete/ refactor
         #endregion
         #region properties with Notification
         public bool Loaded
@@ -44,8 +41,7 @@ namespace MusicXMLViewerWPF
             get { return loaded; }
             set
             {
-                loaded = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Loaded)));
+                Set(() => Loaded, ref loaded, value);
             }
         }
         public bool CreditsLoaded
@@ -53,8 +49,7 @@ namespace MusicXMLViewerWPF
             get { return credits_loaded; }
             set
             {
-                credits_loaded = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CreditsLoaded)));
+                Set(() => CreditsLoaded, ref credits_loaded, value);
             }
         }
         public bool ContentSpaceCalculated
@@ -62,8 +57,7 @@ namespace MusicXMLViewerWPF
             get { return content_space_calculated; }
             set
             {
-                content_space_calculated = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ContentSpaceCalculated)));
+                Set(() => ContentSpaceCalculated, ref content_space_calculated, value);
             }
         }
         public bool SupportNewSystem
@@ -71,8 +65,7 @@ namespace MusicXMLViewerWPF
             get { return supports_new_system; }
             set
             {
-                supports_new_system = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SupportNewSystem)));
+                Set(() => SupportNewSystem, ref supports_new_system, value);
             }
         }
         public bool SupportNewPage
@@ -80,8 +73,7 @@ namespace MusicXMLViewerWPF
             get { return supports_new_system; }
             set
             {
-                supports_new_page = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SupportNewPage)));
+                Set(() => SupportNewPage, ref supports_new_page, value);
             }
         }
         #endregion
@@ -309,16 +301,9 @@ namespace MusicXMLViewerWPF
             clear.Loaded = false;
             clear.CreditsLoaded = false;
             clear.ContentSpaceCalculated = false;
-            breaks.Clear();
             credits_loaded = false;
             MusicXMLViewerWPF.Defaults.Appearance.Clear();
         }
-
-        public static void AddBreak(float x, float y, string type)
-        {
-            breaks.Add(new Misc.LineBreak(x, y, type));
-        }
-
         /// <summary>
         /// Fill neccesary properties to properly draw Title/Credits segment
         /// </summary>
@@ -354,14 +339,6 @@ namespace MusicXMLViewerWPF
         {
             //Point right_down_margin_corner = new Point(Defaults.Page.Width - Defaults.Page.Margins.Right, Defaults.Page.Height - Defaults.Page.Margins.Bottom);
             //Misc.DrawingHelpers.DrawRectangle(visual, new Point(Defaults.Page.Margins.Left, Defaults.Page.Margins.Top), right_down_margin_corner, Brushes.Blue);
-        }
-
-        public static void DrawBreaks(DrawingVisual visual) // drawing break for debugging: line, page, etc.
-        {
-            foreach (var item in breaks)
-            {
-                item.DrawBreak(visual);
-            }
         }
         public static void DrawMusicScoreMeasuresContentSpace(DrawingVisual visual)
         {
@@ -415,7 +392,6 @@ namespace MusicXMLViewerWPF
                 Point right_down = Credit.Credit.Titlesegment.Rectangle.BottomRight;//Relative.Y + Credit.Credit.segment.Dimensions.Y);
                 Credit.Credit.Titlesegment.Draw(visual, Brushes.Green);
                 Misc.DrawingHelpers.DrawRectangle(visual, Credit.Credit.Titlesegment.Rectangle.TopLeft, Credit.Credit.Titlesegment.Rectangle.BottomRight, Brushes.Crimson);
-                AddBreak((float)right_down.X + 20f, (float)right_down.Y, "title");
             }
 
         }

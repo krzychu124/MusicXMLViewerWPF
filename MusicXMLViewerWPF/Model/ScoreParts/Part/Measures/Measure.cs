@@ -26,7 +26,6 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
         private bool hasNumberInvisible;
         private DrawingVisual visual;
         private int elements_count;
-        private MeasureCoordinates measure_pos;
         private Point pos;
         private Print print_properties;
         //
@@ -63,12 +62,10 @@ namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
         public List<Direction> DirectionList { get { return direction; } }
         public List<Note> NotesList { get { return notes_list; } set { if (value != null) notes_list = value; } } // Not complete
         public List<Segment> MusicCharacters { get { return music_characters; } }
-        public MeasureCoordinates MeasurePosition { get { return measure_pos; } }
         public Point Position { get { return pos; } set { if (value != null) pos = value; } }
         public Print PrintProperties { get { return print_properties; } }
         public bool IsFirstInLine { get { return firstinrow; } set { firstinrow = value; }  }
         public new Point Relative { get { return base.Relative; } set { base.Relative = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Relative))); } }
-        //
         public XElement XElementSource { get { return xelementsource; } set { if (value != null) xelementsource = value; } }
         public Segment Segment { get { return segment; } set { if (value != null) segment = value; } }
         public DrawableMeasure DrawableMeasure { get { return drawableMeasure; } private set { drawableMeasure = value; } }

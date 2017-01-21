@@ -9,15 +9,16 @@
         xmlns:helpers="clr-namespace:MusicXMLScore.Helpers"
         x:Class="MusicXMLScore.MainWindow"
         mc:Ignorable="d"
+        DataContext="{Binding Main, Source={StaticResource Locator}}"
         Title="MainWindow" Height="768" Width="1024">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="20"/>
             <RowDefinition Height="20"/>
             <RowDefinition Height="4*"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height=".1*"/>
             <RowDefinition Height="5"/>
-            <RowDefinition Height=".2*"/>
+            <RowDefinition Height="1.5*"/>
             <RowDefinition Height="20"/>
         </Grid.RowDefinitions>
         
