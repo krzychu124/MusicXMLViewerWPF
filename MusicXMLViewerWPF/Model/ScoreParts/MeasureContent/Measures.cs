@@ -10,7 +10,7 @@ using System.Windows.Shapes;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Globalization;
-using MusicXMLViewerWPF.ScoreParts.Part.Measures;
+using MusicXMLViewerWPF.ScoreParts.MeasureContent;
 
 namespace MusicXMLViewerWPF
 {

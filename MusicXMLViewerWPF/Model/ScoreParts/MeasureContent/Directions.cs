@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MusicXMLViewerWPF.ScoreParts.MeasureContent;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -334,7 +335,7 @@ namespace MusicXMLViewerWPF
 
         public void Draw(DrawingVisual visual, Point p)
         {
-            ScoreParts.Part.Measures.Measure measure = (ScoreParts.Part.Measures.Measure)Misc.ScoreSystem.GetMeasureSegment(MeasureID);
+            Measure measure = (Measure)Misc.ScoreSystem.GetMeasureSegment(MeasureID);
             p = measure.Relative;
             p.X += DefX;
             Point rehearsalPos = new Point(p.X - this.def_x, p.Y - this.def_y);

@@ -10,7 +10,7 @@ using System.Windows;
 using System.Windows.Media;
 using System.Xml.Linq;
 
-namespace MusicXMLViewerWPF.ScoreParts.Part.Measures
+namespace MusicXMLViewerWPF.ScoreParts.MeasureContent
 {
     class Measure : Segment, IDrawable, INotifyPropertyChanged // NEEDIMPROVEMENTS: Finish reworking class
     {

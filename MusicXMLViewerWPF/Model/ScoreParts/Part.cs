@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MusicXMLViewerWPF.ScoreParts.MeasureContent;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,20 +7,20 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Xml.Linq;
 
-namespace MusicXMLViewerWPF.ScoreParts.Part
+namespace MusicXMLViewerWPF.ScoreParts
 {
     class Part
     {
         private string part_id;
         private Defaults.Defaults defaults = new Defaults.Defaults();
-        private List<Measures.Measure> measure_list = new List<Measures.Measure>();
+        private List<MeasureContent.Measure> measure_list = new List<MeasureContent.Measure>();
         private Dictionary<int, Point> measure_margin_helper = new Dictionary<int, Point>() { };
-        private List<Measures.Measure> measure_segment_list = new List<Measures.Measure>(); //! segmemt test
+        private List<MeasureContent.Measure> measure_segment_list = new List<MeasureContent.Measure>(); //! segmemt test
 
         public string Id { get { return part_id; } }
-        public List<Measures.Measure> MeasureList { get { return measure_list; } }
+        public List<MeasureContent.Measure> MeasureList { get { return measure_list; } }
         public Dictionary<int,Point> MarginHelper { get { return measure_margin_helper; } }
-        public List<Measures.Measure> MeasureSegmentList { get { return measure_segment_list; } } //! segment test
+        public List<MeasureContent.Measure> MeasureSegmentList { get { return measure_segment_list; } } //! segment test
         public List<List<Slur>> SlurList { get { return slist; } }
         private List<List<Slur>> slist;
         private List<List<Notations>> nlist;
@@ -44,7 +45,7 @@ namespace MusicXMLViewerWPF.ScoreParts.Part
                 
                 if (test)
                 {
-                    Measures.Measure measure = new Measures.Measure(item);
+                    Measure measure = new Measure(item);
                     if (measure.PrintProperties != null)
                     {
                         if (measure.PrintProperties.SystemLayout != null)
@@ -92,7 +93,7 @@ namespace MusicXMLViewerWPF.ScoreParts.Part
                 }
                 if (test2)
                 {
-                    measure_list.Add(new Measures.Measure(item)); 
+                    measure_list.Add(new Measure(item)); 
                     /*? Refactoring WiP
                     if (i == 0)
                     {

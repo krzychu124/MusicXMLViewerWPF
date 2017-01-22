@@ -1,6 +1,7 @@
 ﻿using GalaSoft.MvvmLight;
 using MusicXMLScore.Helpers;
 using MusicXMLScore.Log;
+using MusicXMLViewerWPF.ScoreParts.MeasureContent;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -20,7 +21,7 @@ namespace MusicXMLViewerWPF
         #region Fields
         private string title;
         private Defaults.Defaults defaults; //? = new Defaults.Defaults(); ??
-        private Dictionary<string, ScoreParts.Part.Part> parts = new Dictionary<string, ScoreParts.Part.Part>() { };
+        private Dictionary<string, ScoreParts.Part> parts = new Dictionary<string, ScoreParts.Part>() { };
         private Identification.Identification identification; 
         private List<Credit.Credit> credits = new List<Credit.Credit>();
         private Work.Work work; 
@@ -77,7 +78,7 @@ namespace MusicXMLViewerWPF
         #region public static properties
         public string Title { get { return title; } set { if (value != null) { title = value; } } } //todo inpc
         public Defaults.Defaults Defaults { get { return defaults; } set { if (value != null) { defaults = value; } } } //todo inpc
-        public Dictionary<string, ScoreParts.Part.Part> Parts { get { return parts; } set { if (value != null) { parts = value; } } } //todo inpc 
+        public Dictionary<string, ScoreParts.Part> Parts { get { return parts; } set { if (value != null) { parts = value; } } } //todo inpc 
         public Identification.Identification Identification { get { return identification; } set { if (value != null) { identification = value; } } }  //todo inpc 
         public List<Credit.Credit> CreditList { get { return credits; } set { if (value != null) { credits = value; } } }  //todo inpc
         public Work.Work Work { get { return work; } set { if (value != null) { work = value; } } } //todo inpc
@@ -206,7 +207,7 @@ namespace MusicXMLViewerWPF
 
             foreach (var item in file.Elements("part"))
             {
-                parts.Add(item.Attribute("id").Value, new ScoreParts.Part.Part(item));
+                parts.Add(item.Attribute("id").Value, new ScoreParts.Part(item));
             }
             if (Parts.Count > 1) //! needs  refactor due to changed drawing system
             {
@@ -234,7 +235,7 @@ namespace MusicXMLViewerWPF
                 int firstinline_count = 0;
                 for (int j = 0; j< segmentCount; j++)
                 {
-                    MusicXMLViewerWPF.ScoreParts.Part.Measures.Measure segment = Parts.Values.ElementAt(i).MeasureSegmentList.ElementAt(j);
+                    Measure segment = Parts.Values.ElementAt(i).MeasureSegmentList.ElementAt(j);
                     if (j == 0)
                     {
                         tempY = staffDistance * (i) + staveDistance * (firstinline_count);
@@ -262,7 +263,7 @@ namespace MusicXMLViewerWPF
             }
         }
 
-        public Dictionary<string,ScoreParts.Part.Part> GetParts()
+        public Dictionary<string,ScoreParts.Part> GetParts()
         {
             return parts;
         }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MusicXMLViewerWPF.ScoreParts.MeasureContent;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -107,7 +108,7 @@ namespace MusicXMLViewerWPF
             {
                 position.X += DefX;
             }
-            ScoreParts.Part.Measures.Measure measure = (ScoreParts.Part.Measures.Measure)Misc.ScoreSystem.GetMeasureSegment(MeasureID);
+            Measure measure = (Measure)Misc.ScoreSystem.GetMeasureSegment(MeasureID);
             position = new Point(position.X + measure.Relative.X, position.Y + measure.Relative.Y);
             DrawingVisual dynamic_visual = new DrawingVisual();
             using (DrawingContext dc = dynamic_visual.RenderOpen())
