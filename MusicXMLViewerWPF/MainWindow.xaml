@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MusicXMLScore"
         xmlns:Log="clr-namespace:MusicXMLScore.Log" 
-        xmlns:Page="clr-namespace:MusicXMLScore.Page"
+        xmlns:Page="clr-namespace:MusicXMLScore.ViewModel"
         xmlns:helpers="clr-namespace:MusicXMLScore.Helpers"
         x:Class="MusicXMLScore.MainWindow"
         mc:Ignorable="d"

@@ -31,10 +31,6 @@ namespace MusicXMLViewerWPF
         private static bool supports_new_system = false;
         private static bool supports_new_page = false;
         #endregion
-
-        #region helpers
-        
-        #endregion
         #region properties with Notification
         public bool Loaded
         {
@@ -102,15 +98,13 @@ namespace MusicXMLViewerWPF
             if (file != null) //TODO refactor needed => before pass x here, check compatibility
             {
                 LoggIt.Log("File Loaded");
-                LoadToClasses();
+                ImportFromXMLFile();
                 Loaded = true;
             }
             else
             {
                 LoggIt.Log("Error while loading file", LogType.Error);
             }
-
-            Mediator.NotifyColleagues("MSLoad", true);
         }
         #endregion
         /// <summary>
@@ -180,7 +174,7 @@ namespace MusicXMLViewerWPF
             }
         }
 
-        private void LoadToClasses()
+        private void ImportFromXMLFile()
         {
             title = file.Element("movement-title") != null ? file.Element("movement-title").Value : "No title" ;
             work = file.Element("work") != null ? new Work.Work(file.Element("work")) : null;

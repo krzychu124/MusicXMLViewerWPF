@@ -26,7 +26,7 @@ namespace MusicXMLScore.Helpers
 
         }
         
-        private void StaffLineCanvas_SizeChanged(object sender, System.Windows.SizeChangedEventArgs e)
+        private void StaffLineCanvas_SizeChanged(object sender, SizeChangedEventArgs e)
         {
            // InvalidateMeasure();
            if (e.WidthChanged)

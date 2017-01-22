@@ -12,7 +12,7 @@ using System.Windows.Media;
 using MusicXMLViewerWPF;
 using MusicXMLScore.Helpers;
 
-namespace MusicXMLScore.Configuration
+namespace MusicXMLScore.ViewModel
 {
     public enum TimeSigBeatTime
     {
@@ -49,17 +49,17 @@ namespace MusicXMLScore.Configuration
     {
         #region fields
         private bool customsetting;
-        private ClefTypeOptions currentclefoption = Configuration.ClefTypeOptions.regularclef;
+        private ClefTypeOptions currentclefoption = ViewModel.ClefTypeOptions.regularclef;
         private Dictionary<int, TimeSigBeatTime> timebeatlist = new Dictionary<int, TimeSigBeatTime>() { [1] = TimeSigBeatTime.one, [2] = TimeSigBeatTime.two, [4] = TimeSigBeatTime.four, [8] = TimeSigBeatTime.eight, [16] = TimeSigBeatTime.sixteen, [24] = TimeSigBeatTime.twentyfour, [32] = TimeSigBeatTime.thirtytwo, [64] = TimeSigBeatTime.sixtyfour };
         private Helpers.PreviewCanvas canvaslist = new Helpers.PreviewCanvas();
         private Helpers.PreviewCanvas keypreview = new Helpers.PreviewCanvas();
         private int measurescount = 32;
         private uint timesigtimeval = 4;
         private KeyValuePair<int, TimeSigBeatTime> selectedtimebeats = new KeyValuePair<int, TimeSigBeatTime>(4, TimeSigBeatTime.four);
-        private KeyValuePair<string, ClefType> selectedclef = new KeyValuePair<string, Configuration.ClefType>(MusicalChars.GClef, Configuration.ClefType.GClef);
+        private KeyValuePair<string, ClefType> selectedclef = new KeyValuePair<string, ViewModel.ClefType>(MusicalChars.GClef, ViewModel.ClefType.GClef);
         private static Helpers.PreviewCanvas previewcanvas;
         private static List<string> cleftype_ = new List<string>() { MusicalChars.CClef, MusicalChars.GClef, MusicalChars.FClef};
-        private Dictionary<string, ClefType> cleftype = new Dictionary<string, Configuration.ClefType>() { [MusicalChars.GClef] = Configuration.ClefType.GClef, [MusicalChars.FClef] = Configuration.ClefType.FClef, [MusicalChars.CClef] = Configuration.ClefType.CClef };
+        private Dictionary<string, ClefType> cleftype = new Dictionary<string, ViewModel.ClefType>() { [MusicalChars.GClef] = ViewModel.ClefType.GClef, [MusicalChars.FClef] = ViewModel.ClefType.FClef, [MusicalChars.CClef] = ViewModel.ClefType.CClef };
         private static ObservableCollection<string> keysymbollist = new ObservableCollection<string>();
         private string selclef = cleftype_.ElementAt(1);
         private string selectedkeymode = "Major";
@@ -173,7 +173,7 @@ namespace MusicXMLScore.Configuration
             }
             int fifths = (int)MusicXMLViewerWPF.Key.GetFifths(SelectedKeySymbol);
             MusicXMLViewerWPF.Key k = new MusicXMLViewerWPF.Key(fifths,"major",0);
-            string cl = SelectedClefS.Value == Configuration.ClefType.GClef ? "G" : SelectedClefS.Value == Configuration.ClefType.FClef ? "F" : "C";
+            string cl = SelectedClefS.Value == ViewModel.ClefType.GClef ? "G" : SelectedClefS.Value == ViewModel.ClefType.FClef ? "F" : "C";
             MusicXMLViewerWPF.ClefType ct = new MusicXMLViewerWPF.ClefType(cl);
             Clef c = new Clef(cl,2,0);
             string ttype = CurrentTimeSigOption == TimeSigSettingOptions.standard ? "" : CurrentTimeSigOption.ToString();
@@ -209,7 +209,7 @@ namespace MusicXMLScore.Configuration
 
         private static void OnOpionsWindow()
         {
-            Configuration.ConfigurationView optionswindow = new ConfigurationView();
+            ViewModel.ConfigurationView optionswindow = new ConfigurationView();
             optionswindow.ShowDialog();
         }
 

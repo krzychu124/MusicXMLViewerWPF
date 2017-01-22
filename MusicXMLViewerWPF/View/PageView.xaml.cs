@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace MusicXMLScore.Page
+namespace MusicXMLScore.ViewModel
 {
     /// <summary>
     /// Interaction logic for PageView.xaml

@@ -9,7 +9,7 @@ using System.Windows;
 using System.Windows.Media;
 using MusicXMLScore.Helpers;
 
-namespace MusicXMLScore.Page
+namespace MusicXMLScore.ViewModel
 {
     class CustomSystemViewModel
     {

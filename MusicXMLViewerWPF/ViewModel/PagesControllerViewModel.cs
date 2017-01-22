@@ -8,7 +8,7 @@ using System.ComponentModel;
 using System.Collections.ObjectModel;
 using System.Windows;
 
-namespace MusicXMLScore.Page
+namespace MusicXMLScore.ViewModel
 {
     class PagesControllerViewModel : INotifyPropertyChanged
     {
@@ -18,7 +18,7 @@ namespace MusicXMLScore.Page
         private object content;
         private ObservableCollection<UIElement> pageCollection = new ObservableCollection<UIElement>();
         #endregion
-
+        //TODO_I .. PageCollection<Page>
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
         public ObservableCollection<UIElement> PageCollection { get { return pageCollection; } }
         #region Properties

@@ -31,7 +31,6 @@ namespace MusicXMLScore.Log
 
         public LogViewModel()
         {
-            Mediator.Register("XmlFileLoaded", SetXmlFile);
             log = new LoggIt();
             infolog = LoggIt.Infolog;
             warninglog = LoggIt.Warninglog;

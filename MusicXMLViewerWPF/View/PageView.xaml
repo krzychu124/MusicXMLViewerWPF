@@ -3,10 +3,10 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:MusicXMLScore.Page"
+             xmlns:local="clr-namespace:MusicXMLScore.ViewModel"
              xmlns:helpers="clr-namespace:MusicXMLScore.Helpers"
              xmlns:credit ="clr-namespace:MusicXMLViewerWPF.Credit"
-             xmlns:Configuration="clr-namespace:MusicXMLScore.Configuration" xmlns:Log="clr-namespace:MusicXMLScore.Log" x:Class="MusicXMLScore.Page.PageView"
+             xmlns:Configuration="clr-namespace:MusicXMLScore.ViewModel" xmlns:Log="clr-namespace:MusicXMLScore.Log" x:Class="MusicXMLScore.ViewModel.PageView"
              mc:Ignorable="d" Height="750" Width="800" x:Name="uc">
 
     <Grid Margin="5" x:Name="gridmain" Width="Auto" Height="Auto">

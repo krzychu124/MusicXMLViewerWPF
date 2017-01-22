@@ -13,7 +13,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
 using System.Xml.Linq;
-using MusicXMLScore.Page;
+using MusicXMLScore.ViewModel;
 using GalaSoft.MvvmLight;
 
 namespace MusicXMLScore.ViewModel
@@ -41,7 +41,6 @@ namespace MusicXMLScore.ViewModel
             if (e.PropertyName == "XmlFileLoaded")
             {
                 CloseFileCommand.RiseCanExecuteChanged();
-                Mediator.NotifyColleagues("IsFileLoaded", XmlFileLoaded);
             }
         }
         #endregion
@@ -49,7 +48,7 @@ namespace MusicXMLScore.ViewModel
         #region Methods
         private void OnNewCustomScoreCreator()
         {
-            Configuration.NewScoreCreatorView ndefaultscreatorwindow = new Configuration.NewScoreCreatorView();
+            ViewModel.NewScoreCreatorView ndefaultscreatorwindow = new ViewModel.NewScoreCreatorView();
             ndefaultscreatorwindow.ShowDialog();
         }
 
@@ -63,7 +62,7 @@ namespace MusicXMLScore.ViewModel
 
         private void OnOpenOptionWindow()
         {
-            Configuration.ConfigurationView optionswindow = new Configuration.ConfigurationView();
+            ViewModel.ConfigurationView optionswindow = new ViewModel.ConfigurationView();
             optionswindow.ShowDialog();
         }
 
@@ -157,9 +156,8 @@ namespace MusicXMLScore.ViewModel
         private void OnCloseFile()
         {
             //MusicScore.Clear();
-            var name = SelectedTabItem.DataContext as Page.PagesControllerViewModel;
+            var name = SelectedTabItem.DataContext as ViewModel.PagesControllerViewModel;
             Log.LoggIt.Log($"File {name.Title} has been closed");
-            Mediator.NotifyColleagues("XmlFileLoaded", new XmlDataProvider());
             XmlFileLoaded = false;
             //Pages.Clear();
             TabsCreated.Remove(SelectedTabItem); // TODO_L Refactor commands to work on selected tab (loaded file/new score)

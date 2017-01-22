@@ -13,9 +13,9 @@ using System.ComponentModel;
 using System.Windows.Shapes;
 using System.Reflection;
 using MusicXMLViewerWPF;
-namespace MusicXMLScore.Page
+namespace MusicXMLScore.ViewModel
 {
-    class PageViewModel : INotifyPropertyChanged
+    class PageViewModel : INotifyPropertyChanged //TODO_I collection<GroupedPartsSystem>
     {
         #region Private Fiels
         private CanvasList pagecontent = new CanvasList();
@@ -32,7 +32,6 @@ namespace MusicXMLScore.Page
         public PageViewModel() // todo_l get view dimensions !!!
         {
             TestCommand = new RelayCommand(OnTestCommand);
-            Mediator.Register("IsFileLoaded", OnFileLoaded); // todo_l add unregister on view close
             //! ------------------------------------------
             if (FileLoaded)
             {
@@ -239,13 +238,6 @@ namespace MusicXMLScore.Page
         #region Commands, Action<>, Func<>
         private void OnTestCommand()
         {
-           // GenerateCredits();
-          //  GenerateMeasures();
-            
-            //if (Orientation == Orientation.Vertical)
-            //    Orientation = Orientation.Horizontal;
-            //else
-            //    Orientation = Orientation.Vertical;
         }
 
         private void OnFileLoaded(object obj)

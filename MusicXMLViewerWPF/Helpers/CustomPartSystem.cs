@@ -19,7 +19,6 @@ namespace MusicXMLScore.Helpers
         public CustomPartSystem()
         {
             PropertyChanged += CustomPartSystem_PropertyChanged;
-            Mediator.Register("MSLoad", IFLoaded);
         }
 
         private void CustomPartSystem_PropertyChanged(object sender, PropertyChangedEventArgs e)

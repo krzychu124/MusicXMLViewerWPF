@@ -1,9 +1,9 @@
-﻿<UserControl x:Class="MusicXMLScore.Page.CreditsView"
+﻿<UserControl x:Class="MusicXMLScore.ViewModel.CreditsView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:MusicXMLScore.Page"
+             xmlns:local="clr-namespace:MusicXMLScore.ViewModel"
              mc:Ignorable="d" Height="115.042" Width="425.212">
     
     <Grid Width="Auto" Margin="5">

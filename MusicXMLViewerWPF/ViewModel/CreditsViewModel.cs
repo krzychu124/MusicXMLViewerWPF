@@ -11,7 +11,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 
 
-namespace MusicXMLScore.Page
+namespace MusicXMLScore.ViewModel
 {
     class CreditsViewModel
     {

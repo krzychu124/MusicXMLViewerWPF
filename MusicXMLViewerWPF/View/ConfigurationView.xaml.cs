@@ -12,7 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace MusicXMLScore.Configuration
+namespace MusicXMLScore.ViewModel
 {
     /// <summary>
     /// Interaction logic for ConfigurationView.xaml
