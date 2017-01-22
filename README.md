@@ -1,15 +1,14 @@
 # MusicXMLViewerWPF
-First project in C#, bigger than calculator ;)
+First project in C# ;)
 
-I read somewhere that when you want to code, just start doing that.
+_Made for Learning C# and WPF... Might be highly unreadable sometimes(sometimes whole pages) :/_
 
-_I started this for Learning C# and WPF... Might be highly unreadable sometimes(sometimes whole page) :/_
-
-A lot of commented lines, test methods, ideas and even more problems and issues, but that's the key if you want to learn something, I think :)
+A lot of commented lines, test methods, ideas and even more.
+```diff
++Update ==> Refactoring to MVVM
+```
 
 **_Everything here is an experiment so everything could be changed in the future and will be for sure._**
-
-It's good to have any goals of project so main is to learn C# and WPF better and make something which will work and look like simple music score editor.
 
 **Currently (partialy) implemented (under developenent):**       50-60% Done.  Works quite good but that's not enough for me. 
    - [x] MusicXML reader // quite time consuming to implement // Absolute minimum to represent notes done // 
@@ -26,5 +25,3 @@ It's good to have any goals of project so main is to learn C# and WPF better and
 **Hardest for now:**  
   - [ ] Add each object using only mouse 
   - [ ] Maybe simple printing to PDF, XPS or something else
- 
-**Sorry for my English if someting is not understandable** // It's not as good as I want:)
