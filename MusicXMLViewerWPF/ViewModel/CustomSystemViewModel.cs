@@ -24,7 +24,7 @@ namespace MusicXMLScore.ViewModel
             DrawingVisual dv = new DrawingVisual();
             r.Draw(dv);
             cl.AddVisual(dv);
-            //uielementlist.Add(cl);
+            uielementlist.Add(cl);
             //CustomSystemPanel csp1 = new CustomSystemPanel();
             //CustomSystemPanel csp2 = new CustomSystemPanel();
             //uielementlist.Add(csp1);

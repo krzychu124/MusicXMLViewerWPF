@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace MusicXMLScore.ViewModel
 {
+    /// <summary>
+    /// Interaction logic for ConfigurationView.xaml
+    /// </summary>
     class ConfigurationViewModel
     {
     }

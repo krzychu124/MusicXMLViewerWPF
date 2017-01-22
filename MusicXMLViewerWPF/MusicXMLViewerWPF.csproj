@@ -90,10 +90,16 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ViewModel\MeasureViewModel.cs" />
+    <Compile Include="ViewModel\PartsSegmentViewModel.cs" />
+    <Compile Include="ViewModel\PartViewModel.cs" />
     <Compile Include="View\ConfigurationView.xaml.cs">
       <DependentUpon>ConfigurationView.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModel\ConfigurationViewModel.cs" />
+    <Compile Include="View\MeasureView.xaml.cs">
+      <DependentUpon>MeasureView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\NewScoreCreatorView.xaml.cs">
       <DependentUpon>NewScoreCreatorView.xaml</DependentUpon>
     </Compile>
@@ -139,48 +145,46 @@
     <Compile Include="Model\Misc\IDrawableMusicalObject.cs" />
     <Compile Include="Model\Misc\LineBreak.cs" />
     <Compile Include="Model\Misc\LoadFile.cs" />
-    <Compile Include="Model\Misc\MeasureSystem.cs" />
     <Compile Include="Model\Misc\RandomGenerator.cs" />
     <Compile Include="Model\Misc\ScoreSystem.cs" />
-    <Compile Include="Model\Misc\ScorePage.cs" />
     <Compile Include="Model\Misc\Segments.cs" />
-    <Compile Include="Model\ScoreParts\Part\Measures\Attributes.cs" />
-    <Compile Include="Model\ScoreParts\Part\Measures\Barline.cs" />
+    <Compile Include="Model\ScoreParts\MeasureContent\Attributes.cs" />
+    <Compile Include="Model\ScoreParts\MeasureContent\Barline.cs" />
     <Compile Include="Model\Defaults\SystemLayout.cs" />
     <Compile Include="Model\Misc\Calc.cs" />
     <Compile Include="Model\Misc\CanvasL.cs" />
-    <Compile Include="Model\ScoreParts\Part\Measures\ClefType.cs" />
+    <Compile Include="Model\ScoreParts\MeasureContent\ClefType.cs" />
     <Compile Include="Model\Defaults\Appearance.cs" />
     <Compile Include="Model\Defaults\Scale.cs" />
-    <Compile Include="Model\ScoreParts\Part\Measures\Directions.cs" />
+    <Compile Include="Model\ScoreParts\MeasureContent\Directions.cs" />
     <Compile Include="Model\Misc\IDrawable.cs" />
     <Compile Include="Model\Misc\IXMLExtract.cs" />
-    <Compile Include="Model\ScoreParts\Part\Measures\Key.cs" />
+    <Compile Include="Model\ScoreParts\MeasureContent\Key.cs" />
     <Compile Include="Model\Misc\LoadCharsToViewPort.cs" />
     <Compile Include="Model\Misc\LoadDocToClasses.cs" />
     <Compile Include="Model\Misc\MusicalChars.cs" />
     <Compile Include="Model\MusicScore.cs" />
-    <Compile Include="Model\ScoreParts\Part\Measures\Measure.cs" />
-    <Compile Include="Model\ScoreParts\Part\Measures\SegmentType.cs" />
-    <Compile Include="Model\ScoreParts\Part\Part.cs" />
+    <Compile Include="Model\ScoreParts\MeasureContent\Measure.cs" />
+    <Compile Include="Model\ScoreParts\MeasureContent\SegmentType.cs" />
+    <Compile Include="Model\ScoreParts\Part.cs" />
     <Compile Include="Model\ScoreParts\ScorePart.cs" />
     <Compile Include="Model\Defaults\Print.cs" />
     <Compile Include="Model\Misc\NoUsage\Prototype.cs" />
-    <Compile Include="Model\ScoreParts\Part\Measures\Notes\Lyrics.cs" />
-    <Compile Include="Model\ScoreParts\Part\Measures\Notes\Rest.cs" />
+    <Compile Include="Model\ScoreParts\MeasureContent\Notes\Lyrics.cs" />
+    <Compile Include="Model\ScoreParts\MeasureContent\Notes\Rest.cs" />
     <Compile Include="Model\ScoreParts\PartList.cs" />
-    <Compile Include="Model\ScoreParts\Part\Measures\SymbolDuration.cs" />
-    <Compile Include="Model\ScoreParts\Part\Measures\Notes\Articulations.cs" />
-    <Compile Include="Model\ScoreParts\Part\Measures\Clef.cs" />
-    <Compile Include="Model\ScoreParts\Part\Measures\Dynamics.cs" />
-    <Compile Include="Model\ScoreParts\Part\Measures\Measures.cs" />
+    <Compile Include="Model\ScoreParts\MeasureContent\SymbolDuration.cs" />
+    <Compile Include="Model\ScoreParts\MeasureContent\Notes\Articulations.cs" />
+    <Compile Include="Model\ScoreParts\MeasureContent\Clef.cs" />
+    <Compile Include="Model\ScoreParts\MeasureContent\Dynamics.cs" />
+    <Compile Include="Model\ScoreParts\MeasureContent\Measures.cs" />
     <Compile Include="Model\Misc\Segment.cs" />
-    <Compile Include="Model\ScoreParts\Part\Measures\Notes\Notations.cs" />
-    <Compile Include="Model\ScoreParts\Part\Measures\Notes\Note.cs" />
+    <Compile Include="Model\ScoreParts\MeasureContent\Notes\Notations.cs" />
+    <Compile Include="Model\ScoreParts\MeasureContent\Notes\Note.cs" />
     <Compile Include="Model\Defaults\Page.cs" />
-    <Compile Include="Model\ScoreParts\Part\Measures\Notes\Pitch.cs" />
+    <Compile Include="Model\ScoreParts\MeasureContent\Notes\Pitch.cs" />
     <Compile Include="Model\Misc\Logger.cs" />
-    <Compile Include="Model\ScoreParts\Part\Measures\TimeSignature.cs" />
+    <Compile Include="Model\ScoreParts\MeasureContent\TimeSignature.cs" />
     <Compile Include="Model\Misc\XmlRead.cs" />
     <Compile Include="Model\Misc\TypeFaces.cs" />
     <Compile Include="Model\Misc\NoUsage\Window1.xaml.cs">
@@ -209,9 +213,19 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="ViewModel\ViewModelLocator.cs" />
+    <Compile Include="View\PartsSegmentView.xaml.cs">
+      <DependentUpon>PartsSegmentView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\PartView.xaml.cs">
+      <DependentUpon>PartView.xaml</DependentUpon>
+    </Compile>
     <Page Include="View\ConfigurationView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\MeasureView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\NewScoreCreatorView.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -248,6 +262,14 @@
     <Page Include="View\PageView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\PartsSegmentView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\PartView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>

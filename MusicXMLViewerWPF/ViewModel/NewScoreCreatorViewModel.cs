@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using MusicXMLViewerWPF;
 using MusicXMLScore.Helpers;
+using MusicXMLViewerWPF.ScoreParts.MeasureContent;
 
 namespace MusicXMLScore.ViewModel
 {
@@ -45,7 +46,7 @@ namespace MusicXMLScore.ViewModel
         CClef
     }
 
-    class NewScoreCreatorViewModel : INotifyPropertyChanged
+    class NewScoreCreatorViewModel : INotifyPropertyChanged //TODO Refactor to new MeasureView for preview 
     {
         #region fields
         private bool customsetting;
@@ -166,7 +167,7 @@ namespace MusicXMLScore.ViewModel
             DrawingVisual b_d = new DrawingVisual();
             DrawingVisual r_d = new DrawingVisual();
             DrawingVisual m = new DrawingVisual();
-            MusicXMLViewerWPF.ScoreParts.Part.Measures.Measure meae = new MusicXMLViewerWPF.ScoreParts.Part.Measures.Measure() { Width = 4.5f * scale};
+            Measure meae = new Measure() { Width = 4.5f * scale};
             using(DrawingContext dc= m.RenderOpen())
             {
                 meae.Draw_Measure(dc, measure);

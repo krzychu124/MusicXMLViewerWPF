@@ -13,6 +13,9 @@ using System.Windows.Media;
 
 namespace MusicXMLScore.ViewModel
 {
+    /// <summary>
+    /// Displays added/loaded Credits (title, composer, arranger, etc.)
+    /// </summary>
     class CreditsViewModel
     {
         private ObservableCollection<UIElement> creditslist = new ObservableCollection<UIElement>();
@@ -91,15 +94,14 @@ namespace MusicXMLScore.ViewModel
             return stck;
         }
 
-        private TextBox GenerateCreditTextBox(string value, CreditType credittype)
+        private TextBox GenerateCreditTextBox(string value, CreditType creditType)
         {
-            Dock dock = Dock.Top;
             TextBox tb = new TextBox();
             tb.Text = value;
             tb.Background = Brushes.Transparent;
             tb.BorderThickness = new Thickness(0.0);
-            tb.SetValue(Credit.CreditTypeProperty, credittype);
-            switch (credittype)
+            tb.SetValue(Credit.CreditTypeProperty, creditType);
+            switch (creditType)
             {
                 case CreditType.page_number:
                     break;

@@ -14,10 +14,10 @@
             <Grid >
                 <Grid.RowDefinitions>
                     <RowDefinition Height="20"/>
-                    <RowDefinition Height="40"/>
                     <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="3*"/>
+                    <RowDefinition Height=".5*"/>
+                    <RowDefinition Height=".5*"/>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
@@ -36,6 +36,7 @@
                         <helpers:PreviewSettings />
                         <helpers:PreviewSettings />
                         <helpers:PreviewSettings />
+                        
                     </StackPanel>
                     <Canvas Width="auto">
                         <StackPanel Orientation="Horizontal" Width="Auto" Height="AUto">
@@ -49,7 +50,15 @@
                     <helpers:DrawableMeasure  IsHitTestVisible="True" MouseLeftButtonDown="StaffLineCanvas_MouseLeftButtonDown" />
                     <helpers:DrawableMeasure  IsHitTestVisible="True" MouseLeftButtonDown="StaffLineCanvas_MouseLeftButtonDown" />-->
                 </helpers:CustomSystemWrapPanel>
-                <helpers:CustomPartSystem Grid.Row="2" Margin="20"/>
+                
+                <!--<helpers:CustomPartSystem Grid.Row="2" Margin="20"/>-->
+                <ItemsControl Grid.Row="2" ItemsSource="{Binding PartsSegments}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Vertical"></StackPanel>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl> 
             </Grid>
         </Border>
     </Grid>

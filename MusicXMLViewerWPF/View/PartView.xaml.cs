@@ -10,21 +10,20 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace MusicXMLScore.ViewModel
+namespace MusicXMLScore.View
 {
     /// <summary>
-    /// Interaction logic for NewScoreCreator.xaml
+    /// Interaction logic for PartView.xaml
     /// </summary>
-    public partial class NewScoreCreatorView : Window
+    public partial class PartView : UserControl
     {
-        public NewScoreCreatorView()
+        public PartView()
         {
             InitializeComponent();
-            //NewScoreCreatorViewModel vm = new NewScoreCreatorViewModel();
-            this.DataContext = new NewScoreCreatorViewModel();
-
+            this.DataContext = new ViewModel.PartViewModel();
         }
     }
 }

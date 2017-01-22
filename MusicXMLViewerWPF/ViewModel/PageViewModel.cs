@@ -15,7 +15,10 @@ using System.Reflection;
 using MusicXMLViewerWPF;
 namespace MusicXMLScore.ViewModel
 {
-    class PageViewModel : INotifyPropertyChanged //TODO_I collection<GroupedPartsSystem>
+    /// <summary>
+    /// Contains PartSegmentViewModels as collection
+    /// </summary>
+    class PageViewModel : INotifyPropertyChanged //TODO_I collection<PartsSegmentViewModel>
     {
         #region Private Fiels
         private CanvasList pagecontent = new CanvasList();
@@ -25,6 +28,7 @@ namespace MusicXMLScore.ViewModel
         private bool fileloaded;
         private string tabViewName = "Name1";
         private ObservableCollection<TextBlock> tabContent = new ObservableCollection<TextBlock>();
+        private ObservableCollection<UIElement> partsSegments = new ObservableCollection<UIElement>();
 
         #endregion
 
@@ -32,12 +36,15 @@ namespace MusicXMLScore.ViewModel
         public PageViewModel() // todo_l get view dimensions !!!
         {
             TestCommand = new RelayCommand(OnTestCommand);
-            //! ------------------------------------------
-            if (FileLoaded)
-            {
 
-               // GenerateMeasures();
-            }
+            //TOdo collection of PartSegmentViews to represent as Page
+            //! here default page which contains one ParSegmentView for simple test
+            AddPartSegment();
+        }
+
+        private void AddPartSegment()
+        {
+            PartsSegments.Add(new View.PartsSegmentView());
         }
 
         #endregion
@@ -51,6 +58,7 @@ namespace MusicXMLScore.ViewModel
         public Orientation Orientation { get { return orientation; } set { orientation = value; PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(Orientation))); } }
         public RelayCommand TestCommand { get; set; }
         public bool FileLoaded { get { return fileloaded; } private set { if (fileloaded != value) fileloaded = value; PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(FileLoaded))); } }
+        public ObservableCollection<UIElement> PartsSegments { get { return partsSegments; }  set { partsSegments = value; } }
         #endregion
 
         #region Methods
