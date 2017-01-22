@@ -1,17 +1,22 @@
 # MusicXMLViewerWPF
 
-```diff
--Spaghetti code warning !!!
-```
-##**Testing branch:**
-
-===
-###**_Everything here is an experiment here so everything could be changed in the future and will be for sure._**
+**_Everything here is an experiment here so everything could be changed completely in the near future._**
+#### Main goal of this project is learn and improve _C#_ by programming something bigger than "Calculator".
 ---
 
+###**Currently under developement:**
+   - [x] ~~MusicXML reader // Minimum info from MusicXML file //~~ **Done Partially**
+   - [ ] **MusicXML Reader** - various improvements
+   - [ ] **Refactoring project according to MVVM pattern**
+   - [ ] **BasicUI Layout**
 
-
-Here you you maight see:
-*   tons of commented lines
-*   ideas and test methods without any sense or usefulness
-*   sometimes not intuitive and complicated parts of code
+###**Next:**
+   - [ ] Different types of Views (full, part, instrument or group)
+   - [ ] Auto align content, 
+   - [ ] Load/Save other file-formats support
+   - [ ] Music Score Templates to work from scratch
+    
+###**At the end:**  
+  - [ ] Basic interaction with drawn/loaded Music Score or Template
+  - [ ] Drag 'n Drop objects, Copy/Paste selection etc... 
+  - [ ] Simple printing system: PDF, image, XPS or something else
