@@ -1,5 +1,5 @@
 ﻿using MusicXMLViewerWPF;
-using MusicXMLViewerWPF.ScoreParts.Part.Measures;
+using MusicXMLViewerWPF.ScoreParts.MeasureContent;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -125,7 +125,7 @@ namespace MusicXMLScore.Helpers
         private void AddMeasure(string s)
         {
             XElement xel = XElement.Parse(s);
-            m = new MusicXMLViewerWPF.ScoreParts.Part.Measures.Measure(xel);
+            m = new Measure(xel);
             this.Width = m.Width;
             this.Height = 60;
         }
