@@ -5,27 +5,28 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MusicXMLScore"
         xmlns:Log="clr-namespace:MusicXMLScore.Log" 
-        xmlns:Page="clr-namespace:MusicXMLScore.Page"
+        xmlns:Page="clr-namespace:MusicXMLScore.ViewModel"
         xmlns:helpers="clr-namespace:MusicXMLScore.Helpers"
         x:Class="MusicXMLScore.MainWindow"
         mc:Ignorable="d"
+        DataContext="{Binding Main, Source={StaticResource Locator}}"
         Title="MainWindow" Height="768" Width="1024">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="20"/>
             <RowDefinition Height="20"/>
             <RowDefinition Height="4*"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height=".1*"/>
             <RowDefinition Height="5"/>
-            <RowDefinition Height=".2*"/>
+            <RowDefinition Height="1.5*"/>
             <RowDefinition Height="20"/>
         </Grid.RowDefinitions>
         
         <DockPanel Grid.Row="0">
             <Menu IsMainMenu="True" Height="20" VerticalAlignment="Top" DockPanel.Dock="Top" Width="Auto" >
                 <MenuItem Header="File" >
-                    <MenuItem Header="New Score" Command="{Binding NewScoreCommand}" IsEnabled="False"/>
-                    <MenuItem Header="New Score with creator" Command="{Binding NewScoreCreatorCommand}"/>
+                    <MenuItem Header="Create Default Score" Command="{Binding NewDefaultScoreCreatorCommand}"/>
+                    <MenuItem Header="Create Custom Score" Command="{Binding NewCustomScoreCreatorCommand}"/>
                     <Separator/>
                     <MenuItem Header="Open File" Command="{Binding OpenFileCommand}"/>
                     <MenuItem Header="Open Last">
@@ -54,7 +55,7 @@
                 </MenuItem>
                 <MenuItem Header="View">
                     <MenuItem Header="Logger" IsCheckable="True" IsEnabled="False"/>
-                    <MenuItem Header="OldView" Command="{Binding OldViewCommand}"/>
+                    <MenuItem Header="OldView (Deprecated-Unsupported)" Command="{Binding OldViewCommand}"/>
                 </MenuItem>
                 <MenuItem Header="Add">
                     <MenuItem Header="Measure" Command="{Binding AddMeasureCommand}"/>
@@ -80,7 +81,7 @@
         
         <Slider Grid.Row="1" Maximum="1900" Minimum="200" Value="{Binding PageWidthL}"/>
         
-        <TabControl  Margin="10" Grid.Row="2" ItemsSource="{Binding TabsCreated}" >
+        <TabControl  Margin="10" Grid.Row="2" ItemsSource="{Binding TabsCreated}" SelectedItem="{Binding SelectedTabItem}">
         </TabControl>
         
         <ScrollViewer Grid.Row="3" CanContentScroll="True" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">

@@ -10,25 +10,21 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace MusicXMLScore
+namespace MusicXMLScore.ViewModel
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for NewScoreCreator.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class NewScoreCreatorView : Window
     {
-        public MainWindow()
+        public NewScoreCreatorView()
         {
             InitializeComponent();
-        }
-        protected override void OnClosed(EventArgs e)
-        {
-            base.OnClosed(e);
+            //NewScoreCreatorViewModel vm = new NewScoreCreatorViewModel();
+            this.DataContext = new NewScoreCreatorViewModel();
 
-            Application.Current.Shutdown();
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MusicXMLViewerWPF.ScoreParts.MeasureContent;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,8 +17,8 @@ namespace MusicXMLScore.Helpers
         public StaffLineCanvas():base()
         {
             //MinHeight = Height;
-            MinWidth = 100;
-            m = new MusicXMLViewerWPF.ScoreParts.Part.Measures.Measure(Width);
+            MinWidth = 150;
+            m = new Measure(Width);
             SizeChanged += StaffLineCanvas_SizeChanged;
             
         }
@@ -26,7 +27,7 @@ namespace MusicXMLScore.Helpers
 
         }
         
-        private void StaffLineCanvas_SizeChanged(object sender, System.Windows.SizeChangedEventArgs e)
+        private void StaffLineCanvas_SizeChanged(object sender, SizeChangedEventArgs e)
         {
            // InvalidateMeasure();
            if (e.WidthChanged)
@@ -47,7 +48,7 @@ namespace MusicXMLScore.Helpers
             }
         }
 
-        public MusicXMLViewerWPF.ScoreParts.Part.Measures.Measure m =new MusicXMLViewerWPF.ScoreParts.Part.Measures.Measure();
+        public Measure m =new Measure();
         protected override void OnRender(DrawingContext dc)
         {
             //base.OnRender(dc);

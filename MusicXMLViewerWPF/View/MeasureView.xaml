@@ -1,0 +1,16 @@
+﻿<UserControl x:Class="MusicXMLScore.View.MeasureView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:MusicXMLScore.View"
+             mc:Ignorable="d" 
+             xmlns:helpers="clr-namespace:MusicXMLScore.Helpers"
+             d:DesignHeight="100" d:DesignWidth="200">
+    <Grid>
+        <Canvas>
+            <!--<ContentPresenter ContentSource="{Binding MeasureContent}"></ContentPresenter>-->
+        </Canvas>
+        <helpers:StaffLineCanvas/>
+    </Grid>
+</UserControl>

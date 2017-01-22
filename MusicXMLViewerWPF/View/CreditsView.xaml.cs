@@ -13,22 +13,17 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace MusicXMLScore
+namespace MusicXMLScore.ViewModel
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for CreditsView.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class CreditsView : UserControl
     {
-        public MainWindow()
+        public CreditsView()
         {
             InitializeComponent();
-        }
-        protected override void OnClosed(EventArgs e)
-        {
-            base.OnClosed(e);
-
-            Application.Current.Shutdown();
+            this.DataContext = new CreditsViewModel();
         }
     }
 }

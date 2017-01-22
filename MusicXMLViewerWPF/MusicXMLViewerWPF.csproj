@@ -14,6 +14,7 @@
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -26,7 +27,6 @@
     <MapFileExtensions>true</MapFileExtensions>
     <ApplicationRevision>0</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
@@ -51,8 +51,28 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="GalaSoft.MvvmLight, Version=5.3.0.19026, Culture=neutral, PublicKeyToken=e7570ab207bcb616, processorArchitecture=MSIL">
+      <HintPath>..\packages\MvvmLightLibs.5.3.0.0\lib\net45\GalaSoft.MvvmLight.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="GalaSoft.MvvmLight.Extras, Version=5.3.0.19032, Culture=neutral, PublicKeyToken=669f0b5e8f868abf, processorArchitecture=MSIL">
+      <HintPath>..\packages\MvvmLightLibs.5.3.0.0\lib\net45\GalaSoft.MvvmLight.Extras.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="GalaSoft.MvvmLight.Platform, Version=5.3.0.19032, Culture=neutral, PublicKeyToken=5f873c45e98af8a1, processorArchitecture=MSIL">
+      <HintPath>..\packages\MvvmLightLibs.5.3.0.0\lib\net45\GalaSoft.MvvmLight.Platform.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.3.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\CommonServiceLocator.1.3\lib\portable-net4+sl5+netcore45+wpa81+wp8\Microsoft.Practices.ServiceLocation.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\MvvmLightLibs.5.3.0.0\lib\net45\System.Windows.Interactivity.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -70,18 +90,24 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Configuration\ConfigurationView.xaml.cs">
+    <Compile Include="ViewModel\MeasureViewModel.cs" />
+    <Compile Include="ViewModel\PartsSegmentViewModel.cs" />
+    <Compile Include="ViewModel\PartViewModel.cs" />
+    <Compile Include="View\ConfigurationView.xaml.cs">
       <DependentUpon>ConfigurationView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Configuration\ConfigurationViewModel.cs" />
-    <Compile Include="Configuration\NewScoreCreatorView.xaml.cs">
+    <Compile Include="ViewModel\ConfigurationViewModel.cs" />
+    <Compile Include="View\MeasureView.xaml.cs">
+      <DependentUpon>MeasureView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\NewScoreCreatorView.xaml.cs">
       <DependentUpon>NewScoreCreatorView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Configuration\NewScoreCreatorViewModel.cs" />
-    <Compile Include="Configuration\PageSettingsView.xaml.cs">
+    <Compile Include="ViewModel\NewScoreCreatorViewModel.cs" />
+    <Compile Include="View\PageSettingsView.xaml.cs">
       <DependentUpon>PageSettingsView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Configuration\PageSettingsViewModel.cs" />
+    <Compile Include="ViewModel\PageSettingsViewModel.cs" />
     <Compile Include="Converters\BoolInverterConverter.cs" />
     <Compile Include="Converters\EnumMatchToBooleanConverter.cs" />
     <Compile Include="Converters\StarWidthConverter.cs" />
@@ -90,10 +116,9 @@
     <Compile Include="Helpers\CustomCanvas.cs" />
     <Compile Include="Helpers\CustomPartSystem.cs" />
     <Compile Include="Helpers\DrawableMeasure.cs" />
-    <Compile Include="Helpers\CustomWrapPanel.cs" />
+    <Compile Include="Helpers\CustomSystemWrapPanel.cs" />
     <Compile Include="Helpers\DrawingHelpers.cs" />
     <Compile Include="Helpers\DrawingVisualPlus.cs" />
-    <Compile Include="Helpers\Mediator.cs" />
     <Compile Include="Helpers\ModelWrapper.cs" />
     <Compile Include="Helpers\OrientedSize.cs" />
     <Compile Include="Helpers\PreviewCanvas.cs" />
@@ -110,94 +135,103 @@
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="MainWindowViewModel.cs" />
-    <Compile Include="MusicXMLModel\Credit\Credit.cs" />
-    <Compile Include="MusicXMLModel\Defaults\Defaults.cs" />
-    <Compile Include="MusicXMLModel\Helpers\Generators.cs" />
-    <Compile Include="MusicXMLModel\Identification\Identification.cs" />
-    <Compile Include="MusicXMLModel\Misc\DrawingHelpers.cs" />
-    <Compile Include="MusicXMLModel\Misc\IAutoPosition.cs" />
-    <Compile Include="MusicXMLModel\Misc\IDrawableMusicalObject.cs" />
-    <Compile Include="MusicXMLModel\Misc\LineBreak.cs" />
-    <Compile Include="MusicXMLModel\Misc\LoadFile.cs" />
-    <Compile Include="MusicXMLModel\Misc\MeasureSystem.cs" />
-    <Compile Include="MusicXMLModel\Misc\RandomGenerator.cs" />
-    <Compile Include="MusicXMLModel\Misc\ScoreSystem.cs" />
-    <Compile Include="MusicXMLModel\Misc\ScorePage.cs" />
-    <Compile Include="MusicXMLModel\Misc\Segments.cs" />
-    <Compile Include="MusicXMLModel\ScoreParts\Part\Measures\Attributes.cs" />
-    <Compile Include="MusicXMLModel\ScoreParts\Part\Measures\Barline.cs" />
-    <Compile Include="MusicXMLModel\Defaults\SystemLayout.cs" />
-    <Compile Include="MusicXMLModel\Misc\Calc.cs" />
-    <Compile Include="MusicXMLModel\Misc\CanvasL.cs" />
-    <Compile Include="MusicXMLModel\ScoreParts\Part\Measures\ClefType.cs" />
-    <Compile Include="MusicXMLModel\Defaults\Appearance.cs" />
-    <Compile Include="MusicXMLModel\Defaults\Scale.cs" />
-    <Compile Include="MusicXMLModel\ScoreParts\Part\Measures\Directions.cs" />
-    <Compile Include="MusicXMLModel\Misc\IDrawable.cs" />
-    <Compile Include="MusicXMLModel\Misc\IXMLExtract.cs" />
-    <Compile Include="MusicXMLModel\ScoreParts\Part\Measures\Key.cs" />
-    <Compile Include="MusicXMLModel\Misc\LoadCharsToViewPort.cs" />
-    <Compile Include="MusicXMLModel\Misc\LoadDocToClasses.cs" />
-    <Compile Include="MusicXMLModel\Misc\MusicalChars.cs" />
-    <Compile Include="MusicXMLModel\MusicScore.cs" />
-    <Compile Include="MusicXMLModel\ScoreParts\Part\Measures\Measure.cs" />
-    <Compile Include="MusicXMLModel\ScoreParts\Part\Measures\SegmentType.cs" />
-    <Compile Include="MusicXMLModel\ScoreParts\Part\Part.cs" />
-    <Compile Include="MusicXMLModel\ScoreParts\ScorePart.cs" />
-    <Compile Include="MusicXMLModel\Defaults\Print.cs" />
-    <Compile Include="MusicXMLModel\Misc\NoUsage\Prototype.cs" />
-    <Compile Include="MusicXMLModel\ScoreParts\Part\Measures\Notes\Lyrics.cs" />
-    <Compile Include="MusicXMLModel\ScoreParts\Part\Measures\Notes\Rest.cs" />
-    <Compile Include="MusicXMLModel\ScoreParts\PartList.cs" />
-    <Compile Include="MusicXMLModel\ScoreParts\Part\Measures\SymbolDuration.cs" />
-    <Compile Include="MusicXMLModel\ScoreParts\Part\Measures\Notes\Articulations.cs" />
-    <Compile Include="MusicXMLModel\ScoreParts\Part\Measures\Clef.cs" />
-    <Compile Include="MusicXMLModel\ScoreParts\Part\Measures\Dynamics.cs" />
-    <Compile Include="MusicXMLModel\ScoreParts\Part\Measures\Measures.cs" />
-    <Compile Include="MusicXMLModel\Misc\Segment.cs" />
-    <Compile Include="MusicXMLModel\ScoreParts\Part\Measures\Notes\Notations.cs" />
-    <Compile Include="MusicXMLModel\ScoreParts\Part\Measures\Notes\Note.cs" />
-    <Compile Include="MusicXMLModel\Defaults\Page.cs" />
-    <Compile Include="MusicXMLModel\ScoreParts\Part\Measures\Notes\Pitch.cs" />
-    <Compile Include="MusicXMLModel\Misc\Logger.cs" />
-    <Compile Include="MusicXMLModel\ScoreParts\Part\Measures\TimeSignature.cs" />
-    <Compile Include="MusicXMLModel\Misc\XmlRead.cs" />
-    <Compile Include="MusicXMLModel\Misc\TypeFaces.cs" />
-    <Compile Include="MusicXMLModel\Misc\NoUsage\Window1.xaml.cs">
+    <Compile Include="ViewModel\MainWindowViewModel.cs" />
+    <Compile Include="Model\Credit\Credit.cs" />
+    <Compile Include="Model\Defaults\Defaults.cs" />
+    <Compile Include="Model\Helpers\Generators.cs" />
+    <Compile Include="Model\Identification\Identification.cs" />
+    <Compile Include="Model\Misc\DrawingHelpers.cs" />
+    <Compile Include="Model\Misc\IAutoPosition.cs" />
+    <Compile Include="Model\Misc\IDrawableMusicalObject.cs" />
+    <Compile Include="Model\Misc\LineBreak.cs" />
+    <Compile Include="Model\Misc\LoadFile.cs" />
+    <Compile Include="Model\Misc\RandomGenerator.cs" />
+    <Compile Include="Model\Misc\ScoreSystem.cs" />
+    <Compile Include="Model\Misc\Segments.cs" />
+    <Compile Include="Model\ScoreParts\MeasureContent\Attributes.cs" />
+    <Compile Include="Model\ScoreParts\MeasureContent\Barline.cs" />
+    <Compile Include="Model\Defaults\SystemLayout.cs" />
+    <Compile Include="Model\Misc\Calc.cs" />
+    <Compile Include="Model\Misc\CanvasL.cs" />
+    <Compile Include="Model\ScoreParts\MeasureContent\ClefType.cs" />
+    <Compile Include="Model\Defaults\Appearance.cs" />
+    <Compile Include="Model\Defaults\Scale.cs" />
+    <Compile Include="Model\ScoreParts\MeasureContent\Directions.cs" />
+    <Compile Include="Model\Misc\IDrawable.cs" />
+    <Compile Include="Model\Misc\IXMLExtract.cs" />
+    <Compile Include="Model\ScoreParts\MeasureContent\Key.cs" />
+    <Compile Include="Model\Misc\LoadCharsToViewPort.cs" />
+    <Compile Include="Model\Misc\LoadDocToClasses.cs" />
+    <Compile Include="Model\Misc\MusicalChars.cs" />
+    <Compile Include="Model\MusicScore.cs" />
+    <Compile Include="Model\ScoreParts\MeasureContent\Measure.cs" />
+    <Compile Include="Model\ScoreParts\MeasureContent\SegmentType.cs" />
+    <Compile Include="Model\ScoreParts\Part.cs" />
+    <Compile Include="Model\ScoreParts\ScorePart.cs" />
+    <Compile Include="Model\Defaults\Print.cs" />
+    <Compile Include="Model\Misc\NoUsage\Prototype.cs" />
+    <Compile Include="Model\ScoreParts\MeasureContent\Notes\Lyrics.cs" />
+    <Compile Include="Model\ScoreParts\MeasureContent\Notes\Rest.cs" />
+    <Compile Include="Model\ScoreParts\PartList.cs" />
+    <Compile Include="Model\ScoreParts\MeasureContent\SymbolDuration.cs" />
+    <Compile Include="Model\ScoreParts\MeasureContent\Notes\Articulations.cs" />
+    <Compile Include="Model\ScoreParts\MeasureContent\Clef.cs" />
+    <Compile Include="Model\ScoreParts\MeasureContent\Dynamics.cs" />
+    <Compile Include="Model\ScoreParts\MeasureContent\Measures.cs" />
+    <Compile Include="Model\Misc\Segment.cs" />
+    <Compile Include="Model\ScoreParts\MeasureContent\Notes\Notations.cs" />
+    <Compile Include="Model\ScoreParts\MeasureContent\Notes\Note.cs" />
+    <Compile Include="Model\Defaults\Page.cs" />
+    <Compile Include="Model\ScoreParts\MeasureContent\Notes\Pitch.cs" />
+    <Compile Include="Model\Misc\Logger.cs" />
+    <Compile Include="Model\ScoreParts\MeasureContent\TimeSignature.cs" />
+    <Compile Include="Model\Misc\XmlRead.cs" />
+    <Compile Include="Model\Misc\TypeFaces.cs" />
+    <Compile Include="Model\Misc\NoUsage\Window1.xaml.cs">
       <DependentUpon>Window1.xaml</DependentUpon>
     </Compile>
-    <Compile Include="MusicXMLModel\Work\Work.cs" />
-    <Compile Include="Page\CreditsView.xaml.cs">
+    <Compile Include="Model\Work\Work.cs" />
+    <Compile Include="View\CreditsView.xaml.cs">
       <DependentUpon>CreditsView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Page\CreditsViewModel.cs" />
-    <Compile Include="Page\CustomSystemView.xaml.cs">
+    <Compile Include="ViewModel\CreditsViewModel.cs" />
+    <Compile Include="View\CustomSystemView.xaml.cs">
       <DependentUpon>CustomSystemView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Page\CustomSystemViewModel.cs" />
-    <Compile Include="Page\PagesControllerView.xaml.cs">
+    <Compile Include="ViewModel\CustomSystemViewModel.cs" />
+    <Compile Include="View\PagesControllerView.xaml.cs">
       <DependentUpon>PagesControllerView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Page\PagesControllerViewModel.cs" />
-    <Compile Include="Page\PageView.xaml.cs">
+    <Compile Include="ViewModel\PagesControllerViewModel.cs" />
+    <Compile Include="View\PageView.xaml.cs">
       <DependentUpon>PageView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Page\PageViewModel.cs" />
-    <Compile Include="RelayCommand.cs" />
+    <Compile Include="ViewModel\PageViewModel.cs" />
+    <Compile Include="Helpers\RelayCommand.cs" />
     <ApplicationDefinition Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="Configuration\ConfigurationView.xaml">
+    <Compile Include="ViewModel\ViewModelLocator.cs" />
+    <Compile Include="View\PartsSegmentView.xaml.cs">
+      <DependentUpon>PartsSegmentView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\PartView.xaml.cs">
+      <DependentUpon>PartView.xaml</DependentUpon>
+    </Compile>
+    <Page Include="View\ConfigurationView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Configuration\NewScoreCreatorView.xaml">
+    <Page Include="View\MeasureView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\NewScoreCreatorView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Configuration\PageSettingsView.xaml">
+    <Page Include="View\PageSettingsView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -206,36 +240,36 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="MainWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="MusicXMLModel\MainWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Compile Include="MusicXMLModel\MainWindow.xaml.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Page Include="MusicXMLModel\Misc\NoUsage\Window1.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Page\CreditsView.xaml">
+    <Page Include="Model\Misc\NoUsage\Window1.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Page\CustomSystemView.xaml">
+    <Page Include="View\CreditsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Page\PagesControllerView.xaml">
+    <Page Include="View\CustomSystemView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Page\PageView.xaml">
+    <Page Include="View\PagesControllerView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\PageView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\PartsSegmentView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\PartView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
@@ -256,14 +290,17 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <Resource Include="MusicXMLModel\Fonts\BravuraText.ttf">
+    <Resource Include="Model\Fonts\BravuraText.ttf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="MusicXMLModel\Fonts\FreeSerif.ttf">
+    <Resource Include="Model\Fonts\FreeSerif.ttf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <None Include="App.config" />
-    <Resource Include="Fonts\BravuraText.ttf" />
+    <Resource Include="Fonts\BravuraText.ttf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -271,15 +308,12 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="MusicXMLModel\App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="MusicXMLModel\TestXMLFiles\Sample.xml">
+    <Resource Include="Model\TestXMLFiles\Sample.xml">
       <SubType>Designer</SubType>
     </Resource>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="MusicXMLModel\TestXMLFiles\Echigo-Jishi.xml">
+    <Resource Include="Model\TestXMLFiles\Echigo-Jishi.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Resource>
@@ -297,10 +331,11 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="MusicXMLModel\TestXMLFiles\Saltarello.xml">
+    <Resource Include="Model\TestXMLFiles\Saltarello.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

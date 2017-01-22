@@ -1,5 +1,5 @@
 ﻿using MusicXMLViewerWPF;
-using MusicXMLViewerWPF.ScoreParts.Part.Measures;
+using MusicXMLViewerWPF.ScoreParts.MeasureContent;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -22,7 +22,7 @@ namespace MusicXMLScore.Helpers
         private CanvasList below_Staffline = new CanvasList();
         private ObservableCollection<CanvasList> lyricslist = new ObservableCollection<CanvasList>();
         private CanvasList staffline = new CanvasList();
-        private CustomWrapPanel measure_content = new CustomWrapPanel() { Orientation = Orientation.Horizontal };
+        private CustomSystemWrapPanel measure_content = new CustomSystemWrapPanel() { Orientation = Orientation.Horizontal };
         private double measurestaffYmulti = 0; // 0.18;
         private double directionsabovemulti = 0.05;
         private double directionsbelowmulti = 0.7;
@@ -86,7 +86,7 @@ namespace MusicXMLScore.Helpers
         <voice>1</voice>
       </note></measure>";
 
-        private void AddNotes(Panel sp) //TODO_I rework
+        private void AddNotes(Panel sp) //TODO_I refactoring
         {
             if (m.Attributes != null)
             {
@@ -125,7 +125,7 @@ namespace MusicXMLScore.Helpers
         private void AddMeasure(string s)
         {
             XElement xel = XElement.Parse(s);
-            m = new MusicXMLViewerWPF.ScoreParts.Part.Measures.Measure(xel);
+            m = new Measure(xel);
             this.Width = m.Width;
             this.Height = 60;
         }

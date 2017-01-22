@@ -13,22 +13,17 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace MusicXMLScore
+namespace MusicXMLScore.View
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for PartsSegmentView.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class PartsSegmentView : UserControl
     {
-        public MainWindow()
+        public PartsSegmentView()
         {
             InitializeComponent();
-        }
-        protected override void OnClosed(EventArgs e)
-        {
-            base.OnClosed(e);
-
-            Application.Current.Shutdown();
+            this.DataContext = new ViewModel.PartsSegmentViewModel();
         }
     }
 }

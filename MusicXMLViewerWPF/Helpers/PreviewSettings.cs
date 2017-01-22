@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using MusicXMLViewerWPF;
 using System.Windows.Controls;
 using System.Windows;
-using MusicXMLViewerWPF.ScoreParts.Part.Measures;
+using MusicXMLViewerWPF.ScoreParts.MeasureContent;
 
 namespace MusicXMLScore.Helpers
 {

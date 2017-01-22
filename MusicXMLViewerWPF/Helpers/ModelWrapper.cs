@@ -1,5 +1,5 @@
-﻿using MusicXMLViewerWPF.ScoreParts.Part;
-using MusicXMLViewerWPF.ScoreParts.Part.Measures;
+﻿using MusicXMLViewerWPF.ScoreParts;
+using MusicXMLViewerWPF.ScoreParts.MeasureContent;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -70,7 +70,7 @@ namespace MusicXMLScore.Helpers
 
         static double GetMaxSystemWidth(CustomPartSystem cps)
         {
-            return 0.0; //TODO_I
+            return 0.0; //TODO_I refactoring Wip
         }
     }
 }
