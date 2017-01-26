@@ -18,7 +18,7 @@ using GalaSoft.MvvmLight;
 
 namespace MusicXMLScore.ViewModel
 {
-    public class MainWindowViewModel : ViewModelBase
+    public class MainWindowViewModel : ViewModelBase //TODO_I closing all tabitems cause binding break
     {
         public MainWindowViewModel()
         {
@@ -42,6 +42,10 @@ namespace MusicXMLScore.ViewModel
             {
                 CloseFileCommand.RiseCanExecuteChanged();
             }
+            if (e.PropertyName == "SelectedTabItem")
+            {
+                XmlFileLoaded = true;
+            }
         }
         #endregion
 
@@ -58,6 +62,7 @@ namespace MusicXMLScore.ViewModel
             TabItem tab = new TabItem() { Header = header, Content = new PagesControllerView(), DataContext = new PagesControllerViewModel() };
             TabsCreated.Add(tab);
             SelectedTabItem = tab;
+            //XmlFileLoaded = true;
         }
 
         private void OnOpenOptionWindow()
@@ -171,7 +176,7 @@ namespace MusicXMLScore.ViewModel
         #endregion
 
         #region Fields
-        private double w = 1500;
+        private double w = 2000;
         private double h = 1900;
         private bool xmlfileloaded;
         private ObservableCollection<PageView> pages = new ObservableCollection<PageView>();

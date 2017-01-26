@@ -7,15 +7,15 @@
              xmlns:helpers="clr-namespace:MusicXMLScore.Helpers"
              xmlns:credit ="clr-namespace:MusicXMLViewerWPF.Credit"
              xmlns:Configuration="clr-namespace:MusicXMLScore.ViewModel" xmlns:Log="clr-namespace:MusicXMLScore.Log" x:Class="MusicXMLScore.ViewModel.PageView"
-             mc:Ignorable="d" Height="750" Width="800" x:Name="uc">
+             mc:Ignorable="d" Height="Auto" Width="Auto" x:Name="uc">
 
     <Grid Margin="5" x:Name="gridmain" Width="Auto" Height="Auto">
         <Border BorderBrush="Black" BorderThickness="0.5">
             <Grid >
                 <Grid.RowDefinitions>
                     <RowDefinition Height="20"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="3*"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                     <RowDefinition Height=".5*"/>
                     <RowDefinition Height=".5*"/>
                     <RowDefinition Height="*"/>
@@ -28,16 +28,16 @@
                     <Slider DockPanel.Dock="Left" Value="{Binding Width, ElementName=uc}" Maximum="2000" Minimum="300" Width="350"></Slider>
                     <RadioButton DockPanel.Dock="Right" FlowDirection="RightToLeft" GroupName="a" Width="50" Height="25" Content="Rbtn"></RadioButton>
                 </DockPanel>
-                <local:CreditsView Grid.Row="1" VerticalAlignment="Top" Width="auto" Height="Auto"/>
+                <local:CreditsView Grid.Row="1" Width="auto" Height="Auto" Margin="0,0,0,0"/>
                 <TextBox Grid.Row="6" Name="RightsTextBox" Text="Copyrights" TextAlignment="Center" FontSize="16" Margin="0,0,0,20" VerticalAlignment="Bottom" Background="Transparent" BorderThickness="0"/>
-                <helpers:CustomSystemWrapPanel x:Name="cwppanel" Orientation="Horizontal" Grid.Row="5" Height="300">
+                <!--<helpers:CustomSystemWrapPanel x:Name="cwppanel" Orientation="Horizontal" Grid.Row="5" Height="300">
                     <helpers:PreviewSettings />
-                    <StackPanel Orientation="Horizontal">
+                    --><!--<helpers:CustomPartsSegmentPanel Height="30">
                         <helpers:PreviewSettings />
                         <helpers:PreviewSettings />
                         <helpers:PreviewSettings />
                         
-                    </StackPanel>
+                    </helpers:CustomPartsSegmentPanel>--><!--
                     <Canvas Width="auto">
                         <StackPanel Orientation="Horizontal" Width="Auto" Height="AUto">
                             <helpers:PreviewSettings />
@@ -45,20 +45,21 @@
                             <helpers:PreviewSettings />
                         </StackPanel>
                     </Canvas>
-                    <!--<helpers:DrawableMeasure  IsHitTestVisible="True" MouseLeftButtonDown="StaffLineCanvas_MouseLeftButtonDown"/>
+                    --><!--<helpers:DrawableMeasure  IsHitTestVisible="True" MouseLeftButtonDown="StaffLineCanvas_MouseLeftButtonDown"/>
                     <helpers:DrawableMeasure  IsHitTestVisible="True" MouseLeftButtonDown="StaffLineCanvas_MouseLeftButtonDown" />
                     <helpers:DrawableMeasure  IsHitTestVisible="True" MouseLeftButtonDown="StaffLineCanvas_MouseLeftButtonDown" />
-                    <helpers:DrawableMeasure  IsHitTestVisible="True" MouseLeftButtonDown="StaffLineCanvas_MouseLeftButtonDown" />-->
-                </helpers:CustomSystemWrapPanel>
-                
+                    <helpers:DrawableMeasure  IsHitTestVisible="True" MouseLeftButtonDown="StaffLineCanvas_MouseLeftButtonDown" />--><!--
+                </helpers:CustomSystemWrapPanel>-->
+
                 <!--<helpers:CustomPartSystem Grid.Row="2" Margin="20"/>-->
-                <ItemsControl Grid.Row="2" ItemsSource="{Binding PartsSegments}">
+                <ItemsControl x:Name="PartsSegments" Grid.Row="2" ItemsSource="{Binding PartsSegments}" >
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <StackPanel Orientation="Vertical"></StackPanel>
+                            <helpers:CustomPartsSegmentPanel Height="Auto" />
+                            <!--<StackPanel Orientation="Vertical"></StackPanel>-->
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
-                </ItemsControl> 
+                </ItemsControl>
             </Grid>
         </Border>
     </Grid>

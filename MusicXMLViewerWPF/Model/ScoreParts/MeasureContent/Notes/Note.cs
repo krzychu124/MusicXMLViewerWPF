@@ -89,7 +89,7 @@ namespace MusicXMLViewerWPF
 
         #region IDrawableMusicalObject
         public virtual CanvasList DrawableMusicalObject { get { return drawablemusicalobject; }  set { drawablemusicalobject = value; } }
-        public DrawableMusicalObjectStatus DrawableObjectStatus { get { return drawableobjectstatus; } private set { if (drawableobjectstatus != value) drawableobjectstatus = value; NotePropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(DrawableObjectStatus))); } }
+        public virtual DrawableMusicalObjectStatus DrawableObjectStatus { get { return drawableobjectstatus; } set { if (drawableobjectstatus != value) drawableobjectstatus = value; NotePropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(DrawableObjectStatus))); } }
         public bool Loaded { get { return loadstatus; } private set { if (loadstatus != value) loadstatus = value; NotePropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(Loaded))); } }
         #endregion
 

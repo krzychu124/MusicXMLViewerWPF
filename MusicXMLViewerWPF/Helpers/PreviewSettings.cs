@@ -17,9 +17,9 @@ namespace MusicXMLScore.Helpers
         {
             Measure m = new Measure(100);
             m.AddClef(new ClefType(ClefType.Clef.GClef));
-            Canvas c = new Canvas();
             AddVisual(m.Attributes.Clef.DrawableMusicalObject);
             this.Width = 30;
+            this.SetValue(CustomMeasurePanel.StaticPositionProperty, true);
         }
     }
 }

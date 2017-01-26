@@ -36,7 +36,7 @@ namespace MusicXMLViewerWPF
         public int CharId { get { return id; } }
         public event PropertyChangedEventHandler RestPropertyChanged = delegate { };
         public override MusicXMLScore.Helpers.CanvasList DrawableMusicalObject { get { return drawablemusicalobject; } set { if (value != null) drawablemusicalobject = value; } }
-        public new DrawableMusicalObjectStatus DrawableObjectStatus { get { return dobjectstatus; } private set { if (dobjectstatus != value) dobjectstatus = value; RestPropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(DrawableObjectStatus))); } } 
+        public override DrawableMusicalObjectStatus DrawableObjectStatus { get { return dobjectstatus; } set { if (dobjectstatus != value) dobjectstatus = value; RestPropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(DrawableObjectStatus))); } } 
         public new bool Loaded { get { return loadstatus; } private set { loadstatus = value; RestPropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Loaded))); } }
         public Rest(XElement x)
         {

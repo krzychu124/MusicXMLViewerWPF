@@ -4,15 +4,19 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:MusicXMLScore.View"
+             xmlns:helpers="clr-namespace:MusicXMLScore.Helpers"
              mc:Ignorable="d" 
              d:DesignHeight="128.39" d:DesignWidth="300">
     <Grid>
-        <ItemsControl ItemsSource="{Binding PartsCollection}">
-            <ItemsControl.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <StackPanel Orientation="Vertical"></StackPanel>
-                </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-        </ItemsControl>
+        <Border BorderBrush="Red" BorderThickness="0.5" >
+            <ItemsControl x:Name="Parts" ItemsSource="{Binding PartsCollection}" Margin="5">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <helpers:CustomPartsSegmentPanel />
+                        <!--<StackPanel Orientation="Vertical"></StackPanel>-->
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+            </ItemsControl>
+        </Border>
     </Grid>
 </UserControl>

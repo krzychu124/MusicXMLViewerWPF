@@ -79,7 +79,11 @@ namespace MusicXMLViewerWPF.ScoreParts.MeasureContent
 
         public Measure(double width)
         {
+            ID = Misc.RandomGenerator.GetRandomHexNumber();
+            PropertyChanged += Measure_PropertyChanged;
             this.Width = (float)width;
+            AddRest("whole", MusSymbolDuration.Whole);
+            Loaded = true;
         }
 
         public Measure(XElement x)

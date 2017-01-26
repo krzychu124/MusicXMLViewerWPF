@@ -5,9 +5,9 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:MusicXMLScore.View"
              mc:Ignorable="d" 
-             d:DesignHeight="115.678" d:DesignWidth="463.348">
+             d:DesignHeight="200.678" d:DesignWidth="563.348">
     <Grid>
-        <ItemsControl ItemsSource="{Binding MeasuresCollection}">
+        <ItemsControl x:Name="Measures" ItemsSource="{Binding MeasuresCollection}" >
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
                     <StackPanel Orientation="Horizontal"></StackPanel> <!-- prototype testing only, -->

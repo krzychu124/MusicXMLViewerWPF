@@ -37,7 +37,7 @@ namespace MusicXMLScore.Helpers
                 DrawingVisual mv = new DrawingVisual();
                 using (DrawingContext dc = mv.RenderOpen())
                 {
-                    m.Draw_Measure(dc, new Point(0, r.Next(10, 30)), DrawingHelpers.PickBrush());
+                    m.Draw_Measure(dc, new Point(0, 0)/*r.Next(10, 30))*/, DrawingHelpers.PickBrush());
                 }
                 AddVisual(mv);
                 
