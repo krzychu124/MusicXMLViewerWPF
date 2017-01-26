@@ -10,7 +10,7 @@
         x:Class="MusicXMLScore.MainWindow"
         mc:Ignorable="d"
         DataContext="{Binding Main, Source={StaticResource Locator}}"
-        Title="MainWindow" Height="768" Width="1024">
+        Title="MainWindow" Height="768" Width="1440">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="20"/>
@@ -79,9 +79,9 @@
             </Menu>
         </DockPanel>
         
-        <Slider Grid.Row="1" Maximum="1900" Minimum="200" Value="{Binding PageWidthL}"/>
+        <Slider Grid.Row="1" Maximum="1900" Minimum="200" Value="{Binding Width, ElementName=tabcontrol}"/>
         
-        <TabControl  Margin="10" Grid.Row="2" ItemsSource="{Binding TabsCreated}" SelectedItem="{Binding SelectedTabItem}">
+        <TabControl x:Name="tabcontrol" Margin="10" Grid.Row="2" ItemsSource="{Binding TabsCreated}" SelectedItem="{Binding SelectedTabItem}">
         </TabControl>
         
         <ScrollViewer Grid.Row="3" CanContentScroll="True" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">

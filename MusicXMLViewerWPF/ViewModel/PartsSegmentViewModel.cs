@@ -24,6 +24,12 @@ namespace MusicXMLScore.ViewModel
         private void AddPartToCollection()
         {
             PartsCollection.Add(new View.PartView());
+            View.PartView pw = new View.PartView();
+            pw.SetValue(Helpers.CustomPartsSegmentPanel.TopMarginProperty, 60.0);
+            PartsCollection.Add(pw);
+            PartsCollection.Add(new View.PartView());
+            View.PartView pw2 = new View.PartView();
+            PartsCollection.Add(pw2);
         }
     }
 }

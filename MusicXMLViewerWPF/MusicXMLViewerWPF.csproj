@@ -90,6 +90,9 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\ComparisonHelpers.cs" />
+    <Compile Include="Helpers\CustomMeasurePanel.cs" />
+    <Compile Include="Helpers\CustomPartsSegmentPanel.cs" />
     <Compile Include="ViewModel\MeasureViewModel.cs" />
     <Compile Include="ViewModel\PartsSegmentViewModel.cs" />
     <Compile Include="ViewModel\PartViewModel.cs" />

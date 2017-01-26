@@ -11,7 +11,7 @@
             <Grid>
                 <ContentPresenter Margin="5"  Content="{Binding Content}"/>
                 <TextBlock Text="{Binding Title}"/>
-                <ItemsControl Margin="0,40,0,0" ItemsSource="{Binding PagesCollection}">
+                <ItemsControl x:Name="PagesCollection" Margin="0,40,0,0" ItemsSource="{Binding PagesCollection}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <StackPanel Orientation="Vertical"></StackPanel>

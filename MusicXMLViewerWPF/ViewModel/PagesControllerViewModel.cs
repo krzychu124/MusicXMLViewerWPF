@@ -58,6 +58,10 @@ namespace MusicXMLScore.ViewModel
             //TODO generate simple music score using template(eg. one instr. 10-15 measures)
             PagesCollection = new ObservableCollection<UIElement>();
             AddPageToCollection();
+            AddPageToCollection();
+            AddPageToCollection();
+            AddPageToCollection();
+            AddPageToCollection();
         }
 
         private void PagesControllerViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)

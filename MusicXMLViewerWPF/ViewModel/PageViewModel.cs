@@ -40,11 +40,16 @@ namespace MusicXMLScore.ViewModel
             //TOdo collection of PartSegmentViews to represent as Page
             //! here default page which contains one ParSegmentView for simple test
             AddPartSegment();
+            AddPartSegment();
+            AddPartSegment();
+            AddPartSegment();
         }
 
         private void AddPartSegment()
         {
-            PartsSegments.Add(new View.PartsSegmentView());
+            View.PartsSegmentView psv = new View.PartsSegmentView();
+            psv.SetValue(Helpers.CustomPartsSegmentPanel.TopMarginProperty, 20.0);
+            PartsSegments.Add(psv);
         }
 
         #endregion

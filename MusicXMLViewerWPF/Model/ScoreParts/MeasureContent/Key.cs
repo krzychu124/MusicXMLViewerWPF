@@ -209,6 +209,7 @@ namespace MusicXMLViewerWPF
                 DrawingVisual key = new DrawingVisual();
                 Draw(key);
                 DrawableMusicalObject.AddVisual(key);
+                DrawableMusicalObject.SetValue(CustomMeasurePanel.StaticPositionProperty, true);
                 DrawableObjectStatus = DrawableMusicalObjectStatus.ready;
             }
         }
