@@ -41,8 +41,6 @@ namespace MusicXMLScore.ViewModel
             //! here default page which contains one ParSegmentView for simple test
             AddPartSegment();
             AddPartSegment();
-            AddPartSegment();
-            AddPartSegment();
         }
 
         private void AddPartSegment()

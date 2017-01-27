@@ -43,7 +43,6 @@ namespace MusicXMLViewerWPF
             {
                 XDocument inventoryDoc
                 = XDocument.Load(file_path);
-
                 return inventoryDoc;
             }
             catch (System.IO.FileNotFoundException ex)

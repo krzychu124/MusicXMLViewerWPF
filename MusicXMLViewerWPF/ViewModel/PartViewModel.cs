@@ -23,6 +23,10 @@ namespace MusicXMLScore.ViewModel
             AddTestMeasures();
         }
 
+        public PartViewModel(MusicXMLViewerWPF.Part part)
+        {
+
+        }
         public ObservableCollection<UIElement> MeasuresCollection { get { return measuresCollection; } set { measuresCollection = value; } }
 
         private void AddTestMeasures()
