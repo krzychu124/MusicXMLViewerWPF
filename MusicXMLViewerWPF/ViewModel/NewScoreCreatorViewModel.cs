@@ -153,7 +153,7 @@ namespace MusicXMLScore.ViewModel
             }
         }
 
-        private void UpdatePreview()
+        private void UpdatePreview() //todo refactor
         {
             ConfigurationPreview.ClearVisuals();
             float scale = defaults.Scale.Tenths;
@@ -167,7 +167,7 @@ namespace MusicXMLScore.ViewModel
             DrawingVisual b_d = new DrawingVisual();
             DrawingVisual r_d = new DrawingVisual();
             DrawingVisual m = new DrawingVisual();
-            Measure meae = new Measure() { Width = 4.5f * scale};
+            Measure meae = new Measure(4.5f * scale); //! { Width = 4.5f * scale};
             using(DrawingContext dc= m.RenderOpen())
             {
                 meae.Draw_Measure(dc, measure);
@@ -257,7 +257,7 @@ namespace MusicXMLScore.ViewModel
             }
         }
 
-        private void OnCanvasClick()
+        private void OnCanvasClick() //! test
         {
             Log.LoggIt.Log("test");
             Log.LoggIt.Log("error1", Log.LogType.Warning);

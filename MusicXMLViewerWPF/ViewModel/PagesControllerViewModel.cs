@@ -13,7 +13,7 @@ namespace MusicXMLScore.ViewModel
 
     /// <summary>
     /// Controlls loaded content and divide it into parts("Pages") if it won't fit inside one "Page"
-    /// Highly depending with choosen View style eg. Normal, OneLine, Paginated, OneInstrument etc.
+    /// Highly dependent to choosen View-style eg. Normal, OneLine, Paginated, OneInstrument etc.
     /// </summary>
     /// PagesController --- Page.1 --:
     ///                              | PartsSegment.1 (Group of Parts) 

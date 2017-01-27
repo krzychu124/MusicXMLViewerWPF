@@ -141,7 +141,6 @@
     <Compile Include="ViewModel\MainWindowViewModel.cs" />
     <Compile Include="Model\Credit\Credit.cs" />
     <Compile Include="Model\Defaults\Defaults.cs" />
-    <Compile Include="Model\Helpers\Generators.cs" />
     <Compile Include="Model\Identification\Identification.cs" />
     <Compile Include="Model\Misc\DrawingHelpers.cs" />
     <Compile Include="Model\Misc\IAutoPosition.cs" />
@@ -338,7 +337,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Model\Helpers\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

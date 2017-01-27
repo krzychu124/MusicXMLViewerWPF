@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:MusicXMLScore.ViewModel"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
-    <Grid>
+    <Grid Background="Silver">
         <ScrollViewer VerticalScrollBarVisibility="Auto">
             <Grid>
                 <ContentPresenter Margin="5"  Content="{Binding Content}"/>

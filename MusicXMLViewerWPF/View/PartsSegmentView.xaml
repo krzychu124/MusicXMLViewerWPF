@@ -8,15 +8,13 @@
              mc:Ignorable="d" 
              d:DesignHeight="128.39" d:DesignWidth="300">
     <Grid>
-        <Border BorderBrush="Red" BorderThickness="0.5" >
-            <ItemsControl x:Name="Parts" ItemsSource="{Binding PartsCollection}" Margin="5">
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <helpers:CustomPartsSegmentPanel />
-                        <!--<StackPanel Orientation="Vertical"></StackPanel>-->
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-            </ItemsControl>
-        </Border>
+        <ItemsControl x:Name="Parts" ItemsSource="{Binding PartsCollection}" Margin="5">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <helpers:CustomPartsSegmentPanel />
+                    <!--<StackPanel Orientation="Vertical"></StackPanel>-->
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+        </ItemsControl>
     </Grid>
 </UserControl>

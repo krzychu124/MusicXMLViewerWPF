@@ -9,8 +9,11 @@
              xmlns:Configuration="clr-namespace:MusicXMLScore.ViewModel" xmlns:Log="clr-namespace:MusicXMLScore.Log" x:Class="MusicXMLScore.ViewModel.PageView"
              mc:Ignorable="d" Height="Auto" Width="Auto" x:Name="uc">
 
-    <Grid Margin="5" x:Name="gridmain" Width="Auto" Height="Auto">
-        <Border BorderBrush="Black" BorderThickness="0.5">
+    <Grid Margin="5" x:Name="gridmain" Width="Auto" Height="Auto" Background="White">
+        <Grid.Effect>
+            <DropShadowEffect BlurRadius="10" ShadowDepth="5" Color="DarkGray"></DropShadowEffect>
+        </Grid.Effect>
+        <Border BorderBrush="Black" BorderThickness="1">
             <Grid >
                 <Grid.RowDefinitions>
                     <RowDefinition Height="20"/>
@@ -25,11 +28,11 @@
                     <Button DockPanel.Dock="Left" Content="test" Command="{Binding TestCommand}" HorizontalAlignment="Left" VerticalAlignment="Top"  Width="40" Height="20"/>
                     <CheckBox x:Name="clirs" DockPanel.Dock="Left"  Content="LIRS" Width="45" IsChecked="False"/>
                     <CheckBox x:Name="csiir" DockPanel.Dock="Left" Content="SIIR" Width="45" IsChecked="True"/>
-                    <Slider DockPanel.Dock="Left" Value="{Binding Width, ElementName=uc}" Maximum="2000" Minimum="300" Width="350"></Slider>
+                    <Slider DockPanel.Dock="Left" Value="{Binding Width, ElementName=uc}" Maximum="1800" Minimum="300" Width="350"></Slider>
                     <RadioButton DockPanel.Dock="Right" FlowDirection="RightToLeft" GroupName="a" Width="50" Height="25" Content="Rbtn"></RadioButton>
                 </DockPanel>
                 <local:CreditsView Grid.Row="1" Width="auto" Height="Auto" Margin="0,0,0,0"/>
-                <TextBox Grid.Row="6" Name="RightsTextBox" Text="Copyrights" TextAlignment="Center" FontSize="16" Margin="0,0,0,20" VerticalAlignment="Bottom" Background="Transparent" BorderThickness="0"/>
+                <TextBox Grid.Row="6" Name="RightsTextBox" Text="Copyrights goes here" TextAlignment="Center" FontSize="16" Margin="0,0,0,10" VerticalAlignment="Bottom" Background="Transparent" BorderThickness="0"/>
                 <!--<helpers:CustomSystemWrapPanel x:Name="cwppanel" Orientation="Horizontal" Grid.Row="5" Height="300">
                     <helpers:PreviewSettings />
                     --><!--<helpers:CustomPartsSegmentPanel Height="30">

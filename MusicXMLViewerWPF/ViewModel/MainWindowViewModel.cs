@@ -206,7 +206,6 @@ namespace MusicXMLScore.ViewModel
                 }
             }
         }
-
         public double PageWidth
         {
             get { return w; }
@@ -216,7 +215,7 @@ namespace MusicXMLScore.ViewModel
                     Set(() => PageWidth, ref w, value);
                 }
             }
-        }// w = value;  PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PageWidth))); } } }
+        }
         public double PageHeight
         {
             get { return h; }
@@ -227,8 +226,7 @@ namespace MusicXMLScore.ViewModel
                     Set(() => PageHeight, ref h, value);
                 }
             }
-        } //h = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PageHeight))); } } } 
-       // public double PageWidthL { get { if (Pages.Count != 0) { return Pages.ElementAt(0).Width; } else { return w; } } set { foreach (var p in Pages) { p.Width = value; } } }
+        }
         public bool XmlFileLoaded
         {
             get { return xmlfileloaded; }
@@ -251,7 +249,6 @@ namespace MusicXMLScore.ViewModel
                 }
             }
         }
-        //public event PropertyChangedEventHandler PropertyChanged;
         #endregion
     }
 }

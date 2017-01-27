@@ -1,4 +1,5 @@
-﻿using MusicXMLViewerWPF.ScoreParts;
+﻿using MusicXMLViewerWPF;
+using MusicXMLViewerWPF.ScoreParts;
 using MusicXMLViewerWPF.ScoreParts.MeasureContent;
 using System;
 using System.Collections.Generic;
