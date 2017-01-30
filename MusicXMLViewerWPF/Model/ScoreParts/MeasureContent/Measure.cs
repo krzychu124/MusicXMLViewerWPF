@@ -43,7 +43,9 @@ namespace MusicXMLViewerWPF.ScoreParts.MeasureContent
         private List<List<Notations>> nlist = new List<List<Notations>>();
         private Dictionary<int, List<Note>> notesbyvoice;
         private List<List<string>> sortedbeams;
-       // private Dictionary<int,>
+        private bool firstInPage;
+
+        // private Dictionary<int,>
         #endregion
 
         #region Properties
@@ -62,6 +64,7 @@ namespace MusicXMLViewerWPF.ScoreParts.MeasureContent
         public Point Position { get { return pos; } set { if (value != null) pos = value; } }
         public Print PrintProperties { get { return print_properties; } }
         public bool IsFirstInLine { get { return firstinrow; } set { firstinrow = value; }  }
+        public bool IsFirstOnNewPage { get { return firstInPage; } set { firstInPage = value; } }
         public new Point Relative { get { return base.Relative; } set { base.Relative = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Relative))); } }
         public XElement XElementSource { get { return xelementsource; } set { if (value != null) xelementsource = value; } }
         public Segment Segment { get { return segment; } set { if (value != null) segment = value; } }
@@ -462,6 +465,10 @@ namespace MusicXMLViewerWPF.ScoreParts.MeasureContent
                 if (print_properties.NewSystem)
                 {
                     IsFirstInLine = true;
+                }
+                if (print_properties.NewPage)
+                {
+                    IsFirstOnNewPage = true;
                 }
             }    
         }

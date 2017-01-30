@@ -31,6 +31,8 @@ namespace MusicXMLViewerWPF
         private static bool content_space_calculated = false;
         private static bool supports_new_system = false;
         private static bool supports_new_page = false;
+        private List<List<Part>> pagesList = new List<List<Part>>();
+        private List<List<Part>> llpages = new List<List<Part>>();
         #endregion
         #region properties with Notification
         public bool Loaded
@@ -83,6 +85,7 @@ namespace MusicXMLViewerWPF
         public List<Credit.Credit> CreditList { get { return credits; } set { if (value != null) { credits = value; } } }  //todo inpc
         public Work.Work Work { get { return work; } set { if (value != null) { work = value; } } } //todo inpc
         public XElement File { get { return file; } set { if (value != null) { file = value; } } } //todo inpc
+        public List<List<Part>> PagesList { get { return pagesList; } private set { pagesList = value; } }
         #endregion
 
         #region ctors.
@@ -212,182 +215,51 @@ namespace MusicXMLViewerWPF
             //{
             //    RecalculateMeasuresPosInParts();
             //}
-
+            GeneratePages();
         }
-        //private void RecalculateMeasuresPosInParts() //TODO_L improve part drawing// better but still no bugless
-        //{
-        //    float staffDistance = 80f;
-        //    float staveDistance = 80f;
-
-        //    int count = Parts.Count;
-        //    float clc_stave = 0f;
-        //    if (count != 1)
-        //    {
-        //        clc_stave = staveDistance + (staffDistance * count - 1);
-        //    }
-
-        //    for (int i = 0; i < Parts.Count; i++)
-        //    {
-
-        //        float tempY = 0;
-        //        int segmentCount = Parts.Values.ElementAt(i).MeasureSegmentList.Count;
-        //        int firstinline_count = 0;
-        //        for (int j = 0; j< segmentCount; j++)
-        //        {
-        //            Measure segment = Parts.Values.ElementAt(i).MeasureSegmentList.ElementAt(j);
-        //            if (j == 0)
-        //            {
-        //                tempY = staffDistance * (i) + staveDistance * (firstinline_count);
-        //                segment.Relative_y += tempY;
-        //                segment.Calculated_y += tempY;
-        //                firstinline_count++;
-        //                //tempY = clc_stave;
-        //            }
-        //            else
-        //            {
-        //                if (segment.IsFirstInLine)
-        //                {
-        //                    tempY = staffDistance * (i) + staveDistance * (firstinline_count);
-        //                    segment.Relative_y += tempY;
-        //                    segment.Calculated_y += tempY;
-        //                    firstinline_count++;
-        //                }
-        //                else
-        //                {
-        //                    segment.Relative_y += tempY;
-        //                    segment.Calculated_y += tempY;
-        //                }
-        //            }
-        //        }
-        //    }
+        private void GeneratePages()
+        {
+            if (SupportNewPage)
+            {
+                int pages = 1;
+                List<int> maxIndexOfPageList = new List<int>();
+                // look for new page attribute to calculate number of pages
+                for (var i = 0; i < Parts.ElementAt(0).Value.MeasureList.Count; i++)
+                {
+                    var measure = Parts.ElementAt(0).Value.MeasureList.ElementAt(i);
+                    if (measure.PrintProperties != null)
+                    {
+                        if (measure.PrintProperties.NewPage)
+                        {
+                            pages += 1;
+                            maxIndexOfPageList.Add(i);
+                        }
+                    }
+                }
+                /// fill last page with max index
+                if (maxIndexOfPageList.LastOrDefault() != Parts.ElementAt(0).Value.MeasureList.Count)
+                {
+                    maxIndexOfPageList.Add(Parts.ElementAt(0).Value.MeasureList.Count);
+                }
+                int index = 0;
+                foreach (var currentPageLastItemIndex in maxIndexOfPageList)
+                {
+                    List<Part> listOfParts = new List<Part>();
+                    foreach (var currentPart in Parts) // loop through part to get all measures in range <index, currentPageMaxIndex>
+                    {
+                        Part currentTempPart = new Part(currentPart.Key);
+                        for (var i = index; i < currentPageLastItemIndex; i++)
+                        {
+                            currentTempPart.AddMeasure(currentPart.Value.MeasureList.ElementAt(i));
+                        }
+                        List<Part> partWithID = new List<Part>();
+                        //partWithID.Add();
+                        listOfParts.Add(currentTempPart);
+                    }
+                    PagesList.Add(listOfParts);
+                    index = currentPageLastItemIndex; // set index to indexOflastItem to skip them in next pass ( if any items left)
+                }
+            }
+        }
     }
-
-    //public Dictionary<string, Part> GetParts()
-    //{
-    //    return parts;
-    //}
-
-    //public void Draw(CanvasL surface)
-    //{
-    //    //DrawingVisual credits = new DrawingVisual();
-    //    //DrawCredits(credits);
-    //    //surface.AddVisual(credits);
-    //    // DrawingVisual visual = new DrawingVisual();
-    //    Parts.ElementAt(0).Value.DrawMeasures(surface); //! test
-
-
-    //}
-
-    //public void DrawCredits(DrawingVisual visual)
-    //{
-    //    foreach (var item in credits)
-    //    {
-    //        DrawingVisual credit = new DrawingVisual();
-    //        item.Draw(credit);
-    //        visual.Children.Add(credit);
-    //    }
-    //}
-
-    //public static void Clear()
-    //{
-    //    Misc.ScoreSystem.Clear();
-    //    MusicScore clear = new MusicScore();
-    //    clear.Loaded = false;
-    //    clear.CreditsLoaded = false;
-    //    clear.ContentSpaceCalculated = false;
-    //    credits_loaded = false;
-    //    MusicXMLViewerWPF.Defaults.Appearance.Clear();
-    //}
-    ///// <summary>
-    ///// Fill neccesary properties to properly draw Title/Credits segment
-    ///// </summary>
-    //private void InitTitleSpaceSegment()
-    //{
-    //    float space_height = 0f;
-    //    foreach (var item in CreditList)
-    //    {
-    //        if (item.Type == Credit.CreditType.title)
-    //        {
-    //            space_height += item.Height;
-    //        }
-    //        if (item.Type == Credit.CreditType.subtitle)
-    //        {
-    //            space_height += item.Height;
-    //        }
-    //        if (item.Type == Credit.CreditType.arranger)
-    //        {
-    //            space_height += item.Height;
-    //        }
-    //    }
-    //    Credit.Credit.Titlesegment.Height = (float)Credit.Credit.Titlesegment.Relative.Y + space_height;
-    //    MusicScore n = new MusicScore() { CreditsLoaded = true };
-    //}
-
-    #region Visual Helpers for easier debugging
-    //public static void DrawPageRectangle(DrawingVisual visual)
-    //{
-    //    //Misc.DrawingHelpers.DrawRectangle(visual, new Point(0, 0), new Point(Defaults.Page.Width, Defaults.Page.Height));
-    //}
-
-    //public static void DrawMusicScoreMargins(DrawingVisual visual)
-    //{
-    //    //Point right_down_margin_corner = new Point(Defaults.Page.Width - Defaults.Page.Margins.Right, Defaults.Page.Height - Defaults.Page.Margins.Bottom);
-    //    //Misc.DrawingHelpers.DrawRectangle(visual, new Point(Defaults.Page.Margins.Left, Defaults.Page.Margins.Top), right_down_margin_corner, Brushes.Blue);
-    //}
-    //public static void DrawMusicScoreMeasuresContentSpace(DrawingVisual visual)
-    //{
-    //    //Misc.DrawingHelpers.DrawRectangle(visual, Defaults.Page.MeasuresContentSpace, Brushes.Red);
-    //}
-    //public static void DrawMusicScoreTitleSpace(DrawingVisual visual)
-    //{
-    //    //InitTitleSpaceSegment();
-    //    if (Credit.Credit.Titlesegment.Height != 0)
-    //    {
-    //        //? var items = from i in CreditList where i.Type == Credit.CreditType.title || i.Type == Credit.CreditType.subtitle || i.Type == Credit.CreditType.arranger || i.Type == Credit.CreditType.composer select i;
-    //        //if (items.Contains(Credit.CreditType.title))
-    //        //? var title_ = items.Where(z => z.Type == Credit.CreditType.title);
-
-    //        //foreach (var item in CreditList)
-    //        //{
-    //        //    if (item.Type == Credit.CreditType.title)
-    //        //    {
-    //        //        DrawingVisual title = new DrawingVisual();
-    //        //        item.Draw(title);
-    //        //        visual.Children.Add(title);
-    //        //        //? DrawingVisual rect = new DrawingVisual();
-    //        //        //? item.Draw(rect, Brushes.Cyan, dashtype: DashStyles.Dot);
-    //        //        //? visual.Children.Add(rect);
-    //        //    }
-    //        //    if (item.Type == Credit.CreditType.subtitle)
-    //        //    {
-    //        //        DrawingVisual subtitle = new DrawingVisual();
-    //        //        item.Draw(subtitle);
-    //        //        visual.Children.Add(subtitle);
-    //        //        //? DrawingVisual rect = new DrawingVisual();
-    //        //        //? item.Draw(rect, Brushes.Cyan, dashtype: DashStyles.Dot);
-    //        //        //? visual.Children.Add(rect);
-    //        //    }
-    //        //    if (item.Type == Credit.CreditType.arranger)
-    //        //    {
-    //        //        DrawingVisual arranger = new DrawingVisual();
-    //        //        item.Draw(arranger);
-    //        //        visual.Children.Add(arranger);
-    //        //        //? DrawingVisual rect = new DrawingVisual();
-    //        //        //? item.Draw(rect, Brushes.Cyan, dashtype: DashStyles.Dot);
-    //        //        //? visual.Children.Add(rect);
-    //        //    }
-
-    //        //}
-    //        //Point left_up = new Point(Defaults.Page.Margins.Left, Defaults.Page.Margins.Top);
-    //        //Point right_down = new Point(CreditList.Where(i => i.Type == Credit.CreditType.arranger).Select( i => i.CreditWords.DefX).First(), CreditList.Where(i => i.Type == Credit.CreditType.arranger).Select(i => i.CreditWords.DefY).First());
-    //        // Misc.DrawingHelpers.DrawRectangle(visual, left_up, right_down, Brushes.Green);
-    //        //Point right_down = new Point(Defaults.Page.Width - Defaults.Page.Margins.Right, Defaults.Page.Margins.Top + space_height);
-    //        Point left_up = Credit.Credit.Titlesegment.Relative;
-    //        Point right_down = Credit.Credit.Titlesegment.Rectangle.BottomRight;//Relative.Y + Credit.Credit.segment.Dimensions.Y);
-    //        Credit.Credit.Titlesegment.Draw(visual, Brushes.Green);
-    //        Misc.DrawingHelpers.DrawRectangle(visual, Credit.Credit.Titlesegment.Rectangle.TopLeft, Credit.Credit.Titlesegment.Rectangle.BottomRight, Brushes.Crimson);
-    //    }
-
-    //}
-    #endregion
 }
