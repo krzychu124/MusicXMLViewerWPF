@@ -157,7 +157,14 @@ namespace MusicXMLViewerWPF
             //}
                 
         }
-
+        public Part(string id)
+        {
+            PartId = id;
+        }
+        public void AddMeasure(Measure measure)
+        {
+            MeasureList.Add(measure); //Todo add info about firt measure number in part
+        }
         //private void SortNotations() //TODO_l improve, add drawing
         //{
         //    foreach (var item in MeasureSegmentList)

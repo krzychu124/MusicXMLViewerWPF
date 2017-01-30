@@ -45,6 +45,7 @@ namespace MusicXMLScore.ViewModel
         //TODO_I .. PageCollection<Page>
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
         public ObservableCollection<UIElement> PagesCollection { get { return pageCollection; } set { pageCollection = value; } }
+        public List<List<Part>> PagesList { get; set; }
         #region Properties
         public string Header {  get { return header; } private set { header = value; } }
         public object Content {  get { return new object(); } private set { content = value; } }
@@ -72,13 +73,62 @@ namespace MusicXMLScore.ViewModel
         {
             PropertyChanged += PagesControllerViewModel_PropertyChanged;
             MusicScore = musicScore;
+            ArrangePages();
             PagesCollection = new ObservableCollection<UIElement>();
-            AddPageToCollection();
+            foreach (var item in PagesList)
+            {
+                AddPageToCollection(item);
+            }
+        }
+        public PagesControllerViewModel(int numberOfPages)
+        {
+            PropertyChanged += PagesControllerViewModel_PropertyChanged;
+            MusicScore = new MusicScore();
+            PagesCollection = new ObservableCollection<UIElement>();
+            for (int i = 0; i < numberOfPages; i++)
+            {
+                AddPageToCollection(); //! may add current nuber to generated page
+            }
+        }
+        /// <summary>
+        /// Generate Pages using PartList from loaded MusicScore (if MusicScore not support NewPageSystem - generate from scratch)
+        /// </summary>
+        private void ArrangePages()
+        {
+            PagesList = new List<List<Part>>();
+            if (MusicScore.SupportNewPage)
+            {
+                foreach (var item in MusicScore.PagesList)
+                {
+                    List<Part> partslist = new List<Part>();
+                    foreach (var part in item)
+                    {
+                        partslist.Add(part);
+                    }
+                    PagesList.Add(partslist);
+                }
+            }
+            else
+            {
+                //ToDO generate from scratch
+                GeneratePages();
+            }
+        }
+
+        private void GeneratePages()
+        {
+            throw new NotImplementedException();
         }
 
         private void AddPageToCollection()
         {
             PageViewModel pvm = new PageViewModel();
+            PagesCollection.Add(new PageView() { DataContext = pvm });
+        }
+        private void AddPageToCollection(List<Part> partList)
+        {
+
+            PageViewModel pvm = new PageViewModel(partList);
             PagesCollection.Add(new PageView() { DataContext = pvm });
         }
     }
