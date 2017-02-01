@@ -28,6 +28,8 @@ namespace MusicXMLScore.ViewModel
         private List<Part> partList;
         private List<List<Part>> partSegmentsList = new List<List<Part>>();
         private ObservableCollection<UIElement> partsSegments = new ObservableCollection<UIElement>();
+        private double pageHeight = 0.0;
+        private double pageWidth = 0.0;
         #endregion
 
         #region Contructors
@@ -53,6 +55,8 @@ namespace MusicXMLScore.ViewModel
         public List<Part> PartList { get { return partList; } set { partList = value; } }
         public ObservableCollection<UIElement> PartsSegments { get { return partsSegments; } set { partsSegments = value; } }
         public RelayCommand TestCommand { get; set; }
+        public double PageHeight { get { return pageHeight; } set { Set(nameof(PageHeight), ref pageHeight, value); } }
+        public double PageWidth { get { return pageWidth; } set { Set(nameof(PageWidth), ref pageWidth, value); } }
         #endregion
 
         #region Methods

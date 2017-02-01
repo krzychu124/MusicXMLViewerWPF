@@ -48,7 +48,7 @@ namespace MusicXMLScore.ViewModel
         #endregion
         //TODO_I .. PageCollection<Page>
         #region Properties
-        public object Content { get { return new object(); } private set { content = value; } }
+        //public object Content { get { return new object(); } private set { content = value; } }
         public string Header { get { return header; } private set { header = value; } }
         public bool IsBlank { get { return isBlank; } set { Set(nameof(IsBlank), ref isBlank, value); } }
         public MusicScore MusicScore { get { return musicScore; } private set { if (value != null) { Set(nameof(MusicScore), ref musicScore, value); } } }
@@ -101,7 +101,7 @@ namespace MusicXMLScore.ViewModel
 
         private void AddPageToCollection(List<Part> partList) // page with given parts
         {
-            PageViewModel pvm = new PageViewModel(partList);
+            PageViewModel pvm = new PageViewModel(partList) { PageWidth = MusicScore.Defaults.Page.Width, PageHeight = MusicScore.Defaults.Page.Height };
             PagesCollection.Add(new PageView() { DataContext = pvm });
         }
 
@@ -132,7 +132,7 @@ namespace MusicXMLScore.ViewModel
 
         private void CreatePages()
         {
-            throw new NotImplementedException();
+            PagesList = MusicScore.PagesList;// throw new NotImplementedException();
         }
 
         private void GeneratePages()

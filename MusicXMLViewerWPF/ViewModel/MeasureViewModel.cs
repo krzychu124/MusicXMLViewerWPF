@@ -23,10 +23,10 @@ namespace MusicXMLScore.ViewModel
         #endregion
         public MeasureViewModel()
         {
-            MeasureStaffLine = new StaffLineCanvas() { Width = 200 }; // Prototype test only (basic staff with 150px width)
-            measure = new Measure(200);
+            //MeasureStaffLine = new StaffLineCanvas() { Width = 200 }; // Prototype test only (basic staff with 150px width)
+            //measure = new Measure(200);
             MeasureContent = new ObservableCollection<UIElement>();
-            BuildAndDrawMeasure();
+            //BuildAndDrawMeasure();
         }
 
         public MeasureViewModel(Measure measure)
@@ -55,7 +55,22 @@ namespace MusicXMLScore.ViewModel
         #endregion
         private void BuildAndDrawMeasure() //TODO_I implement drawing to rest of drawable objects
         {
-            foreach (var item in measure.NotesList)
+            if (Measure.Attributes != null)
+            {
+                if (Measure.Attributes.Clef != null)
+                {
+                    MeasureContent.Add(Measure.Attributes.Clef.DrawableMusicalObject);
+                }
+                if (Measure.Attributes.Key != null)
+                {
+                    MeasureContent.Add(Measure.Attributes.Key.DrawableMusicalObject);
+                }
+                if (Measure.Attributes.Time != null)
+                {
+                    MeasureContent.Add(Measure.Attributes.Time.DrawableMusicalObject);
+                }
+            }
+            foreach (var item in Measure.NotesList)
             {
                 if (item.DrawableObjectStatus == MusicXMLViewerWPF.Misc.DrawableMusicalObjectStatus.ready)
                     MeasureContent.Add(item.DrawableMusicalObject);

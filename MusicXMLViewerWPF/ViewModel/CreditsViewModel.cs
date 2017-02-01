@@ -46,42 +46,42 @@ namespace MusicXMLScore.ViewModel
         private void OnAddInstrumentNameCommand()
         {
             var stck = CreditsList.ElementAt(1) as StackPanel;
-            stck.Children.Add(GenerateCreditTextBox("testing credit instrument generator", CreditType.intrumentname));
+            stck.Children.Add(GenerateCreditTextBox("Type Intrument here", CreditType.intrumentname));
            // MessageBox.Show("Added intrument name");
         }
 
         private void OnAddLyricistCommand()
         {
             var stck = CreditsList.ElementAt(1) as StackPanel;
-            stck.Children.Insert(0,GenerateCreditTextBox("testing credit lyricist generator", CreditType.lyricist));
+            stck.Children.Insert(0,GenerateCreditTextBox("Type Lyricist here", CreditType.lyricist));
            // MessageBox.Show("Added lyricist");
         }
 
         private void OnAddArrangerCommand()
         {
             var stck = CreditsList.ElementAt(2) as StackPanel;
-            stck.Children.Add(GenerateCreditTextBox("testing credit arranger generator", CreditType.arranger));
+            stck.Children.Add(GenerateCreditTextBox("Type Arranger here", CreditType.arranger));
            // MessageBox.Show("Added arranger");
         }
 
         private void OnAddComposerCommand()
         {
             var stck = CreditsList.ElementAt(2) as StackPanel;
-            stck.Children.Insert(0, GenerateCreditTextBox("testing credit composer generator", CreditType.composer));
+            stck.Children.Insert(0, GenerateCreditTextBox("Type Composer here", CreditType.composer));
            // MessageBox.Show("Added composer");
         }
 
         private void OnAddSubTitleCommand()
         {
             var stck = CreditsList.ElementAt(0) as StackPanel;
-            stck.Children.Add(GenerateCreditTextBox("testing credit subtitle generator", CreditType.subtitle));
+            stck.Children.Add(GenerateCreditTextBox("Type Subtitle here", CreditType.subtitle));
            // MessageBox.Show("Added subtitle");
         }
 
         private void OnAddTitleCommand()
         {
             var stck = CreditsList.ElementAt(0) as StackPanel;
-            stck.Children.Insert(0, GenerateCreditTextBox("testing credit title generator", CreditType.subtitle));
+            stck.Children.Insert(0, GenerateCreditTextBox("Type Title here", CreditType.title));
             //MessageBox.Show("Added title");
         }
 
@@ -98,6 +98,7 @@ namespace MusicXMLScore.ViewModel
         {
             TextBox tb = new TextBox();
             tb.Text = value;
+            tb.FontSize = 14;
             tb.Background = Brushes.Transparent;
             tb.BorderThickness = new Thickness(0.0);
             tb.SetValue(Credit.CreditTypeProperty, creditType);
@@ -107,10 +108,13 @@ namespace MusicXMLScore.ViewModel
                     break;
                 case CreditType.title:
                     tb.SetValue(DockPanel.DockProperty, Dock.Top);
+                    tb.FontSize = 30;
+                    tb.FontWeight = FontWeights.Bold;
                     tb.HorizontalAlignment = HorizontalAlignment.Center;
                     break;
                 case CreditType.subtitle:
                     tb.SetValue(DockPanel.DockProperty, Dock.Top);
+                    tb.FontSize = 20;
                     tb.HorizontalAlignment = HorizontalAlignment.Center;
                     break;
                 case CreditType.composer:
