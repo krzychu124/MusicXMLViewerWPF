@@ -18,81 +18,33 @@ namespace MusicXMLViewerWPF
     /// </summary>
     class MusicScore : ObservableObject
     {
-        #region Fields
-        private string title;
-        private Defaults.Defaults defaults; //? = new Defaults.Defaults(); ??
-        private Dictionary<string, Part> parts = new Dictionary<string, Part>() { };
-        private Identification.Identification identification;
-        private List<Credit.Credit> credits = new List<Credit.Credit>();
-        private Work.Work work;
-        private XElement file; // <<Loaded XML file>>
-        private static bool loaded = false;
-        private static bool credits_loaded = false;
+
+        #region Private Fields
+
         private static bool content_space_calculated = false;
-        private static bool supports_new_system = false;
+        private static bool credits_loaded = false;
+        private static bool loaded = false;
         private static bool supports_new_page = false;
-        private List<List<Part>> pagesList = new List<List<Part>>();
+        private static bool supports_new_system = false;
+        private List<Credit.Credit> credits = new List<Credit.Credit>();
+        private Defaults.Defaults defaults;
+        private XElement file;
+        private Identification.Identification identification;
         private List<List<Part>> llpages = new List<List<Part>>();
-        #endregion
-        #region properties with Notification
-        public bool Loaded
-        {
-            get { return loaded; }
-            set
-            {
-                Set(() => Loaded, ref loaded, value);
-            }
-        }
-        public bool CreditsLoaded
-        {
-            get { return credits_loaded; }
-            set
-            {
-                Set(() => CreditsLoaded, ref credits_loaded, value);
-            }
-        }
-        public bool ContentSpaceCalculated
-        {
-            get { return content_space_calculated; }
-            set
-            {
-                Set(() => ContentSpaceCalculated, ref content_space_calculated, value);
-            }
-        }
-        public bool SupportNewSystem
-        {
-            get { return supports_new_system; }
-            set
-            {
-                Set(() => SupportNewSystem, ref supports_new_system, value);
-            }
-        }
-        public bool SupportNewPage
-        {
-            get { return supports_new_page; }
-            set
-            {
-                Set(() => SupportNewPage, ref supports_new_page, value);
-            }
-        }
-        #endregion
+        private List<List<Part>> pagesList = new List<List<Part>>();
+        private Dictionary<string, Part> parts = new Dictionary<string, Part>() { };
+        private string title;
+        private Work.Work work;
 
-        #region public static properties
-        public string Title { get { return title; } set { if (value != null) { title = value; } } } //todo inpc
-        public Defaults.Defaults Defaults { get { return defaults; } set { if (value != null) { defaults = value; } } } //todo inpc
-        public Dictionary<string, Part> Parts { get { return parts; } set { if (value != null) { parts = value; } } } //todo inpc 
-        public Identification.Identification Identification { get { return identification; } set { if (value != null) { identification = value; } } }  //todo inpc 
-        public List<Credit.Credit> CreditList { get { return credits; } set { if (value != null) { credits = value; } } }  //todo inpc
-        public Work.Work Work { get { return work; } set { if (value != null) { work = value; } } } //todo inpc
-        public XElement File { get { return file; } set { if (value != null) { file = value; } } } //todo inpc
-        public List<List<Part>> PagesList { get { return pagesList; } private set { pagesList = value; } }
-        #endregion
+        #endregion Private Fields
 
-        #region ctors.
+        #region Public Constructors
+
         public MusicScore()
         {
             this.PropertyChanged += MusicScore_PropertyChanged;
         }
+
         public MusicScore(XDocument x)
         {
             this.PropertyChanged += MusicScore_PropertyChanged;
@@ -109,7 +61,73 @@ namespace MusicXMLViewerWPF
                 LoggIt.Log("Error while loading file", LogType.Error);
             }
         }
-        #endregion
+
+        #endregion Public Constructors
+
+        #region Public Properties
+
+        public bool ContentSpaceCalculated
+        {
+            get { return content_space_calculated; }
+            set
+            {
+                Set(() => ContentSpaceCalculated, ref content_space_calculated, value);
+            }
+        }
+
+        public List<Credit.Credit> CreditList { get { return credits; } set { if (value != null) { credits = value; } } }
+
+        public bool CreditsLoaded
+        {
+            get { return credits_loaded; }
+            set
+            {
+                Set(() => CreditsLoaded, ref credits_loaded, value);
+            }
+        }
+
+        public Defaults.Defaults Defaults { get { return defaults; } set { if (value != null) { defaults = value; } } }
+
+        public XElement File { get { return file; } set { if (value != null) { file = value; } } }
+
+        public Identification.Identification Identification { get { return identification; } set { if (value != null) { identification = value; } } }
+
+        public bool Loaded
+        {
+            get { return loaded; }
+            set
+            {
+                Set(() => Loaded, ref loaded, value);
+            }
+        }
+        public List<List<Part>> PagesList { get { return pagesList; } private set { pagesList = value; } }
+
+        public Dictionary<string, Part> Parts { get { return parts; } set { if (value != null) { parts = value; } } }
+
+        public bool SupportNewPage
+        {
+            get { return supports_new_page; }
+            set
+            {
+                Set(() => SupportNewPage, ref supports_new_page, value);
+            }
+        }
+
+        public bool SupportNewSystem
+        {
+            get { return supports_new_system; }
+            set
+            {
+                Set(() => SupportNewSystem, ref supports_new_system, value);
+            }
+        }
+        public string Title { get { return title; } set { if (value != null) { title = value; } } }    
+        public Work.Work Work { get { return work; } set { if (value != null) { work = value; } } }
+
+        #endregion Public Properties
+
+        #region Public Methods
+
         /// <summary>
         /// PopertiesChanged switch
         /// </summary>
@@ -177,46 +195,10 @@ namespace MusicXMLViewerWPF
             }
         }
 
-        private void ImportFromXMLFile()
-        {
-            Title = file.Element("movement-title") != null ? file.Element("movement-title").Value : "No title";
-            Work = file.Element("work") != null ? new Work.Work(file.Element("work")) : null;
-            Defaults = file.Element("defaults") != null ? new Defaults.Defaults(file.Element("defaults"), this) : new Defaults.Defaults();
-            Identification = new Identification.Identification(file.Element("identification"));
-            if (Identification?.Encoding?.Supports != null) //todo refactor to inpc
-            {
-                foreach (var item in Identification.Encoding.Supports)
-                {
-                    switch (item.Attribute)
-                    {
-                        case "new-system":
-                            SupportNewSystem = item.Value;
-                            break;
-                        case "new-page":
-                            SupportNewPage = item.Value;
-                            break;
-                        default:
-                            break;
-                    }
-                }
-            }
-            foreach (var item in file.Elements("credit"))
-            {
-                CreditList.Add(new Credit.Credit(item, Defaults));
-            }
-            //// Credit.Credit.SetCreditSegment();  refactored
-            //! Refactoring InitTitleSpaceSegment(); 
+        #endregion Public Methods
 
-            foreach (var item in file.Elements("part"))
-            {
-                Parts.Add(item.Attribute("id").Value, new Part(item));
-            }
-            //if (Parts.Count > 1) //! needs  refactor due to changed drawing system
-            //{
-            //    RecalculateMeasuresPosInParts();
-            //}
-            GeneratePages();
-        }
+        #region Private Methods
+
         private void GeneratePages()
         {
             if (SupportNewPage)
@@ -261,5 +243,48 @@ namespace MusicXMLViewerWPF
                 }
             }
         }
+
+        private void ImportFromXMLFile()
+        {
+            Title = file.Element("movement-title") != null ? file.Element("movement-title").Value : "No title";
+            Work = file.Element("work") != null ? new Work.Work(file.Element("work")) : null;
+            Defaults = file.Element("defaults") != null ? new Defaults.Defaults(file.Element("defaults"), this) : new Defaults.Defaults();
+            Identification = new Identification.Identification(file.Element("identification"));
+            if (Identification?.Encoding?.Supports != null) //todo refactor to inpc
+            {
+                foreach (var item in Identification.Encoding.Supports)
+                {
+                    switch (item.Attribute)
+                    {
+                        case "new-system":
+                            SupportNewSystem = item.Value;
+                            break;
+                        case "new-page":
+                            SupportNewPage = item.Value;
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+            foreach (var item in file.Elements("credit"))
+            {
+                CreditList.Add(new Credit.Credit(item, Defaults));
+            }
+            //// Credit.Credit.SetCreditSegment();  refactored
+            //! Refactoring InitTitleSpaceSegment(); 
+
+            foreach (var item in file.Elements("part"))
+            {
+                Parts.Add(item.Attribute("id").Value, new Part(item));
+            }
+            //if (Parts.Count > 1) //! needs  refactor due to changed drawing system
+            //{
+            //    RecalculateMeasuresPosInParts();
+            //}
+            GeneratePages();
+        }
+
+        #endregion Private Methods
     }
 }

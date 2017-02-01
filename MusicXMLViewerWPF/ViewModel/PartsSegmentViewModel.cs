@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MusicXMLViewerWPF;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -15,12 +16,26 @@ namespace MusicXMLScore.ViewModel
     {
         private ObservableCollection<UIElement> partscollection; //? maight be changed to collection of Part-type later
         public ObservableCollection<UIElement> PartsCollection { get { return partscollection; } set { partscollection = value; } }
+        public List<Part> SegmentPartList { get; set; }
         public PartsSegmentViewModel()
-        { 
+        {
             PartsCollection = new ObservableCollection<UIElement>();
             AddPartToCollection(); // temp prototype
         }
-
+        public PartsSegmentViewModel(List<Part> segmentPartList)
+        {
+            SegmentPartList = segmentPartList;
+            PartsCollection = new ObservableCollection<UIElement>();
+            AddAllParts();
+        }
+        private void AddAllParts()
+        {
+            if (SegmentPartList == null) { return; }
+            foreach (var part in SegmentPartList)
+            {
+                AddPartToCollection(part);
+            }
+        }
         private void AddPartToCollection()
         {
             PartsCollection.Add(new View.PartView());
@@ -30,6 +45,10 @@ namespace MusicXMLScore.ViewModel
             PartsCollection.Add(new View.PartView());
             View.PartView pw2 = new View.PartView();
             PartsCollection.Add(pw2);
+        }
+        private void AddPartToCollection(Part segmentPart)
+        {
+            PartsCollection.Add(new View.PartView() { DataContext = new PartViewModel(segmentPart) });
         }
     }
 }

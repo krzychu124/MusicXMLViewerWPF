@@ -1,4 +1,6 @@
 ﻿using MusicXMLScore.View;
+using MusicXMLViewerWPF;
+using MusicXMLViewerWPF.ScoreParts.MeasureContent;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -23,12 +25,30 @@ namespace MusicXMLScore.ViewModel
             AddTestMeasures();
         }
 
-        public PartViewModel(MusicXMLViewerWPF.Part part)
+        public PartViewModel(Part part)
         {
-
+            MeasuresCollection = new ObservableCollection<UIElement>();
+            Part = part;
+            AddMeasures();
         }
+
         public ObservableCollection<UIElement> MeasuresCollection { get { return measuresCollection; } set { measuresCollection = value; } }
 
+        public Part Part { get; set; }
+
+        private void AddMeasure(Measure measureToAdd)
+        {
+            MeasureViewModel measure = new MeasureViewModel(measureToAdd);
+            MeasuresCollection.Add(new MeasureView() { DataContext = measure });
+        }
+
+        private void AddMeasures()
+        {
+            foreach (var measure in Part.MeasureList)
+            {
+            AddMeasure(measure);
+            }
+        }
         private void AddTestMeasures()
         {
             for (int i = 0; i < 5; i++)

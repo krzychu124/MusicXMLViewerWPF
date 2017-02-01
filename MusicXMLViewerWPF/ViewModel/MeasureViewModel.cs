@@ -15,14 +15,29 @@ namespace MusicXMLScore.ViewModel
     /// </summary>
     class MeasureViewModel //TODO_I implement collection of items placed in this measure (to draw inside CustomPanel)
     {
+        #region Fields
         private Measure measure;
-        private StaffLineCanvas staffLineCanvas;
         private ObservableCollection<UIElement> measureContent;
+        private double measureWidth;
+        private StaffLineCanvas staffLineCanvas;
+        #endregion
+        public MeasureViewModel()
+        {
+            MeasureStaffLine = new StaffLineCanvas() { Width = 200 }; // Prototype test only (basic staff with 150px width)
+            measure = new Measure(200);
+            MeasureContent = new ObservableCollection<UIElement>();
+            BuildAndDrawMeasure();
+        }
+
+        public MeasureViewModel(Measure measure)
+        {
+            MeasureContent = new ObservableCollection<UIElement>();
+            this.measure = measure;
+            MeasureWidth = Measure.Width;
+            BuildAndDrawMeasure();
+        }
 
         public Measure Measure { get { return measure; } }
-
-        public StaffLineCanvas MeasureStaffLine { get { return staffLineCanvas; }  set { staffLineCanvas = value; } }
-
         public ObservableCollection<UIElement> MeasureContent
         {
             get
@@ -34,26 +49,16 @@ namespace MusicXMLScore.ViewModel
                 measureContent = value;
             }
         }
-
-        public MeasureViewModel()
-        {
-            MeasureStaffLine = new StaffLineCanvas() { Width = 200 }; // Prototype test only (basic staff with 150px width)
-            measure = new Measure(200);
-            MeasureContent = new ObservableCollection<UIElement>();
-            //MeasureContent.Add(measure.NotesList.ElementAt(0).DrawableMusicalObject);
-            BuildAndDrawMeasure();
-        }
-        public MeasureViewModel(Measure measure)
-        {
-            this.measure = measure;
-            BuildAndDrawMeasure();
-        }
-        private void BuildAndDrawMeasure()
+        #region Properties
+        public StaffLineCanvas MeasureStaffLine { get { return staffLineCanvas; } set { staffLineCanvas = value; } }
+        public double MeasureWidth { get { return measureWidth; } set { measureWidth = value; } }
+        #endregion
+        private void BuildAndDrawMeasure() //TODO_I implement drawing to rest of drawable objects
         {
             foreach (var item in measure.NotesList)
             {
                 if (item.DrawableObjectStatus == MusicXMLViewerWPF.Misc.DrawableMusicalObjectStatus.ready)
-                MeasureContent.Add(item.DrawableMusicalObject);
+                    MeasureContent.Add(item.DrawableMusicalObject);
             }
         }
     }
