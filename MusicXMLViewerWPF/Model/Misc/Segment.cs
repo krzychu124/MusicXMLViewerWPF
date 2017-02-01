@@ -174,7 +174,7 @@ namespace MusicXMLViewerWPF
             if (Segment_type == SegmentType.Clef)
             {
                 left = 5f;
-                right = 20f;
+                right = 25f;
             }
             if (Segment_type == SegmentType.KeySig)
             {

@@ -46,7 +46,7 @@ namespace MusicXMLViewerWPF
                 {
                     case "clef":
                         clef = new Clef(item);
-                        _clef = clef;
+                        //_clef = clef;
                         break;
                     case "key":
                         key = new Key(item);

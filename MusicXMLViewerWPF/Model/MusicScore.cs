@@ -242,6 +242,10 @@ namespace MusicXMLViewerWPF
                     index = currentPageLastItemIndex; // set index to indexOflastItem to skip them in next pass ( if any items left)
                 }
             }
+            else
+            {// temporary 
+                PagesList.Add(Parts.Values.ToList());
+            }
         }
 
         private void ImportFromXMLFile()

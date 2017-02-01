@@ -11,11 +11,11 @@ using System.Xml.Linq;
 
 namespace MusicXMLViewerWPF
 {
-    class Barline :  Segment, IDrawable, IXMLExtract // todo ixmlextrack removeal
+    class Barline :  Segment, IDrawable// todo ixmlextrack removeal
     {
         #region Fields
-        private BarlineLocation location;
-        private BarStyle style;
+        private BarlineLocation location = BarlineLocation.right;
+        private BarStyle style = BarStyle.regular;
         private Coda coda;
         private Fermata fermata;
         private Segno segno;
@@ -26,37 +26,36 @@ namespace MusicXMLViewerWPF
         private string measureid;
         #endregion
         #region Properties
-        public BarlineLocation Location { get { return location; } set { location = value; } } 
+        public BarlineLocation Location { get { return location; } set { location = value; }  } 
         public BarStyle Style { get { return style; } set { style = value; } }
-        public Coda Coda { get { return coda; } }
-        public Fermata Fermata { get { return fermata; } }
-        public Segno Segno  { get { return segno; } }
-        public Ending Ending { get { return ending; } }
-        public Repeat Repeat { get { return repeat; } }
-        public Point Position { get { return pos; } set { pos = value; } }
-        public DrawingVisual Visual { get { return visual; } set { visual = value; } }
-        public string MeasureID { get { return measureid; } set { measureid = value; } }
+        public Coda Coda { get { return coda; } set { if (value != null) { coda = value; } } }
+        public Fermata Fermata { get { return fermata; } set { if (value != null) { fermata = value; } } }
+        public Segno Segno  { get { return segno; } set { if (value != null) { segno = value; } } }
+        public Ending Ending { get { return ending; } set { if (value != null) { ending = value; } } }
+        public Repeat Repeat { get { return repeat; } set { if (value != null) { repeat = value; } } }
+        public Point Position { get { return pos; } set { if (value != null) { pos = value; } } }
+        public DrawingVisual Visual { get { return visual; } set { if (value != null) { visual = value; } } }
+        public string MeasureID { get { return measureid; } set { if (value != null) { measureid = value; } } }
         #endregion
 
         public Barline()
         {
             ID = Misc.RandomGenerator.GetRandomHexNumber();
-            location = BarlineLocation.right;
-            coda = null;
-            fermata = null;
-            segno = null;
-            ending = null;
-            repeat = null;
+            Coda = null;
+            Fermata = null;
+            Segno = null;
+            Ending = null;
+            Repeat = null;
         }
 
         public Barline(XElement x)
         {
             ID = Misc.RandomGenerator.GetRandomHexNumber();
-            coda = null;
-            fermata = null;
-            segno = null;
-            ending = null;
-            repeat = null;
+            Coda = null;
+            Fermata = null;
+            Segno = null;
+            Ending = null;
+            Repeat = null;
             ExtractXElement(x);
         }
 
@@ -64,35 +63,35 @@ namespace MusicXMLViewerWPF
         {
             //x = x.Element("barline") != null ? x.Element("barline") : null;
 
-            location = x.Attribute("location").Value == "left" ? BarlineLocation.left : x.Attribute("location").Value == "middle" ? BarlineLocation.middle : BarlineLocation.right;
+            Location = x.Attribute("location").Value == "left" ? BarlineLocation.left : x.Attribute("location").Value == "middle" ? BarlineLocation.middle : BarlineLocation.right;
             if (x.Element("bar-style") != null)
             {
-                getStyle(x.Element("bar-style").Value);
+                GetBarlineStyle(x.Element("bar-style").Value);
             }
             if (x.Element("segno") != null)
             {
-                var attr = from at in x.Element("segno").Attributes() select at;
-                segno = new Segno(attr);
+                var attribute = from at in x.Element("segno").Attributes() select at;
+                Segno = new Segno(attribute);
             }
             if (x.Element("coda") != null)
             {
-                var attr = from at in x.Element("coda").Attributes() select at;
-                coda = new Coda(attr);
+                var attribute = from at in x.Element("coda").Attributes() select at;
+                Coda = new Coda(attribute);
             }
             if (x.Element("fermata") != null)
             {
-                var attr = from at in x.Element("fermata").Attributes() select at;
-                fermata = new Fermata(attr);
+                var attribute = from at in x.Element("fermata").Attributes() select at;
+                Fermata = new Fermata(attribute);
             }
             if (x.Element("ending") != null)
             {
-                var el = x.Element("ending");
-                ending = new Ending(el);
+                var element = x.Element("ending");
+                Ending = new Ending(element);
             }
             if (x.Element("repeat") != null)
             {
-                var attr = from at in x.Element("repeat").Attributes() select at;
-                repeat = new Repeat(attr);
+                var attribute = from at in x.Element("repeat").Attributes() select at;
+                Repeat = new Repeat(attribute);
             }
         
         }
@@ -110,53 +109,53 @@ namespace MusicXMLViewerWPF
         {
 
         }
-        private void getStyle(string s)
+        private void GetBarlineStyle(string s)
         {
-            style = BarStyle.regular;
+            //! style = BarStyle.regular; // default value was set - test required
             if (styleDictionary.ContainsKey(s))
             {
                 style = styleDictionary[s];
             }
         }
 
-        public DrawingVisual DrawBarline(DrawingVisual visual, Point p, float width)
+        public DrawingVisual DrawBarline(DrawingVisual visual, Point position, float width)
         {
-            Position = p;
+            Position = position;
             float scale = 40; //! Temporary change **needs refactoring** MusicScore.Defaults.Scale.Tenths;
             using (DrawingContext dc = visual.RenderOpen())
             {
-                float loc = location == BarlineLocation.left ? (float)p.X : (float)p.X + width;
+                float loc = location == BarlineLocation.left ? (float)position.X : (float)position.X + width;
                 switch (style)
                 {
                     case BarStyle.regular:
-                        Misc.DrawingHelpers.DrawString(dc, MusicalChars.RegularBar, TypeFaces.MeasuresFont, Brushes.Black, loc, (float)p.Y, scale);
+                        Misc.DrawingHelpers.DrawString(dc, MusicalChars.RegularBar, TypeFaces.MeasuresFont, Brushes.Black, loc, (float)position.Y, scale);
                         break;
                     case BarStyle.dotted:
-                        Misc.DrawingHelpers.DrawString(dc, MusicalChars.DottedBar, TypeFaces.MeasuresFont, Brushes.Black, loc, (float)p.Y, scale);
+                        Misc.DrawingHelpers.DrawString(dc, MusicalChars.DottedBar, TypeFaces.MeasuresFont, Brushes.Black, loc, (float)position.Y, scale);
                         break;
                     case BarStyle.dashed:
-                        Misc.DrawingHelpers.DrawString(dc, MusicalChars.DashedBar, TypeFaces.MeasuresFont, Brushes.Black, loc, (float)p.Y, scale);
+                        Misc.DrawingHelpers.DrawString(dc, MusicalChars.DashedBar, TypeFaces.MeasuresFont, Brushes.Black, loc, (float)position.Y, scale);
                         break;
                     case BarStyle.heavy:
-                        Misc.DrawingHelpers.DrawString(dc, MusicalChars.HeavyBar, TypeFaces.MeasuresFont, Brushes.Black, loc, (float)p.Y, scale);
+                        Misc.DrawingHelpers.DrawString(dc, MusicalChars.HeavyBar, TypeFaces.MeasuresFont, Brushes.Black, loc, (float)position.Y, scale);
                         break;
                     case BarStyle.light_light:
-                        Misc.DrawingHelpers.DrawString(dc, MusicalChars.LightLightBar, TypeFaces.MeasuresFont, Brushes.Black, loc, (float)p.Y, scale);
+                        Misc.DrawingHelpers.DrawString(dc, MusicalChars.LightLightBar, TypeFaces.MeasuresFont, Brushes.Black, loc, (float)position.Y, scale);
                         break;
                     case BarStyle.light_heavy:
-                        Misc.DrawingHelpers.DrawString(dc, MusicalChars.LightHeavyBar, TypeFaces.MeasuresFont, Brushes.Black, loc - 7, (float)p.Y, scale);
+                        Misc.DrawingHelpers.DrawString(dc, MusicalChars.LightHeavyBar, TypeFaces.MeasuresFont, Brushes.Black, loc - 7, (float)position.Y, scale);
                         break;
                     case BarStyle.heavy_light:
-                        Misc.DrawingHelpers.DrawString(dc, MusicalChars.HeavyLightBar, TypeFaces.MeasuresFont, Brushes.Black, loc - 3, (float)p.Y, scale);
+                        Misc.DrawingHelpers.DrawString(dc, MusicalChars.HeavyLightBar, TypeFaces.MeasuresFont, Brushes.Black, loc - 3, (float)position.Y, scale);
                         break;
                     case BarStyle.heavy_heavy:
-                        Misc.DrawingHelpers.DrawString(dc, MusicalChars.HeavyHeavyBar, TypeFaces.MeasuresFont, Brushes.Black, loc, (float)p.Y, scale);
+                        Misc.DrawingHelpers.DrawString(dc, MusicalChars.HeavyHeavyBar, TypeFaces.MeasuresFont, Brushes.Black, loc, (float)position.Y, scale);
                         break;
                     case BarStyle.tick:
-                        Misc.DrawingHelpers.DrawString(dc, MusicalChars.TickBar, TypeFaces.MeasuresFont, Brushes.Black, loc, (float)p.Y-4, scale);
+                        Misc.DrawingHelpers.DrawString(dc, MusicalChars.TickBar, TypeFaces.MeasuresFont, Brushes.Black, loc, (float)position.Y-4, scale);
                         break;
                     case BarStyle.shortened:
-                        Misc.DrawingHelpers.DrawString(dc, MusicalChars.ShortBar, TypeFaces.MeasuresFont, Brushes.Black, loc, (float)p.Y+12, scale);
+                        Misc.DrawingHelpers.DrawString(dc, MusicalChars.ShortBar, TypeFaces.MeasuresFont, Brushes.Black, loc, (float)position.Y+12, scale);
                         break;
                     default:
                         break;
@@ -169,7 +168,7 @@ namespace MusicXMLViewerWPF
                         float location = Repeat.Direction == Repeat.RepeatDirection.forward ? 7f : -12f;
                         if (Repeat.Winged == null) //Repeat.Winged.Type == Winged.WingType.none || 
                         {
-                            Misc.DrawingHelpers.DrawString(dc, MusicalChars.RepeatDots, TypeFaces.MeasuresFont, Brushes.Black, loc + location, (float)p.Y, scale);
+                            Misc.DrawingHelpers.DrawString(dc2, MusicalChars.RepeatDots, TypeFaces.MeasuresFont, Brushes.Black, loc + location, (float)position.Y, scale);
                         }
                     }
                     visual.Children.Add(visualForRepeats);

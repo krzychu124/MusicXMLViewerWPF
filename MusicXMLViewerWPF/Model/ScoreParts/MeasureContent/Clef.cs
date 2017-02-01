@@ -30,19 +30,19 @@ namespace MusicXMLViewerWPF
         #endregion
         #region Properties
         public EmptyPrintStyle AdditionalAttributes { get { return additional_attributes; } }
-        public ClefType Sign { get { return sign; } }
-        public int Line { get { return line; } }
+        public ClefType Sign { get { return sign; } private set { sign = value; } }
+        public int Line { get { return line; } private set { line = value; } }
         public int MeasureId { get { return measure_num; } }
-        public static int ClefAlter { get { return clef_alter; } }
+        public static int ClefAlter { get { return clef_alter; } private set { clef_alter = value; } }
         public static ClefType Sign_static { get { return sign_static; } }
         //public SegmentType CharacterType { get { return SegmentType.Clef; } }
-        public bool IsVisible { get { return visible; } }
+        public bool IsVisible { get { return visible; } set { visible = value; } }
         public static Clef ClefStatic { get { return cl; } }
         public int Number { get { return number; } }
         public static int ClefAlterNote { get { return clef_alter_note; } }
         public new PropertyChangedEventHandler PropertyChanged = delegate { };
 
-        public CanvasList DrawableMusicalObject { get { return drawablemusicalobject; }  set { drawablemusicalobject = value; } }
+        public CanvasList DrawableMusicalObject { get { return drawablemusicalobject;  }  set { drawablemusicalobject = value; } }
         public DrawableMusicalObjectStatus DrawableObjectStatus { get { return dmusicalobjectstatus; } private set { if (dmusicalobjectstatus != value) dmusicalobjectstatus = value; PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(DrawableObjectStatus))); } }
         public bool Loaded { get { return loadstatus; } private set { if (loadstatus != value) loadstatus = value; PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(Loaded))); } }
         #endregion
@@ -61,13 +61,13 @@ namespace MusicXMLViewerWPF
                 switch (name)
                 {
                     case "sign":
-                        sign = new ClefType(item.Value);
-                        sign_static = Sign;
-                        clef_alter = sign.Sign == ClefType.Clef.GClef ? 0 : sign.Sign == ClefType.Clef.FClef ? -12 : -6;
-                        visible = true;
+                        Sign = new ClefType(item.Value);
+                        //sign_static = Sign;
+                        ClefAlter = sign.Sign == ClefType.Clef.GClef ? 0 : sign.Sign == ClefType.Clef.FClef ? -12 : -6;
+                        IsVisible = true;
                         break;
                     case "line":
-                        line = int.Parse(item.Value);
+                        Line = int.Parse(item.Value);
                         break;
                     case "clef-octave-change":
                         Logger.Log("Clef-octave-change not implemented");
@@ -76,7 +76,7 @@ namespace MusicXMLViewerWPF
                         break;
                 }
             }
-            cl = this;
+            //cl = this;
             SetClefAlterNote();
             Loaded = true;
         }
@@ -85,13 +85,13 @@ namespace MusicXMLViewerWPF
         {
             switch (e.PropertyName)
             {
-                case "Loaded":
+                case nameof(Loaded):
                     if (Loaded)
                     {
                         InitDrawableObject();
                     }
                     break;
-                case "DrawableObjectStatus":
+                case nameof(DrawableObjectStatus):
                     if (DrawableObjectStatus == DrawableMusicalObjectStatus.reload)
                     {
                         ReloadDrawableObject();
@@ -147,16 +147,14 @@ namespace MusicXMLViewerWPF
 
         public void Draw(DrawingVisual visual)
         {
-            DrawingVisual clef = new DrawingVisual();
-            using( DrawingContext dc = clef.RenderOpen())
+            using( DrawingContext dc = visual.RenderOpen())
             {
                 Brush clefColor = Brushes.Black;//? (SolidColorBrush)new BrushConverter().ConvertFromString(AdditionalAttributes.Color);
                 Misc.DrawingHelpers.DrawString(dc, this.Sign.Symbol, TypeFaces.NotesFont, clefColor, Relative_x + Spacer_L, Relative_y, 40); 
-                /**
+                /*? 
                 Experimental, Scale dependent
-                **/
+                */
             }
-            visual.Children.Add(clef);
         }
 
         public void InitDrawableObject()

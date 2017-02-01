@@ -133,11 +133,11 @@ namespace MusicXMLViewerWPF
                 }
                 if (sigType == SignatureType.common)
                 {
-                    Misc.DrawingHelpers.DrawString(dc, MusicalChars.CommonTime, TypeFaces.NotesFont, Brushes.Black, Relative_x , Relative_y - 0.4f * 40, 40);
+                    Misc.DrawingHelpers.DrawString(dc, MusicalChars.CommonTime, TypeFaces.NotesFont, Brushes.Black, Relative_x +5 , Relative_y - 0.4f * 40, 40);
                 }
                 if (sigType == SignatureType.cut)
                 {
-                    Misc.DrawingHelpers.DrawString(dc, MusicalChars.CutTime, TypeFaces.NotesFont, Brushes.Black, Relative_x , Relative_y - 0.4f * 40, 40);
+                    Misc.DrawingHelpers.DrawString(dc, MusicalChars.CutTime, TypeFaces.NotesFont, Brushes.Black, Relative_x +5, Relative_y - 0.4f * 40, 40);
                 }
             }
         }
