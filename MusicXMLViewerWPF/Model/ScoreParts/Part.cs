@@ -11,17 +11,20 @@ namespace MusicXMLViewerWPF
 {
     class Part
     {
+
+        #region Private Fields
+
         private Defaults.Defaults defaults = new Defaults.Defaults();
-        private List<List<Notations>> nlist;
-        private List<List<Slur>> slist;
         private List<Measure> measure_list = new List<Measure>();
-        private List<Measure> measure_segment_list = new List<Measure>(); //! segmemt test
+        private List<Measure> measure_segment_list = new List<Measure>();
+        private List<List<Notations>> nlist;
+        //! segmemt test
         private string part_id;
-        public List<List<Notations>> NotationsList { get { return nlist; } private set { nlist = value; } }
-        public List<List<Slur>> SlurList { get { return slist; } private set { slist = value; } }
-        public List<Measure> MeasureList { get { return measure_list; }  private set { measure_list = value; } }
-        public List<Measure> MeasureSegmentList { get { return measure_segment_list; } private set { measure_segment_list = value; } } //! segment test
-        public string PartId { get { return part_id; } private set { part_id = value; } }
+        private List<List<Slur>> slist;
+
+        #endregion Private Fields
+
+        #region Public Constructors
 
         public Part(XElement x) //todo_I hard refactoring needed
         {
@@ -42,7 +45,7 @@ namespace MusicXMLViewerWPF
             {
                 XElement item = measures.ElementAt(i);
                 //measure_list.Add(new Measures.Measure(item));
-                
+
                 //if (test)
                 //{
                 //    Measure measure = new Measure(item);
@@ -93,7 +96,7 @@ namespace MusicXMLViewerWPF
                 //}
                 if (test2)
                 {
-                    measure_list.Add(new Measure(item)); 
+                    measure_list.Add(new Measure(item));
                     /*? Refactoring WiP
                     if (i == 0)
                     {
@@ -145,7 +148,7 @@ namespace MusicXMLViewerWPF
                     }*/
                 }
             }
-           //! SortNotations();
+            //! SortNotations();
 
             //foreach (var item in measure_margin_helper) // Only to check if list was filled correctly
             //{
@@ -155,16 +158,37 @@ namespace MusicXMLViewerWPF
             //{
             //    measure_list.Add(new Measures.Measure(item));
             //}
-                
+
         }
+
         public Part(string id)
         {
             PartId = id;
         }
+
+        #endregion Public Constructors
+
+        #region Public Properties
+
+        public List<Measure> MeasureList { get { return measure_list; } private set { measure_list = value; } }
+        public List<Measure> MeasureSegmentList { get { return measure_segment_list; } private set { measure_segment_list = value; } }
+        public List<List<Notations>> NotationsList { get { return nlist; } private set { nlist = value; } }
+        //! segment test
+        public string PartId { get { return part_id; } private set { part_id = value; } }
+
+        public List<List<Slur>> SlurList { get { return slist; } private set { slist = value; } }
+
+        #endregion Public Properties
+
+        #region Public Methods
+
         public void AddMeasure(Measure measure)
         {
             MeasureList.Add(measure); //Todo add info about firt measure number in part
         }
+
+        #endregion Public Methods
+
         //private void SortNotations() //TODO_l improve, add drawing
         //{
         //    foreach (var item in MeasureSegmentList)
@@ -219,7 +243,7 @@ namespace MusicXMLViewerWPF
         //        start.X = measure_margin_helper.ElementAt(0).Value.X;
         //        start.Y = measure_margin_helper.ElementAt(0).Value.Y;
         //    }
-            
+
         //    //Point current = new Point();
         //    foreach ( var measure in measure_list)
         //    {
@@ -238,7 +262,7 @@ namespace MusicXMLViewerWPF
         //        //}
         //        measure.Draw(surface, start);
         //        start.X += measure.Width;
-                
+
         //    }
         //}
     }

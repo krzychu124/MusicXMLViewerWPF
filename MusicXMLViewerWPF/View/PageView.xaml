@@ -13,10 +13,10 @@
         <Grid.Effect>
             <DropShadowEffect BlurRadius="10" ShadowDepth="5" Color="DarkGray"></DropShadowEffect>
         </Grid.Effect>
-        <Border BorderBrush="Black" BorderThickness="1">
+        <Border BorderBrush="Black" BorderThickness="5">
             <Grid >
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="0"/>
+                    <RowDefinition Height="20"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>

@@ -7,6 +7,8 @@ using MusicXMLViewerWPF;
 using System.ComponentModel;
 using System.Collections.ObjectModel;
 using System.Windows;
+using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight.Messaging;
 
 namespace MusicXMLScore.ViewModel
 {
@@ -34,55 +36,46 @@ namespace MusicXMLScore.ViewModel
     ///                 |||          | PartsSegment.3
     ///                 |||
     ///                 --- Page.n
-    class PagesControllerViewModel : INotifyPropertyChanged
+    class PagesControllerViewModel : ViewModelBase
     {
         #region Fields
-        private string header;
-        private MusicScore musicScore;
         private object content;
+        private string header;
+        private bool isBlank = true;
+        private MusicScore musicScore;
         private ObservableCollection<UIElement> pageCollection;
+        private string title = "";
         #endregion
         //TODO_I .. PageCollection<Page>
-        public event PropertyChangedEventHandler PropertyChanged = delegate { };
+        #region Properties
+        public object Content { get { return new object(); } private set { content = value; } }
+        public string Header { get { return header; } private set { header = value; } }
+        public bool IsBlank { get { return isBlank; } set { Set(nameof(IsBlank), ref isBlank, value); } }
+        public MusicScore MusicScore { get { return musicScore; } private set { if (value != null) { Set(nameof(MusicScore), ref musicScore, value); } } }
         public ObservableCollection<UIElement> PagesCollection { get { return pageCollection; } set { pageCollection = value; } }
         public List<List<Part>> PagesList { get; set; }
-        #region Properties
-        public string Header {  get { return header; } private set { header = value; } }
-        public object Content {  get { return new object(); } private set { content = value; } }
-        public MusicScore MusicScore { get { return musicScore; } private set { if (value != null) { musicScore = value; PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(MusicScore))); } } }
-        public string Title {  get { return MusicScore.Title != null ? MusicScore.Title : "no title :/"; } }
+        public string Title {  get { return title; } set { Set(nameof(Title), ref title, value); } }
         #endregion
         public PagesControllerViewModel()
         {
             PropertyChanged += PagesControllerViewModel_PropertyChanged;
-            MusicScore = new MusicScore();
-            //TODO generate simple music score using template(eg. one instr. 10-15 measures)
-            PagesCollection = new ObservableCollection<UIElement>();
-            AddPageToCollection();
-            AddPageToCollection();
-            AddPageToCollection();
-            AddPageToCollection();
-            AddPageToCollection();
+            MessengerInstance.Register<GenericMessage<List<Part>>>(this, "toNextPage", false, RelocatePartsNextPage);
         }
-
-        private void PagesControllerViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-        }
-
         public PagesControllerViewModel(MusicScore musicScore)
         {
             PropertyChanged += PagesControllerViewModel_PropertyChanged;
+            MessengerInstance.Register<GenericMessage<List<Part>>>(this, "toNextPage", false, RelocatePartsNextPage);
+            MessengerInstance.Register<GenericMessage<List<Part>>>(this, "toPreviousPage", false, RelocatePartsPreviousPage);
             MusicScore = musicScore;
             ArrangePages();
             PagesCollection = new ObservableCollection<UIElement>();
-            foreach (var item in PagesList)
-            {
-                AddPageToCollection(item);
-            }
+            GeneratePages();
         }
         public PagesControllerViewModel(int numberOfPages)
         {
+            
             PropertyChanged += PagesControllerViewModel_PropertyChanged;
+            IsBlank = false;
             MusicScore = new MusicScore();
             PagesCollection = new ObservableCollection<UIElement>();
             for (int i = 0; i < numberOfPages; i++)
@@ -90,6 +83,28 @@ namespace MusicXMLScore.ViewModel
                 AddPageToCollection(); //! may add current nuber to generated page
             }
         }
+        public void AddMusicScore(MusicScore musicScore)
+        {
+            this.MusicScore = musicScore;
+            MessengerInstance.Register<GenericMessage<List<Part>>>(this, "toNextPage", false, RelocatePartsNextPage);
+            MessengerInstance.Register<GenericMessage<List<Part>>>(this, "toPreviousPage", false, RelocatePartsPreviousPage);
+            ArrangePages();
+            PagesCollection = new ObservableCollection<UIElement>();
+            GeneratePages();
+        }
+
+        private void AddPageToCollection() //default page
+        {
+            PageViewModel pvm = new PageViewModel();
+            PagesCollection.Add(new PageView() { DataContext = pvm });
+        }
+
+        private void AddPageToCollection(List<Part> partList) // page with given parts
+        {
+            PageViewModel pvm = new PageViewModel(partList);
+            PagesCollection.Add(new PageView() { DataContext = pvm });
+        }
+
         /// <summary>
         /// Generate Pages using PartList from loaded MusicScore (if MusicScore not support NewPageSystem - generate from scratch)
         /// </summary>
@@ -110,26 +125,45 @@ namespace MusicXMLScore.ViewModel
             }
             else
             {
-                //ToDO generate from scratch
-                GeneratePages();
+                //ToDO_H generate from scratch
+                CreatePages();
             }
         }
 
-        private void GeneratePages()
+        private void CreatePages()
         {
             throw new NotImplementedException();
         }
 
-        private void AddPageToCollection()
+        private void GeneratePages()
         {
-            PageViewModel pvm = new PageViewModel();
-            PagesCollection.Add(new PageView() { DataContext = pvm });
+            if (PagesList.Count != 0)
+            {
+                foreach (var item in PagesList)
+                {
+                    AddPageToCollection(item);
+                }
+            }
         }
-        private void AddPageToCollection(List<Part> partList)
-        {
 
-            PageViewModel pvm = new PageViewModel(partList);
-            PagesCollection.Add(new PageView() { DataContext = pvm });
+        private void PagesControllerViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(MusicScore))
+            {
+                if(MusicScore != null)
+                {
+                    IsBlank = false;
+                }
+            }
+        }
+        private void RelocatePartsNextPage(GenericMessage<List<Part>> partListToRelocate)
+        {
+            Console.WriteLine("relocated to next page");
+            //MessengerInstance.Unregister(this);
+        }
+        private void RelocatePartsPreviousPage(GenericMessage<List<Part>> partListToRelocate)
+        {
+            Console.WriteLine("relocated to previous page");
         }
     }
 }

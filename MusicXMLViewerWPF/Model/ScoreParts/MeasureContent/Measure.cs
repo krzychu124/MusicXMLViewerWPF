@@ -766,20 +766,14 @@ namespace MusicXMLViewerWPF.ScoreParts.MeasureContent
             float X = (float)StartPoint.X;
             float Y = (float)StartPoint.Y;
             int s = 0;
-
             for (int i = 0; i < num; i++)
             {
                 Misc.DrawingHelpers.DrawString(dc, MusicalChars.Staff5L, TypeFaces.NotesFont, color, X + s, Y, Scale);
                 s += 24;
             }
-
             if (filling != 0)
             {
                 Misc.DrawingHelpers.DrawString(dc, MusicalChars.Staff5L, TypeFaces.NotesFont, color, X + (Width-24), Y, Scale);
-            }
-            if (IsFirstInLine)
-            {
-                //Misc.DrawingHelpers.DrawText(dc, Number.ToString(), new Point(Relative_x + 5f, Relative_y - 5f), 10f, withsub: false, color: Brushes.Black, font_weight:"regular");
             }
         }
         public void Draw_Measure(DrawingVisual dv, Point p)
