@@ -7,9 +7,9 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid Background="Silver">
-        <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
             <Grid>
-                <ContentPresenter Margin="5"  Content="{Binding Content}"/>
+                <!--<ContentPresenter Margin="5"  Content="{Binding Content}"/>-->
                 <TextBlock Text="{Binding Title}"/>
                 <ItemsControl x:Name="PagesCollection" Margin="0,40,0,0" ItemsSource="{Binding PagesCollection}">
                     <ItemsControl.ItemsPanel>

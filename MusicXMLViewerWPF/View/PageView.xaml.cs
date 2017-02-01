@@ -23,7 +23,7 @@ namespace MusicXMLScore.ViewModel
         public PageView()
         {
             InitializeComponent();
-            this.DataContext = new PageViewModel();
+            //this.DataContext = new PageViewModel();
         }
 
         private void StaffLineCanvas_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
