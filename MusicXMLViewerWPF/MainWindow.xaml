@@ -79,11 +79,11 @@
             </Menu>
         </DockPanel>
         
-        <Slider Grid.Row="1" Maximum="1900" Minimum="200" Value="{Binding Width, ElementName=tabcontrol}"/>
+        
         
         <TabControl x:Name="tabcontrol" Margin="10" Grid.Row="2" ItemsSource="{Binding TabsCreated}" SelectedItem="{Binding SelectedTabItem}">
         </TabControl>
-        
+        <Slider Grid.Row="1" Maximum="1900" Minimum="200" Value="{Binding Width, ElementName=tabcontrol}"/>
         <ScrollViewer Grid.Row="3" CanContentScroll="True" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
             <Border>
                 <Border.Effect>

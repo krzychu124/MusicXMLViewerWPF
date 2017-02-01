@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
@@ -95,7 +96,7 @@ namespace MusicXMLViewerWPF.ScoreParts.MeasureContent
         {
             ID = Misc.RandomGenerator.GetRandomHexNumber();
             XElementSource = x;
-            XMLExtractMeasureInfo(x);
+            
             //PropertyChanged += segment_Properties_Ready;
             PropertyChanged += Measure_PropertyChanged;
             if (x.Elements("direction").Any() == false)
@@ -157,17 +158,10 @@ namespace MusicXMLViewerWPF.ScoreParts.MeasureContent
                     //! Generate segments () ... 
                 }
             }
-            //if (barlines.Count ==0 || barlines.Where(b => b.Style != Barline.BarStyle.regular).Any()) 
-            //{
-                barlines.Add(new Barline() { Style = Barline.BarStyle.regular, Location = Barline.BarlineLocation.right }); // adding default barline for drawing later
-            //}
-            //foreach (var item in Misc.ScoreSystem.Segments)
-            //{
-            //    Logger.Log($"Added segment {item.ToString()}");
-            //}
-            //SortNotations(); // missing impl
+            barlines.Add(new Barline() { Style = Barline.BarStyle.regular, Location = Barline.BarlineLocation.right });
             SortNotesByVoice();
             SortBeamsByNumber();
+            XMLExtractMeasureInfo(x);
             Loaded = true;
         }
         #endregion
@@ -485,12 +479,41 @@ namespace MusicXMLViewerWPF.ScoreParts.MeasureContent
                 Logger.Log($"Measure {number} has no width: {Width}");
                 int num = music_characters.Count();
                 elements_count = num;
-               //! AutoMeasureWidth(num);
+                ThreadPool.QueueUserWorkItem(m => CalculateMeasureWidth());
             }
             bool t = int.TryParse(x.Attribute("number").Value, out number);
             if (t == false) Logger.Log($"Measure number is: {x.Attribute("number").Value}");
             //number = Convert.ToInt32(x.Attribute("number").Value);
             hasNumberInvisible = x.Attribute("implicit") != null ? x.Attribute("implicit").Value == "yes" ? true : false : false; // TODO_L not sure if itll work - very rare usage
+        }
+
+        private void CalculateMeasureWidth()
+        {
+            double calculatedWidth = 0;
+            if (Attributes != null)
+            {
+                if(Attributes.Clef != null)
+                {
+                    calculatedWidth += Attributes.Clef.Width + 10;
+                }
+                if (Attributes.Key != null)
+                {
+                    calculatedWidth += Attributes.Key.Width + 5;
+                }
+                if (Attributes.Time != null)
+                {
+                    calculatedWidth += Attributes.Time.Width + 10;
+                }
+            }
+
+            if (NotesList.Count != 0)
+            {
+                foreach (var item in NotesList)
+                {
+                    calculatedWidth += item.Width ;
+                }
+            }
+            Width = (float)calculatedWidth;
         }
         #endregion
         /// <summary>

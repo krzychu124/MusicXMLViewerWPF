@@ -6,9 +6,9 @@
              xmlns:local="clr-namespace:MusicXMLScore.View"
              mc:Ignorable="d" 
              xmlns:helpers="clr-namespace:MusicXMLScore.Helpers"
-             d:DesignHeight="160" d:DesignWidth="150.37" Name="Measure">
+             d:DesignHeight="100" d:DesignWidth="150.37" Name="Measure">
     <Grid>
-        <Canvas x:Name="canvas" VerticalAlignment="Top" Height="60" Width="{Binding MeasureWidth}">
+        <Canvas x:Name="canvas" Margin="0,20,0,0" VerticalAlignment="Top" Height="60" Width="{Binding MeasureWidth}">
             <helpers:StaffLineCanvas Height="60" Width="{Binding ElementName=canvas, Path=Width}"/>
             <helpers:CustomMeasurePanel VerticalAlignment="Top" Width="{Binding ElementName=canvas, Path=Width}" Height="60">
                 <ItemsControl Margin="0,0,0,0" Height="60" ItemsSource="{Binding MeasureContent}">

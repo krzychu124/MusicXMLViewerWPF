@@ -23,7 +23,7 @@ namespace MusicXMLScore.View
         public PartsSegmentView()
         {
             InitializeComponent();
-            this.DataContext = new ViewModel.PartsSegmentViewModel();
+            //this.DataContext = new ViewModel.PartsSegmentViewModel();
         }
     }
 }

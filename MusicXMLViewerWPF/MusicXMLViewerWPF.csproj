@@ -122,7 +122,6 @@
     <Compile Include="Helpers\CustomSystemWrapPanel.cs" />
     <Compile Include="Helpers\DrawingHelpers.cs" />
     <Compile Include="Helpers\DrawingVisualPlus.cs" />
-    <Compile Include="Helpers\ModelWrapper.cs" />
     <Compile Include="Helpers\OrientedSize.cs" />
     <Compile Include="Helpers\PreviewCanvas.cs" />
     <Compile Include="Helpers\PreviewSettings.cs" />
