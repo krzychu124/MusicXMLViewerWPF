@@ -16,8 +16,8 @@ namespace MusicXMLViewerWPF
     {
 
         //public string part_id;
-        private float pageHeight;
-        private float pageWidth;
+        private double pageHeight;
+        private double pageWidth;
         private PageMargins pageMargins = new PageMargins();
         private Rect content_space;
         private Rect content_space_for_measures;
@@ -25,7 +25,7 @@ namespace MusicXMLViewerWPF
         public event PropertyChangedEventHandler PropertyChanged;
         public static int num_lines;
         public static List<Margins> line = new List<Margins>();
-        public float Width
+        public double Width
         {
             get { return pageWidth; }
             set
@@ -36,7 +36,7 @@ namespace MusicXMLViewerWPF
                 }
             }
         }
-        public float Height
+        public double Height
         {
             get { return pageHeight; }
             set
@@ -90,8 +90,8 @@ namespace MusicXMLViewerWPF
         public Page()
         {
             this.PropertyChanged += Page_PropertyChanged;
-            pageWidth = 2100f; //! A4 format - vertical
-            pageHeight = 2970f;
+            pageWidth = 2100.0; //! A4 format - vertical
+            pageHeight = 2970.0;
             pageMargins = new PageMargins(); //! Std. page margins
             //? No usage, to refactoring; CalculateContentSpace();
             //CalculateMeasureContetSpace();
@@ -159,8 +159,8 @@ namespace MusicXMLViewerWPF
 
             foreach (var item in pageLayoutXElementList)//TODO_L tests, check carefully page margins
             {
-                pageWidth = float.Parse(item.Element("page-width").Value, CultureInfo.InvariantCulture);
-                pageHeight = float.Parse(item.Element("page-height").Value, CultureInfo.InvariantCulture);
+                Width = double.Parse(item.Element("page-width").Value, CultureInfo.InvariantCulture);
+                Height = double.Parse(item.Element("page-height").Value, CultureInfo.InvariantCulture);
                 var pmargins = item.Elements("page-margins");
                 string type = item.Attribute("type") != null ? item.Attribute("type").Value : "both";
                 pageMargins = new PageMargins(type, float.Parse(item.Element("page-margins").Element("left-margin").Value, CultureInfo.InvariantCulture), float.Parse(item.Element("page-margins").Element("right-margin").Value, CultureInfo.InvariantCulture), float.Parse(item.Element("page-margins").Element("top-margin").Value, CultureInfo.InvariantCulture), float.Parse(item.Element("page-margins").Element("bottom-margin").Value, CultureInfo.InvariantCulture));

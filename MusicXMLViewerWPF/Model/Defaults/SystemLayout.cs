@@ -50,20 +50,6 @@ namespace MusicXMLViewerWPF.Defaults
             systemDividers = d;
         }
 
-        private void GetSystemLayout()
-        {
-            XDocument doc = LoadDocToClasses.Document;
-            var s = from z in doc.Descendants("defaults") select z;
-            var sl = from x in s.Elements("system-layout") select x;
-            foreach (var item in sl)
-            {
-                leftMargin = (float)Convert.ToDouble(item.Element("system-margins").Element("left-margin").Value);
-                rightMargin = (float)Convert.ToDouble(item.Element("system-margins").Element("right-margin").Value);
-                systemDistance = (float)Convert.ToDouble(item.Element("system-distance").Value);
-                topSystemDistance = (float)Convert.ToDouble(item.Element("top-system-distance").Value);
-            }
-        }
-
         private void GetSystemLayout(XElement x)
         {
 

@@ -270,7 +270,6 @@ namespace MusicXMLScore.ViewModel
                 Set(() => SelectedTabItem, ref selectedTabItem, value);
             }
         }
-
         public ObservableCollection<TabItem> TabsCreated { get { return tabscreated; } set { if (value != null) { tabscreated = value; } } }
         public bool XmlFileLoaded
         {

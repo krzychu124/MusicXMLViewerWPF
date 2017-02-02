@@ -108,14 +108,14 @@ namespace MusicXMLViewerWPF
             {
                 position.X += DefX;
             }
-            Measure measure = (Measure)Misc.ScoreSystem.GetMeasureSegment(MeasureID);
-            position = new Point(position.X + measure.Relative.X, position.Y + measure.Relative.Y);
+            //? Measure measure = (Measure)Misc.ScoreSystem.GetMeasureSegment(MeasureID);
+            position = new Point();//? new Point(position.X + measure.Relative.X, position.Y + measure.Relative.Y);
             DrawingVisual dynamic_visual = new DrawingVisual();
             using (DrawingContext dc = dynamic_visual.RenderOpen())
             {
                 if (Placement == "below")
                 {
-                    position.Y += measure.Height * 0.7;
+                    position.Y += 60 * 0.7; //?  measure.Height * 0.7;
                 }
                 Misc.DrawingHelpers.DrawString(dc, Symbol, TypeFaces.MeasuresFont, Brushes.Black, (float)position.X, (float)position.Y, 40 * 0.45f);
             }

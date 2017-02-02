@@ -23,7 +23,7 @@ namespace MusicXMLViewerWPF.Misc
         public LineBreak(float x, float y)
         {
             Page p = new Page();
-            _x = p.Width - p.Margins.Right + 20f;
+            _x = (float) p.Width - p.Margins.Right + 20f;
             //_x = x;
             _y = y;
             break_type = BreakType.line;

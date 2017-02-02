@@ -10,18 +10,17 @@
         x:Class="MusicXMLScore.MainWindow"
         mc:Ignorable="d"
         DataContext="{Binding Main, Source={StaticResource Locator}}"
-        Title="MainWindow" Height="768" Width="1440">
+        Title="MainWindow" Height="768" Width="1440" x:Name="MainW">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="20"/>
             <RowDefinition Height="20"/>
             <RowDefinition Height="4*"/>
-            <RowDefinition Height=".1*"/>
             <RowDefinition Height="5"/>
-            <RowDefinition Height="1.5*"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="20"/>
         </Grid.RowDefinitions>
-        
+
         <DockPanel Grid.Row="0">
             <Menu IsMainMenu="True" Height="20" VerticalAlignment="Top" DockPanel.Dock="Top" Width="Auto" >
                 <MenuItem Header="File" >
@@ -78,13 +77,10 @@
                 </MenuItem>
             </Menu>
         </DockPanel>
-        
-        
-        
-        <TabControl x:Name="tabcontrol" Margin="10" Grid.Row="2" ItemsSource="{Binding TabsCreated}" SelectedItem="{Binding SelectedTabItem}">
+        <TabControl x:Name="tabcontrol" Margin="10" Grid.Row="2" Width="{Binding Width, ElementName=MainW}" ItemsSource="{Binding TabsCreated}" SelectedItem="{Binding SelectedTabItem}">
         </TabControl>
-        <Slider Grid.Row="1" Maximum="1900" Minimum="200" Value="{Binding Width, ElementName=tabcontrol}"/>
-        <ScrollViewer Grid.Row="3" CanContentScroll="True" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <Slider Grid.Row="1" Maximum="1900" Minimum="500" Value="{Binding Width, ElementName=tabcontrol}"/>
+        <!--<ScrollViewer Grid.Row="3" CanContentScroll="True" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
             <Border>
                 <Border.Effect>
                     <DropShadowEffect BlurRadius="10" ShadowDepth="2"/>
@@ -97,12 +93,12 @@
                     </ItemsControl.ItemsPanel>
                 </ItemsControl>
             </Border>
-        </ScrollViewer>
+        </ScrollViewer>-->
         
-        <GridSplitter Grid.Row="4" Height="5" HorizontalAlignment="Stretch"></GridSplitter>
+        <GridSplitter Grid.Row="3" Height="5" HorizontalAlignment="Stretch"></GridSplitter>
         
-        <Log:LogView Grid.Row="5" Margin="0,0,0,0"/>
+        <Log:LogView Grid.Row="4" MinHeight="105" MaxHeight="250"/>
         
-        <StatusBar Grid.Row="6" Height="20">Status Bar...</StatusBar>
+        <StatusBar Grid.Row="5" Height="20">Status Bar...</StatusBar>
     </Grid>
 </Window>
