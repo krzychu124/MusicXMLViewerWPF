@@ -114,8 +114,8 @@ namespace MusicXMLViewerWPF
             Segment actualmeasure = null;
             try
             {
-                actualnote = (Note)Misc.ScoreSystem.GetSegment(NoteID);
-                actualmeasure = Misc.ScoreSystem.GetMeasureSegment(actualnote.MeasureId);
+                //? actualnote = (Note)Misc.ScoreSystem.GetSegment(NoteID);
+                //? actualmeasure = Misc.ScoreSystem.GetMeasureSegment(actualnote.MeasureId);
             }
             catch(Exception e)
             {

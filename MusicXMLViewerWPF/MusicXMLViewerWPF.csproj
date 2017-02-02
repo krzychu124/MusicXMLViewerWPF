@@ -126,7 +126,6 @@
     <Compile Include="Helpers\PreviewCanvas.cs" />
     <Compile Include="Helpers\PreviewSettings.cs" />
     <Compile Include="Helpers\StaffLineCanvas.cs" />
-    <Compile Include="Helpers\test.cs" />
     <Compile Include="Helpers\TypeFaces.cs" />
     <Compile Include="Log\LoggIt.cs" />
     <Compile Include="Log\LogView.xaml.cs">
@@ -153,16 +152,12 @@
     <Compile Include="Model\ScoreParts\MeasureContent\Barline.cs" />
     <Compile Include="Model\Defaults\SystemLayout.cs" />
     <Compile Include="Model\Misc\Calc.cs" />
-    <Compile Include="Model\Misc\CanvasL.cs" />
     <Compile Include="Model\ScoreParts\MeasureContent\ClefType.cs" />
     <Compile Include="Model\Defaults\Appearance.cs" />
     <Compile Include="Model\Defaults\Scale.cs" />
     <Compile Include="Model\ScoreParts\MeasureContent\Directions.cs" />
     <Compile Include="Model\Misc\IDrawable.cs" />
-    <Compile Include="Model\Misc\IXMLExtract.cs" />
     <Compile Include="Model\ScoreParts\MeasureContent\Key.cs" />
-    <Compile Include="Model\Misc\LoadCharsToViewPort.cs" />
-    <Compile Include="Model\Misc\LoadDocToClasses.cs" />
     <Compile Include="Model\Misc\MusicalChars.cs" />
     <Compile Include="Model\MusicScore.cs" />
     <Compile Include="Model\ScoreParts\MeasureContent\Measure.cs" />
@@ -170,7 +165,6 @@
     <Compile Include="Model\ScoreParts\Part.cs" />
     <Compile Include="Model\ScoreParts\ScorePart.cs" />
     <Compile Include="Model\Defaults\Print.cs" />
-    <Compile Include="Model\Misc\NoUsage\Prototype.cs" />
     <Compile Include="Model\ScoreParts\MeasureContent\Notes\Lyrics.cs" />
     <Compile Include="Model\ScoreParts\MeasureContent\Notes\Rest.cs" />
     <Compile Include="Model\ScoreParts\PartList.cs" />
@@ -178,7 +172,6 @@
     <Compile Include="Model\ScoreParts\MeasureContent\Notes\Articulations.cs" />
     <Compile Include="Model\ScoreParts\MeasureContent\Clef.cs" />
     <Compile Include="Model\ScoreParts\MeasureContent\Dynamics.cs" />
-    <Compile Include="Model\ScoreParts\MeasureContent\Measures.cs" />
     <Compile Include="Model\Misc\Segment.cs" />
     <Compile Include="Model\ScoreParts\MeasureContent\Notes\Notations.cs" />
     <Compile Include="Model\ScoreParts\MeasureContent\Notes\Note.cs" />
@@ -188,9 +181,6 @@
     <Compile Include="Model\ScoreParts\MeasureContent\TimeSignature.cs" />
     <Compile Include="Model\Misc\XmlRead.cs" />
     <Compile Include="Model\Misc\TypeFaces.cs" />
-    <Compile Include="Model\Misc\NoUsage\Window1.xaml.cs">
-      <DependentUpon>Window1.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Model\Work\Work.cs" />
     <Compile Include="View\CreditsView.xaml.cs">
       <DependentUpon>CreditsView.xaml</DependentUpon>
@@ -241,10 +231,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="MainWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Model\Misc\NoUsage\Window1.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

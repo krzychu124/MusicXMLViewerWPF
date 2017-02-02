@@ -166,11 +166,6 @@ namespace MusicXMLViewerWPF
             throw new NotImplementedException();
 
         }
-        public static void ExtractRests()
-        {
-              RestList = LoadDocToClasses.list.OfType<Rest>().ToList();
-        }
-
         public override void Draw(DrawingVisual visual)
         {
             DrawingVisual rest = new DrawingVisual();

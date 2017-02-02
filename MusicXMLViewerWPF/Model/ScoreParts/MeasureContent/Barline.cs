@@ -95,10 +95,6 @@ namespace MusicXMLViewerWPF
             }
         
         }
-        public void Draw(CanvasL surface, Point p)
-        {
-            
-        }
 
         public void Draw(DrawingVisual visual, Point p)
         {
@@ -258,9 +254,10 @@ namespace MusicXMLViewerWPF
         public void Draw(DrawingVisual visual)
         {
             Point position = new Point();
-            Measure measure = (Measure)Misc.ScoreSystem.GetMeasureSegment(MeasureID);
+            /*? Measure measure = (Measure)Misc.ScoreSystem.GetMeasureSegment(MeasureID);
             position = measure.Relative;
-            position.X += DefX;
+            position.X += DefX; */
+
             Draw(visual, position);
         }
         public void Draw(DrawingVisual visual, Point p) 
@@ -356,11 +353,6 @@ namespace MusicXMLViewerWPF
         private void GetEndingType (string s)
         {
             type = s == "start" ? EndingType.start : s == "stop" ? EndingType.stop : EndingType.discontinue; 
-        }
-        public void Draw(Point p, float width, CanvasL surface)
-        {
-            
-            
         }
         public DrawingVisual DrawEnding(DrawingVisual visual, Point p, float width)
         {
@@ -480,7 +472,7 @@ namespace MusicXMLViewerWPF
             forward
         }
     }
-    class Winged :  IDrawable, IXMLExtract //todo ixmllextract removal
+    class Winged :  IDrawable//todo ixmllextract removal
     {
         private WingType type;
         private string s_type;
@@ -519,25 +511,6 @@ namespace MusicXMLViewerWPF
         }
         public Winged()
         {
-            
-            var xel =  XMLExtractor();
-            foreach (var item in xel)
-            {
-                ExtractXElement(item);
-            }
-            
-        }
-
-        public IEnumerable<XElement> XMLExtractor()
-        {
-            XDocument x = LoadDocToClasses.Document;
-            var z = from item in x.Elements() select item;
-            return z;
-        }
-
-        public void ExtractXElement(XElement x)
-        {
-
         }
 
         public void Draw(DrawingVisual visual, Point p)

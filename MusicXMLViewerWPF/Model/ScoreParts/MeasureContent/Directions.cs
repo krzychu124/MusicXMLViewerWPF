@@ -334,9 +334,9 @@ namespace MusicXMLViewerWPF
         }
 
         public void Draw(DrawingVisual visual, Point p)
-        {
-            Measure measure = (Measure)Misc.ScoreSystem.GetMeasureSegment(MeasureID);
-            p = measure.Relative;
+        {   //? temp 
+            //Measure measure = (Measure)Misc.ScoreSystem.GetMeasureSegment(MeasureID);
+            //p = measure.Relative;
             p.X += DefX;
             Point rehearsalPos = new Point(p.X - this.def_x, p.Y - this.def_y);
             Point rect1 = new Point(rehearsalPos.X - 8, rehearsalPos.Y - 8);

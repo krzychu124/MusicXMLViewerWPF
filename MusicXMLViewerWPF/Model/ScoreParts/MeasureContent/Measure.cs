@@ -13,7 +13,7 @@ using System.Xml.Linq;
 
 namespace MusicXMLViewerWPF.ScoreParts.MeasureContent
 {
-    class Measure : Segment, IDrawable, INotifyPropertyChanged // NEEDIMPROVEMENTS: Finish reworking class
+    class Measure : Segment, INotifyPropertyChanged // NEEDIMPROVEMENTS: Finish reworking class
     {
         #region Fields
         //--------------------
@@ -159,8 +159,8 @@ namespace MusicXMLViewerWPF.ScoreParts.MeasureContent
                 }
             }
             barlines.Add(new Barline() { Style = Barline.BarStyle.regular, Location = Barline.BarlineLocation.right });
-            SortNotesByVoice();
-            SortBeamsByNumber();
+            //SortNotesByVoice();
+            //SortBeamsByNumber();
             XMLExtractMeasureInfo(x);
             Loaded = true;
         }
@@ -552,207 +552,6 @@ namespace MusicXMLViewerWPF.ScoreParts.MeasureContent
         //}
 
         #region All Drawing Methods usable,ususable,bugged
-        /// <summary>
-        /// Drawing method used to draw measure with all contating elements (motes, rest, directions etc.)
-        /// </summary>
-        /// <param name="surface"></param>
-        /// <param name="p"></param>
-        public void Draw(CanvasL surface,Point p) // drawing method
-        {
-            Position = p;
-
-            DrawingVisual visual = new DrawingVisual();
-            DrawingVisual visualMeasure = new DrawingVisual();
-            using (DrawingContext dc = visualMeasure.RenderOpen())
-            {
-                Draw_Measure(dc, p);
-            }
-            visual.Children.Add(visualMeasure);
-
-            foreach (var item in Barlines)// works quite good, need deep tests later
-            {
-                DrawingVisual barline_visual = new DrawingVisual();
-                barline_visual = item.DrawBarline(barline_visual, p, Width);
-                visual.Children.Add(barline_visual);
-            }
-
-            var ending = Barlines.Select(i => i).Where(i => i.Ending != null);
-            foreach (var item in ending) // works quite good, need deep tests later
-            {
-                DrawingVisual ending_visual = new DrawingVisual();
-                ending_visual = item.Ending.DrawEnding(ending_visual, p, Width);
-                visual.Children.Add(ending_visual);
-
-            }//Draw_Barlines(dc, p); replaced with different
-
-            if (Attributes != null) // works quite good, need deep tests later
-            {
-                if (Barlines.Exists(i => i.Repeat != null))
-                {
-                    Attributes.Draw(visual, p, Width, true);
-                }
-                else
-                {
-                    Attributes.Draw(visual, p, Width); // visual will be opened inside, good results, maybe changed in the future
-                }
-            }
-            if (DirectionList != null)
-            {
-
-                foreach (var item in DirectionList)
-                {
-
-                    item.Draw(visual, p);
-                }
-
-                //foreach (var item in Direction)
-                //{
-                //    if (item.DirectionList != null)
-                //    {
-                //        foreach (var item2 in item.DirectionList)
-                //        {
-                //            if (item2.Dynamics != null)
-                //            {
-                //                if (Attributes != null && Attributes.Key != null)
-                //                {
-                //                    p.X = p.X + 50f;
-                //                }
-                //                item2.Dynamics.Draw(visual, p);
-                //            }
-                //        }
-
-                //    }
-                //}
-
-            }
-            //Draw_Directions(dc2, p); // TODO_H missing implementation
-            
-            if (MusicCharacters.Count != 0)
-            {
-                Point temp = new Point(p.X + 20f, p.Y);
-                temp.Y += 8f;
-                DrawingVisual segments = new DrawingVisual();
-                foreach (var character in MusicCharacters)
-                {
-                    if (character.Width == 0)
-                    {
-                        character.CalculateDimensions();
-                        character.Relative = temp;
-                        temp.X = character.Width + temp.X + 2f;
-
-                    }
-                    if (character.Width != 0)
-                    {
-                        DrawingVisual segment = new DrawingVisual();
-                        character.Draw(segment, character.Color);
-                        segments.Children.Add(segment);
-                    }
-                }
-                visual.Children.Add(segments);
-            }
-            Visual = visual;
-            surface.AddVisual(visual);
-
-        }
-
-        public void Draw(DrawingVisual visual, Point p)
-        {
-            throw new NotImplementedException();// maybe rework to use that approach
-        }
-        /// <summary>
-        /// Draw Mesure (inside segment) - test
-        /// </summary>
-        /// <param name="visual"></param>
-        public new void Draw(DrawingVisual visual)
-        {
-            using (DrawingContext dc = visual.RenderOpen())
-            {
-                Point temp = new Point(Calculated_x, Calculated_y); //TODO_I changed for testbuild
-                //Point temp = new Point(0,0);
-                //! CalculateXPosCharacter(temp);
-                Draw_Measure(dc, temp);
-            }
-
-            DrawingVisual attr_vis = new DrawingVisual();
-            Draw_Attributes(attr_vis);
-            visual.Children.Add(attr_vis);
-            DrawingVisual allnotes_vis = new DrawingVisual();
-            Draw_AllNotes(allnotes_vis);
-            visual.Children.Add(allnotes_vis);
-            /*
-            if (MusicCharacters.Any(i => i.Segment_type == SegmentType.Clef))
-            {
-                var character = MusicCharacters.First(z => z.Segment_type == SegmentType.Clef);
-                DrawingVisual vis = new DrawingVisual();
-                character.Draw(vis, character.Color);
-                visual.Children.Add(vis);
-            }*/
-            foreach (var item in MusicCharacters)
-            {
-                DrawingVisual vis = new DrawingVisual();
-                item.Draw(vis, item.Color);
-                visual.Children.Add(vis);
-                if (item.Segment_type == SegmentType.Clef)
-                {
-                    List<IDrawable> test = new List<IDrawable>();
-                    Measure t = new Measure();
-                    test.Add(t);
-                }
-
-            }
-            if (DirectionList != null)
-            {
-                foreach (var item in DirectionList)
-                {
-                    if (DirectionList != null)
-                    {
-                        item.Draw(visual, Relative);
-
-                        //if (item.DirectionList != null)
-                        //{
-                        //    foreach (var it in item.DirectionList)
-                        //    {
-                        //        if (it.Dynamics != null)
-                        //        {
-                        //            it.Dynamics.Draw(visual);
-                        //        }
-                        //    }
-                        //}
-                    }
-                }
-            }
-            if (beams != null)
-            {
-                foreach (var item in sortedbeams)
-                {
-                    Beam.Draw(visual, item);
-                }
-                
-            }
-        }
-
-        private void Draw_AllNotes(DrawingVisual notes_vis)
-        {
-            if (NotesList.Count != 0)
-            {
-                //foreach(Rest item in NotesList)
-                //{
-                //    //item.Draw(rests_vis);
-                //}
-                foreach(var item in NotesList)
-                {
-                    if (item.Voice == 1 || item.Voice == 0)
-                    {
-                        item.Draw(notes_vis);
-                    }
-                }
-                //var rests = NotesList.OfType<Rest>();
-                //foreach (var item in rests)
-                //{
-                //    item.Draw(rests_vis);
-                //}
-            }
-        }
 
         public void Draw_(DrawingVisual visual)
         {

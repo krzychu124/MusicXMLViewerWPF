@@ -162,19 +162,22 @@ namespace MusicXMLViewerWPF
         {
             Slur slurbegin = slurslist.ElementAt(0);
             Slur slurend = slurslist.ElementAt(1);
-            Note firstnote;
-            Note lastnote;
+            Note firstnote = null;
+            Note lastnote = null;
             try
             {
-                firstnote = (Note)Misc.ScoreSystem.GetSegment(slurbegin.NoteID);
-                lastnote = (Note)Misc.ScoreSystem.GetSegment(slurend.NoteID);
+               // firstnote = (Note)Misc.ScoreSystem.GetSegment(slurbegin.NoteID);
+               // lastnote = (Note)Misc.ScoreSystem.GetSegment(slurend.NoteID);
             }
             catch (Exception e)
             {
                 Console.WriteLine($"Exception occured {e.ToString()}");
                 throw;
             }
-            
+            if (firstnote != null || lastnote != null)
+            {
+                return;
+            }
 
             sbyte dir = slurbegin.Placement ? (sbyte)1 : (sbyte)-1; // set direction of slur
             Pen pen = new Pen(Brushes.Black, 0.5);
