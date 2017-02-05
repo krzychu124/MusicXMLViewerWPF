@@ -1,4 +1,5 @@
-﻿using MusicXMLScore.Helpers;
+﻿using GalaSoft.MvvmLight;
+using MusicXMLScore.Helpers;
 using MusicXMLViewerWPF.ScoreParts.MeasureContent;
 using System;
 using System.Collections.Generic;
@@ -13,7 +14,7 @@ namespace MusicXMLScore.ViewModel
     /// <summary>
     /// Displays default or passed to ctor. Measure object
     /// </summary>
-    class MeasureViewModel //TODO_I implement collection of items placed in this measure (to draw inside CustomPanel)
+    class MeasureViewModel : ViewModelBase //TODO_I implement collection of items placed in this measure (to draw inside CustomPanel)
     {
         #region Fields
         private Measure measure;
@@ -75,6 +76,7 @@ namespace MusicXMLScore.ViewModel
                 if (item.DrawableObjectStatus == MusicXMLViewerWPF.Misc.DrawableMusicalObjectStatus.ready)
                     MeasureContent.Add(item.DrawableMusicalObject);
             }
+
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using MusicXMLScore.View;
+﻿using GalaSoft.MvvmLight;
+using MusicXMLScore.View;
 using MusicXMLViewerWPF;
 using MusicXMLViewerWPF.ScoreParts.MeasureContent;
 using System;
@@ -14,7 +15,7 @@ namespace MusicXMLScore.ViewModel
     /// <summary>
     /// Displays PartMeasures loaded or passed by parameter to ctor.
     /// </summary>
-    class PartViewModel
+    class PartViewModel : ViewModelBase
     {
         private ObservableCollection<UIElement> measuresCollection;
         

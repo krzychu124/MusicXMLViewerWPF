@@ -1,4 +1,5 @@
-﻿using MusicXMLScore.Helpers;
+﻿//#define LOADSPEEDTEST
+using MusicXMLScore.Helpers;
 using MusicXMLViewerWPF;
 using SimpleLogger;
 using System;
@@ -15,6 +16,7 @@ using System.Windows.Media;
 using System.Xml.Linq;
 using MusicXMLScore.ViewModel;
 using GalaSoft.MvvmLight;
+using System.Diagnostics;
 
 namespace MusicXMLScore.ViewModel
 {
@@ -77,7 +79,8 @@ namespace MusicXMLScore.ViewModel
             {
                 CreateBlankTab();
             }
-
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
             //TabsCreated.Clear();
         }
 
@@ -148,7 +151,21 @@ namespace MusicXMLScore.ViewModel
             Log.LoggIt.Log($"File {filedestination} been loaded", Log.LogType.Info);
             XDocument XDoc = XDocument.Load(filedestination, LoadOptions.SetLineInfo); // std + add line info(number)
             XmlFileLoaded = true;
-            MusicScore musicscore = new MusicScore(XDoc);
+            MusicScore musicscore = new MusicScore();
+
+#if LOADSPEEDTEST
+             var sw = new Stopwatch();
+             sw.Start();
+            for (int i = 0; i < 100; i++)
+            {
+                musicscore = new MusicScore(XDoc);
+            }
+            sw.Stop();
+            Console.WriteLine($"file loaded in: {sw.ElapsedMilliseconds / 100}");
+            sw = new Stopwatch();
+            sw.Start();
+#endif
+            musicscore = new MusicScore(XDoc);
             var vm = (PagesControllerViewModel)SelectedTabItem.DataContext;
             if (vm.IsBlank) //! check if currently selected tab is blank
             {
@@ -164,7 +181,10 @@ namespace MusicXMLScore.ViewModel
                 TabsCreated.Add(newTab);
                 SelectedTabItem = newTab;
             }
-
+#if LOADSPEEDTEST
+            sw.Stop();
+            Console.WriteLine($"Layout generated in: {sw.ElapsedMilliseconds} ms");
+#endif
         }
 
         private void OnOpenOptionWindow()
@@ -206,7 +226,7 @@ namespace MusicXMLScore.ViewModel
         //    UpdateSize();
 
         //}
-        #region Fields
+#region Fields
         private double h = 1900;
         private Orientation orientation = Orientation.Horizontal;
         private ObservableCollection<PageView> pages = new ObservableCollection<PageView>();
@@ -214,9 +234,9 @@ namespace MusicXMLScore.ViewModel
         private ObservableCollection<TabItem> tabscreated = new ObservableCollection<TabItem>();
         private double w = 2000;
         private bool xmlfileloaded;
-        #endregion
+#endregion
 
-        #region Properties, Commands
+#region Properties, Commands
         public RelayCommand AddMeasureCommand { get; set; }
         public RelayCommand CloseFileCommand { get; set; }
         public RelayCommand CustomButtonCommand { get; set; }
@@ -282,6 +302,6 @@ namespace MusicXMLScore.ViewModel
                 }
             }
         }
-        #endregion
+#endregion
     }
 }

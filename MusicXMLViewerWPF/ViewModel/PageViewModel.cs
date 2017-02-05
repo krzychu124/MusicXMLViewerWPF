@@ -73,44 +73,63 @@ namespace MusicXMLScore.ViewModel
             PartsSegments.Add(psv);
         }
         private void CreatePartSegment()//! Temporary solution for prototype visualization
-        {  
+        {
             if (PartList == null) { return; }
-           // var vm = ViewModelLocator.Instance.Main.SelectedTabItem.DataContext as PagesControllerViewModel;
+            // var vm = ViewModelLocator.Instance.Main.SelectedTabItem.DataContext as PagesControllerViewModel;
             // Recover from file using new system property of measure in part
-            var part = PartList.ElementAt(0);
-            List<Part> partlist = new List<Part>();
-            List<int> firstItemInLineIndexes = new List<int>();
-            for (int i = 0; i < part.MeasureList.Count; i++)
+            for (int p = 0; p < PartList.Count; p++)
             {
-                if (part.MeasureList.ElementAt(i).IsFirstInLine)
+                var part = PartList.ElementAt(p);
+                List<Part> partlist = new List<Part>();
+                List<int> firstItemInLineIndexes = new List<int>();
+                for (int i = 0; i < part.MeasureList.Count; i++)
                 {
-                    firstItemInLineIndexes.Add(i);
+                    if (part.MeasureList.ElementAt(i).IsFirstInLine)
+                    {
+                        firstItemInLineIndexes.Add(i);
+                    }
                 }
-            }
-            if (firstItemInLineIndexes.LastOrDefault() != part.MeasureList.Count)
-            {
-                firstItemInLineIndexes.Add(part.MeasureList.Count);
-            }
-            int index = 0;
-            foreach(var indexOfFirstInLine in firstItemInLineIndexes)
-            {
-                partList = new List<Part>();
-                Part tempPart = new Part(part.PartId);
-                for (int i=index ; i < indexOfFirstInLine; i++)
+                if (firstItemInLineIndexes.LastOrDefault() != part.MeasureList.Count)
                 {
-                    tempPart.AddMeasure(part.MeasureList.ElementAt(i));
+                    firstItemInLineIndexes.Add(part.MeasureList.Count);
                 }
-                PartList.Add(tempPart);
-                partSegmentsList.Add(PartList);
-                index = indexOfFirstInLine;
+                int index = 0;
+                partlist = new List<Part>();
+                foreach (var indexOfFirstInLine in firstItemInLineIndexes)
+                {
+
+                    Part tempPart = new Part(part.PartId);
+                    for (int i = index; i < indexOfFirstInLine; i++)
+                    {
+                        tempPart.AddMeasure(part.MeasureList.ElementAt(i));
+                    }
+                    partlist.Add(tempPart);
+
+                    index = indexOfFirstInLine;
+                }
+                partSegmentsList.Add(partlist);
             }
         }
         private void FillPartSegment()
-        {
-            foreach (var partSegment in partSegmentsList)
+        { 
+            List<List<Part>> llp = new List<List<Part>>();
+            for (int j = 0; j < partSegmentsList.ElementAt(0).Count; j++)
             {
-                AddPartSegment(partSegment);
+                List<Part> lp = new List<Part>();
+                for (int i = 0; i < partSegmentsList.Count; i++)
+                {
+                    lp.Add(partSegmentsList.ElementAt(i).ElementAt(j));
+                }
+                llp.Add(lp);
             }
+            foreach (var ps in llp)
+            {
+                AddPartSegment(ps);
+            }
+            //foreach (var partSegment in partSegmentsList)
+            //{
+            //    AddPartSegment(partSegment);
+            //}
         }
         #endregion
 

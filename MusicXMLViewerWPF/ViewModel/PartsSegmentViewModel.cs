@@ -1,4 +1,5 @@
-﻿using MusicXMLViewerWPF;
+﻿using GalaSoft.MvvmLight;
+using MusicXMLViewerWPF;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -12,7 +13,7 @@ namespace MusicXMLScore.ViewModel
     /// <summary>
     /// Contains collection of instrument-part groups
     /// </summary>
-    class PartsSegmentViewModel //TODO_I collection of parts (parts - contains collection of measures) Each part represent one instrument
+    class PartsSegmentViewModel : ViewModelBase  //TODO_I collection of parts (parts - contains collection of measures) Each part represent one instrument
     {
         private ObservableCollection<UIElement> partscollection; //? maight be changed to collection of Part-type later
         public ObservableCollection<UIElement> PartsCollection { get { return partscollection; } set { partscollection = value; } }

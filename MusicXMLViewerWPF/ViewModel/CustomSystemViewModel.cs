@@ -8,10 +8,11 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using MusicXMLScore.Helpers;
+using GalaSoft.MvvmLight;
 
 namespace MusicXMLScore.ViewModel
 {
-    class CustomSystemViewModel
+    class CustomSystemViewModel : ViewModelBase
     {
         private ObservableCollection<UIElement> uielementlist = new ObservableCollection<UIElement>();
 
