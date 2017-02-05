@@ -45,16 +45,21 @@ namespace MusicXMLViewerWPF
             calculateStep();
             getAdditionalLines();
         }
-        public Pitch(string s, int o, int alter)
+        public Pitch(string step, int octave, int alter)
         {
-            step = s;
-            octave = o;
-            this.alter = alter;
-            getStep(s);
-            getStep(step);
+            ClefAlter = alter;
+            this.step = step;
+            _step = getStep(step);
             getPitch(_step);
-            calculateStep();
-            getAdditionalLines();
+            this.alter = alter;
+            this.octave = octave;
+            StepType = getStep(Step);
+            if (step != null && octave != -1)
+            {
+                CalculateStep();
+            }
+            //calculateStep();
+            //getAdditionalLines();
         }
         public Pitch(XElement x, int clefalter)
         {

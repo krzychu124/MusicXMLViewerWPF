@@ -459,6 +459,7 @@ namespace MusicXMLViewerWPF
         private DrawableMusicalObjectStatus drawableobjectstatus;
 
         private bool loadstatus;
+        private bool isUnpitched;
 
         #endregion Private Fields
 
@@ -553,6 +554,10 @@ namespace MusicXMLViewerWPF
                     case "pitch":
                         Pitch = new Pitch(item, ClefAlter); //? { ClefAlter = this.ClefAlter };
                         Logger.Log($"{ID} Note Pitch set to s:{Pitch.Step}, o:{Pitch.Octave}, a:{Pitch.Alter}");
+                        break;
+                    case "unpitched":
+                        Pitch = new Pitch(item.Element("display-step").Value, int.Parse(item.Element("display-octave").Value), ClefAlter);
+                        Unpitched = true;
                         break;
                     case "duration":
                         Duration = int.Parse(item.Value);
@@ -676,7 +681,8 @@ namespace MusicXMLViewerWPF
         public string SymbolXMLValue { get { return symbol_value; } set { symbol_value = value; } }
         public int Voice { get { return voice; } protected set { voice = value; } }
         public XElement XMLDefinition { get { return xmldefinition; } }
-
+        public bool Unpitched { get { return isUnpitched; } set { isUnpitched = value; } }
+        
         #endregion Public Properties
 
         #region Public Methods
@@ -774,11 +780,11 @@ namespace MusicXMLViewerWPF
             InitDrawableObject();
         }
 
-        public override string ToString()
-        {
-            string result = $"Position {Relative_x.ToString("0.#")}X, {Relative_y.ToString("0.#")}Y, Width: {Width.ToString("0.#")} {Pitch.Step}{Pitch.Octave}";
-            return result;
-        }
+        //public override string ToString()
+        //{
+        //    string result = $"Position {Relative_x.ToString("0.#")}X, {Relative_y.ToString("0.#")}Y, Width: {Width.ToString("0.#")} {Pitch.Step}{Pitch.Octave}";
+        //    return result;
+        //}
 
         #endregion Public Methods
 
