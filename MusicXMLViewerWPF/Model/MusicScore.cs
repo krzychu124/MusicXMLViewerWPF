@@ -123,7 +123,7 @@ namespace MusicXMLViewerWPF
         }
         public string Title { get { return title; } set { if (value != null) { title = value; } } }    
         public Work.Work Work { get { return work; } set { if (value != null) { work = value; } } }
-
+    
         #endregion Public Properties
 
         #region Public Methods
@@ -194,6 +194,8 @@ namespace MusicXMLViewerWPF
                     break;
             }
         }
+
+       
 
         #endregion Public Methods
 

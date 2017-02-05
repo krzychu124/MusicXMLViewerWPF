@@ -19,7 +19,7 @@ namespace MusicXMLViewerWPF
 
         public static void Log(string message, [CallerMemberName] string memberName = "")
         {
-            log.Add("["+memberName+"]"+": "+message);
+            log.Add("[" + memberName + "]" + ": " + message);
             if (refresh)
             {
                 LogAdded?.Invoke(null, EventArgs.Empty);
@@ -40,7 +40,7 @@ namespace MusicXMLViewerWPF
         }
         public static void Loaded( string message,[CallerMemberName] string memberName="")
         {
-            Log(memberName+": "+message);
+            //Log(memberName+": "+message);
         }
         public static string ClearLog()
         {

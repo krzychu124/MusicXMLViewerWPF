@@ -77,7 +77,7 @@
                 </MenuItem>
             </Menu>
         </DockPanel>
-        <TabControl x:Name="tabcontrol" Margin="10" Grid.Row="2" Width="{Binding Width, ElementName=MainW}" ItemsSource="{Binding TabsCreated}" SelectedItem="{Binding SelectedTabItem}">
+        <TabControl x:Name="tabcontrol" Margin="10" Grid.Row="2" Width="{Binding ActualWidth, ElementName=MainW}" ItemsSource="{Binding TabsCreated}" SelectedItem="{Binding SelectedTabItem}">
         </TabControl>
         <Slider Grid.Row="1" Maximum="1900" Minimum="500" Value="{Binding Width, ElementName=tabcontrol}"/>
         <!--<ScrollViewer Grid.Row="3" CanContentScroll="True" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">

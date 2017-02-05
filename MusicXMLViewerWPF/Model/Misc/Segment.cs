@@ -1,4 +1,5 @@
-﻿using MusicXMLViewerWPF.Misc;
+﻿using GalaSoft.MvvmLight;
+using MusicXMLViewerWPF.Misc;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -11,7 +12,7 @@ using System.Windows.Media;
 
 namespace MusicXMLViewerWPF
 {
-    public class Segment : INotifyPropertyChanged//, IDrawableMusicalObject
+    public class Segment : ObservableObject//, IDrawableMusicalObject
     {
         #region protected fields
         private float width;
@@ -49,8 +50,7 @@ namespace MusicXMLViewerWPF
         public float Relative_y { get { return relative_y; } set { relative_y = value; } }
         public float Spacer_L { get { return space_l; } set { space_l = value; } }
         public float Spacer_R { get { return space_r; } set { space_r = value; } }
-        public float Width { get { return width; } set { width = value; if (checkIfSet()) { PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Width))); } } }
-        public event PropertyChangedEventHandler PropertyChanged;
+        public float Width { get { return width; } set { width = value; if (checkIfSet()) { RaisePropertyChanged(nameof(Width)); } } }
         public string ID {
             get {
                 return id; }
@@ -64,10 +64,10 @@ namespace MusicXMLViewerWPF
             }
         }
 
-        public Point Calculated { get { return new Point(calculated_x, calculated_y); } set { calculated_x = (float)value.X; calculated_y = (float)value.Y; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Calculated)));  } }
+        public Point Calculated { get { return new Point(calculated_x, calculated_y); } set { calculated_x = (float)value.X; calculated_y = (float)value.Y; RaisePropertyChanged(nameof(Calculated));  } }
         public Point Dimensions { get { return new Point(width, height); } set { width = (float)value.X; height = (float)value.Y; } }
         public Point Offset { get { return new Point(offset_x, offset_y); } set { offset_x = (float)value.X; offset_y = (float)value.Y; } }
-        public Point Relative { get { return new Point(relative_x, relative_y); } set { relative_x = (float)value.X; relative_y = (float)value.Y; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Relative))); } }
+        public Point Relative { get { return new Point(relative_x, relative_y); } set { relative_x = (float)value.X; relative_y = (float)value.Y; RaisePropertyChanged(nameof(Relative)); } }
         public string Relative_str { get { return "("+ relative_x.ToString("0.##") + "; "+ relative_y.ToString("0.##") + ")"; } }
         public Rect Rectangle { get { return new Rect(Relative, Dimensions); } }
         public SegmentType Segment_type { get { return segment_type; } set { segment_type = value; SetSpacers(); if (Width == 0) CalculateDimensions(); } }

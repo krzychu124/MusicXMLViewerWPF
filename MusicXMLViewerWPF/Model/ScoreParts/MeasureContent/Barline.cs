@@ -1,4 +1,5 @@
-﻿using MusicXMLViewerWPF.ScoreParts.MeasureContent;
+﻿using MusicXMLViewerWPF.Misc;
+using MusicXMLViewerWPF.ScoreParts.MeasureContent;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -8,10 +9,13 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using System.Xml.Linq;
+using MusicXMLScore.Helpers;
+using System.ComponentModel;
+using GalaSoft.MvvmLight;
 
 namespace MusicXMLViewerWPF
 {
-    class Barline :  Segment, IDrawable// todo ixmlextrack removeal
+    class Barline :  Segment, IDrawableMusicalObject, IDrawable// todo ixmlextrack removeal
     {
         #region Fields
         private BarlineLocation location = BarlineLocation.right;
@@ -24,6 +28,9 @@ namespace MusicXMLViewerWPF
         private Point pos;
         private DrawingVisual visual;
         private string measureid;
+        private CanvasList drawableMusicalObject;
+        private DrawableMusicalObjectStatus drawableObjectStatus = DrawableMusicalObjectStatus.notready;
+        private bool loaded;
         #endregion
         #region Properties
         public BarlineLocation Location { get { return location; } set { location = value; }  } 
@@ -36,10 +43,48 @@ namespace MusicXMLViewerWPF
         public Point Position { get { return pos; } set { if (value != null) { pos = value; } } }
         public DrawingVisual Visual { get { return visual; } set { if (value != null) { visual = value; } } }
         public string MeasureID { get { return measureid; } set { if (value != null) { measureid = value; } } }
+
+        public CanvasList DrawableMusicalObject
+        {
+            get
+            {
+                return drawableMusicalObject;
+            }
+
+            set
+            {
+                Set(() => DrawableMusicalObject, ref drawableMusicalObject, value);
+            }
+        }
+
+        public DrawableMusicalObjectStatus DrawableObjectStatus
+        {
+            get
+            {
+                return drawableObjectStatus;
+            }
+            private set
+            {
+                Set(() => DrawableObjectStatus, ref drawableObjectStatus, value);
+            }
+        }
+
+        public bool Loaded
+        {
+            get
+            {
+                return loaded;
+            }
+            private set
+            {
+                Set(() => Loaded, ref loaded, value);
+            }
+        }
         #endregion
 
         public Barline()
         {
+            PropertyChanged += Barline_PropertyChanged;
             ID = Misc.RandomGenerator.GetRandomHexNumber();
             Coda = null;
             Fermata = null;
@@ -50,6 +95,7 @@ namespace MusicXMLViewerWPF
 
         public Barline(XElement x)
         {
+            PropertyChanged += Barline_PropertyChanged;
             ID = Misc.RandomGenerator.GetRandomHexNumber();
             Coda = null;
             Fermata = null;
@@ -57,6 +103,27 @@ namespace MusicXMLViewerWPF
             Ending = null;
             Repeat = null;
             ExtractXElement(x);
+        }
+
+        private void Barline_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            switch(e.PropertyName)
+            {
+                case "Loaded":
+                    if (Loaded)
+                {
+                    InitDrawableObject();
+                }
+                break;
+                case "DrawableObjectStatus":
+                    if (DrawableObjectStatus == DrawableMusicalObjectStatus.reload)
+                {
+                    ReloadDrawableObject();
+                }
+                break;
+                default:
+                    break;
+            }
         }
 
         public void ExtractXElement(XElement x)
@@ -174,6 +241,23 @@ namespace MusicXMLViewerWPF
             Visual = visual;
             return visual;
         }
+
+        public void InitDrawableObject()
+        {
+            DrawableMusicalObject = new CanvasList(this.Width, this.Height);
+            DrawingVisual barline = new DrawingVisual();
+            Draw(barline);
+            DrawableMusicalObject.AddVisual(barline);
+            DrawableObjectStatus = DrawableMusicalObjectStatus.ready;
+        }
+
+        public void ReloadDrawableObject()
+        {
+            DrawableMusicalObject.ClearVisuals();
+            DrawableObjectStatus = DrawableMusicalObjectStatus.notready;
+            InitDrawableObject();
+        }
+
         private Dictionary<string, BarStyle> styleDictionary = new Dictionary<string, BarStyle>()
         {
             {"regular",BarStyle.regular },
