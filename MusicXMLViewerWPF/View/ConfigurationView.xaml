@@ -5,13 +5,17 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MusicXMLScore.ViewModel"
         mc:Ignorable="d"
-        Title="ConfigurationView" Height="422.828" Width="453.008">
+        Title="ConfigurationView" Height="498.974" Width="500.653" MinHeight="500" MinWidth="510">
     <Grid>
         <!--<local:PageSettingsView HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="258" Height="243"/>-->
-        <TabControl x:Name="tabControl" Margin="0,0,-2,-7">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <TabControl x:Name="tabControl" Margin="0,0,0,0" Grid.Row="0">
             <TabItem Header="Page Settings">
                 <Grid >
-                    <local:PageSettingsView Margin="2,2,0,0"/>
+                    <local:PageSettingsView VerticalAlignment="Top" Margin="2,2,2,2"/>
                 </Grid>
             </TabItem>
             <TabItem Header="TabItem">
@@ -85,6 +89,10 @@
                 </Grid>
             </TabItem>
         </TabControl>
+        <Grid Grid.Row="1" Margin="10">
+            <Button x:Name="button" Content="Ok" Width="60" Height="25" Margin="325,0,87,0" />
+            <Button x:Name="button_Copy1" Content="Cancel" Width="60" Height="25" Margin="402,0,10,0" />
 
+        </Grid>
     </Grid>
 </Window>
