@@ -4,6 +4,8 @@ using System.Xml.Serialization;
 
 namespace MusicXMLScore.Model.MeasureItems.Attributes
 {
+    [Serializable]
+    [XmlType(TypeName ="time")]
     public class TimeMusicXML
     {
         private object[] items;
@@ -15,6 +17,11 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
         private bool separatorSpecified;
         private YesNoMusicXML printObject;
         private bool printObjectSpecified;
+
+        public TimeMusicXML()
+        {
+
+        }
 
         [XmlElement("beat-type", typeof(string))]
         [XmlElement("beats", typeof(string))]
@@ -138,6 +145,7 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
             }
         }
     }
+
     [Serializable]
     [XmlType(TypeName ="interchangeable")]
     public class InterchangeableMusicXML
