@@ -28,6 +28,7 @@ namespace MusicXMLScore.ViewModel
         private List<Part> partList;
         private List<List<Part>> partSegmentsList = new List<List<Part>>();
         private ObservableCollection<UIElement> partsSegments = new ObservableCollection<UIElement>();
+        private CanvasList page = new CanvasList();
         private double pageHeight = 0.0;
         private double pageWidth = 0.0;
         #endregion
@@ -39,7 +40,11 @@ namespace MusicXMLScore.ViewModel
 
             //TOdo collection of PartSegmentViews to represent as Page
             //! here default page which contains one ParSegmentView for simple test
-            AddPartSegment();
+            Point dimensions = ViewModelLocator.Instance.Main.CurrentTabLayout.PageProperties.PageDimensions.GetPageDimensionsInPx();
+            Page.Width = dimensions.X;
+            Page.Height = dimensions.Y;
+            PageWidth = dimensions.X;
+            PageHeight = dimensions.Y;
             AddPartSegment();
         }
         public PageViewModel(List<Part> partList)
@@ -54,6 +59,7 @@ namespace MusicXMLScore.ViewModel
         #region Properties
         public List<Part> PartList { get { return partList; } set { partList = value; } }
         public ObservableCollection<UIElement> PartsSegments { get { return partsSegments; } set { partsSegments = value; } }
+        public CanvasList Page { get { return page; } set { Set(nameof(Page), ref page, value); } }
         public RelayCommand TestCommand { get; set; }
         public double PageHeight { get { return pageHeight; } set { Set(nameof(PageHeight), ref pageHeight, value); } }
         public double PageWidth { get { return pageWidth; } set { Set(nameof(PageWidth), ref pageWidth, value); } }
@@ -62,9 +68,10 @@ namespace MusicXMLScore.ViewModel
         #region Methods
         private void AddPartSegment()
         {
-            View.PartsSegmentView psv = new View.PartsSegmentView();
-            psv.SetValue(CustomPartsSegmentPanel.TopMarginProperty, 20.0);
-            PartsSegments.Add(psv);
+            //! part segment canvas...
+            //View.PartsSegmentView psv = new View.PartsSegmentView();
+            //psv.SetValue(CustomPartsSegmentPanel.TopMarginProperty, 20.0);
+            PartsSegments.Add(page);
         }
         private void AddPartSegment(List<Part> segmentPartList)
         {

@@ -5,46 +5,47 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:MusicXMLScore.ViewModel"
              xmlns:helpers="clr-namespace:MusicXMLScore.Helpers"
-             xmlns:credit ="clr-namespace:MusicXMLViewerWPF.Credit"
+             xmlns:credit ="clr-namespace:MusicXMLViewerWPF"
              xmlns:Configuration="clr-namespace:MusicXMLScore.ViewModel" xmlns:Log="clr-namespace:MusicXMLScore.Log" x:Class="MusicXMLScore.ViewModel.PageView"
-             mc:Ignorable="d" Height="{Binding PageHeight}" Width="{Binding PageWidth}" x:Name="uc">
+             mc:Ignorable="d" Height="{Binding PageHeight}" Width="{Binding PageWidth}" x:Name="uc" d:DesignWidth="500" d:DesignHeight="250.333">
 
-    <Grid Margin="5" x:Name="gridmain" Width="Auto" Height="Auto" Background="White">
+    <Grid Margin="12" x:Name="gridPage" Width="Auto" Height="Auto" Background="White" >
         <Grid.Effect>
-            <DropShadowEffect BlurRadius="10" ShadowDepth="5" Color="DarkGray"></DropShadowEffect>
+            <DropShadowEffect BlurRadius="15" ShadowDepth="5" Direction="300" Color="Black"></DropShadowEffect>
         </Grid.Effect>
-        <Border BorderBrush="Black" BorderThickness="5">
-            <Grid >
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="20"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
-                <DockPanel Height="20" Grid.Row="0">
-                    <Button DockPanel.Dock="Left" Content="test" Command="{Binding TestCommand}" HorizontalAlignment="Left" VerticalAlignment="Top"  Width="40" Height="20"/>
-                    <CheckBox x:Name="clirs" DockPanel.Dock="Left"  Content="LIRS" Width="45" IsChecked="False"/>
-                    <CheckBox x:Name="csiir" DockPanel.Dock="Left" Content="SIIR" Width="45" IsChecked="True"/>
-                    <Slider DockPanel.Dock="Left" Value="{Binding Width, ElementName=uc}" Maximum="1800" Minimum="300" Width="350"></Slider>
-                    <RadioButton DockPanel.Dock="Right" FlowDirection="RightToLeft" GroupName="a" Width="50" Height="25" Content="Rbtn"></RadioButton>
-                </DockPanel>
-                <local:CreditsView Grid.Row="1" Width="auto" Height="Auto"/>
-                <ItemsControl x:Name="PartsSegments" Grid.Row="2" ItemsSource="{Binding PartsSegments}" >
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <helpers:CustomPartsSegmentPanel Height="Auto" />
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                </ItemsControl>
-                <TextBox Grid.Row="3" VerticalAlignment="Bottom" Name="RightsTextBox" Text="Copyrights goes here" TextAlignment="Center" FontSize="16" Background="Transparent" BorderThickness="0"/>
-                <!--<helpers:CustomSystemWrapPanel x:Name="cwppanel" Orientation="Horizontal" Grid.Row="5" Height="300">
+        <Grid >
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <DockPanel Height="20" Grid.Row="0">
+                <Button DockPanel.Dock="Left" Content="test" Command="{Binding TestCommand}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,0,0,0" Width="40" Height="20"/>
+                <!--<CheckBox x:Name="clirs" DockPanel.Dock="Left"  Content="LIRS" Width="45" IsChecked="False"/>-->
+                <!--<CheckBox x:Name="csiir" DockPanel.Dock="Left" Content="SIIR" Width="45" IsChecked="True"/>-->
+                <!--<Slider DockPanel.Dock="Left" Value="{Binding Width, ElementName=uc}" Maximum="1800" Minimum="300" Width="350"></Slider>-->
+                <!--<RadioButton DockPanel.Dock="Right" FlowDirection="RightToLeft" GroupName="a" Width="50" Height="25" Content="Rbtn"></RadioButton>-->
+            </DockPanel>
+            <!--<local:CreditsView Grid.Row="1" Width="auto" Height="Auto"/>-->
+            <ItemsControl x:Name="PartsSegments" Grid.Row="2" ItemsSource="{Binding PartsSegments}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <helpers:CustomPartsSegmentPanel Height="Auto"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+            </ItemsControl>
+            <TextBox Grid.Row="3" VerticalAlignment="Bottom" Name="RightsTextBox" Text="Copyrights goes here" TextAlignment="Center" FontSize="16" Background="Transparent" BorderThickness="0"/>
+            <!--<helpers:CustomSystemWrapPanel x:Name="cwppanel" Orientation="Horizontal" Grid.Row="5" Height="300">
                     <helpers:PreviewSettings />
-                    --><!--<helpers:CustomPartsSegmentPanel Height="30">
+                    -->
+            <!--<helpers:CustomPartsSegmentPanel Height="30">
                         <helpers:PreviewSettings />
                         <helpers:PreviewSettings />
                         <helpers:PreviewSettings />
                         
-                    </helpers:CustomPartsSegmentPanel>--><!--
+                    </helpers:CustomPartsSegmentPanel>-->
+            <!--
                     <Canvas Width="auto">
                         <StackPanel Orientation="Horizontal" Width="Auto" Height="AUto">
                             <helpers:PreviewSettings />
@@ -52,14 +53,15 @@
                             <helpers:PreviewSettings />
                         </StackPanel>
                     </Canvas>
-                    --><!--<helpers:DrawableMeasure  IsHitTestVisible="True" MouseLeftButtonDown="StaffLineCanvas_MouseLeftButtonDown"/>
+                    -->
+            <!--<helpers:DrawableMeasure  IsHitTestVisible="True" MouseLeftButtonDown="StaffLineCanvas_MouseLeftButtonDown"/>
                     <helpers:DrawableMeasure  IsHitTestVisible="True" MouseLeftButtonDown="StaffLineCanvas_MouseLeftButtonDown" />
                     <helpers:DrawableMeasure  IsHitTestVisible="True" MouseLeftButtonDown="StaffLineCanvas_MouseLeftButtonDown" />
-                    <helpers:DrawableMeasure  IsHitTestVisible="True" MouseLeftButtonDown="StaffLineCanvas_MouseLeftButtonDown" />--><!--
+                    <helpers:DrawableMeasure  IsHitTestVisible="True" MouseLeftButtonDown="StaffLineCanvas_MouseLeftButtonDown" />-->
+            <!--
                 </helpers:CustomSystemWrapPanel>-->
 
-                <!--<helpers:CustomPartSystem Grid.Row="2" Margin="20"/>-->
-            </Grid>
-        </Border>
+            <!--<helpers:CustomPartSystem Grid.Row="2" Margin="20"/>-->
+        </Grid>
     </Grid>
 </UserControl>

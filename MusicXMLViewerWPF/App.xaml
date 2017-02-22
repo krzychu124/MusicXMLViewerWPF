@@ -11,5 +11,6 @@
         <vm:ViewModelLocator x:Key="Locator" d:IsDataSource="True">
         </vm:ViewModelLocator>
         <FontFamily x:Key="BravuraText">pack://application:,,,/Fonts/#Bravura Text</FontFamily>
+        <FontFamily x:Key="Bravura">./Fonts/Bravura.ttf#Bravura</FontFamily>
     </Application.Resources>
 </Application>

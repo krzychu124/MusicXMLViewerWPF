@@ -35,13 +35,13 @@
                             <RowDefinition Height="*"/>
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
-                        <ComboBox Grid.Row="1" Grid.ColumnSpan="2" Margin="2,2"/>
+                        <ComboBox Grid.Row="1" Grid.ColumnSpan="2" Margin="2,2" ItemsSource="{Binding PageStyle}"/>
                         <Label Grid.Row="2" Content="Width:" Height="23" VerticalAlignment="Top"></Label>
-                        <TextBox Grid.Row="2" Grid.Column="1" Margin="2" ></TextBox>
+                        <TextBox Grid.Row="2" Grid.Column="1" Margin="2" Text="2100" TextAlignment="Center"></TextBox>
                         <Label Grid.Row="3" Content="Height:"  Grid.RowSpan="1"/>
-                        <TextBox Grid.Row="3" Grid.Column="1" Margin="2" ></TextBox>
+                        <TextBox Grid.Row="3" Grid.Column="1" Margin="2" Text="2970" TextAlignment="Center" ></TextBox>
                         <CheckBox Grid.Row="4" Grid.ColumnSpan="2" Content="Landscape" VerticalAlignment="Center"></CheckBox>
-                        <CheckBox Grid.Row="5" Grid.ColumnSpan="2" Content="Double Sided" VerticalAlignment="Center"></CheckBox>
+                        <CheckBox Name="doubleSided" Grid.Row="5" Grid.ColumnSpan="2" Content="Double Sided" VerticalAlignment="Center" IsChecked="False"></CheckBox>
                     </Grid>
                 </GroupBox>
                 <GroupBox Header="Scaling Options" Grid.Row="1" Margin="5,0,5,0" >
@@ -55,31 +55,33 @@
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
                         <TextBlock Grid.Row="0" Text="Staff space:"></TextBlock>
-                        <TextBox Grid.Row="0"  Grid.Column="1" Margin="2"></TextBox>
+                        <TextBox Grid.Row="0"  Grid.Column="1" Margin="2" Text="7mm" TextAlignment="Center"></TextBox>
                         <TextBlock Grid.Row="1" Text="MusicScore scale:"></TextBlock>
-                        <TextBox Grid.Row="1"  Grid.Column="1" Margin="2"></TextBox>
+                        <TextBox Grid.Row="1"  Grid.Column="1" Margin="2" Text="40" IsReadOnly="True" TextAlignment="Center"></TextBox>
                     </Grid>
                 </GroupBox>
                 <GroupBox Header="Other" Grid.Row="2" Margin="5">
                     <Grid Margin="5" Name="other" >
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*"/>
-                            <RowDefinition Height="1.2*"/>
-                            <RowDefinition Height="10"/>
                             <RowDefinition Height="*"/>
+                            <RowDefinition Height="2"/>
+                            <RowDefinition Height=".75*"/>
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <CheckBox Grid.Row="0" Grid.ColumnSpan="2" Content="Numbered Pages" VerticalAlignment="Center"/>
-                        <TextBlock Grid.Row="1" VerticalAlignment="Center" Text="First page number:"/>
-                        <TextBox Grid.Row="1" Grid.Column="1" Margin="2"></TextBox>
-                        <Rectangle Grid.Row="2" Grid.ColumnSpan="2" HorizontalAlignment="Stretch"  VerticalAlignment="Center" Fill="gray" Height=".5"/>
-                        <TextBlock Grid.Row="3" TextDecorations="underline" Text="Unit system:"/>
-                        <RadioButton Grid.Row="4" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center" Content="mm"/>
-                        <RadioButton Grid.Row="4" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" Content="in"/>
+                        <CheckBox Grid.Row="0" Grid.ColumnSpan="3" Content="Numbered Pages" VerticalAlignment="Center"/>
+                        <TextBlock Grid.Row="1" Grid.ColumnSpan="2" VerticalAlignment="Center" Text="First page number:"/>
+                        <TextBox Grid.Row="1" Grid.Column="2" Margin="2" Text="1" TextAlignment="Center"></TextBox>
+                        <Rectangle Grid.Row="2" Grid.ColumnSpan="3" HorizontalAlignment="Stretch"  VerticalAlignment="Center" Fill="gray" Height=".5"/>
+                        <TextBlock Grid.Row="3" Grid.ColumnSpan="3" TextDecorations="underline" Text="Unit system:"/>
+                        <RadioButton Grid.Row="4" Grid.Column="0" GroupName="unitGroup" VerticalAlignment="Center" HorizontalAlignment="Center" Content="tenths" IsChecked="True"/>
+                        <RadioButton Grid.Row="4" Grid.Column="1" GroupName="unitGroup" VerticalAlignment="Center" HorizontalAlignment="Center" Content="mm"/>
+                        <RadioButton Grid.Row="4" Grid.Column="2" GroupName="unitGroup" VerticalAlignment="Center" HorizontalAlignment="Center" Content="in"/>
                     </Grid>
                 </GroupBox>
             </Grid>
@@ -103,14 +105,14 @@
                                             <ColumnDefinition Width="*"/>
                                             <ColumnDefinition Width="*"/>
                                         </Grid.ColumnDefinitions>
-                                        <TextBox Grid.Row="0" Grid.Column="1" Width="30" Height="16"/>
-                                        <TextBox Grid.Row="1" Grid.Column="0"  Width="30" Height="16"/>
-                                        <TextBox Grid.Row="1" Grid.Column="2"  Width="30" Height="16"/>
-                                        <TextBox Grid.Row="2" Grid.Column="1" Width="30" Height="16"/>
+                                        <TextBox Grid.Row="0" Grid.Column="1" Width="30" Height="16" Text="10" TextAlignment="Center"/>
+                                        <TextBox Grid.Row="1" Grid.Column="0"  Width="30" Height="16" Text="10" TextAlignment="Center"/>
+                                        <TextBox Grid.Row="1" Grid.Column="2"  Width="30" Height="16" Text="10" TextAlignment="Center"/>
+                                        <TextBox Grid.Row="2" Grid.Column="1" Width="30" Height="16" Text="10" TextAlignment="Center"/>
                                     </Grid>
                                 </Grid>
                             </GroupBox>
-                            <GroupBox Header="Even Pages" Grid.Row="2" Margin="5" Height="140" >
+                            <GroupBox Name="evenPages" Header="Even Pages" Grid.Row="2" Margin="5" Height="140" IsEnabled="{Binding IsChecked, ElementName=doubleSided}" >
                                 <Grid>
                                     <!--<TextBlock Grid.Row="0" Text="Even Page" TextDecorations="Underline" FontSize="10" FontWeight="Bold"/>-->
                                     <Grid Margin="5">
@@ -124,10 +126,10 @@
                                             <ColumnDefinition Width="*"/>
                                             <ColumnDefinition Width="*"/>
                                         </Grid.ColumnDefinitions>
-                                        <TextBox Grid.Row="0" Grid.Column="1" Width="30" Height="16"/>
-                                        <TextBox Grid.Row="1" Grid.Column="0"  Width="30" Height="16"/>
-                                        <TextBox Grid.Row="1" Grid.Column="2"  Width="30" Height="16"/>
-                                        <TextBox Grid.Row="2" Grid.Column="1" Width="30" Height="16"/>
+                                        <TextBox Grid.Row="0" Grid.Column="1" Width="30" Height="16" Text="10" TextAlignment="Center"/>
+                                        <TextBox Grid.Row="1" Grid.Column="0"  Width="30" Height="16" Text="10" TextAlignment="Center"/>
+                                        <TextBox Grid.Row="1" Grid.Column="2"  Width="30" Height="16" Text="10" TextAlignment="Center"/>
+                                        <TextBox Grid.Row="2" Grid.Column="1" Width="30" Height="16" Text="10" TextAlignment="Center"/>
                                     </Grid>
                                 </Grid>
                             </GroupBox>

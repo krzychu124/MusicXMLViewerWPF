@@ -1,6 +1,6 @@
 ﻿using GalaSoft.MvvmLight;
 using MusicXMLScore.Helpers;
-using MusicXMLViewerWPF.Credit;
+using MusicXMLViewerWPF;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;

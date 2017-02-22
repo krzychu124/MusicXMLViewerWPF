@@ -3,20 +3,16 @@ using MusicXMLScore.Helpers;
 using MusicXMLViewerWPF;
 using SimpleLogger;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Media;
 using System.Xml.Linq;
-using MusicXMLScore.ViewModel;
 using GalaSoft.MvvmLight;
-using System.Diagnostics;
+using System.IO;
+using System.Collections.Generic;
+using System.Xml.Serialization;
 
 namespace MusicXMLScore.ViewModel
 {
@@ -25,10 +21,9 @@ namespace MusicXMLScore.ViewModel
         public MainWindowViewModel()
         {
             PropertyChanged += MainWindowViewModel_PropertyChanged;
-            SimpleLog.Info("Test logging started.");
             AddMeasureCommand = new RelayCommand(OnAddMeasure);
             CloseFileCommand = new RelayCommand(OnCloseFile, () => SelectedTabItem != null ? true : false); //? XmlFileLoaded);
-            CustomButtonCommand = new RelayCommand(OnCustomButtonCommand);
+            TestButtonCommand = new RelayCommand(OnTestButtonCommand);
             ExitCommand = new RelayCommand(OnExitApp);
             NewCustomScoreCreatorCommand = new RelayCommand(OnNewCustomScoreCreator);
             NewDefaultScoreCreatorCommand = new RelayCommand(OnNewDefaultScoreCreator);
@@ -66,37 +61,47 @@ namespace MusicXMLScore.ViewModel
             TabsCreated.Add(ti);
             SelectedTabItem = ti;
         }
-
         private void OnCloseFile()
         {
-            //MusicScore.Clear();
             var name = SelectedTabItem.DataContext as ViewModel.PagesControllerViewModel;
             Log.LoggIt.Log($"File {name.Title} has been closed");
-            XmlFileLoaded = false;
-            //Pages.Clear();
+            tabsLayouts.Remove(name.MusicScore.ID);
             TabsCreated.Remove(SelectedTabItem); // TODO_L Refactor commands to work on selected tab (loaded file/new score)
             if (TabsCreated.Count == 0)
             {
                 CreateBlankTab();
+                tabsLayouts.TryGetValue("default", out currentTabLayout);
             }
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
-            //TabsCreated.Clear();
         }
 
-        private void OnCustomButtonCommand()
+        private void OnTestButtonCommand()
         {
-            if (Orientation == Orientation.Vertical)
-                Orientation = Orientation.Horizontal;
-            else
-                Orientation = Orientation.Vertical;
+            LayoutStyle.Layout layout = new LayoutStyle.Layout();
+            XmlSerializer xml = new XmlSerializer(layout.GetType());
+            TextWriter txtw = new StreamWriter(@".\DefaultLayoutStyle.xml");
+            xml.Serialize(txtw, layout);
+            txtw.Close(); 
         }
 
         private void OnExitApp()
         {
             Application.Current.Shutdown();
         }
-
+        private T TempMethod<T>(string parameter) where T : new ()
+        {
+            TextReader reader = null;
+            try
+            {
+                var serializer = new XmlSerializer(typeof(T));
+                reader = new StreamReader(parameter);
+                return (T)serializer.Deserialize(reader);
+            }
+            finally
+            {
+                if (reader != null)
+                    reader.Close();
+            }
+        }
         private void OnNewCustomScoreCreator()
         {
             ViewModel.NewScoreCreatorView ndefaultscreatorwindow = new ViewModel.NewScoreCreatorView();
@@ -110,12 +115,12 @@ namespace MusicXMLScore.ViewModel
             if (vm.IsBlank) //! if currently selected tab is empty
             {
                 SelectedTabItem.Header = header;
-                SelectedTabItem.DataContext = new PagesControllerViewModel(2);
+                SelectedTabItem.DataContext = new PagesControllerViewModel(1);
                 Console.WriteLine("defaultscore black document");
             }
             else
             {
-                TabItem tab = new TabItem() { Header = header, Content = new PagesControllerView(), DataContext = new PagesControllerViewModel(2) };
+                TabItem tab = new TabItem() { Header = header, Content = new PagesControllerView(), DataContext = new PagesControllerViewModel(1) };
                 TabsCreated.Add(tab);
                 SelectedTabItem = tab;
             }
@@ -147,16 +152,16 @@ namespace MusicXMLScore.ViewModel
                     return; //! return with no action, eg. OpenFileDialog Cancel/Close button clicked
                 }
             }
-            XmlDataProvider dataprovider = new XmlDataProvider() { Source = new Uri(filedestination), XPath = "./*" };
+            XmlDataProvider dataprovider = new XmlDataProvider() { Source = new Uri(filedestination, UriKind.RelativeOrAbsolute), XPath = "./*" };
             Log.LoggIt.Log($"File {filedestination} been loaded", Log.LogType.Info);
             XDocument XDoc = XDocument.Load(filedestination, LoadOptions.SetLineInfo); // std + add line info(number)
-            XmlFileLoaded = true;
             MusicScore musicscore = new MusicScore();
+            XmlScorePartwise xml = TempMethod<XmlScorePartwise>(filedestination);
 
 #if LOADSPEEDTEST
              var sw = new Stopwatch();
              sw.Start();
-            for (int i = 0; i < 100; i++)
+            for (int i = 0; i < 1; i++)
             {
                 musicscore = new MusicScore(XDoc);
             }
@@ -166,9 +171,11 @@ namespace MusicXMLScore.ViewModel
             sw.Start();
 #endif
             musicscore = new MusicScore(XDoc);
+
             var vm = (PagesControllerViewModel)SelectedTabItem.DataContext;
             if (vm.IsBlank) //! check if currently selected tab is blank
             {
+                GenerateLayout(musicscore);
                 vm.AddMusicScore(musicscore);
                 TabsCreated.Remove(SelectedTabItem);
                 TabItem newTab = new TabItem() { Header = filedestination, Content = new PagesControllerView(), DataContext = vm };
@@ -177,7 +184,8 @@ namespace MusicXMLScore.ViewModel
             }
             else
             {
-                TabItem newTab = new TabItem() { Header = filedestination, Content = new PagesControllerView(), DataContext = new PagesControllerViewModel(musicscore) };
+                GenerateLayout(musicscore);
+                TabItem newTab = new TabItem() { Header = filedestination, Tag=musicscore.ID, Content = new PagesControllerView(), DataContext = new PagesControllerViewModel(musicscore) };
                 TabsCreated.Add(newTab);
                 SelectedTabItem = newTab;
             }
@@ -187,59 +195,48 @@ namespace MusicXMLScore.ViewModel
 #endif
         }
 
+        private void GenerateLayout(MusicScore musicscore)
+        {
+            LayoutControl.LayoutGeneral layout = new LayoutControl.LayoutGeneral(musicscore);
+            tabsLayouts.Add(musicscore.ID, layout);
+            CurrentTabLayout = layout;
+        }
+
         private void OnOpenOptionWindow()
         {
             ViewModel.ConfigurationView optionswindow = new ViewModel.ConfigurationView();
             optionswindow.ShowDialog();
         }
-        //! Old OpenFileCommant Action
-        //private void OnOpenFileCommand(object parameter)
-        //{
-        //    XmlRead xmlReader = new XmlRead();
-        //    XmlDataProvider provider = new XmlDataProvider();
-        //    string filedestination = "";
-        //    if (parameter == null)
-        //    {
-        //        Microsoft.Win32.OpenFileDialog dialog = new Microsoft.Win32.OpenFileDialog();
-        //        dialog.Filter = "MusicXML files|*.xml";
-        //        if (dialog.ShowDialog() == true)
-        //        {
-        //            filedestination = dialog.FileName;
-        //        }
-        //        else { return; }
-        //    }
-        //    else
-        //    {
-        //        filedestination = parameter as string;
-        //    }
-        //    xmlReader.File_path = filedestination;
-        //    Console.WriteLine("Loading file>> " + filedestination);
-        //    Log.LoggIt.Log($"Loading file: {xmlReader.File_path}", Log.LogType.Info);
-
-        //    provider.Source = new Uri(filedestination, UriKind.Absolute);
-        //    provider.XPath = "./*";
-        //    Mediator.NotifyColleagues("XmlFileLoaded", provider); //! Notify MainWindowVM that file was loaded and send it to display content
-        //    XDocument Doc = XDocument.Load(filedestination, LoadOptions.SetLineInfo);
-        //    Log.LoggIt.Log($"File has been loaded", Log.LogType.Info);
-        //    XmlFileLoaded = true;
-        //    MusicScore mus_score = new MusicScore(Doc);
-        //    UpdateSize();
-
-        //}
-#region Fields
-        private double h = 1900;
+        private void SaveDefaultPageProperties(PageProperties pp)
+        {
+            using (var stream = File.Create(@".\defaultPage.xml"))
+            {
+                var formatter = new System.Runtime.Serialization.Formatters.Soap.SoapFormatter(); //! new BinaryFormatter();
+                formatter.Serialize(stream, pp);
+            }
+        }
+        private void LoadDefaultPageProperties()
+        {
+            using (var stream = File.OpenRead(@".\defaultPage.xml"))
+            {
+                var formatter = new System.Runtime.Serialization.Formatters.Soap.SoapFormatter(); //! new BinaryFormatter();
+                PageProperties pp2 = (PageProperties)formatter.Deserialize(stream);
+            }
+        }
+        #region Fields
         private Orientation orientation = Orientation.Horizontal;
         private ObservableCollection<PageView> pages = new ObservableCollection<PageView>();
         private TabItem selectedTabItem;
         private ObservableCollection<TabItem> tabscreated = new ObservableCollection<TabItem>();
-        private double w = 2000;
+        private Dictionary<string, LayoutControl.LayoutGeneral> tabsLayouts = new Dictionary<string, LayoutControl.LayoutGeneral>() { { "default", new LayoutControl.LayoutGeneral() } };
+        private LayoutControl.LayoutGeneral currentTabLayout = new LayoutControl.LayoutGeneral();
         private bool xmlfileloaded;
 #endregion
 
 #region Properties, Commands
         public RelayCommand AddMeasureCommand { get; set; }
         public RelayCommand CloseFileCommand { get; set; }
-        public RelayCommand CustomButtonCommand { get; set; }
+        public RelayCommand TestButtonCommand { get; set; }
         public RelayCommand ExitCommand { get; set; }
         public RelayCommand NewCustomScoreCreatorCommand { get; set; }
         public RelayCommand NewDefaultScoreCreatorCommand { get; set; }
@@ -257,51 +254,32 @@ namespace MusicXMLScore.ViewModel
                 }
             }
         }
-
-        public double PageHeight
+        public PageProperties CurrentPageProperties
         {
-            get { return h; }
-            set
-            {
-                if (h != value)
-                {
-                    Set(() => PageHeight, ref h, value);
-                }
-            }
+            get { return CurrentTabLayout.PageProperties; }
         }
 
-        public double PageWidth
-        {
-            get { return w; }
-            set
-            {
-                if (w != value)
-                {
-                    Set(() => PageWidth, ref w, value);
-                }
-            }
-        }
-
+        public LayoutControl.LayoutGeneral CurrentTabLayout { get { return currentTabLayout; } set { currentTabLayout = value; } }
         public TabItem SelectedTabItem
         {
             get { return selectedTabItem; }
             set
             {
+                if (SelectedTabItem != null)
+                {
+                    if (value != null)
+                    {
+                        PagesControllerViewModel pcvm = (PagesControllerViewModel)value.DataContext;
+                        LayoutControl.LayoutGeneral layout;
+                        tabsLayouts.TryGetValue(pcvm.MusicScore.ID, out layout);
+                        CurrentTabLayout = layout;
+                    }
+                }
                 Set(() => SelectedTabItem, ref selectedTabItem, value);
+                
             }
         }
         public ObservableCollection<TabItem> TabsCreated { get { return tabscreated; } set { if (value != null) { tabscreated = value; } } }
-        public bool XmlFileLoaded
-        {
-            get { return xmlfileloaded; }
-            set
-            {
-                if (xmlfileloaded != value)
-                {
-                    Set(() => XmlFileLoaded, ref xmlfileloaded, value);
-                }
-            }
-        }
 #endregion
     }
 }

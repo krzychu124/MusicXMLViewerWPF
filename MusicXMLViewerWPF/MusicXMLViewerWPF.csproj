@@ -69,6 +69,9 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization.Formatters.Soap" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\MvvmLightLibs.5.3.0.0\lib\net45\System.Windows.Interactivity.dll</HintPath>
       <Private>True</Private>
@@ -90,9 +93,53 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="DrawingHelpers\DrawableMeasure.cs" />
+    <Compile Include="DrawingHelpers\DrawableStaffLine.cs" />
+    <Compile Include="DrawingHelpers\DrawableSymbol.cs" />
+    <Compile Include="DrawingHelpers\DrawingMethods.cs" />
+    <Compile Include="DrawingHelpers\IDrawable.cs" />
+    <Compile Include="DrawingHelpers\IDrawableObjectBase.cs" />
+    <Compile Include="DrawingHelpers\IDrawableObjectPart.cs" />
+    <Compile Include="DrawingHelpers\MeasureVisual\BarlineVisualObject.cs" />
+    <Compile Include="DrawingHelpers\MeasureVisual\DirectionVisualObject.cs" />
+    <Compile Include="DrawingHelpers\MeasureVisual\NoteVisualObject.cs" />
+    <Compile Include="DrawingHelpers\MeasureVisual\NoteVisualPart\AccidentalPartObject.cs" />
+    <Compile Include="DrawingHelpers\MeasureVisual\NoteVisualPart\DotPartObject.cs" />
+    <Compile Include="DrawingHelpers\MeasureVisual\NoteVisualPart\NoteHeadPartObject.cs" />
+    <Compile Include="DrawingHelpers\MeasureVisual\NoteVisualPart\StemPartObject.cs" />
     <Compile Include="Helpers\ComparisonHelpers.cs" />
     <Compile Include="Helpers\CustomMeasurePanel.cs" />
     <Compile Include="Helpers\CustomPartsSegmentPanel.cs" />
+    <Compile Include="Helpers\MusicSymbols.cs" />
+    <Compile Include="Helpers\PageProperties.cs" />
+    <Compile Include="LayoutControl\LayoutGeneral.cs" />
+    <Compile Include="LayoutControl\PageController.cs" />
+    <Compile Include="LayoutStyle\Styles\BarlineLayoutStyle.cs" />
+    <Compile Include="LayoutStyle\Styles\BeamLayoutStyle.cs" />
+    <Compile Include="LayoutStyle\Layout.cs" />
+    <Compile Include="LayoutStyle\Styles\MeasureLayoutStyle.cs" />
+    <Compile Include="LayoutStyle\Styles\NotesLayoutStyle.cs" />
+    <Compile Include="LayoutStyle\Styles\PageLayoutStyle.cs" />
+    <Compile Include="LayoutStyle\Styles\SystemLayoutStyle.cs" />
+    <Compile Include="Model\DefaultsMusicXML.cs" />
+    <Compile Include="Model\Defaults\AppearanceMusicXML.cs" />
+    <Compile Include="Model\Defaults\PageLayoutMusicXML.cs" />
+    <Compile Include="Model\Defaults\ScalingMusicXML.cs" />
+    <Compile Include="Model\Defaults\StaffLayoutMusicXML.cs" />
+    <Compile Include="Model\Defaults\SystemLayoutMsicXML.cs" />
+    <Compile Include="Model\Helpers\EmptyFontMusicXML.cs" />
+    <Compile Include="Model\Helpers\EmptyPrintObjectStyleAlignMusicXML.cs" />
+    <Compile Include="Model\Helpers\FormattedTextMusicXML.cs" />
+    <Compile Include="Model\Identification\EncodingMusicXML.cs" />
+    <Compile Include="Model\Identification\XmlMiscellaneous.cs" />
+    <Compile Include="Model\Identification\XmlMiscellaneousField.cs" />
+    <Compile Include="Model\SimpleTypes\Enums.cs" />
+    <Compile Include="Model\XmlIdentification.cs" />
+    <Compile Include="Model\XmlPartList.cs" />
+    <Compile Include="Model\XmlScoreHeader.cs" />
+    <Compile Include="Model\XmlScorePart.cs" />
+    <Compile Include="Model\XmlScoreParts.cs" />
+    <Compile Include="Model\XmlScorePartwise.cs" />
     <Compile Include="ViewModel\MeasureViewModel.cs" />
     <Compile Include="ViewModel\PartsSegmentViewModel.cs" />
     <Compile Include="ViewModel\PartViewModel.cs" />
@@ -137,7 +184,7 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModel\MainWindowViewModel.cs" />
-    <Compile Include="Model\Credit\Credit.cs" />
+    <Compile Include="Model\Credit.cs" />
     <Compile Include="Model\Defaults\Defaults.cs" />
     <Compile Include="Model\Identification\Identification.cs" />
     <Compile Include="Model\Misc\DrawingHelpers.cs" />
@@ -158,7 +205,7 @@
     <Compile Include="Model\ScoreParts\MeasureContent\Directions.cs" />
     <Compile Include="Model\Misc\IDrawable.cs" />
     <Compile Include="Model\ScoreParts\MeasureContent\Key.cs" />
-    <Compile Include="Model\Misc\MusicalChars.cs" />
+    <Compile Include="DrawingHelpers\MusicSymbols.cs" />
     <Compile Include="Model\MusicScore.cs" />
     <Compile Include="Model\ScoreParts\MeasureContent\Measure.cs" />
     <Compile Include="Model\ScoreParts\MeasureContent\SegmentType.cs" />
@@ -181,7 +228,7 @@
     <Compile Include="Model\ScoreParts\MeasureContent\TimeSignature.cs" />
     <Compile Include="Model\Misc\XmlRead.cs" />
     <Compile Include="Model\Misc\TypeFaces.cs" />
-    <Compile Include="Model\Work\Work.cs" />
+    <Compile Include="Model\Work.cs" />
     <Compile Include="View\CreditsView.xaml.cs">
       <DependentUpon>CreditsView.xaml</DependentUpon>
     </Compile>
@@ -287,6 +334,9 @@
     <Resource Include="Fonts\BravuraText.ttf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
+    <Content Include="Fonts\Bravura.ttf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -297,13 +347,14 @@
   <ItemGroup>
     <Resource Include="Model\TestXMLFiles\Sample.xml">
       <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Model\TestXMLFiles\Echigo-Jishi.xml">
+    <Content Include="Model\TestXMLFiles\Echigo-Jishi.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
-    </Resource>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5.2">
@@ -318,12 +369,12 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Model\TestXMLFiles\Saltarello.xml">
+    <Content Include="Model\TestXMLFiles\Saltarello.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
+    </Content>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Model\Helpers\" />
+    <Folder Include="Model\Work\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

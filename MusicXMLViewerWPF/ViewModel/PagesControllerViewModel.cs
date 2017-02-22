@@ -9,6 +9,7 @@ using System.Collections.ObjectModel;
 using System.Windows;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Messaging;
+using MusicXMLScore.Helpers;
 
 namespace MusicXMLScore.ViewModel
 {
@@ -55,6 +56,7 @@ namespace MusicXMLScore.ViewModel
         public ObservableCollection<UIElement> PagesCollection { get { return pageCollection; } set { pageCollection = value; } }
         public List<List<Part>> PagesList { get; set; }
         public string Title {  get { return title; } set { Set(nameof(Title), ref title, value); } }
+        
         #endregion
         public PagesControllerViewModel()
         {
@@ -66,8 +68,7 @@ namespace MusicXMLScore.ViewModel
             PropertyChanged += PagesControllerViewModel_PropertyChanged;
             MessengerInstance.Register<GenericMessage<List<Part>>>(this, "toNextPage", false, RelocatePartsNextPage);
             MessengerInstance.Register<GenericMessage<List<Part>>>(this, "toPreviousPage", false, RelocatePartsPreviousPage);
-            MusicScore = musicScore;
-            ArrangePages();
+            MusicScore = musicScore;ArrangePages();
             PagesCollection = new ObservableCollection<UIElement>();
             GeneratePages();
         }
@@ -75,6 +76,7 @@ namespace MusicXMLScore.ViewModel
         {
             
             PropertyChanged += PagesControllerViewModel_PropertyChanged;
+            
             IsBlank = false;
             MusicScore = new MusicScore();
             PagesCollection = new ObservableCollection<UIElement>();
@@ -83,6 +85,7 @@ namespace MusicXMLScore.ViewModel
                 AddPageToCollection(); //! may add current nuber to generated page
             }
         }
+        
         public void AddMusicScore(MusicScore musicScore)
         {
             this.MusicScore = musicScore;
@@ -99,9 +102,11 @@ namespace MusicXMLScore.ViewModel
             PagesCollection.Add(new PageView() { DataContext = pvm });
         }
 
-        private void AddPageToCollection(List<Part> partList) // page with given parts
+        private void AddPageToCollection(List<Part> partList, PageProperties pp) // page with given parts
         {
-            PageViewModel pvm = new PageViewModel(partList) { PageWidth = MusicScore.Defaults.Page.Width, PageHeight = MusicScore.Defaults.Page.Height };
+            PageViewModel pvm = new PageViewModel(partList) { PageWidth = pp.PageDimensions.GetPageDimensionsInPx().X, PageHeight = pp.PageDimensions.GetPageDimensionsInPx().Y };
+
+            //PageViewModel pvm = new PageViewModel(partList) { PageWidth = MusicScore.Defaults.Page.Width, PageHeight = MusicScore.Defaults.Page.Height };
             PagesCollection.Add(new PageView() { DataContext = pvm });
         }
 
@@ -137,11 +142,12 @@ namespace MusicXMLScore.ViewModel
 
         private void GeneratePages()
         {
+            PageProperties pp = ViewModelLocator.Instance.Main.CurrentTabLayout.PageProperties;
             if (PagesList.Count != 0)
             {
                 foreach (var item in PagesList)
                 {
-                    AddPageToCollection(item);
+                    AddPageToCollection(item, pp);
                 }
             }
         }

@@ -41,7 +41,7 @@ namespace MusicXMLScore.ViewModel
         {
             PartsCollection.Add(new View.PartView());
             View.PartView pw = new View.PartView();
-            pw.SetValue(Helpers.CustomPartsSegmentPanel.TopMarginProperty, 60.0);
+            pw.SetValue(Helpers.CustomPartsSegmentPanel.TopMarginProperty, 0.0);
             PartsCollection.Add(pw);
             PartsCollection.Add(new View.PartView());
             View.PartView pw2 = new View.PartView();
@@ -50,7 +50,7 @@ namespace MusicXMLScore.ViewModel
         private void AddPartToCollection(Part segmentPart)
         {
             View.PartView pv = new View.PartView();
-            pv.SetValue(Helpers.CustomPartsSegmentPanel.TopMarginProperty, 40.0);
+            pv.SetValue(Helpers.CustomPartsSegmentPanel.TopMarginProperty, 60.0);
             pv.DataContext = new PartViewModel(segmentPart);
             PartsCollection.Add(pv);
         }

@@ -8,13 +8,15 @@
              xmlns:helpers="clr-namespace:MusicXMLScore.Helpers"
              d:DesignHeight="100" d:DesignWidth="150.37" Name="Measure">
     <Grid>
-        <Canvas x:Name="canvas" Margin="0,20,0,0" VerticalAlignment="Top" Height="60" Width="{Binding MeasureWidth}">
-            <helpers:StaffLineCanvas Height="60" Width="{Binding ElementName=canvas, Path=Width}"/>
-            <helpers:CustomMeasurePanel VerticalAlignment="Top" Width="{Binding ElementName=canvas, Path=Width}" Height="60">
-                <ItemsControl Margin="0,0,0,0" Height="60" ItemsSource="{Binding MeasureContent}">
+        <!--<TextBlock FontFamily="{StaticResource Bravura}" HorizontalAlignment="Left" Text="&#xE01A;&#xE050;&#xE01A;&#xE1D7;&#xE4E5;" TextWrapping="Wrap" FontSize="30pt" LineHeight="50" Block.LineHeight="50" Width="150"></TextBlock>
+        <TextBlock FontFamily="{StaticResource BravuraText}" Margin="0,100,0,0" HorizontalAlignment="Left" Text="&#xE01A;&#xE050;&#xE01A;&#xE1D7;&#xE4E5;" TextWrapping="Wrap" FontSize="40pt" LineHeight="50" Block.LineHeight="10" Width="100"></TextBlock>-->
+        <Canvas x:Name="canvas" Margin="0,0,0,0" VerticalAlignment="Top" Height="Auto" Width="{Binding MeasureWidth}">
+            <!--<helpers:StaffLineCanvas Height="60" Width="{Binding ElementName=canvas, Path=Width}"/>-->
+            <helpers:CustomMeasurePanel VerticalAlignment="Top" Width="{Binding ElementName=canvas, Path=Width}" Height="Auto">
+                <ItemsControl Margin="0,0,0,0" Height="Auto" ItemsSource="{Binding MeasureContent}" >
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <helpers:CustomMeasurePanel Height="60" VerticalAlignment="Top"/>
+                            <helpers:CustomMeasurePanel VerticalAlignment="Top"/>
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
                 </ItemsControl>

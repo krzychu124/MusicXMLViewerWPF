@@ -217,8 +217,6 @@ namespace MusicXMLScore.ViewModel
             //PreviewCanvas.AddVisual(AddVis());
             canvaslist.AddVisual(AddVis());
             keypreview.StaffLine();
-            SimpleLogger.SimpleLog.Log("Button test"+ canvaslist);
-            //SimpleLogger.SimpleLog.ShowLogFile();
         }
 
         private void SetKeySymbolList()

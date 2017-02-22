@@ -30,5 +30,23 @@ namespace MusicXMLScore
 
             Application.Current.Shutdown();
         }
+        public void checkdpi()
+        {
+            double dpiX =0;
+            double dpiY =0;
+            PresentationSource presentationsource = PresentationSource.FromVisual(this);
+
+            if (presentationsource != null) // make sure it's connected
+            {
+                dpiX = 96.0 * presentationsource.CompositionTarget.TransformToDevice.M11;
+                dpiY = 96.0 * presentationsource.CompositionTarget.TransformToDevice.M22;
+            }
+            Console.WriteLine($"Current dpi: {dpiX}, {dpiY}");
+        }
+
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            checkdpi();
+        }
     }
 }
