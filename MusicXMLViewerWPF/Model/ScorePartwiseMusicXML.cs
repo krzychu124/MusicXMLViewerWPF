@@ -24,7 +24,7 @@ namespace MusicXMLViewerWPF
         private DefaultsMusicXML defaults;
         private List<Credit> credits = new List<Credit>(); //! Done
         private PartListMusicXML partlist;
-        private List<Part> part;
+        private List<ScorePartwisePartMusicXML> part;
         private string version;
         
         [XmlElement(elementName:"work")]
@@ -64,7 +64,7 @@ namespace MusicXMLViewerWPF
 
             set
             {
-                movementNumber = value;
+                movementTitle = value;
             }
         }
         [XmlElement("credit")]
@@ -128,6 +128,19 @@ namespace MusicXMLViewerWPF
             set
             {
                 defaults = value;
+            }
+        }
+        [XmlElement("part")]
+        public List<ScorePartwisePartMusicXML> Part
+        {
+            get
+            {
+                return part;
+            }
+
+            set
+            {
+                part = value;
             }
         }
 

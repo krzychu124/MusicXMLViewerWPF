@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 
-namespace MusicXMLScore.Model.SimpleTypes
+namespace MusicXMLScore.Model.Helpers.SimpleTypes
 {
-    public enum FontStypeMusicXML
+    public enum FontStyleMusicXML
     {
         normal,
         italic
@@ -31,5 +32,35 @@ namespace MusicXMLScore.Model.SimpleTypes
         large,
         cue,
         grace
+    }
+    [Serializable]
+    [XmlType(TypeName ="accidental-value")]
+    public enum AccidentalValueMusicXML
+    {
+        natural,
+        sharp,
+        flat,
+        //etc...
+    }
+    [Serializable]
+    [XmlType(TypeName ="step")]
+    public enum StepMusicXML
+    {
+        A,
+        B,
+        C,
+        D,
+        E,
+        F,
+        G
+    }
+    [Serializable]
+    [XmlType(TypeName = "cancel-location")]
+    public enum CancelLocationMusicXML
+    {
+        left,
+        right,
+        [XmlEnum("before-barline")]
+        beforebarline,
     }
 }

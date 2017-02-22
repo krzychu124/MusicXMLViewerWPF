@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MusicXMLScore.Model.SimpleTypes;
+using MusicXMLScore.Model.Helpers.SimpleTypes;
 using System.Xml.Serialization;
 
 namespace MusicXMLScore.Model.Helpers
@@ -12,7 +12,7 @@ namespace MusicXMLScore.Model.Helpers
     public class EmptyFontMusicXML
     {
         private string fontFamily;
-        private FontStypeMusicXML fontStyle;
+        private FontStyleMusicXML fontStyle;
         private bool fontStyleSpecified;
         private string fontSize;
         private FontWeightMusicXML fontWeight;
@@ -32,7 +32,7 @@ namespace MusicXMLScore.Model.Helpers
             }
         }
         [XmlAttribute("font-style")]
-        public FontStypeMusicXML FontStyle
+        public FontStyleMusicXML FontStyle
         {
             get
             {
