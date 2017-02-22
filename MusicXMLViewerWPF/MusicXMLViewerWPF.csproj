@@ -133,13 +133,11 @@
     <Compile Include="Model\Identification\EncodingMusicXML.cs" />
     <Compile Include="Model\Identification\XmlMiscellaneous.cs" />
     <Compile Include="Model\Identification\XmlMiscellaneousField.cs" />
-    <Compile Include="Model\SimpleTypes\Enums.cs" />
-    <Compile Include="Model\XmlIdentification.cs" />
-    <Compile Include="Model\XmlPartList.cs" />
-    <Compile Include="Model\XmlScoreHeader.cs" />
-    <Compile Include="Model\XmlScorePart.cs" />
-    <Compile Include="Model\XmlScoreParts.cs" />
-    <Compile Include="Model\XmlScorePartwise.cs" />
+    <Compile Include="Model\Helpers\SimpleTypes\Enums.cs" />
+    <Compile Include="Model\IdentificationMusicXML.cs" />
+    <Compile Include="Model\PartListMusicXML.cs" />
+    <Compile Include="Model\ScorePartMusicXML.cs" />
+    <Compile Include="Model\ScorePartwiseMusicXML.cs" />
     <Compile Include="ViewModel\MeasureViewModel.cs" />
     <Compile Include="ViewModel\PartsSegmentViewModel.cs" />
     <Compile Include="ViewModel\PartViewModel.cs" />
@@ -228,7 +226,7 @@
     <Compile Include="Model\ScoreParts\MeasureContent\TimeSignature.cs" />
     <Compile Include="Model\Misc\XmlRead.cs" />
     <Compile Include="Model\Misc\TypeFaces.cs" />
-    <Compile Include="Model\Work.cs" />
+    <Compile Include="Model\WorkMusicXML.cs" />
     <Compile Include="View\CreditsView.xaml.cs">
       <DependentUpon>CreditsView.xaml</DependentUpon>
     </Compile>
@@ -373,9 +371,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Model\Work\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

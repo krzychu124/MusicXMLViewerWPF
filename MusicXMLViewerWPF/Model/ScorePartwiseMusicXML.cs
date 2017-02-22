@@ -15,20 +15,20 @@ namespace MusicXMLViewerWPF
 {
     [Serializable()]
     [XmlRoot("score-partwise", Namespace ="", IsNullable =false)]
-    public class XmlScorePartwise
+    public class ScorePartwiseMusicXML
     {
-        private Work work; //! Done
+        private WorkMusicXML work; //! Done
         private string movementNumber; //! Done
         private string movementTitle; //! Done
-        private XmlIdentification identification;
+        private IdentificationMusicXML identification;
         private DefaultsMusicXML defaults;
         private List<Credit> credits = new List<Credit>(); //! Done
-        private XmlPartList partlist;
+        private PartListMusicXML partlist;
         private List<Part> part;
         private string version;
         
         [XmlElement(elementName:"work")]
-        public Work Work
+        public WorkMusicXML Work
         {
             get
             {
@@ -92,7 +92,7 @@ namespace MusicXMLViewerWPF
         }
         //[XmlIgnore]
         [XmlElement("part-list")]
-        public XmlPartList Partlist
+        public PartListMusicXML Partlist
         {
             get
             {
@@ -105,7 +105,7 @@ namespace MusicXMLViewerWPF
             }
         }
         [XmlElement("identification")]
-        public XmlIdentification Identification
+        public IdentificationMusicXML Identification
         {
             get
             {
@@ -131,7 +131,7 @@ namespace MusicXMLViewerWPF
             }
         }
 
-        public XmlScorePartwise()
+        public ScorePartwiseMusicXML()
         {
             this.version = "1.0";
         }

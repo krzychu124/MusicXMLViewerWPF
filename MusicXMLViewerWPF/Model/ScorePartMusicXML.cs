@@ -8,7 +8,7 @@ using System.Xml.Serialization;
 namespace MusicXMLScore.Model
 {
     [Serializable]
-    public class XmlScorePart
+    public class ScorePartMusicXML
     {
         private string partId; //! id
         private string partName; //! long name

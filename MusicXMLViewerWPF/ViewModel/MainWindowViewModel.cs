@@ -156,7 +156,7 @@ namespace MusicXMLScore.ViewModel
             Log.LoggIt.Log($"File {filedestination} been loaded", Log.LogType.Info);
             XDocument XDoc = XDocument.Load(filedestination, LoadOptions.SetLineInfo); // std + add line info(number)
             MusicScore musicscore = new MusicScore();
-            XmlScorePartwise xml = TempMethod<XmlScorePartwise>(filedestination);
+            ScorePartwiseMusicXML xml = TempMethod<ScorePartwiseMusicXML>(filedestination);
 
 #if LOADSPEEDTEST
              var sw = new Stopwatch();

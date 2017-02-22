@@ -9,13 +9,13 @@ namespace MusicXMLScore.Model
 {
     [Serializable]
     [XmlType(TypeName ="part-list")]
-    public class XmlPartList
+    public class PartListMusicXML
     {
         //private List<> partGroup = new List<string>(); //partgroup[]
 
         //private XmlScorePart scorePart; //scorepart
 
-        private List<XmlScorePart> scoreParts = new List<XmlScorePart>();
+        private List<ScorePartMusicXML> scoreParts = new List<ScorePartMusicXML>();
 
         //[XmlIgnore]
         //[XmlElement("part-group", Order = 0)]
@@ -48,7 +48,7 @@ namespace MusicXMLScore.Model
         //[XmlIgnore]
         //[XmlElement("part-group", Order = 2)]
         [XmlElement("score-part")]
-        public List<XmlScorePart> ScoreParts
+        public List<ScorePartMusicXML> ScoreParts
         {
             get
             {
