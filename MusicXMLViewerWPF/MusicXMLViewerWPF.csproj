@@ -121,7 +121,10 @@
     <Compile Include="LayoutStyle\Styles\NotesLayoutStyle.cs" />
     <Compile Include="LayoutStyle\Styles\PageLayoutStyle.cs" />
     <Compile Include="LayoutStyle\Styles\SystemLayoutStyle.cs" />
+    <Compile Include="Model\Helpers\EmptyMusicXML.cs" />
+    <Compile Include="Model\MeasureItems\Attributes\AttributesDirectiveMusicXML.cs" />
     <Compile Include="Model\MeasureItems\BackupMusicXML.cs" />
+    <Compile Include="Model\MeasureItems\Attributes\ClefMusicXML.cs" />
     <Compile Include="Model\MeasureItems\FiguredbassMusicXML.cs" />
     <Compile Include="Model\MeasureItems\ForwardMusicXML.cs" />
     <Compile Include="Model\MeasureItems\GroupingMusicXML.cs" />
@@ -144,7 +147,12 @@
     <Compile Include="Model\Helpers\SimpleTypes\Enums.cs" />
     <Compile Include="Model\IdentificationMusicXML.cs" />
     <Compile Include="Model\MeasureItems\Attributes\KeyMusicXML.cs" />
+    <Compile Include="Model\MeasureItems\Attributes\MeasureStyleMusicXML.cs" />
     <Compile Include="Model\MeasureItems\NoteMusicXML.cs" />
+    <Compile Include="Model\MeasureItems\Attributes\TimeMusicXML.cs" />
+    <Compile Include="Model\MeasureItems\Attributes\PartSymbolMusicXML.cs" />
+    <Compile Include="Model\MeasureItems\Attributes\StaffDetailsMusicXML.cs" />
+    <Compile Include="Model\MeasureItems\Attributes\TransposeMusicXML.cs" />
     <Compile Include="Model\PartListMusicXML.cs" />
     <Compile Include="Model\MeasureItems\PrintMusicXML.cs" />
     <Compile Include="Model\ScorePartMusicXML.cs" />
