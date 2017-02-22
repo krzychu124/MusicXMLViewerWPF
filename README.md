@@ -6,7 +6,7 @@
 
 ###**Currently under developement:**
    - [x] ~~MusicXML reader // Minimum info from MusicXML file //~~ **Done Partially**
-   - [ ] **MusicXML Reader** - various improvements
+   - [ ] **MusicXML Reader** - various improvements - WiP
    - [ ] **Refactoring project according to MVVM pattern**
    - [ ] **BasicUI Layout**
 
