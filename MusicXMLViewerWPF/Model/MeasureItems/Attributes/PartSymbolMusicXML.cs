@@ -9,13 +9,13 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
     {
         private string topStaff;
         private string bottomStaff;
-        private decimal defaultX;
+        private double defaultX;
         private bool defaultXSpecified;
-        private decimal defaultY;
+        private double defaultY;
         private bool defaultYSpecified;
-        private decimal relativeX;
+        private double relativeX;
         private bool relativeXSpecified;
-        private decimal relativeY;
+        private double relativeY;
         private bool relativeYSpecified;
         private string color;
         private GroupSymbolValueMusicXML value;
@@ -47,7 +47,7 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
             }
         }
         [XmlAttribute("default-x")]
-        public decimal DefaultX
+        public double DefaultX
         {
             get
             {
@@ -73,7 +73,7 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
             }
         }
         [XmlAttribute("default-y")]
-        public decimal DefaultY
+        public double DefaultY
         {
             get
             {
@@ -99,7 +99,7 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
             }
         }
         [XmlAttribute("relative-x")]
-        public decimal RelativeX
+        public double RelativeX
         {
             get
             {
@@ -125,7 +125,7 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
             }
         }
         [XmlAttribute("relative-y")]
-        public decimal RelativeY
+        public double RelativeY
         {
             get
             {
