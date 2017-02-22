@@ -19,7 +19,7 @@ namespace MusicXMLViewerWPF
         #region Elements
         private CreditWords creditWords;
         private string creditType;
-        private MusicXMLViewerWPF.Helpers.FormattedTextMusicXML cw;
+        private MusicXMLScore.Model.Helpers.FormattedTextMusicXML cw;
         private CreditType type;
         private Defaults.Defaults defaults;
         /// <summary>
@@ -69,7 +69,7 @@ namespace MusicXMLViewerWPF
         public string CreditTyp { get { return creditType; } set { creditType = value; } }
 
         [XmlElement("credit-words")]
-        public Helpers.FormattedTextMusicXML CreditW { get { return cw; } set { cw = value; } }
+        public MusicXMLScore.Model.Helpers.FormattedTextMusicXML CreditW { get { return cw; } set { cw = value; } }
         public CreditType Type { get { return type; } }
         public static Segment Titlesegment { get { return titleSegment; } set { titleSegment = value; } } //todo remove/refactor
         #endregion

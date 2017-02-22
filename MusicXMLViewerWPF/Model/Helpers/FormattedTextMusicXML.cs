@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 
-namespace MusicXMLViewerWPF.Helpers
+namespace MusicXMLScore.Model.Helpers
 {
     [Serializable]
     public class FormattedTextMusicXML //! Looks ok

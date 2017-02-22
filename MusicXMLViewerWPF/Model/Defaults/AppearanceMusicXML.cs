@@ -1,4 +1,4 @@
-﻿using MusicXMLScore.Model.SimpleTypes;
+﻿using MusicXMLScore.Model.Helpers.SimpleTypes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
