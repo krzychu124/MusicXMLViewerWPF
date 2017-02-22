@@ -35,7 +35,7 @@ namespace MusicXMLViewerWPF
         private List<List<Part>> pagesList = new List<List<Part>>();
         private Dictionary<string, Part> parts = new Dictionary<string, Part>() { };
         private string title;
-        private Work work;
+        private WorkMusicXML work;
 
         #endregion Private Fields
 
@@ -129,7 +129,7 @@ namespace MusicXMLViewerWPF
             }
         }
         public string Title { get { return title; } set { if (value != null) { title = value; } } }    
-        public Work Work { get { return work; } set { if (value != null) { work = value; } } }
+        public WorkMusicXML Work { get { return work; } set { if (value != null) { work = value; } } }
     
         #endregion Public Properties
 
@@ -260,7 +260,7 @@ namespace MusicXMLViewerWPF
         private void ImportFromXMLFile()
         {
             Title = file.Element("movement-title") != null ? file.Element("movement-title").Value : "No title";
-            Work = file.Element("work") != null ? new Work(file.Element("work")) : null;
+            Work = file.Element("work") != null ? new WorkMusicXML(file.Element("work")) : null;
             Defaults = file.Element("defaults") != null ? new Defaults.Defaults(file.Element("defaults"), this) : new Defaults.Defaults();
             Identification = new Identification.Identification(file.Element("identification"));
             if (Identification?.Encoding?.Supports != null) //todo refactor to inpc

@@ -8,7 +8,7 @@ using System.Xml.Serialization;
 namespace MusicXMLViewerWPF
 {
     [Serializable]
-    public class Work // Done
+    public class WorkMusicXML // Done
     {
         private string work_number;
         private string work_title;
@@ -24,11 +24,11 @@ namespace MusicXMLViewerWPF
             get { return work_title; }
             set { work_title = value; }
         }
-        public Work()
+        public WorkMusicXML()
         {
 
         }
-        public Work(System.Xml.Linq.XElement x)
+        public WorkMusicXML(System.Xml.Linq.XElement x)
         {
             work_number = x.Element("work-number") != null ? x.Element("work-number").Value : "0" ;
             work_title = x.Element("work-title").Value;

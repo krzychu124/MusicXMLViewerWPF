@@ -9,7 +9,7 @@ using System.Xml.Serialization;
 namespace MusicXMLScore.Model
 {
     [Serializable]
-    public class XmlIdentification //TODO_H encoding-field
+    public class IdentificationMusicXML //TODO_H encoding-field
     {
         private XmlMiscellaneous miscellaneous;
         private EncodingMusicXML encoding;
@@ -70,7 +70,7 @@ namespace MusicXMLScore.Model
             }
         }
 
-        public XmlIdentification()
+        public IdentificationMusicXML()
         {
 
         }
