@@ -5,10 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
+using System.Xml.Serialization;
 
-namespace MusicXMLViewerWPF.Credit
+namespace MusicXMLViewerWPF
 {
-    class Credit : Segment
+    [Serializable]
+    public class Credit : Segment
     {
         #region Attributes
         private int page; // number of page where credit is presented
@@ -17,6 +19,7 @@ namespace MusicXMLViewerWPF.Credit
         #region Elements
         private CreditWords creditWords;
         private string creditType;
+        private MusicXMLViewerWPF.Helpers.FormattedTextMusicXML cw;
         private CreditType type;
         private Defaults.Defaults defaults;
         /// <summary>
@@ -61,14 +64,24 @@ namespace MusicXMLViewerWPF.Credit
         #region Public properties read-only
         public CreditWords CreditWords { get { return creditWords; } }
         public int PageNumber { get { return page; } }
-        public string CreditType { get { return creditType; } }
+
+        [XmlElement("credit-type")]
+        public string CreditTyp { get { return creditType; } set { creditType = value; } }
+
+        [XmlElement("credit-words")]
+        public Helpers.FormattedTextMusicXML CreditW { get { return cw; } set { cw = value; } }
         public CreditType Type { get { return type; } }
         public static Segment Titlesegment { get { return titleSegment; } set { titleSegment = value; } } //todo remove/refactor
         #endregion
 
-        public Credit(System.Xml.Linq.XElement x, Defaults.Defaults d = null )
+        public Credit()
         {
-            defaults = d == null? new Defaults.Defaults(): d;
+
+        }
+
+        public Credit(System.Xml.Linq.XElement x) //! , Defaults.Defaults d = null )
+        {
+            //defaults = d == null? new Defaults.Defaults(): d;
             page = x.HasAttributes ? int.Parse(x.Attribute("page").Value) : 1;
             creditType = x.Element("credit-type") != null ? x.Element("credit-type").Value : null;
             SetCreditType();
@@ -99,31 +112,31 @@ namespace MusicXMLViewerWPF.Credit
                 switch (creditType)
                 {
                     case "title":
-                        type = MusicXMLViewerWPF.Credit.CreditType.title;
+                        this.type = CreditType.title;
                         break;
                     case "subtitle":
-                        type = MusicXMLViewerWPF.Credit.CreditType.subtitle;
+                        type = CreditType.subtitle;
                         break;
                     case "composer":
-                        type = MusicXMLViewerWPF.Credit.CreditType.composer;
+                        type = CreditType.composer;
                         break;
                     case "page number":
-                        type = MusicXMLViewerWPF.Credit.CreditType.page_number;
+                        type = CreditType.page_number;
                         break;
                     case "arranger":
-                        type = MusicXMLViewerWPF.Credit.CreditType.arranger;
+                        type = CreditType.arranger;
                         break;
                     case "lyricist":
-                        type = MusicXMLViewerWPF.Credit.CreditType.lyricist;
+                        type = CreditType.lyricist;
                         break;
                     case "rights":
-                        type = MusicXMLViewerWPF.Credit.CreditType.rights;
+                        type = CreditType.rights;
                         break;
                 }
             }
             else
             {
-                type = MusicXMLViewerWPF.Credit.CreditType.none;
+                type = CreditType.none;
             }
         }
 
@@ -164,7 +177,7 @@ namespace MusicXMLViewerWPF.Credit
         }
     }
     
-    enum CreditType
+    public enum CreditType
     {
         page_number,
         title,
@@ -179,13 +192,13 @@ namespace MusicXMLViewerWPF.Credit
         none = 1000
     }
     
-    enum CreditPlacement
+    public enum CreditPlacement
     {
         header,
         footer
     }
 
-    internal class CreditWords : EmptyPrintStyle //! refactoring/removing possible later
+    public class CreditWords : EmptyPrintStyle //! refactoring/removing possible later
     {
         private string value;
 

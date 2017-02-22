@@ -1,5 +1,6 @@
-﻿using MusicXMLScore.Helpers;
-using MusicXMLViewerWPF.Credit;
+﻿using GalaSoft.MvvmLight;
+using MusicXMLScore.Helpers;
+using MusicXMLViewerWPF;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -16,7 +17,7 @@ namespace MusicXMLScore.ViewModel
     /// <summary>
     /// Displays added/loaded Credits (title, composer, arranger, etc.)
     /// </summary>
-    class CreditsViewModel
+    class CreditsViewModel : ViewModelBase
     {
         private ObservableCollection<UIElement> creditslist = new ObservableCollection<UIElement>();
 

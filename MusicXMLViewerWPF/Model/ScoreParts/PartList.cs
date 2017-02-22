@@ -10,7 +10,8 @@ using MusicXMLViewerWPF.Defaults;
 
 namespace MusicXMLViewerWPF
 {
-    class PartList // first idea :/ // can be hard to read, rework possible
+    [Serializable]
+    public class PartList // first idea :/ // can be hard to read, rework possible
     {
         private static SystemLayout systemlayout;
         private static Dictionary<string, ScorePart> score_parts = new Dictionary<string, ScorePart>() { };
@@ -53,7 +54,7 @@ namespace MusicXMLViewerWPF
         }
     }
 
-    class PartGroup // not implemented // searching for MusicXML templates //
+    public class PartGroup // not implemented // searching for MusicXML templates //
     {
         private GroupBarline groupbarline;
         private GroupSymbol symbol;
@@ -115,7 +116,7 @@ namespace MusicXMLViewerWPF
             // later
         }
 
-        internal enum GroupBarline
+        public enum GroupBarline
         {
             no,
             yes,
@@ -123,29 +124,29 @@ namespace MusicXMLViewerWPF
         }
 
     }
-    class GroupSymbol : PositionHelper
+    public class GroupSymbol : PositionHelper
     {
-        private Symbol type;
+        private PartGroupSymbol type;
         private string typ;
 
-        public Symbol Type { get { return type; } }
+        public PartGroupSymbol Type { get { return type; } }
         public string Type_s { get { return typ; } }
         public GroupSymbol(XElement x) : base (x.Attributes())
         {
             typ = x.Value;
-            type = x.Value == "none" ? Symbol.none : 
-                   x.Value == "square" ? Symbol.square :
-                   x.Value == "bracket" ? Symbol.bracket : 
-                   x.Value == "line" ? Symbol.line : Symbol.brace;
-        }
-        internal enum Symbol
-        {
-            none,
-            square,
-            bracket,
-            line,
-            brace
-        }
+            type = x.Value == "none" ? PartGroupSymbol.none : 
+                   x.Value == "square" ? PartGroupSymbol.square :
+                   x.Value == "bracket" ? PartGroupSymbol.bracket : 
+                   x.Value == "line" ? PartGroupSymbol.line : PartGroupSymbol.brace;
+        } 
+    }
+    public enum PartGroupSymbol
+    {
+        none,
+        square,
+        bracket,
+        line,
+        brace
     }
 
 }

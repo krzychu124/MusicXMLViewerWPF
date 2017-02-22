@@ -28,7 +28,7 @@ namespace MusicXMLScore.ViewModel
 
         private void StaffLineCanvas_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            Point ptCurrent = e.GetPosition(gridmain);//cwp
+            Point ptCurrent = e.GetPosition(gridPage);//cwp
             var list = HitSprite(ptCurrent, sender as UIElement);
             //var list2 = list as IEnumerable<FrameworkElement>;
             string message = ""; 

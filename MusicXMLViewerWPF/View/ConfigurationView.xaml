@@ -5,86 +5,27 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MusicXMLScore.ViewModel"
         mc:Ignorable="d"
-        Title="ConfigurationView" Height="422.828" Width="453.008">
+        Title="ConfigurationView" Height="498.974" Width="500.653" MinHeight="500" MinWidth="510">
     <Grid>
         <!--<local:PageSettingsView HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="258" Height="243"/>-->
-        <TabControl x:Name="tabControl" Margin="0,0,-2,-7">
-            <TabItem Header="Page Settings">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <TabControl x:Name="tabControl" Margin="0,0,0,0" Grid.Row="0">
+            <TabItem Header="Page Layout Settings">
                 <Grid >
-                    <local:PageSettingsView Margin="2,2,0,0"/>
+                    <local:PageSettingsView VerticalAlignment="Top" Margin="2,2,2,2"/>
                 </Grid>
             </TabItem>
-            <TabItem Header="TabItem">
-                <Grid Background="#FFE5E5E5">
-                    <WrapPanel>
-                        <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                            <Canvas Width="auto" Height="auto" Background="Red"/>
-                            <StackPanel Orientation="Horizontal" Panel.ZIndex="0" Margin="5" >
-                                <Canvas Width="30" Height="70" Background="GreenYellow"/>
-                                <Canvas Width="30" Height="70" Background="Green"/>
-                                <Canvas Width="30" Height="70" Background="Goldenrod"/>
-                            </StackPanel>
-                        </Grid>
-                        <Canvas Width="100" Height="70" Background="Beige">
-                            <StackPanel Orientation="Horizontal">
-                                <Canvas Width="30" Height="70" Background="GreenYellow"/>
-                                <Canvas Width="30" Height="70" Background="Green"/>
-                                <Canvas Width="30" Height="70" Background="Goldenrod"/>
-                            </StackPanel>
-                        </Canvas>
-                        <Canvas Width="100" Height="70" Background="Beige">
-                            <StackPanel Orientation="Horizontal">
-                                <Canvas Width="30" Height="70" Background="GreenYellow"/>
-                                <Canvas Width="30" Height="70" Background="Green"/>
-                                <Canvas Width="30" Height="70" Background="Goldenrod"/>
-                            </StackPanel>
-                        </Canvas>
-                        <Canvas Width="100" Height="70" Background="Beige">
-                            <StackPanel Orientation="Horizontal">
-                                <Canvas Width="30" Height="70" Background="GreenYellow"/>
-                                <Canvas Width="30" Height="70" Background="Green"/>
-                                <Canvas Width="30" Height="70" Background="Goldenrod"/>
-                            </StackPanel>
-                        </Canvas>
-                        <Canvas Width="100" Height="70" Background="Beige">
-                            <StackPanel Orientation="Horizontal">
-                                <Canvas Width="30" Height="70" Background="GreenYellow"/>
-                                <Canvas Width="30" Height="70" Background="Green"/>
-                                <Canvas Width="30" Height="70" Background="Goldenrod"/>
-                            </StackPanel>
-                        </Canvas>
-                        <Canvas Width="100" Height="70" Background="Beige">
-                            <StackPanel Orientation="Horizontal">
-                                <Canvas Width="30" Height="70" Background="GreenYellow"/>
-                                <Canvas Width="30" Height="70" Background="Green"/>
-                                <Canvas Width="30" Height="70" Background="Goldenrod"/>
-                            </StackPanel>
-                        </Canvas>
-                        <Canvas Width="100" Height="70" Background="Beige">
-                            <StackPanel Orientation="Horizontal">
-                                <Canvas Width="30" Height="70" Background="GreenYellow"/>
-                                <Canvas Width="30" Height="70" Background="Green"/>
-                                <Canvas Width="30" Height="70" Background="Goldenrod"/>
-                            </StackPanel>
-                        </Canvas>
-                        <Canvas Width="100" Height="70" Background="Beige">
-                            <StackPanel Orientation="Horizontal">
-                                <Canvas Width="30" Height="70" Background="GreenYellow"/>
-                                <Canvas Width="30" Height="70" Background="Green"/>
-                                <Canvas Width="30" Height="70" Background="Goldenrod"/>
-                            </StackPanel>
-                        </Canvas>
-                        <Canvas Width="100" Height="70" Background="Beige">
-                            <StackPanel Orientation="Horizontal">
-                                <Canvas Width="30" Height="70" Background="GreenYellow"/>
-                                <Canvas Width="30" Height="70" Background="Green"/>
-                                <Canvas Width="30" Height="70" Background="Goldenrod"/>
-                            </StackPanel>
-                        </Canvas>
-                    </WrapPanel>
-                </Grid>
+            <TabItem Header="Other Layout Settings">
+                todo add other settings from layout
             </TabItem>
         </TabControl>
+        <Grid Grid.Row="1" Margin="10">
+            <Button x:Name="confirmButton" Content="Ok" Width="60" Height="25" Margin="325,0,87,0" />
+            <Button x:Name="cancelButton" Content="Cancel" Width="60" Height="25" Margin="402,0,10,0" />
 
+        </Grid>
     </Grid>
 </Window>

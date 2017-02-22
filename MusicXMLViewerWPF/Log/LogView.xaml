@@ -30,12 +30,24 @@
             <TabItem Header="Full Log">
                 <Border BorderBrush="Gray" BorderThickness="0.5">
                     <ListView Height="Auto" Width="Auto" ItemsSource="{Binding AllLog}" >
+                        <ListView.Resources>
+                            <Style TargetType="{x:Type TextBlock}">
+                                <Setter Property="TextElement.Foreground" Value="{Binding MessageColor}" />
+                                
+                            </Style>
+                        </ListView.Resources>
+                            <ListView.ItemContainerStyle>
+                                <Style TargetType="ListViewItem">
+                                <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                <Setter Property="HorizontalAlignment" Value="Stretch"/>
+                            </Style>
+                            </ListView.ItemContainerStyle>
                         <ListView.View>
                             <GridView>
-                                <GridViewColumn Header="Type" DisplayMemberBinding="{Binding LogType}" Width="80"/>
+                                <GridViewColumn Header="Type" DisplayMemberBinding="{Binding LogType}" Width="Auto"/>
                                 <GridViewColumn Header="Date" DisplayMemberBinding="{Binding Date}" Width="Auto"/>
                                 <GridViewColumn Header="Member Info" DisplayMemberBinding="{Binding MemberName}" Width="150"/>
-                                <GridViewColumn Header="Message" DisplayMemberBinding="{Binding Message}" Width="550"/>
+                                <GridViewColumn Header="Message" DisplayMemberBinding="{Binding Message}" Width="500"/>
                             </GridView>
                         </ListView.View>
                     </ListView>
@@ -44,21 +56,22 @@
             <TabItem Header="Infos">
                 <Border BorderBrush="Gray" BorderThickness="0.5">
                     <ListView Height="Auto" Width="Auto" ItemsSource="{Binding InfoLog}">
-                            <ListView.Resources>
-                                <Style TargetType="{x:Type TextBlock}">
-                                    <Setter Property="TextElement.Foreground" Value="DarkBlue" />
-                                </Style>
-                            </ListView.Resources>
-                            <ListView.ItemContainerStyle>
-                                <Style TargetType="ListViewItem">
-                                    <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto"/>
-                                </Style>
-                            </ListView.ItemContainerStyle>
+                        <ListView.Resources>
+                            <Style TargetType="{x:Type TextBlock}">
+                                <Setter Property="TextElement.Foreground" Value="{Binding MessageColor}" />
+                            </Style>
+                        </ListView.Resources>
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="ListViewItem">
+                                <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto"/>
+                                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                            </Style>
+                        </ListView.ItemContainerStyle>
                             <ListView.View>
-                                <GridView>
+                                <GridView >
                                     <GridViewColumn Header="Date" DisplayMemberBinding="{Binding Date}" Width="Auto"/>
                                     <GridViewColumn Header="Member Info" DisplayMemberBinding="{Binding MemberName}" Width="100"/>
-                                    <GridViewColumn Header="Message" DisplayMemberBinding="{Binding Message}" Width="Auto"/>
+                                    <GridViewColumn Header="Message" DisplayMemberBinding="{Binding Message}" Width="500"/>
                                 </GridView>
                             </ListView.View>
                         </ListView>
@@ -67,32 +80,9 @@
             <TabItem Header="Warnings">
                 <Border BorderBrush="Gray" BorderThickness="0.5">
                     <ListView Height="Auto" Width="Auto" ItemsSource="{Binding WarningLog}">
-                            <ListView.Resources>
-                                <Style TargetType="{x:Type TextBlock}">
-                                    <Setter Property="TextElement.Foreground" Value="Orange" />
-                                </Style>
-                            </ListView.Resources>
-                            <ListView.ItemContainerStyle>
-                                <Style TargetType="ListViewItem">
-                                    <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto"/>
-                                </Style>
-                            </ListView.ItemContainerStyle>
-                            <ListView.View>
-                                <GridView>
-                                    <GridViewColumn Header="Date" DisplayMemberBinding="{Binding Date}" Width="Auto"/>
-                                    <GridViewColumn Header="Member Info" DisplayMemberBinding="{Binding MemberName}" Width="100"/>
-                                    <GridViewColumn Header="Message" DisplayMemberBinding="{Binding Message}" Width="Auto"/>
-                                </GridView>
-                            </ListView.View>
-                        </ListView>
-                </Border>
-            </TabItem>
-            <TabItem Header="Errors">
-                <Border BorderBrush="Gray" BorderThickness="0.5">
-                    <ListView Height="Auto" Width="Auto" ItemsSource="{Binding ErrorLog}">
                         <ListView.Resources>
                             <Style TargetType="{x:Type TextBlock}">
-                                <Setter Property="TextElement.Foreground" Value="Red" />
+                                <Setter Property="TextElement.Foreground" Value="{Binding MessageColor}" />
                             </Style>
                         </ListView.Resources>
                         <ListView.ItemContainerStyle>
@@ -101,10 +91,34 @@
                             </Style>
                         </ListView.ItemContainerStyle>
                         <ListView.View>
+                            <GridView >
+                                <GridViewColumn Header="Date" DisplayMemberBinding="{Binding Date}" Width="Auto"/>
+                                <GridViewColumn Header="Member Info" DisplayMemberBinding="{Binding MemberName}" Width="100"/>
+                                <GridViewColumn Header="Message" DisplayMemberBinding="{Binding Message}" Width="500"/>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </Border>
+            </TabItem>
+            <TabItem Header="Errors">
+                <Border BorderBrush="Gray" BorderThickness="0.5">
+                    <ListView Height="Auto" Width="Auto" ItemsSource="{Binding ErrorLog}">
+                        <ListView.Resources>
+                            <Style TargetType="{x:Type TextBlock}">
+                                <Setter Property="TextElement.Foreground" Value="{Binding MessageColor}" />
+                            </Style>
+                        </ListView.Resources>
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="ListViewItem">
+                                <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto"/>
+                                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                            </Style>
+                        </ListView.ItemContainerStyle>
+                        <ListView.View>
                             <GridView>
                                 <GridViewColumn Header="Date" DisplayMemberBinding="{Binding Date}" Width="Auto"/>
                                 <GridViewColumn Header="Member Info" DisplayMemberBinding="{Binding MemberName}" Width="100"/>
-                                <GridViewColumn Header="Message" DisplayMemberBinding="{Binding Message}" Width="Auto"/>
+                                <GridViewColumn Header="Message" DisplayMemberBinding="{Binding Message}" Width="500"/>
                             </GridView>
                         </ListView.View>
                     </ListView>
@@ -119,7 +133,6 @@
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
                         <TreeView Name="trvItems" Grid.Row="0" ItemTemplate="{StaticResource NodeTemplate}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" DataContext="{Binding XMLLoadedFile}" ItemsSource="{Binding XPath=.}" VirtualizingStackPanel.IsVirtualizing="False" VirtualizingStackPanel.VirtualizationMode="Standard" />
-
                     </Grid>
                 </Border>
             </TabItem>

@@ -32,7 +32,7 @@ namespace MusicXMLScore.Helpers
         {
             string s = "\ue01a";
             float scale = 45;
-            FormattedText text = new FormattedText(s, System.Threading.Thread.CurrentThread.CurrentUICulture, System.Windows.FlowDirection.LeftToRight, TypeFaces.MusicFont, scale, Brushes.Black);
+            FormattedText text = new FormattedText(s, System.Threading.Thread.CurrentThread.CurrentUICulture, System.Windows.FlowDirection.LeftToRight, TypeFaces.BravuraTextFont, scale, Brushes.Black);
             DrawingVisual staffline = new DrawingVisual();
             Point point = new Point(1, 20);
             using(DrawingContext dc = staffline.RenderOpen())

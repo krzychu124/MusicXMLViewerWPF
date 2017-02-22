@@ -12,6 +12,7 @@ using System.Windows.Media;
 using MusicXMLViewerWPF;
 using MusicXMLScore.Helpers;
 using MusicXMLViewerWPF.ScoreParts.MeasureContent;
+using GalaSoft.MvvmLight;
 
 namespace MusicXMLScore.ViewModel
 {
@@ -46,7 +47,7 @@ namespace MusicXMLScore.ViewModel
         CClef
     }
 
-    class NewScoreCreatorViewModel : INotifyPropertyChanged //TODO Refactor to new MeasureView for preview 
+    class NewScoreCreatorViewModel : ViewModelBase  //TODO Refactor to new MeasureView for preview 
     {
         #region fields
         private bool customsetting;
@@ -79,26 +80,23 @@ namespace MusicXMLScore.ViewModel
         public Helpers.PreviewCanvas KeyPreview { get { return keypreview; } }
         public Helpers.PreviewCanvas PreviewCanvas { get { return previewcanvas; } set { previewcanvas = value; } }
         public int MeasuresCount { get { return measurescount; } set { measurescount = value; } }
-        public uint TimeSigTime { get { return timesigtimeval; } set { if (value != timesigtimeval) { timesigtimeval = value; NotifyPropertyChanged(nameof(TimeSigTime)); } } }
+        public uint TimeSigTime { get { return timesigtimeval; } set { if (value != timesigtimeval) { if (timesigtimeval != value) { Set(nameof(TimeSigTime), ref timesigtimeval, value); } } } }
         public KeyValuePair<ImageSource, ClefType> SelectedClefType { get; set; }
-        public KeyValuePair<int, TimeSigBeatTime> SelectedTimeBeats { get { return selectedtimebeats; } set { selectedtimebeats = value; NotifyPropertyChanged(nameof(SelectedTimeBeats)); } }
+        public KeyValuePair<int, TimeSigBeatTime> SelectedTimeBeats { get { return selectedtimebeats; } set { Set(nameof(SelectedTimeBeats), ref selectedtimebeats, value); } }
         public List<string> ClefType { get { return cleftype_; } }
         public Dictionary<string, ClefType> ClefTypeListS { get { return cleftype; } }
-        public ObservableCollection<string> KeySymbolList { get { return keysymbollist; } set { if (keysymbollist == value) return; keysymbollist = value; NotifyPropertyChanged("KeySymbolList"); } }
+        public ObservableCollection<string> KeySymbolList { get { return keysymbollist; } set { if (keysymbollist != value) { Set(nameof(KeySymbolList), ref keysymbollist, value); } } }
         public RelayCommand AddVisualCommand { get; set; }
         public RelayCommand CanvasClick { get; set; }
         public RelayCommand OptionsWindowCommand { get; set; }
-        public string SelectedClef { get { return selclef; } set { selclef = value; NotifyPropertyChanged(nameof(SelectedClef)); } }
-        public KeyValuePair<string, ClefType> SelectedClefS { get { return selectedclef; } set { selectedclef = value; NotifyPropertyChanged(nameof(SelectedClef)); } }
-        public string SelectedKeyMode { get { return selectedkeymode; } set { if (selectedkeymode == value) return; selectedkeymode = value; NotifyPropertyChanged(nameof(SelectedKeyMode)); } }
-        public string SelectedKeySymbol { get { return selectedkeysymbol; } set { if (selectedkeysymbol == value) return; selectedkeysymbol = value; NotifyPropertyChanged(nameof(SelectedKeySymbol)); } }
-        public string SelectedKeyType { get { return selectedkeytype; } set { if (selectedkeytype == value) return; selectedkeytype = value; NotifyPropertyChanged(nameof(SelectedKeyType)); } }
+        public string SelectedClef { get { return selclef; } set { if (selclef != value) { Set(nameof(SelectedClef), ref selclef, value); } } }
+        public KeyValuePair<string, ClefType> SelectedClefS { get { return selectedclef; } set { { Set(nameof(SelectedClefS), ref selectedclef, value); } } }
+        public string SelectedKeyMode { get { return selectedkeymode; } set { if (selectedkeymode != value) Set(nameof(SelectedKeyMode), ref selectedkeymode, value); } }
+        public string SelectedKeySymbol { get { return selectedkeysymbol; } set { if (selectedkeysymbol != value) { Set(nameof(SelectedKeySymbol), ref selectedkeysymbol, value); } } }
+        public string SelectedKeyType { get { return selectedkeytype; } set { if (selectedkeytype != value) { Set(nameof(SelectedKeyType),ref selectedkeytype, value); } } }
         public string TimeSigTimeSource { get; set; }
-        public TimeSigSettingOptions CurrentTimeSigOption { get { return currenttimesig; } set { if (value != currenttimesig) { currenttimesig = value; NotifyPropertyChanged(nameof(CurrentTimeSigOption)); } } }
+        public TimeSigSettingOptions CurrentTimeSigOption { get { return currenttimesig; } set { if (value != currenttimesig) { Set(nameof(CurrentTimeSigOption), ref currenttimesig, value); } } }
         
-
-        public event PropertyChangedEventHandler PropertyChanged = delegate { };
-        public void NotifyPropertyChanged(string name) { PropertyChanged(this, new PropertyChangedEventArgs(name)); }
         #endregion
 
         public NewScoreCreatorViewModel()
@@ -124,11 +122,11 @@ namespace MusicXMLScore.ViewModel
             {
                 case "SelectedKeyMode":
                     SetKeySymbolList();
-                    PropertyChanged(this, new PropertyChangedEventArgs(nameof(SelectedKeySymbol)));
+                    RaisePropertyChanged(nameof(SelectedKeySymbol));
                     break;
                 case "SelectedKeyType":
                     SetKeySymbolList();
-                    PropertyChanged(this, new PropertyChangedEventArgs(nameof(SelectedKeySymbol)));
+                    RaisePropertyChanged(nameof(SelectedKeySymbol));
                     break;
                 case "KeySymbolList":
                     SelectedKeySymbol = KeySymbolList.ElementAt(0);
@@ -219,8 +217,6 @@ namespace MusicXMLScore.ViewModel
             //PreviewCanvas.AddVisual(AddVis());
             canvaslist.AddVisual(AddVis());
             keypreview.StaffLine();
-            SimpleLogger.SimpleLog.Log("Button test"+ canvaslist);
-            //SimpleLogger.SimpleLog.ShowLogFile();
         }
 
         private void SetKeySymbolList()

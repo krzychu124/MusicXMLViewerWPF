@@ -22,7 +22,7 @@ namespace MusicXMLViewerWPF
         private static ClefType sign_static;
         private bool visible = false;
         private static Clef cl;
-        private int number = 0;
+        private int number = 1;
         private static int clef_alter_note;
         private CanvasList drawablemusicalobject;
         private DrawableMusicalObjectStatus dmusicalobjectstatus;
@@ -51,7 +51,7 @@ namespace MusicXMLViewerWPF
             ID = Misc.RandomGenerator.GetRandomHexNumber();
             PropertyChanged += ClefPropertyChanged;
             additional_attributes = x.Attributes()!=null ? new EmptyPrintStyle(x.Attributes()) : null;
-            number = x.HasAttributes ? int.Parse(x.Attribute("number").Value) : 0;
+            number = x.HasAttributes ? int.Parse(x.Attribute("number").Value) : 1;
             Segment_type = SegmentType.Clef;
             //-----------------------
             var ele = x.Elements();

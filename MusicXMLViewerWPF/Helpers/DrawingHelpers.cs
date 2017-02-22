@@ -12,9 +12,14 @@ namespace MusicXMLScore.Helpers
     class DrawingHelpers
     {
         private static Random rndom = new Random();
+        public static double PointsToPixels(double points)
+        {
+            return points * (96.0 / 72.0);
+        }
         public static void DrawString(DrawingContext dc, string text, Typeface t_f, Brush brush, float xPos, float yPos, float element_size)
         {
-            dc.DrawText(new FormattedText(text, System.Threading.Thread.CurrentThread.CurrentUICulture, FlowDirection.LeftToRight, t_f, element_size, brush), new Point(xPos, yPos));
+            double p =PointsToPixels(element_size);
+            dc.DrawText(new FormattedText(text, System.Threading.Thread.CurrentThread.CurrentUICulture, FlowDirection.LeftToRight, t_f, p, brush), new Point(xPos, yPos));
         }
         /// <summary>
         /// Returns random Brush color

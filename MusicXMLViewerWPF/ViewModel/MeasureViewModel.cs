@@ -1,4 +1,5 @@
-﻿using MusicXMLScore.Helpers;
+﻿using GalaSoft.MvvmLight;
+using MusicXMLScore.Helpers;
 using MusicXMLViewerWPF.ScoreParts.MeasureContent;
 using System;
 using System.Collections.Generic;
@@ -13,7 +14,7 @@ namespace MusicXMLScore.ViewModel
     /// <summary>
     /// Displays default or passed to ctor. Measure object
     /// </summary>
-    class MeasureViewModel //TODO_I implement collection of items placed in this measure (to draw inside CustomPanel)
+    class MeasureViewModel : ViewModelBase //TODO_I implement collection of items placed in this measure (to draw inside CustomPanel)
     {
         #region Fields
         private Measure measure;
@@ -55,26 +56,35 @@ namespace MusicXMLScore.ViewModel
         #endregion
         private void BuildAndDrawMeasure() //TODO_I implement drawing to rest of drawable objects
         {
-            if (Measure.Attributes != null)
-            {
-                if (Measure.Attributes.Clef != null)
-                {
-                    MeasureContent.Add(Measure.Attributes.Clef.DrawableMusicalObject);
-                }
-                if (Measure.Attributes.Key != null)
-                {
-                    MeasureContent.Add(Measure.Attributes.Key.DrawableMusicalObject);
-                }
-                if (Measure.Attributes.Time != null)
-                {
-                    MeasureContent.Add(Measure.Attributes.Time.DrawableMusicalObject);
-                }
-            }
-            foreach (var item in Measure.NotesList)
-            {
-                if (item.DrawableObjectStatus == MusicXMLViewerWPF.Misc.DrawableMusicalObjectStatus.ready)
-                    MeasureContent.Add(item.DrawableMusicalObject);
-            }
+            
+
+            //if (Measure.Attributes != null)
+            //{
+            //    if (Measure.Attributes.Clef != null)
+            //    {
+            //        MeasureContent.Add(Measure.Attributes.Clef.DrawableMusicalObject);
+            //    }
+            //    if (Measure.Attributes.Key != null)
+            //    {
+            //        MeasureContent.Add(Measure.Attributes.Key.DrawableMusicalObject);
+            //    }
+            //    if (Measure.Attributes.Time != null)
+            //    {
+            //        MeasureContent.Add(Measure.Attributes.Time.DrawableMusicalObject);
+            //    }
+            //}
+
+            MusicXMLScore.DrawingHelpers.DrawableMeasure dm = new MusicXMLScore.DrawingHelpers.DrawableMeasure(Measure);
+            MeasureContent.Add(dm.BaseObjectVisual);
+            //foreach (var item in Measure.NotesList)
+            //{
+            //    if (item.DrawableObjectStatus == MusicXMLViewerWPF.Misc.DrawableMusicalObjectStatus.ready)
+            //        MeasureContent.Add(item.DrawableMusicalObject);
+            //}
+            //foreach (var item in Measure.Barlines)
+            //{
+            //    MeasureContent.Add(item.DrawableMusicalObject);
+            //}
         }
     }
 }

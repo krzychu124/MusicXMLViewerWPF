@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media;
 
 namespace MusicXMLScore.Log
 {
@@ -17,12 +18,35 @@ namespace MusicXMLScore.Log
             public string MemberName { get; set; }
             public string Message { get; set; }
             public string Date { get; set; }
+            public Brush MessageColor { get; set; }
             public Logger(LogType t, string memname, string message, string date)
             {
                 LogType = t;
                 MemberName = memname;
                 Message = message;
                 Date = date;
+                SetMessageColor();
+            }
+
+            private void SetMessageColor()
+            {
+                switch (LogType)
+                {
+                    case LogType.Info:
+                        MessageColor = Brushes.DarkBlue;
+                        break;
+                    case LogType.Warning:
+                        MessageColor = Brushes.DarkOrange;
+                        break;
+                    case LogType.Error:
+                        MessageColor = Brushes.Red;
+                        break;
+                    case LogType.Exception:
+                        MessageColor = Brushes.Violet;
+                        break;
+                    default:
+                        break;
+                }
             }
         }
         private static ObservableCollection<Logger> infolog;

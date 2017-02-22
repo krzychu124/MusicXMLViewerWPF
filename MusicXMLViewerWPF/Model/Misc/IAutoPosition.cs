@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MusicXMLViewerWPF.Misc
 {
-    interface IAutoPosition
+    interface IAutoPosition //TODO_H DELETE
     {
         float Width { get; set; }
     }

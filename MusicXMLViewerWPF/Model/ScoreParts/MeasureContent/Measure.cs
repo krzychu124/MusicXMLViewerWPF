@@ -57,7 +57,7 @@ namespace MusicXMLViewerWPF.ScoreParts.MeasureContent
         public DrawingVisual Visual { get { return visual; } set { if (value != null) visual = value; } }
         public new float Width { get { return base.Width; } set { if (value >= 0) { base.Width = value; } else { base.Width = 100f; Logger.Log("width is negative here"); } } }
         public int ElementsCount { get { return elements_count; } }
-        public int Number { get { return number; } }
+        public int Number { get { return number; } set { number = value; } }
         public List<Barline> Barlines { get { return barlines; } }
         public List<Direction> DirectionList { get { return direction; } }
         public List<Note> NotesList { get { return notes_list; } set { if (value != null) notes_list = value; } } // Not complete
@@ -340,7 +340,7 @@ namespace MusicXMLViewerWPF.ScoreParts.MeasureContent
         {
             Barline barline = new Barline(x);
             barlines.Add(barline);
-            Misc.ScoreSystem.Segments.Add(barline.ID, new Segment() { ID = barline.ID, Segment_type = SegmentType.Barline, Color = Brushes.Gold });
+            //Misc.ScoreSystem.Segments.Add(barline.ID, new Segment() { ID = barline.ID, Segment_type = SegmentType.Barline, Color = Brushes.Gold });
         }
         /// <summary>
         /// Extract measure attributes (Clef, KeySig, Timesig) from XML elemnet
@@ -381,24 +381,24 @@ namespace MusicXMLViewerWPF.ScoreParts.MeasureContent
                 {
                     if (Attributes.Clef.Number == 1)
                     {
-                        Misc.ScoreSystem.Segments.Add(Attributes.Clef.ID, Attributes.Clef);
+                        //Misc.ScoreSystem.Segments.Add(Attributes.Clef.ID, Attributes.Clef);
                         music_characters.Add(Attributes.Clef);
                     }
                 }
                 else
                 {
-                    Misc.ScoreSystem.Segments.Add(Attributes.Clef.ID, Attributes.Clef);
+                    //Misc.ScoreSystem.Segments.Add(Attributes.Clef.ID, Attributes.Clef);
                     music_characters.Add(Attributes.Clef);
                 }
             }
             if (Attributes.Key != null)
             {
-                Misc.ScoreSystem.Segments.Add(Attributes.Key.ID, new Segment() { ID = Attributes.Key.ID, Segment_type = SegmentType.KeySig, Color = Brushes.Coral });
+                //Misc.ScoreSystem.Segments.Add(Attributes.Key.ID, new Segment() { ID = Attributes.Key.ID, Segment_type = SegmentType.KeySig, Color = Brushes.Coral });
                 music_characters.Add(Attributes.Key); //! new Segment() { Segment_type = SegmentType.KeySig, Color = Brushes.Coral }
             }
             if (Attributes.Time != null)
             {
-                Misc.ScoreSystem.Segments.Add(Attributes.Time.ID, new Segment() { ID = Attributes.Time.ID, Segment_type = SegmentType.TimeSig, Color = Brushes.Lavender });
+                //Misc.ScoreSystem.Segments.Add(Attributes.Time.ID, new Segment() { ID = Attributes.Time.ID, Segment_type = SegmentType.TimeSig, Color = Brushes.Lavender });
                 music_characters.Add(Attributes.Time); //! new Segment() { ID = Attributes.Time.ID, Segment_type = SegmentType.TimeSig, Color = Brushes.Lavender }
             }
         }
@@ -410,7 +410,7 @@ namespace MusicXMLViewerWPF.ScoreParts.MeasureContent
         {
             Direction directionobject = new Direction(x, ID);
             this.direction.Add(directionobject);
-            Misc.ScoreSystem.Segments.Add(directionobject.ID, new Segment() { ID = directionobject.ID, Segment_type = SegmentType.Direction});
+            //Misc.ScoreSystem.Segments.Add(directionobject.ID, new Segment() { ID = directionobject.ID, Segment_type = SegmentType.Direction});
            // music_characters.Add(new Segment() { Segment_type = SegmentType.Direction, Color = Brushes.DarkTurquoise });
         }
         /// <summary>
@@ -422,7 +422,7 @@ namespace MusicXMLViewerWPF.ScoreParts.MeasureContent
             Rest rest = new Rest(x);
             NotesList.Add(rest);
             //! debug; Logger.Log("missing impl for this rest");
-            Misc.ScoreSystem.Segments.Add(rest.ID, rest); //! temp_str, new Segment() { ID = temp_str, Segment_type = SegmentType.Rest, Color = Brushes.DarkMagenta });
+            //Misc.ScoreSystem.Segments.Add(rest.ID, rest); //! temp_str, new Segment() { ID = temp_str, Segment_type = SegmentType.Rest, Color = Brushes.DarkMagenta });
             music_characters.Add(rest);//! (new Segment() { ID = temp_str, Segment_type = SegmentType.Rest, Color = Brushes.DarkMagenta });
         }
         /// <summary>
@@ -444,7 +444,7 @@ namespace MusicXMLViewerWPF.ScoreParts.MeasureContent
                 nlist.Add(note.NotationsList);
             }
             //! debug; Logger.Log("missing impl for this note");
-            Misc.ScoreSystem.Segments.Add(note.ID, note); //! temp_str, new Segment() { ID = temp_str, Segment_type = SegmentType.Chord, Color = Brushes.DarkOliveGreen});
+            //Misc.ScoreSystem.Segments.Add(note.ID, note); //! temp_str, new Segment() { ID = temp_str, Segment_type = SegmentType.Chord, Color = Brushes.DarkOliveGreen});
             music_characters.Add(note);//! new Segment() { ID = temp_str, Segment_type = SegmentType.Chord, Color = Brushes.DarkOliveGreen });
         }
         /// <summary>
@@ -590,12 +590,14 @@ namespace MusicXMLViewerWPF.ScoreParts.MeasureContent
             int s = 0;
             for (int i = 0; i < num; i++)
             {
-                Misc.DrawingHelpers.DrawString(dc, MusicalChars.Staff5L, TypeFaces.NotesFont, color, X + s, Y, Scale);
+                Misc.DrawingHelpers.DrawString(dc, MusicalChars.Staff5L, MusicXMLScore.Helpers.TypeFaces.BravuraMusicFont, color, X + s, Y, Scale);
+                //Misc.DrawingHelpers.DrawString(dc, MusicalChars.Staff5L, TypeFaces.NotesFont, color, X + s, Y, Scale);
                 s += 24;
             }
             if (filling != 0)
             {
-                Misc.DrawingHelpers.DrawString(dc, MusicalChars.Staff5L, TypeFaces.NotesFont, color, X + (Width-24), Y, Scale);
+                Misc.DrawingHelpers.DrawString(dc, MusicalChars.Staff5L, MusicXMLScore.Helpers.TypeFaces.BravuraMusicFont, color, X + (Width-24), Y, Scale);
+                //Misc.DrawingHelpers.DrawString(dc, MusicalChars.Staff5L, TypeFaces.NotesFont, color, X + (Width - 24), Y, Scale);
             }
         }
         public void Draw_Measure(DrawingVisual dv, Point p)

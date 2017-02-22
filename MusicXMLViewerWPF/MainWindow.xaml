@@ -14,7 +14,7 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="20"/>
-            <RowDefinition Height="20"/>
+            <RowDefinition Height="0"/>
             <RowDefinition Height="4*"/>
             <RowDefinition Height="5"/>
             <RowDefinition Height="Auto"/>
@@ -30,6 +30,7 @@
                     <MenuItem Header="Open File" Command="{Binding OpenFileCommand}"/>
                     <MenuItem Header="Open Last">
                         <MenuItem Header="Echigo-Jishi.xml" Command="{Binding OpenFileCommand}" CommandParameter="C:\Users\Krzychu124\Desktop\xml_test_samples\Echigo-Jishi.xml"/>
+                        <MenuItem Header="Saltarello.xml" Command="{Binding OpenFileCommand}" CommandParameter="Model\TestXMLFiles\Saltarello.xml"/>
                     </MenuItem>
                     <Separator/>
                     <MenuItem Header="Close File" Command="{Binding CloseFileCommand}"/>
@@ -60,7 +61,7 @@
                     <MenuItem Header="Measure" Command="{Binding AddMeasureCommand}"/>
                     <MenuItem Header="Text" IsEnabled="False"/>
                     <MenuItem Header="Frame" IsEnabled="False"/>
-                    <MenuItem Header="CustomButton" Command="{Binding CustomButtonCommand}"/>
+                    <MenuItem Header="Test" Command="{Binding TestButtonCommand}"/>
                 </MenuItem>
                 <MenuItem Header="Layout" IsEnabled="False">
                     <MenuItem Header="Page Settings" />
@@ -72,14 +73,13 @@
                     <MenuItem Header="Load Style"/>
                     <MenuItem Header="Save Style"/>
                 </MenuItem>
-                <MenuItem Header="Help" IsEnabled="False">
-                    <MenuItem Header="Get Help"/>
+                <MenuItem Header="Help" IsEnabled="True">
+                    <MenuItem Header="Get Help" Click="MenuItem_Click"/>
                 </MenuItem>
             </Menu>
         </DockPanel>
-        <TabControl x:Name="tabcontrol" Margin="10" Grid.Row="2" Width="{Binding Width, ElementName=MainW}" ItemsSource="{Binding TabsCreated}" SelectedItem="{Binding SelectedTabItem}">
-        </TabControl>
-        <Slider Grid.Row="1" Maximum="1900" Minimum="500" Value="{Binding Width, ElementName=tabcontrol}"/>
+        <TabControl x:Name="tabcontrol" Margin="0,5,0,0" Grid.Row="2" ItemsSource="{Binding TabsCreated}" SelectedItem="{Binding SelectedTabItem}" ClipToBounds="False" SnapsToDevicePixels="True" UseLayoutRounding="True"/>
+        <!--<Slider Grid.Row="1" Maximum="1900" Minimum="500" Value="{Binding Width, ElementName=tabcontrol}"/>-->
         <!--<ScrollViewer Grid.Row="3" CanContentScroll="True" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
             <Border>
                 <Border.Effect>
@@ -94,11 +94,11 @@
                 </ItemsControl>
             </Border>
         </ScrollViewer>-->
-        
+
         <GridSplitter Grid.Row="3" Height="5" HorizontalAlignment="Stretch"></GridSplitter>
-        
+
         <Log:LogView Grid.Row="4" MinHeight="105" MaxHeight="250"/>
-        
+
         <StatusBar Grid.Row="5" Height="20">Status Bar...</StatusBar>
     </Grid>
 </Window>
