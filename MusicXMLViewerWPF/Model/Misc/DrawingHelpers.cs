@@ -13,7 +13,36 @@ namespace MusicXMLViewerWPF.Misc
 
         public static void DrawString(DrawingContext dc, string text, Typeface t_f, Brush brush, float xPos, float yPos, float element_size)
         {
-            dc.DrawText(new FormattedText(text, System.Threading.Thread.CurrentThread.CurrentUICulture, FlowDirection.LeftToRight, t_f, element_size, brush), new Point(xPos, yPos));
+            Point pos = new Point(xPos, yPos);
+            FormattedText ft = new FormattedText(text, System.Threading.Thread.CurrentThread.CurrentUICulture, FlowDirection.LeftToRight, t_f, element_size, brush);
+            ft.TextAlignment = TextAlignment.Left;
+            VerticalAlign(pos, ft, Valign.top);
+            dc.DrawText(ft, pos);
+        }
+
+        public static double GetTextWidth(string text, Typeface typeFace)
+        {
+            GlyphTypeface glyphTypeface;
+            if (!typeFace.TryGetGlyphTypeface(out glyphTypeface))
+                throw new InvalidOperationException("No glyphtypeface found");
+            double size = 40;
+
+            ushort[] glyphIndexes = new ushort[text.Length];
+            double[] advanceWidths = new double[text.Length];
+
+            double totalWidth = 0;
+
+            for (int n = 0; n < text.Length; n++)
+            {
+                ushort glyphIndex = glyphTypeface.CharacterToGlyphMap[text[n]];
+                glyphIndexes[n] = glyphIndex;
+
+                double width = glyphTypeface.AdvanceWidths[glyphIndex] * size;
+                advanceWidths[n] = width;
+
+                totalWidth += width;
+            }
+            return totalWidth;
         }
         public static void DrawBarline(Barline.BarStyle style, Barline.BarlineLocation location)
         {

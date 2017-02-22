@@ -115,7 +115,7 @@ namespace MusicXMLViewerWPF
 
         public void CalculateMeasureContetSpace()
         {
-            Rect temp = Credit.Credit.Titlesegment.Rectangle;
+            Rect temp = Credit.Titlesegment.Rectangle;
             MeasuresContentSpace = new Rect(new Point(temp.Left, temp.Bottom), content_space.BottomRight);
             //? content_space_measures = 
         }

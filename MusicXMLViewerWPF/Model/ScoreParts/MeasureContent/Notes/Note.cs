@@ -415,7 +415,7 @@ namespace MusicXMLViewerWPF
         #endregion Public Methods
     }
 
-    class Note : Segment, IAutoPosition, IDrawableMusicalObject
+    class Note : Segment, IDrawableMusicalObject
     { //Need to be reworked !! 1)little improvements done
 
         #region Protected Fields
@@ -464,51 +464,7 @@ namespace MusicXMLViewerWPF
         #endregion Private Fields
 
         #region Public Constructors
-
-        /// <summary>
-        /// Deprecated
-        /// </summary>
-        /// <param name="measure_id"></param>
-        /// <param name="id"></param>
-        /// <param name="pos"></param>
-        /// <param name="p"></param>
-        /// <param name="dur"></param>
-        /// <param name="v"></param>
-        /// <param name="t"></param>
-        /// <param name="s"></param>
-        /// <param name="dir"></param>
-        /// <param name="hasStemVal"></param>
-        /// <param name="r"></param>
-        /// <param name="num"></param>
-        /// <param name="bm"></param>
-        /// <param name="beamList"></param>
-        /// <param name="dot"></param>
-        /// <param name="notations"></param>
-        /// <param name="n_list"></param>
-        public Note(int measure_id, int id, float pos, Pitch p, int dur, int v, string t, float s, string dir, bool hasStemVal, bool r, int num, string bm, Dictionary<int, string> beamList, int dot, bool notations, List<Notations> n_list)
-        {
-            isCustomStem = hasStemVal ? true : false;
-            this.measure_id = measure_id.ToString();
-            //Segment_type = SegmentType.Note;
-            this.id = id;
-            posX = pos;
-            pitch = p;
-            duration = dur;
-            voice = v;
-            stem_dir = dir == "up" ? false : true;
-            symbol_type = SymbolDuration.DurStrToMusSymbol(t);
-            symbol = MusicalChars.getNoteSymbol(t, stem_dir);
-            isRest = r;
-            stem_f = s;
-            this.dot = dot;
-            hasDot = dot != 0 ? true : false;
-            beam = new Beam(bm, num, pos, beamList);
-            hasBeams = true;
-            //beam.Add(b);
-            hasNotations = notations;
-            notationsList = n_list;
-        }
-
+        
         //public new Point Relative { get { return base.Relative; } set { base.Relative = value; NotePropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Relative))); } }
         public Note(Pitch p, int duration)
         {
@@ -588,7 +544,7 @@ namespace MusicXMLViewerWPF
                         Logger.Log($"{ID} Note Dot not implemented but seems to have one or more");
                         break;
                     case "beam":
-                        IsCustomStem = true;
+                        //IsCustomStem = true;
                         if (beamlist == null) beamlist = new List<Beam>();
                         Beam temp_beam = new Beam(item, this.ID);
                         BeamsList.Add(temp_beam);

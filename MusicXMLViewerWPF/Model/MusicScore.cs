@@ -1,6 +1,7 @@
 ﻿using GalaSoft.MvvmLight;
 using MusicXMLScore.Helpers;
 using MusicXMLScore.Log;
+using MusicXMLViewerWPF.Misc;
 using MusicXMLViewerWPF.ScoreParts.MeasureContent;
 using System;
 using System.Collections.Generic;
@@ -26,7 +27,7 @@ namespace MusicXMLViewerWPF
         private static bool loaded = false;
         private static bool supports_new_page = false;
         private static bool supports_new_system = false;
-        private List<Credit.Credit> credits = new List<Credit.Credit>();
+        private List<Credit> credits = new List<Credit>();
         private Defaults.Defaults defaults;
         private XElement file;
         private Identification.Identification identification;
@@ -34,7 +35,7 @@ namespace MusicXMLViewerWPF
         private List<List<Part>> pagesList = new List<List<Part>>();
         private Dictionary<string, Part> parts = new Dictionary<string, Part>() { };
         private string title;
-        private Work.Work work;
+        private Work work;
 
         #endregion Private Fields
 
@@ -48,7 +49,12 @@ namespace MusicXMLViewerWPF
         public MusicScore(XDocument x)
         {
             this.PropertyChanged += MusicScore_PropertyChanged;
-
+            ID = RandomGenerator.GetRandomHexNumber();
+            if (x.Element("score-partwise") == null)
+            {
+                Console.WriteLine("incompatibile file ! cant process it for now");
+                return;
+            }
             File = x.Element("score-partwise");
             if (file != null) //TODO refactor needed => before pass x here, check compatibility
             {
@@ -75,7 +81,7 @@ namespace MusicXMLViewerWPF
             }
         }
 
-        public List<Credit.Credit> CreditList { get { return credits; } set { if (value != null) { credits = value; } } }
+        public List<Credit> CreditList { get { return credits; } set { if (value != null) { credits = value; } } }
 
         public bool CreditsLoaded
         {
@@ -92,6 +98,7 @@ namespace MusicXMLViewerWPF
 
         public Identification.Identification Identification { get { return identification; } set { if (value != null) { identification = value; } } }
 
+        public string ID { get; set; }
         public bool Loaded
         {
             get { return loaded; }
@@ -122,7 +129,7 @@ namespace MusicXMLViewerWPF
             }
         }
         public string Title { get { return title; } set { if (value != null) { title = value; } } }    
-        public Work.Work Work { get { return work; } set { if (value != null) { work = value; } } }
+        public Work Work { get { return work; } set { if (value != null) { work = value; } } }
     
         #endregion Public Properties
 
@@ -253,7 +260,7 @@ namespace MusicXMLViewerWPF
         private void ImportFromXMLFile()
         {
             Title = file.Element("movement-title") != null ? file.Element("movement-title").Value : "No title";
-            Work = file.Element("work") != null ? new Work.Work(file.Element("work")) : null;
+            Work = file.Element("work") != null ? new Work(file.Element("work")) : null;
             Defaults = file.Element("defaults") != null ? new Defaults.Defaults(file.Element("defaults"), this) : new Defaults.Defaults();
             Identification = new Identification.Identification(file.Element("identification"));
             if (Identification?.Encoding?.Supports != null) //todo refactor to inpc
@@ -275,7 +282,7 @@ namespace MusicXMLViewerWPF
             }
             foreach (var item in file.Elements("credit"))
             {
-                CreditList.Add(new Credit.Credit(item, Defaults));
+                CreditList.Add(new Credit(item)); //! , Defaults));
             }
             //// Credit.Credit.SetCreditSegment();  refactored
             //! Refactoring InitTitleSpaceSegment(); 

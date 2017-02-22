@@ -91,6 +91,8 @@ namespace MusicXMLViewerWPF
             Segno = null;
             Ending = null;
             Repeat = null;
+            Segment_type = SegmentType.Barline;
+            Loaded = true;
         }
 
         public Barline(XElement x)
@@ -246,7 +248,7 @@ namespace MusicXMLViewerWPF
         {
             DrawableMusicalObject = new CanvasList(this.Width, this.Height);
             DrawingVisual barline = new DrawingVisual();
-            Draw(barline);
+            DrawBarline(barline, new Point(),10);
             DrawableMusicalObject.AddVisual(barline);
             DrawableObjectStatus = DrawableMusicalObjectStatus.ready;
         }
@@ -601,15 +603,14 @@ namespace MusicXMLViewerWPF
         {
 
         }
-
-        internal enum WingType
-        {
-            none,
-            straight,
-            curved,
-            double_straight,
-            double_curved
-        }
+    }
+    public enum WingType
+    {
+        none,
+        straight,
+        curved,
+        double_straight,
+        double_curved
     }
     public class EmptyPrintStyle
     {

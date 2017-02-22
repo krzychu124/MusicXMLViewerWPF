@@ -15,7 +15,7 @@ namespace MusicXMLViewerWPF
         #region Private Fields
         private List<Measure> measureList = new List<Measure>();
         private string part_id;
-
+        private int stavesCount;
         #endregion Private Fields
 
         #region Public Constructors
@@ -29,7 +29,17 @@ namespace MusicXMLViewerWPF
                 XElement item = measures.ElementAt(i);
                 MeasureList.Add(new Measure(item));
             }
+            GetStavesCount();
         }
+
+        private void GetStavesCount()
+        {
+            if (measureList.Count != 0)
+            {
+                stavesCount = measureList.ElementAt(0).Attributes.ClefsList.Count;
+            }
+        }
+
         public Part(string id)
         {
             PartId = id;
@@ -41,6 +51,19 @@ namespace MusicXMLViewerWPF
 
         public List<Measure> MeasureList { get { return measureList; } private set { measureList = value; } }
         public string PartId { get { return part_id; } private set { part_id = value; } }
+
+        public int StavesCount
+        {
+            get
+            {
+                return stavesCount;
+            }
+
+            set
+            {
+                stavesCount = value;
+            }
+        }
 
         #endregion Public Properties
 

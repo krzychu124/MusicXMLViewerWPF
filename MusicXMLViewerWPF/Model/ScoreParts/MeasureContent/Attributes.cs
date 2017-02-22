@@ -25,6 +25,7 @@ namespace MusicXMLViewerWPF
         private uint instruments;
         private uint staves = 1; // info how much staffs in part
         private static Clef _clef;
+        private Dictionary<int, Clef> clefsList;
 
         public Clef Clef { get { return clef; } set { if (value != null) clef = value; } }
         public Key Key { get { return key; } set { if (value != null) key = value; } } 
@@ -35,10 +36,11 @@ namespace MusicXMLViewerWPF
         public uint Staves { get { return staves; } }
         public float Width { get { return attribute_width; } }
         public Clef ClefTemp { get { return _clef; } }
-
+        public Dictionary<int, Clef> ClefsList { get { return clefsList; } }
         public Attributes(XElement x) // possible rework from switch to dictionary// not further properties planned
         {
             var ele = x.Elements();//.Element("attributes").Elements();
+            clefsList = new Dictionary<int, Clef>();
             foreach (var item in ele)
             {
                 string name = item.Name.LocalName;
@@ -46,6 +48,7 @@ namespace MusicXMLViewerWPF
                 {
                     case "clef":
                         clef = new Clef(item);
+                        clefsList.Add(clef.Number, clef);
                         //_clef = clef;
                         break;
                     case "key":

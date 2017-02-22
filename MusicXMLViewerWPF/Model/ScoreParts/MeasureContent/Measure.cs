@@ -57,7 +57,7 @@ namespace MusicXMLViewerWPF.ScoreParts.MeasureContent
         public DrawingVisual Visual { get { return visual; } set { if (value != null) visual = value; } }
         public new float Width { get { return base.Width; } set { if (value >= 0) { base.Width = value; } else { base.Width = 100f; Logger.Log("width is negative here"); } } }
         public int ElementsCount { get { return elements_count; } }
-        public int Number { get { return number; } }
+        public int Number { get { return number; } set { number = value; } }
         public List<Barline> Barlines { get { return barlines; } }
         public List<Direction> DirectionList { get { return direction; } }
         public List<Note> NotesList { get { return notes_list; } set { if (value != null) notes_list = value; } } // Not complete
@@ -590,12 +590,14 @@ namespace MusicXMLViewerWPF.ScoreParts.MeasureContent
             int s = 0;
             for (int i = 0; i < num; i++)
             {
-                Misc.DrawingHelpers.DrawString(dc, MusicalChars.Staff5L, TypeFaces.NotesFont, color, X + s, Y, Scale);
+                Misc.DrawingHelpers.DrawString(dc, MusicalChars.Staff5L, MusicXMLScore.Helpers.TypeFaces.BravuraMusicFont, color, X + s, Y, Scale);
+                //Misc.DrawingHelpers.DrawString(dc, MusicalChars.Staff5L, TypeFaces.NotesFont, color, X + s, Y, Scale);
                 s += 24;
             }
             if (filling != 0)
             {
-                Misc.DrawingHelpers.DrawString(dc, MusicalChars.Staff5L, TypeFaces.NotesFont, color, X + (Width-24), Y, Scale);
+                Misc.DrawingHelpers.DrawString(dc, MusicalChars.Staff5L, MusicXMLScore.Helpers.TypeFaces.BravuraMusicFont, color, X + (Width-24), Y, Scale);
+                //Misc.DrawingHelpers.DrawString(dc, MusicalChars.Staff5L, TypeFaces.NotesFont, color, X + (Width - 24), Y, Scale);
             }
         }
         public void Draw_Measure(DrawingVisual dv, Point p)

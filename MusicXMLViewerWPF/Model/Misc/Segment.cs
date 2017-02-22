@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
-
+using System.Xml.Serialization;
 
 namespace MusicXMLViewerWPF
 {
@@ -33,7 +33,7 @@ namespace MusicXMLViewerWPF
         private Brush color = Brushes.Black;
 
         private SegmentType segment_type;
-
+        [NonSerialized]
         private Dictionary<string, float> spacer_dict = new Dictionary<string, float>();
         private string missingProperies;
         private string id;
@@ -71,6 +71,7 @@ namespace MusicXMLViewerWPF
         public string Relative_str { get { return "("+ relative_x.ToString("0.##") + "; "+ relative_y.ToString("0.##") + ")"; } }
         public Rect Rectangle { get { return new Rect(Relative, Dimensions); } }
         public SegmentType Segment_type { get { return segment_type; } set { segment_type = value; SetSpacers(); if (Width == 0) CalculateDimensions(); } }
+        [XmlIgnore]
         public Dictionary<string,float> SpacerDict { get { return spacer_dict; } set { if (value != null) spacer_dict = value; } }
         public SegmentType CharacterType { get { return Segment_type; } }
         #endregion

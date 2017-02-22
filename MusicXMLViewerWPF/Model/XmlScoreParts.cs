@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MusicXMLViewerWPF.Misc
+namespace MusicXMLScore.Model
 {
-    interface IAutoPosition //TODO_H DELETE
+    class XmlScoreParts
     {
-        float Width { get; set; }
     }
 }

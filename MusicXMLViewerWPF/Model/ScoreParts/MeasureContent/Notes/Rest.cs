@@ -11,7 +11,7 @@ using System.Xml.Linq;
 
 namespace MusicXMLViewerWPF
 {
-    class Rest : Note, IAutoPosition, IDrawableMusicalObject //TODO_I Scale refactor needed
+    class Rest : Note, IDrawableMusicalObject //TODO_I Scale refactor needed
     {
         // private int dots; inherited
         // private int multimeasure;
