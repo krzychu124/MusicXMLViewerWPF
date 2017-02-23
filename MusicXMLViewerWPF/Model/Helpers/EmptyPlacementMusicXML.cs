@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace MusicXMLScore.Model.Helpers
 {
     [Serializable]
-    public class EmptyMusicXML
+    public class EmptyPlacementMusicXML
     {
     }
 }

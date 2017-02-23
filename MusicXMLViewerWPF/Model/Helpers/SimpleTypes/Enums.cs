@@ -7,43 +7,45 @@ using System.Xml.Serialization;
 
 namespace MusicXMLScore.Model.Helpers.SimpleTypes
 {
+    [Serializable]
+    [XmlType(TypeName = "font-style")]
     public enum FontStyleMusicXML
     {
         normal,
         italic
     }
+    [Serializable]
+    [XmlType(TypeName = "font-weight")]
     public enum FontWeightMusicXML
     {
         normal,
         bold
     }
+    [Serializable]
+    [XmlType(TypeName = "start-stop")]
     public enum StartStopMusicXML
     {
         start,
         stop
     }
+    [Serializable]
+    [XmlType(TypeName = "yes-no")]
     public enum YesNoMusicXML
     {
         yes,
-        no
+        no,
     }
+    [Serializable]
+    [XmlType(TypeName = "note-size-type")]
     public enum NoteSizeTypeMusicXML
     {
         large,
         cue,
         grace
     }
+
     [Serializable]
-    [XmlType(TypeName ="accidental-value")]
-    public enum AccidentalValueMusicXML
-    {
-        natural,
-        sharp,
-        flat,
-        //etc...
-    }
-    [Serializable]
-    [XmlType(TypeName ="step")]
+    [XmlType(TypeName = "step")]
     public enum StepMusicXML
     {
         A,
@@ -65,7 +67,7 @@ namespace MusicXMLScore.Model.Helpers.SimpleTypes
     }
 
     [Serializable]
-    [XmlType(TypeName ="symbol-size")]
+    [XmlType(TypeName = "symbol-size")]
     public enum SymbolSizeMusicXML
     {
         full,
@@ -97,5 +99,81 @@ namespace MusicXMLScore.Model.Helpers.SimpleTypes
         breve,
         @long,
         maxima,
+    }
+    [Serializable()]
+    [XmlType(TypeName = "backward-forward")]
+    public enum BackwardForwardMusicXML
+    {
+        backward,
+        forward,
+    }
+    [Serializable]
+    [XmlType(TypeName = "accidental-value")]
+    public enum AccidentalValueMusicXML
+    {
+        sharp,
+        natural,
+        flat,
+        [XmlEnum("double-sharp")]
+        doublesharp,
+        [XmlEnum("sharp-sharp")]
+        sharpsharp,
+        [XmlEnum("flat-flat")]
+        flatflat,
+        [XmlEnum("natural-sharp")]
+        naturalsharp,
+        [XmlEnum("natural-flat")]
+        naturalflat,
+
+        //[XmlEnum("quarter-flat")]
+        //quarterflat,
+        //[XmlEnum("quarter-sharp")]
+        //quartersharp,
+        //[XmlEnum("three-quarters-flat")]
+        //threequartersflat,
+        //[XmlEnum("three-quarters-sharp")]
+        //threequarterssharp,
+        //[XmlEnum("sharp-down")]
+        //sharpdown,
+        //[XmlEnum("sharp-up")]
+        //sharpup,
+        //[XmlEnum("natural-down")]
+        //naturaldown,
+        //[XmlEnum("natural-up")]
+        //naturalup,
+        //[XmlEnum("flat-down")]
+        //flatdown,
+        //[XmlEnum("flat-up")]
+        //flatup,
+        //[XmlEnum("triple-sharp")]
+        //triplesharp,
+        //[XmlEnum("triple-flat")]
+        //tripleflat,
+        //[XmlEnum("slash-quarter-sharp")]
+        //slashquartersharp,
+        //[XmlEnum("slash-sharp")]
+        //slashsharp,
+        //[XmlEnum("slash-flat")]
+        //slashflat,
+        //[XmlEnum("double-slash-flat")]
+        //doubleslashflat,
+        //[XmlEnum("sharp-1")]
+        //sharp1,
+        //[XmlEnum("sharp-2")]
+        //sharp2,
+        //[XmlEnum("sharp-3")]
+        //sharp3,
+        //[XmlEnum("sharp-5")]
+        //sharp5,
+        //[XmlEnum("flat-1")]
+        //flat1,
+        //[XmlEnum("flat-2")]
+        //flat2,
+        //[XmlEnum("flat-3")]
+        //flat3,
+        //[XmlEnum("flat-4")]
+        //flat4,
+        //sori,
+        //koron,
     }
 }
