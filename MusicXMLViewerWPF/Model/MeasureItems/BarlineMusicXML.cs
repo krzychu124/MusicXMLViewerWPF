@@ -1,6 +1,7 @@
 ﻿using MusicXMLScore.Model.Helpers;
 using MusicXMLScore.Model.Helpers.SimpleTypes;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Xml.Serialization;
 
@@ -16,7 +17,7 @@ namespace MusicXMLScore.Model.MeasureItems
         //wavyLine //TODO_L
         private EmptyPrintStyleAlignMusicXML segno;
         private EmptyPrintStyleAlignMusicXML coda;
-        private FermataMusicXML fermata;
+        private List<FermataMusicXML> fermata;
         private EndingMusicXML ending;
         private RepeatMusicXML repeat;
         private RightLeftMiddleMusicXML location;
@@ -65,7 +66,7 @@ namespace MusicXMLScore.Model.MeasureItems
             }
         }
         [XmlElement("fermata")]
-        public FermataMusicXML Fermata
+        public List<FermataMusicXML> Fermata
         {
             get
             {
