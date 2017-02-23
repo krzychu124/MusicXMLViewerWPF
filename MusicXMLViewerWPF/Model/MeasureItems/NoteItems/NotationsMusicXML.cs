@@ -1,0 +1,15 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Xml.Serialization;
+
+namespace MusicXMLScore.Model.MeasureItems.NoteItems
+{
+    [Serializable]
+    [XmlType(TypeName ="notations")]
+    public class NotationsMusicXML //todo_h notations
+    {
+    }
+}
