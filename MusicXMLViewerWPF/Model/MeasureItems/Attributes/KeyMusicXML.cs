@@ -1,5 +1,6 @@
 ﻿using MusicXMLScore.Model.Helpers.SimpleTypes;
 using System;
+using System.Collections.Generic;
 using System.Xml.Serialization;
 
 namespace MusicXMLScore.Model.MeasureItems.Attributes
@@ -10,10 +11,11 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
     {
         private object[] items;
         private KeyChoiceTypes[] itemsElementName;
-        private KeyOctaveMusicXML[] keyoctaveField;
+        private List<KeyOctaveMusicXML> keyOctave;
         private string number;
         private YesNoMusicXML printObject;
         private bool printObjectSpecified;
+
         [XmlElement("cancel", typeof(CancelMusicXML))]
         [XmlElement("fifths", typeof(string), DataType = "integer")]
         [XmlElement("key-accidental", typeof(AccidentalValueMusicXML))]
@@ -41,6 +43,58 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
             set
             {
                 itemsElementName = value;
+            }
+        }
+        [XmlElement("key-octave")]
+        public List<KeyOctaveMusicXML> KeyoctaveField
+        {
+            get
+            {
+                return keyOctave;
+            }
+
+            set
+            {
+                keyOctave = value;
+            }
+        }
+        [XmlAttribute("number", DataType ="positiveInteger")]
+        public string Number
+        {
+            get
+            {
+                return number;
+            }
+
+            set
+            {
+                number = value;
+            }
+        }
+        [XmlAttribute("print-object")]
+        public YesNoMusicXML PrintObject
+        {
+            get
+            {
+                return printObject;
+            }
+
+            set
+            {
+                printObject = value;
+            }
+        }
+        [XmlIgnore]
+        public bool PrintObjectSpecified
+        {
+            get
+            {
+                return printObjectSpecified;
+            }
+
+            set
+            {
+                printObjectSpecified = value;
             }
         }
     }
