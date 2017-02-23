@@ -13,8 +13,8 @@ namespace MusicXMLScore.Model
         private string number;
         private YesNoMusicXML implicitField = YesNoMusicXML.no;
         private bool implicitFieldSpecified;
-        private YesNoMusicXML noncontrolling = YesNoMusicXML.no;
-        private bool noncontrollingSpecified;
+        private YesNoMusicXML nonControlling = YesNoMusicXML.no;
+        private bool nonControllingSpecified;
         private double width;
         private bool widthSpecified;
 
@@ -60,29 +60,29 @@ namespace MusicXMLScore.Model
             }
         }
         [XmlAttribute("non-controlling")]
-        public YesNoMusicXML Noncontrolling
+        public YesNoMusicXML NonControlling
         {
             get
             {
-                return noncontrolling;
+                return nonControlling;
             }
 
             set
             {
-                noncontrolling = value;
+                nonControlling = value;
             }
         }
         [XmlIgnore]
-        public bool NoncontrollingSpecified
+        public bool NonControllingSpecified
         {
             get
             {
-                return noncontrollingSpecified;
+                return nonControllingSpecified;
             }
 
             set
             {
-                noncontrollingSpecified = value;
+                nonControllingSpecified = value;
             }
         }
         [XmlAttribute("width")]
