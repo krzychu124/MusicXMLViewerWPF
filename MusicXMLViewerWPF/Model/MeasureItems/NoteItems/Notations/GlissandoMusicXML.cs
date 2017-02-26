@@ -9,6 +9,7 @@ using System.Xml.Serialization;
 namespace MusicXMLScore.Model.MeasureItems.NoteItems.Notations
 {
     [Serializable]
+    [XmlType(TypeName ="glissando")]
     public class GlissandoMusicXML 
     {
         private StartStopMusicXML type;
