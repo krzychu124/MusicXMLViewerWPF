@@ -47,6 +47,15 @@ namespace MusicXMLScore.Model.Helpers.SimpleTypes
     }
 
     [Serializable]
+    [XmlType(TypeName = "left-center-right")]
+    public enum LeftCenterRightMusicXML
+    {
+        left,
+        center,
+        right,
+    }
+
+    [Serializable]
     [XmlType(TypeName = "yes-no")]
     public enum YesNoMusicXML
     {
@@ -141,6 +150,15 @@ namespace MusicXMLScore.Model.Helpers.SimpleTypes
         down,
     }
 
+
+    public enum UpDownStopContinueMusicXML
+    {
+        up,
+        down,
+        stop,
+        @continue,
+    }
+
     [Serializable]
     [XmlType(TypeName = "line-shape")]
     public enum LineShapeMusicXML
@@ -227,5 +245,18 @@ namespace MusicXMLScore.Model.Helpers.SimpleTypes
         //flat4,
         //sori,
         //koron,
+    }
+
+    [Serializable]
+    [XmlType(TypeName = "beam-value")]
+    public enum BeamValueMusicXML
+    {
+        begin,
+        @continue,
+        end,
+        [XmlEnum("forward hook")]
+        forwardhook,
+        [XmlEnum("backward hook")]
+        backwardhook,
     }
 }
