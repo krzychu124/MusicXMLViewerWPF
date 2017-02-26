@@ -28,6 +28,24 @@ namespace MusicXMLScore.Model.Helpers.SimpleTypes
         start,
         stop
     }
+
+    [Serializable]
+    [XmlType(TypeName = "start-stop-continue")]
+    public enum StartStopContinueMusicXML //todo Check for continue string value
+    {       
+        start,
+        stop,
+        @continue,
+    }
+
+    [Serializable]
+    [XmlType(TypeName = "over-under")]
+    public enum OverUnderMusicXML
+    {
+        over,
+        under,
+    }
+
     [Serializable]
     [XmlType(TypeName = "yes-no")]
     public enum YesNoMusicXML
@@ -107,6 +125,40 @@ namespace MusicXMLScore.Model.Helpers.SimpleTypes
         backward,
         forward,
     }
+    [Serializable]
+    [XmlType(TypeName ="above-below")]
+    public enum AboveBelowMusicXML
+    {
+        above,
+        below,
+    }
+
+    [Serializable]
+    [XmlType(TypeName = "up-down")]
+    public enum UpDownMusicXML
+    {
+        up,
+        down,
+    }
+
+    [Serializable]
+    [XmlType(TypeName = "line-shape")]
+    public enum LineShapeMusicXML
+    {
+        straight,
+        curved,
+    }
+
+    [Serializable]
+    [XmlType(TypeName = "line-type")]
+    public enum LineTypeMusicXML
+    {
+        solid,
+        dashed,
+        dotted,
+        wavy,
+    }
+
     [Serializable]
     [XmlType(TypeName = "accidental-value")]
     public enum AccidentalValueMusicXML
