@@ -33,7 +33,7 @@
                         <ListView.Resources>
                             <Style TargetType="{x:Type TextBlock}">
                                 <Setter Property="TextElement.Foreground" Value="{Binding MessageColor}" />
-                                
+                                <Setter Property="TextElement.Background" Value="{Binding MessageBackgroundColor}" />
                             </Style>
                         </ListView.Resources>
                             <ListView.ItemContainerStyle>
