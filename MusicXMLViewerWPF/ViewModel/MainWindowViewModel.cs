@@ -87,14 +87,19 @@ namespace MusicXMLScore.ViewModel
         {
             Application.Current.Shutdown();
         }
-        private T TempMethod<T>(string parameter) where T : new ()
+        public static T TempMethod<T>(string parameter) where T : new ()
         {
             TextReader reader = null;
             try
             {
-                var serializer = new XmlSerializer(typeof(T));
+                XmlSerializer serializer = new XmlSerializer(typeof(T));
                 reader = new StreamReader(parameter);
                 return (T)serializer.Deserialize(reader);
+            }
+            catch(Exception ex)
+            {
+                Log.LoggIt.Log(ex.InnerException.Message.ToString(), Log.LogType.Exception);
+                return default(T);
             }
             finally
             {
@@ -154,7 +159,17 @@ namespace MusicXMLScore.ViewModel
             }
             XmlDataProvider dataprovider = new XmlDataProvider() { Source = new Uri(filedestination, UriKind.RelativeOrAbsolute), XPath = "./*" };
             Log.LoggIt.Log($"File {filedestination} been loaded", Log.LogType.Info);
-            XDocument XDoc = XDocument.Load(filedestination, LoadOptions.SetLineInfo); // std + add line info(number)
+            XDocument XDoc = new XDocument();
+            try
+            {
+                XDoc = XDocument.Load(filedestination, LoadOptions.SetLineInfo);
+            }
+            catch (Exception ex)
+            {
+                Log.LoggIt.Log("Error has occured while reading file: "+ex.Message.ToString(), Log.LogType.Exception);
+                //throw;
+            }
+             // std + add line info(number)
             MusicScore musicscore = new MusicScore();
             ScorePartwiseMusicXML xml = TempMethod<ScorePartwiseMusicXML>(filedestination);
 
