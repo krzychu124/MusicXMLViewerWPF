@@ -44,6 +44,8 @@ namespace MusicXMLViewerWPF
         public MusicScore()
         {
             this.PropertyChanged += MusicScore_PropertyChanged;
+            ID = RandomGenerator.GetRandomHexNumber();
+            this.Defaults = new MusicXMLViewerWPF.Defaults.Defaults();
         }
 
         public MusicScore(XDocument x)
@@ -53,6 +55,8 @@ namespace MusicXMLViewerWPF
             if (x.Element("score-partwise") == null)
             {
                 Console.WriteLine("incompatibile file ! cant process it for now");
+                this.ID = RandomGenerator.GetRandomHexNumber();
+                this.Defaults = new MusicXMLViewerWPF.Defaults.Defaults();
                 return;
             }
             File = x.Element("score-partwise");

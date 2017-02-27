@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MusicXMLScore.Model.MeasureItems.NoteItems.Notations
 {
-    class OtherNotationMusicXML //TODO othernotation
+    public class OtherNotationMusicXML //TODO othernotation
     {
     }
 }

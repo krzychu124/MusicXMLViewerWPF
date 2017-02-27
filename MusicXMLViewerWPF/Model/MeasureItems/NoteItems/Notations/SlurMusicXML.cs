@@ -48,7 +48,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems.Notations
 
         public SlurMusicXML()
         {
-            this.numberField = "1";
+            this.number = "1";
         }
 
         [XmlAttribute("type")]
