@@ -10,6 +10,9 @@ using System.Windows;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Messaging;
 using MusicXMLScore.Helpers;
+using System.Xml.Serialization;
+using MusicXMLScore.Model;
+using System.IO;
 
 namespace MusicXMLScore.ViewModel
 {
@@ -46,6 +49,11 @@ namespace MusicXMLScore.ViewModel
         private MusicScore musicScore;
         private ObservableCollection<UIElement> pageCollection;
         private string title = "";
+
+        //!Prototypes=============================
+        private string id;
+        private ScorePartwiseMusicXML partwise;
+        private DefaultsMusicXML defaultsCopy;
         #endregion
         //TODO_I .. PageCollection<Page>
         #region Properties
@@ -57,6 +65,7 @@ namespace MusicXMLScore.ViewModel
         public List<List<Part>> PagesList { get; set; }
         public string Title {  get { return title; } set { Set(nameof(Title), ref title, value); } }
         
+        public string ID {  get { return id; } }
         #endregion
         public PagesControllerViewModel()
         {
@@ -96,6 +105,22 @@ namespace MusicXMLScore.ViewModel
             GeneratePages();
         }
 
+        public void AddScorePartwise(ScorePartwiseMusicXML spmXML)
+        {
+            IsBlank = false;
+            partwise = spmXML;
+            DefaultsMusicXML def = partwise.Defaults;
+            XmlSerializer xmls = new XmlSerializer(def.GetType());
+            MemoryStream memStream = new MemoryStream();
+            xmls.Serialize(memStream, def);
+
+            memStream.Position = 0;
+            xmls = new XmlSerializer(def.GetType());
+            defaultsCopy = ((DefaultsMusicXML)xmls.Deserialize(memStream));
+            PagesCollection = new ObservableCollection<UIElement>();
+            AddPageToCollection(spmXML);
+        }
+
         private void AddPageToCollection() //default page
         {
             PageViewModel pvm = new PageViewModel();
@@ -107,6 +132,13 @@ namespace MusicXMLScore.ViewModel
             PageViewModel pvm = new PageViewModel(partList) { PageWidth = pp.PageDimensions.GetPageDimensionsInPx().X, PageHeight = pp.PageDimensions.GetPageDimensionsInPx().Y };
 
             //PageViewModel pvm = new PageViewModel(partList) { PageWidth = MusicScore.Defaults.Page.Width, PageHeight = MusicScore.Defaults.Page.Height };
+            PagesCollection.Add(new PageView() { DataContext = pvm });
+        }
+
+        private void AddPageToCollection(ScorePartwiseMusicXML sp) //default page
+        {
+            id = sp.ID;
+            PageViewModel pvm = new PageViewModel(sp, defaultsCopy);
             PagesCollection.Add(new PageView() { DataContext = pvm });
         }
 

@@ -190,17 +190,21 @@ namespace MusicXMLScore.ViewModel
             var vm = (PagesControllerViewModel)SelectedTabItem.DataContext;
             if (vm.IsBlank) //! check if currently selected tab is blank
             {
-                GenerateLayout(musicscore);
-                vm.AddMusicScore(musicscore);
+                GenerateLayout(xml);//! 02.03 GenerateLayout(musicscore);
+                vm.AddScorePartwise(xml);
+                //vm.AddMusicScore(musicscore);
                 TabsCreated.Remove(SelectedTabItem);
                 TabItem newTab = new TabItem() { Header = filedestination, Content = new PagesControllerView(), DataContext = vm };
                 TabsCreated.Add(newTab);
                 SelectedTabItem = newTab;
+                double conv = ScaleExtensions.TenthsToWPFUnit(10);
             }
             else
             {
-                GenerateLayout(musicscore);
-                TabItem newTab = new TabItem() { Header = filedestination, Tag=musicscore.ID, Content = new PagesControllerView(), DataContext = new PagesControllerViewModel(musicscore) };
+                GenerateLayout(xml);//! 02.03 GenerateLayout(musicscore);
+                PagesControllerViewModel pcvm = new PagesControllerViewModel();
+                pcvm.AddScorePartwise(xml);
+                TabItem newTab = new TabItem() { Header = filedestination, Tag=musicscore.ID, Content = new PagesControllerView(), DataContext = pcvm };
                 TabsCreated.Add(newTab);
                 SelectedTabItem = newTab;
             }
@@ -216,7 +220,12 @@ namespace MusicXMLScore.ViewModel
             tabsLayouts.Add(musicscore.ID, layout);
             CurrentTabLayout = layout;
         }
-
+        private void GenerateLayout(ScorePartwiseMusicXML score)
+        {
+            LayoutControl.LayoutGeneral layout = new LayoutControl.LayoutGeneral(score);
+            tabsLayouts.Add(score.ID, layout);
+            CurrentTabLayout = layout;
+        }
         private void OnOpenOptionWindow()
         {
             ViewModel.ConfigurationView optionswindow = new ViewModel.ConfigurationView();
@@ -286,7 +295,7 @@ namespace MusicXMLScore.ViewModel
                     {
                         PagesControllerViewModel pcvm = (PagesControllerViewModel)value.DataContext;
                         LayoutControl.LayoutGeneral layout;
-                        tabsLayouts.TryGetValue(pcvm.MusicScore.ID, out layout);
+                        tabsLayouts.TryGetValue(pcvm.ID, out layout);
                         CurrentTabLayout = layout;
                     }
                 }

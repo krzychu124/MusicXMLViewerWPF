@@ -1,4 +1,7 @@
-﻿using MusicXMLViewerWPF;
+﻿using MusicXMLScore.Model;
+using MusicXMLScore.Model.Defaults;
+using MusicXMLScore.ViewModel;
+using MusicXMLViewerWPF;
 using MusicXMLViewerWPF.Defaults;
 using System;
 using System.Collections.Generic;
@@ -15,16 +18,19 @@ namespace MusicXMLScore.Helpers
     public class PageProperties : ISerializable
     {
         private string id;
-        PageDimensions pageDimensions;
-        static double DPI = 144; // def 96 -may be changed in the future
-        double scale = 40; // in tenths
-        double staffHeight = 7.0556; // in mm
-        double staffSpace = 1.764; // staffheight / 4
-        double default_width = 1190.88; // in tenths 210mm
-        double default_height = 1683.36;  // in tenths 297mm
-        double converterFactor = 0.1764; // staffheight / scale
-        PageType pagetype = PageType.A4;
-        PageOrientation pageOrientation = PageOrientation.portait;
+        private PageDimensions pageDimensions;
+        private List<PageMarginsMusicXML> pageMargins;
+        private SystemLayoutMusicXML systemLayout;
+        private List<StaffLayoutMusicXML> staffLayout = new List<StaffLayoutMusicXML>() { new StaffLayoutMusicXML() };
+        private static double DPI = 144; // def 96, may be changed in the future
+        private double scale = 40; // in tenths
+        private double staffHeight = 7.0556; // in mm
+        private double staffSpace = 1.764; // staffheight / 4
+        private double default_width = 1195.62; // 210mm in tenths 
+        private double default_height = 1683.67;  // 297mm in tenths
+        private double converterFactor = 0.1764; // staffheight / scale
+        private PageType pagetype = PageType.A4;
+        private PageOrientation pageOrientation = PageOrientation.portait;
 
         public double Scale
         {
@@ -63,6 +69,19 @@ namespace MusicXMLScore.Helpers
             get
             {
                 return staffSpace;
+            }
+        }
+
+        public List<PageMarginsMusicXML> PageMargins
+        {
+            get
+            {
+                return pageMargins;
+            }
+
+            set
+            {
+                pageMargins = value;
             }
         }
 
@@ -105,6 +124,27 @@ namespace MusicXMLScore.Helpers
             CalculateConverterFactor();
             CalculatePageDimensions();
         }
+
+        public PageProperties(DefaultsMusicXML defaults)
+        {
+            if (defaults == null)
+            {
+                CalculateConverterFactor();
+                CalculatePageDimensions();
+            }
+            else
+            {
+                staffHeight = defaults.Scaling.Millimeters;
+                scale = defaults.Scaling.Tenths;
+                CalculateStaffSpace();
+                CalculateConverterFactor();
+                SetPageDimensions(defaults.PageLayout.PageWidth, defaults.PageLayout.PageHeight);
+                pageMargins = defaults.PageLayout.PageMargins;
+                systemLayout = defaults.SystemLayout;
+                staffLayout = new List<StaffLayoutMusicXML>(defaults.StaffLayout){ };
+            }
+        }
+
         public void SetPageDimensions(double width, double height)
         {
             SetOrientation(width, height);
@@ -171,8 +211,8 @@ namespace MusicXMLScore.Helpers
             pageDimensions = new PageDimensions(default_width, default_height, converterFactor);
         }
         public static double PxPerMM()
-        { 
-            return DPI / 25.4;
+        {
+            return ScaleExtensions.PxPerMM(); //? return DPI / 25.4;
         }
         public double TenthToPx(double tenths)
         {
@@ -218,6 +258,66 @@ namespace MusicXMLScore.Helpers
             Point temp = GetPageDimensionsInMM();
             double pxpermm = PageProperties.PxPerMM();
             return new Point(temp.X * pxpermm, temp.Y * pxpermm);
+        }
+        public Size Dimensions
+        {
+            get
+            {
+                return new Size(width, height);
+            }
+        }
+    }
+
+    public static class ScaleExtensions
+    {
+        public static double PxPerMM()
+        {
+            return 144 / 25.4;
+        }
+        public static double TenthsToMM(double tenths)
+        {
+            double converterFactor = ViewModelLocator.Instance.Main.CurrentTabLayout.PageProperties.ConverterFactor;
+            double result = tenths * converterFactor;
+            return result;
+        }
+
+        public static double MMToTenths(double MM)
+        {
+            double converterFactor = ViewModelLocator.Instance.Main.CurrentTabLayout.PageProperties.ConverterFactor;
+            if (converterFactor == 0)
+            {
+                return 0.0;
+            }
+            return MM / converterFactor;
+        }
+
+        public static double TenthsToWPFUnit(double tenths)
+        {
+            double converterFactor = ViewModelLocator.Instance.Main.CurrentTabLayout.PageProperties.ConverterFactor;
+            double result = tenths * converterFactor * PxPerMM();
+            return result;
+        }
+
+        public static double WPFUnitToTenths(double WPFUnit)
+        {
+            if (WPFUnit == 0)
+            {
+                return 0.0;
+            }
+            double converterFactor = ViewModelLocator.Instance.Main.CurrentTabLayout.PageProperties.ConverterFactor;
+            return WPFUnit / (converterFactor * PxPerMM());
+        }
+        public static double WPFUnitToMM(double WPFUnit)
+        {
+            return WPFUnit * PxPerMM(); //! to test
+        }
+        public static double MMToWPFUnit(double MM)
+        {
+            return MM / PxPerMM(); //! to test
+        }
+        public static double MMToInch(double MM)
+        {
+            return MM / 25.4;
         }
     }
     enum PageType

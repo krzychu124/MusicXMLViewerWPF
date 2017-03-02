@@ -17,6 +17,7 @@ namespace MusicXMLViewerWPF
     [XmlRoot("score-partwise", Namespace ="", IsNullable =false)]
     public class ScorePartwiseMusicXML
     {
+        private string id;
         private WorkMusicXML work; //! Done
         private string movementNumber; //! Done
         private string movementTitle; //! Done
@@ -26,6 +27,19 @@ namespace MusicXMLViewerWPF
         private PartListMusicXML partlist;
         private List<ScorePartwisePartMusicXML> part;
         private string version;
+
+        [XmlIgnore]
+        public string ID
+        {
+            get
+            {
+                return id;
+            }
+            set
+            {
+                id = value;
+            }
+        }
         
         [XmlElement(elementName:"work")]
         public WorkMusicXML Work
@@ -147,6 +161,7 @@ namespace MusicXMLViewerWPF
         public ScorePartwiseMusicXML()
         {
             this.version = "1.0";
+            ID = Misc.RandomGenerator.GetRandomHexNumber();
         }
     }
 }

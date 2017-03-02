@@ -112,6 +112,7 @@
     <Compile Include="Helpers\CustomPartsSegmentPanel.cs" />
     <Compile Include="Helpers\MusicSymbols.cs" />
     <Compile Include="Helpers\PageProperties.cs" />
+    <Compile Include="Helpers\PrimitivePageGenerator.cs" />
     <Compile Include="LayoutControl\LayoutGeneral.cs" />
     <Compile Include="LayoutControl\PageController.cs" />
     <Compile Include="LayoutStyle\Styles\BarlineLayoutStyle.cs" />

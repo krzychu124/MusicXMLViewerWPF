@@ -28,6 +28,11 @@ namespace MusicXMLScore.Helpers
             this.Width = width;
             this.Height = height;
         }
+        public CanvasList(Size size) : base()
+        {
+            this.Width = size.Width;
+            this.Height = size.Height;
+        }
         protected override Visual GetVisualChild(int index)
         {
             if (index < 0 || index >= VisualChildrenCount)

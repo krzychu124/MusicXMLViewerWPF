@@ -2,9 +2,11 @@
 using MusicXMLViewerWPF;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 
 namespace MusicXMLScore.LayoutControl
 {
@@ -13,16 +15,38 @@ namespace MusicXMLScore.LayoutControl
     /// </summary>
     public class LayoutGeneral
     {
-        private PageProperties pageProperites;
+        private PageProperties pageProperties;
         private PageMargins pagePargins;
+        private LayoutStyle.Layout layoutStyle;
         public LayoutGeneral()
         {
-            pageProperites = new PageProperties();
+            pageProperties = new PageProperties();
         }
-        internal LayoutGeneral(MusicXMLViewerWPF.MusicScore musicScore)
+        internal LayoutGeneral(MusicScore musicScore)
         {
-            pageProperites = new PageProperties(musicScore);
+            pageProperties = new PageProperties(musicScore);
         }
-        public PageProperties PageProperties { get { return pageProperites; } }
+        public LayoutGeneral(ScorePartwiseMusicXML score)
+        {
+            pageProperties = new PageProperties(score.Defaults);
+            layoutStyle = new LayoutStyle.Layout(score);
+        }
+
+        private void SaveAsDefaultStyle() //! not tested
+        {
+            XmlSerializer xml = new XmlSerializer(layoutStyle.GetType());
+            TextWriter txtw = new StreamWriter(@".\DefaultLayoutStyle.xml");
+            xml.Serialize(txtw, layoutStyle);
+            txtw.Close();
+        }
+        private void LoadDefaultStyle() //! not tested
+        {
+            XmlSerializer xml = new XmlSerializer(layoutStyle.GetType());
+            using (var stream = File.OpenRead(@".\DefaultLayoutStyle.xml"))
+            {
+                layoutStyle = (LayoutStyle.Layout) xml.Deserialize(stream);
+            }
+        }
+        public PageProperties PageProperties { get { return pageProperties; } }
     }
 }

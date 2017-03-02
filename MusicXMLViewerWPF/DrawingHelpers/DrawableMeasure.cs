@@ -23,7 +23,7 @@ namespace MusicXMLScore.DrawingHelpers
         private double measureHeight = 60.0;
         private double measureWidth = 0.0;
         private uint stavesCount =1;
-        private double stavesTopMargin = 1.3;
+        private double stavesTopMargin = 1.4;
         private CanvasList visualObject;
         private List<BarlineVisualObject> barlineVisuals;
         private List<DirectionVisualObject> directionVisuals;
@@ -51,7 +51,7 @@ namespace MusicXMLScore.DrawingHelpers
             this.measure = measure;
             PagesControllerViewModel pcvm = mwvm.SelectedTabItem.DataContext as PagesControllerViewModel ;
             stavesCount = (uint)pcvm.MusicScore.Parts.ElementAt(0).Value.StavesCount;
-            measureHeight = measureHeight * stavesCount;
+            measureHeight = measureHeight * stavesCount ;
             DrawAttributes();
             CreateVisualObject();
         }
@@ -98,7 +98,8 @@ namespace MusicXMLScore.DrawingHelpers
         private void CreateVisualObject()
         {
             
-            CreateStaffLine();
+            //CreateStaffLine();
+            PrimitiveRectangle();
             CreateVisualObjectChilds();
         }
 
@@ -135,6 +136,28 @@ namespace MusicXMLScore.DrawingHelpers
             //stavesCount = measure.Attributes.Staves;
             
         }
+        private void PrimitiveRectangle()
+        {
+            CanvasList MeasureCanvas = new CanvasList(measureWidth, measureHeight);
+            Point p = new Point();
+            for (uint i = 0; i < stavesCount; i++)
+            {
+                p.Y = p.Y + (60 * stavesTopMargin) * i;
+                Point l_t = new Point(p.X, p.Y);
+                Point r_b = new Point(p.X + measureWidth, p.Y - measureHeight);
+                Rect primitive = new Rect(l_t, r_b);
+                DrawingVisual rectVis = new DrawingVisual();
+                using (DrawingContext dc = rectVis.RenderOpen())
+                {
+                    Brush color = Helpers.DrawingHelpers.PickBrush();
+                    dc.DrawRectangle(color, new Pen(color, 1), primitive);
+                }
+                MeasureCanvas.AddVisual(rectVis);
+            }
+            visualObject = MeasureCanvas;
+        }
+
+
         /// <summary>
         /// Adds content from measure object to current measure
         /// </summary>
@@ -142,7 +165,7 @@ namespace MusicXMLScore.DrawingHelpers
         {
             //AddNotes();
             //AddDirections();
-            AddBarlines();
+            //AddBarlines();
 
             ArrangeMeasureLayout();
         }
