@@ -58,7 +58,7 @@ namespace MusicXMLScore.ViewModel
 
         public PageViewModel(ScorePartwiseMusicXML scorePartwise, DefaultsMusicXML defaultsCopy)
         {
-            PrimitivePageGenerator p = new PrimitivePageGenerator();
+            PrimitivePageGenerator p = new PrimitivePageGenerator(scorePartwise);
             Point dimensions = ViewModelLocator.Instance.Main.CurrentTabLayout.PageProperties.PageDimensions.GetPageDimensionsInPx();
             PageWidth = dimensions.X;
             PageHeight = dimensions.Y;

@@ -13,6 +13,7 @@ using GalaSoft.MvvmLight;
 using System.IO;
 using System.Collections.Generic;
 using System.Xml.Serialization;
+using System.Diagnostics;
 
 namespace MusicXMLScore.ViewModel
 {
@@ -169,10 +170,17 @@ namespace MusicXMLScore.ViewModel
                 Log.LoggIt.Log("Error has occured while reading file: "+ex.Message.ToString(), Log.LogType.Exception);
                 //throw;
             }
-             // std + add line info(number)
+            // std + add line info(number)
+            var sw = new Stopwatch();
+            sw.Start();
             MusicScore musicscore = new MusicScore();
+            sw.Stop();
+            Log.LoggIt.Log($"Empty Default MusicScore object in : {sw.ElapsedMilliseconds} ms", Log.LogType.Exception);
+            sw = new Stopwatch();
+            sw.Start();
             ScorePartwiseMusicXML xml = TempMethod<ScorePartwiseMusicXML>(filedestination);
-
+            sw.Stop();
+            Log.LoggIt.Log($"XML file deserialization to ScorePartwise object in : {sw.ElapsedMilliseconds} ms", Log.LogType.Exception);
 #if LOADSPEEDTEST
              var sw = new Stopwatch();
              sw.Start();
@@ -185,8 +193,11 @@ namespace MusicXMLScore.ViewModel
             sw = new Stopwatch();
             sw.Start();
 #endif
+            sw = new Stopwatch();
+            sw.Start();
             musicscore = new MusicScore(XDoc);
-
+            sw.Stop();
+            Log.LoggIt.Log($"XML file deserialization to MusicScore object in : {sw.ElapsedMilliseconds} ms", Log.LogType.Exception);
             var vm = (PagesControllerViewModel)SelectedTabItem.DataContext;
             if (vm.IsBlank) //! check if currently selected tab is blank
             {
@@ -197,14 +208,14 @@ namespace MusicXMLScore.ViewModel
                 TabItem newTab = new TabItem() { Header = filedestination, Content = new PagesControllerView(), DataContext = vm };
                 TabsCreated.Add(newTab);
                 SelectedTabItem = newTab;
-                double conv = ScaleExtensions.TenthsToWPFUnit(10);
+                double conv = Converters.ExtensionMethods.TenthsToWPFUnit(10);
             }
             else
             {
                 GenerateLayout(xml);//! 02.03 GenerateLayout(musicscore);
                 PagesControllerViewModel pcvm = new PagesControllerViewModel();
                 pcvm.AddScorePartwise(xml);
-                TabItem newTab = new TabItem() { Header = filedestination, Tag=musicscore.ID, Content = new PagesControllerView(), DataContext = pcvm };
+                TabItem newTab = new TabItem() { Header = filedestination, Tag=xml.ID, Content = new PagesControllerView(), DataContext = pcvm };
                 TabsCreated.Add(newTab);
                 SelectedTabItem = newTab;
             }

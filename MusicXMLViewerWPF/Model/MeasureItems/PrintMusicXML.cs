@@ -45,7 +45,7 @@ namespace MusicXMLScore.Model.MeasureItems
                 pageLayout = value;
             }
         }
-        [XmlElement("systemlayout")]
+        [XmlElement("system-layout")]
         public SystemLayoutMusicXML SystemLayout
         {
             get

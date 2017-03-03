@@ -20,13 +20,13 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <DockPanel Height="20" Grid.Row="0">
+            <!--<DockPanel Height="20" Grid.Row="0">
                 <Button DockPanel.Dock="Left" Content="test" Command="{Binding TestCommand}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,0,0,0" Width="40" Height="20"/>
-                <!--<CheckBox x:Name="clirs" DockPanel.Dock="Left"  Content="LIRS" Width="45" IsChecked="False"/>-->
+                --><!--<CheckBox x:Name="clirs" DockPanel.Dock="Left"  Content="LIRS" Width="45" IsChecked="False"/>-->
                 <!--<CheckBox x:Name="csiir" DockPanel.Dock="Left" Content="SIIR" Width="45" IsChecked="True"/>-->
                 <!--<Slider DockPanel.Dock="Left" Value="{Binding Width, ElementName=uc}" Maximum="1800" Minimum="300" Width="350"></Slider>-->
-                <!--<RadioButton DockPanel.Dock="Right" FlowDirection="RightToLeft" GroupName="a" Width="50" Height="25" Content="Rbtn"></RadioButton>-->
-            </DockPanel>
+                <!--<RadioButton DockPanel.Dock="Right" FlowDirection="RightToLeft" GroupName="a" Width="50" Height="25" Content="Rbtn"></RadioButton>--><!--
+            </DockPanel>-->
             <!--<local:CreditsView Grid.Row="1" Width="auto" Height="Auto"/>-->
             <ItemsControl x:Name="PartsSegments" Grid.Row="0" ItemsSource="{Binding PartsSegments}">
                 <ItemsControl.ItemsPanel>

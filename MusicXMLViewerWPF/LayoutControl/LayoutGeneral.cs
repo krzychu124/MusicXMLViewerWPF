@@ -28,7 +28,7 @@ namespace MusicXMLScore.LayoutControl
         }
         public LayoutGeneral(ScorePartwiseMusicXML score)
         {
-            pageProperties = new PageProperties(score.Defaults);
+            pageProperties = score !=null?  new PageProperties(score.Defaults): null;
             layoutStyle = new LayoutStyle.Layout(score);
         }
 

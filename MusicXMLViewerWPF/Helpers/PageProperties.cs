@@ -212,7 +212,7 @@ namespace MusicXMLScore.Helpers
         }
         public static double PxPerMM()
         {
-            return ScaleExtensions.PxPerMM(); //? return DPI / 25.4;
+            return Converters.ExtensionMethods.PxPerMM(); //? return DPI / 25.4;
         }
         public double TenthToPx(double tenths)
         {
@@ -265,59 +265,6 @@ namespace MusicXMLScore.Helpers
             {
                 return new Size(width, height);
             }
-        }
-    }
-
-    public static class ScaleExtensions
-    {
-        public static double PxPerMM()
-        {
-            return 144 / 25.4;
-        }
-        public static double TenthsToMM(double tenths)
-        {
-            double converterFactor = ViewModelLocator.Instance.Main.CurrentTabLayout.PageProperties.ConverterFactor;
-            double result = tenths * converterFactor;
-            return result;
-        }
-
-        public static double MMToTenths(double MM)
-        {
-            double converterFactor = ViewModelLocator.Instance.Main.CurrentTabLayout.PageProperties.ConverterFactor;
-            if (converterFactor == 0)
-            {
-                return 0.0;
-            }
-            return MM / converterFactor;
-        }
-
-        public static double TenthsToWPFUnit(double tenths)
-        {
-            double converterFactor = ViewModelLocator.Instance.Main.CurrentTabLayout.PageProperties.ConverterFactor;
-            double result = tenths * converterFactor * PxPerMM();
-            return result;
-        }
-
-        public static double WPFUnitToTenths(double WPFUnit)
-        {
-            if (WPFUnit == 0)
-            {
-                return 0.0;
-            }
-            double converterFactor = ViewModelLocator.Instance.Main.CurrentTabLayout.PageProperties.ConverterFactor;
-            return WPFUnit / (converterFactor * PxPerMM());
-        }
-        public static double WPFUnitToMM(double WPFUnit)
-        {
-            return WPFUnit * PxPerMM(); //! to test
-        }
-        public static double MMToWPFUnit(double MM)
-        {
-            return MM / PxPerMM(); //! to test
-        }
-        public static double MMToInch(double MM)
-        {
-            return MM / 25.4;
         }
     }
     enum PageType
