@@ -14,6 +14,7 @@ using System.IO;
 using System.Collections.Generic;
 using System.Xml.Serialization;
 using System.Diagnostics;
+using System.Collections;
 
 namespace MusicXMLScore.ViewModel
 {
@@ -32,6 +33,15 @@ namespace MusicXMLScore.ViewModel
             OpenFileCommand = new RelayCommand<string>(s => OnOpenFileCommand(s));
             OpenOptionsWindowCommand = new RelayCommand(OnOpenOptionWindow);
             CreateBlankTab();
+            CacheXMLSerializer();
+        }
+
+        private void CacheXMLSerializer()
+        {
+            object key = typeof(ScorePartwiseMusicXML);
+            ScorePartwiseMusicXML scoreTemp = new ScorePartwiseMusicXML();
+            XmlSerializer x = new XmlSerializer(typeof(ScorePartwiseMusicXML));
+            serializers[key] = x;
         }
 
         #region PropertyChanged
@@ -93,7 +103,11 @@ namespace MusicXMLScore.ViewModel
             TextReader reader = null;
             try
             {
-                XmlSerializer serializer = new XmlSerializer(typeof(T));
+                XmlSerializer serializer = (XmlSerializer)serializers[typeof(T)];
+                if (serializer == null)
+                {
+                    serializer = new XmlSerializer(typeof(T));
+                }
                 reader = new StreamReader(parameter);
                 return (T)serializer.Deserialize(reader);
             }
@@ -195,7 +209,7 @@ namespace MusicXMLScore.ViewModel
 #endif
             sw = new Stopwatch();
             sw.Start();
-            musicscore = new MusicScore(XDoc);
+            //musicscore = new MusicScore(XDoc);
             sw.Stop();
             Log.LoggIt.Log($"XML file deserialization to MusicScore object in : {sw.ElapsedMilliseconds} ms", Log.LogType.Exception);
             var vm = (PagesControllerViewModel)SelectedTabItem.DataContext;
@@ -265,7 +279,7 @@ namespace MusicXMLScore.ViewModel
         private ObservableCollection<TabItem> tabscreated = new ObservableCollection<TabItem>();
         private Dictionary<string, LayoutControl.LayoutGeneral> tabsLayouts = new Dictionary<string, LayoutControl.LayoutGeneral>() { { "default", new LayoutControl.LayoutGeneral() } };
         private LayoutControl.LayoutGeneral currentTabLayout = new LayoutControl.LayoutGeneral();
-        private bool xmlfileloaded;
+        private static Hashtable serializers = new Hashtable();
 #endregion
 
 #region Properties, Commands

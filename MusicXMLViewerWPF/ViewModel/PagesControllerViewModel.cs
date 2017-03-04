@@ -110,13 +110,16 @@ namespace MusicXMLScore.ViewModel
             IsBlank = false;
             partwise = spmXML;
             DefaultsMusicXML def = partwise.Defaults;
-            XmlSerializer xmls = new XmlSerializer(def.GetType());
-            MemoryStream memStream = new MemoryStream();
-            xmls.Serialize(memStream, def);
+            if (def != null)
+            {
+                XmlSerializer xmls = new XmlSerializer(def.GetType());
+                MemoryStream memStream = new MemoryStream();
+                xmls.Serialize(memStream, def);
 
-            memStream.Position = 0;
-            xmls = new XmlSerializer(def.GetType());
-            defaultsCopy = ((DefaultsMusicXML)xmls.Deserialize(memStream));
+                memStream.Position = 0;
+                xmls = new XmlSerializer(def.GetType());
+                defaultsCopy = ((DefaultsMusicXML)xmls.Deserialize(memStream));
+            }
             PagesCollection = new ObservableCollection<UIElement>();
             AddPageToCollection(spmXML);
         }
