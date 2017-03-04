@@ -30,10 +30,12 @@ namespace MusicXMLScore.Helpers
             dimensions = layout.PageProperties.PageDimensions.Dimensions;
             page = new CanvasList(dimensions.Width.TenthsToWPFUnit(), dimensions.Height.TenthsToWPFUnit());
             this.score = score;
+            var partId =  this.score.TryGetEveryPartId();
             DrawMargins();
             DrawCreditsSpace();
-            DrawMeasuresTopLine();
+            //DrawMeasuresTopLine();
             CalculateMeasureTopLines();
+            MusicXMLScore.DrawingHelpers.PartProperties pp = new MusicXMLScore.DrawingHelpers.PartProperties(score, "P1");
         }
 
         private void DrawMeasuresTopLine()
@@ -51,7 +53,7 @@ namespace MusicXMLScore.Helpers
                     }
                 }
             }
-            double topmargin = layout.PageProperties.PageMargins.ElementAt(0).TopMargin.TenthsToWPFUnit();
+            double topmargin = layout.PageMargins.TopMargin.TenthsToWPFUnit();
             Line defaultTopDistance = new Line();
             defaultTopDistance.X1 = 0;
             defaultTopDistance.Y1 = topLineDistance + topmargin;
@@ -87,15 +89,6 @@ namespace MusicXMLScore.Helpers
             }
             c2.SetToolTipText("Measure top line");
             c2.AddVisual(toplineVisual2);
-            //Line firstMeasureLineTopDistance = new Line();
-            //firstMeasureLineTopDistance.X1 = 0;
-            //firstMeasureLineTopDistance.Y1 = topLinteDistance/2;
-            //firstMeasureLineTopDistance.Width = dimensions.Width.TenthsToWPFUnit();
-            //firstMeasureLineTopDistance.Stroke = Brushes.Green;
-            //firstMeasureLineTopDistance.StrokeThickness = 1;
-            //ToolTip t2 = new ToolTip();
-            //t2.Content = "1st Measure Top Distance";
-            //firstMeasureLineTopDistance.ToolTip = t2;
             page.AddVisual(c1);
             page.AddVisual(c2);
         }
@@ -120,7 +113,7 @@ namespace MusicXMLScore.Helpers
                         //dc.DrawLine(new Pen(Brushes.Black, 1), new Point(0, p3.Y), new Point(dimensionsInWPF.Width, p3.Y));
                     }
                     CanvasList c = new CanvasList(10, 10);
-                    c.SetToolTipText(credit.CreditW.Value);
+                    c.SetToolTipText(credit.CreditW.Value + "\n" + p3.X.ToString("X: 0.##") + " " + p3.Y.ToString("Y: 0.##"));
                     c.AddVisual(creditSpace);
                     page.AddVisual(c);
                 }
@@ -132,7 +125,7 @@ namespace MusicXMLScore.Helpers
         private void DrawMargins()
         {
             DrawingVisual marginsVisual = new DrawingVisual();
-            PageMarginsMusicXML pageMargins = layout.PageProperties.PageMargins.ElementAt(0);
+            PageMarginsMusicXML pageMargins = layout.PageMargins;
             Size dimensions = layout.PageProperties.PageDimensions.Dimensions;
             Point lt = new Point(pageMargins.LeftMargin.TenthsToWPFUnit(), pageMargins.TopMargin.TenthsToWPFUnit());
             Point rb = new Point(dimensions.Width.TenthsToWPFUnit() - pageMargins.RightMargin.TenthsToWPFUnit(),
@@ -157,7 +150,9 @@ namespace MusicXMLScore.Helpers
             }
             double partsCount = score.Part.Count;
             var numberOfLinesPerPage = score.Part.ElementAt(0).TryGetLinesPerPage();
-            double currentY = layout.PageProperties.PageMargins.ElementAt(0).TopMargin.TenthsToWPFUnit();
+            double currentY = layout.PageMargins.TopMargin.TenthsToWPFUnit();
+            double defaultMarginLeft = layout.PageMargins.LeftMargin.TenthsToWPFUnit();
+            double currentMarginLeft =defaultMarginLeft;
             double currentSystemDistance = defaultSystemDistance;
             var firstPage = numberOfLinesPerPage.ElementAt(0);
             double sysDistAcc = currentY;
@@ -179,10 +174,15 @@ namespace MusicXMLScore.Helpers
                             {
                                 currentSystemDistance = part.SystemLayout.TopSystemDistance.TenthsToWPFUnit();
                             }
+                            if (part.SystemLayout.SystemMargins != null)
+                            {
+                                double systemMarginLeft = part.SystemLayout.SystemMargins != null ? part.SystemLayout.SystemMargins.LeftMargin : 0.0;
+                                currentMarginLeft = defaultMarginLeft + systemMarginLeft;
+                            }
                         }
                     }
                     sysDistAcc += currentSystemDistance; //! todo more tests
-                    DrawMeasureLine(sysDistAcc, numberToken);
+                    DrawMeasureLine(currentMarginLeft, sysDistAcc, numberToken);
                     currentSystemDistance = defaultSystemDistance;
                     //sysDistAcc += staffHeight;
                 }
@@ -198,31 +198,44 @@ namespace MusicXMLScore.Helpers
                             {
                                 currentSystemDistance = part.SystemLayout.SystemDistance.TenthsToWPFUnit();
                             }
+                            if (part.SystemLayout.SystemMargins != null)
+                            {
+                                double systemMarginLeft = part.SystemLayout.SystemMargins != null ? part.SystemLayout.SystemMargins.LeftMargin : 0.0;
+                                currentMarginLeft = defaultMarginLeft + systemMarginLeft;
+                            }
+                            
                         }
                         sysDistAcc += currentSystemDistance;
                         sysDistAcc += staffHeight *2;
-                        DrawMeasureLine(sysDistAcc, numberToken);
+                        DrawMeasureLine(currentMarginLeft, sysDistAcc, numberToken);
                         
                     }
                 }
             }
         }
         
-        private void DrawMeasureLine(double Y, string tooltip)
+        private void DrawMeasureLine(double margin, double Y, string tooltip)
         {
             double staffHeight = layout.PageProperties.StaffHeight.MMToWPFUnit();
             Point p1 = new Point(0, Y);
             Point p2 = new Point(dimensions.Width.TenthsToWPFUnit(), Y);
+            Point mp1 = new Point(margin, Y);
+            Point mp2 = new Point(margin, Y - staffHeight);
             DrawingVisual line = new DrawingVisual();
             using (DrawingContext dc = line.RenderOpen())
             {
                 dc.DrawLine(new Pen(Brushes.ForestGreen, 2), p1, p2);
-                dc.DrawLine(new Pen(Brushes.Red, 3), new Point(100, Y), new Point(100, Y + staffHeight));
+                dc.DrawLine(new Pen(Brushes.Red, 3), mp1, mp2);
             }
             CanvasList measureLine = new CanvasList(dimensions.Width.TenthsToWPFUnit(), 5);
-            measureLine.SetToolTipText(tooltip);
+            measureLine.SetToolTipText("Measure: " + tooltip + "\n" + mp1.X.ToString("X: 0.##") + " " + mp1.Y.ToString("Y: 0.##") + "\n" + staffHeight.ToString("Staff Height: 0.###"));
             measureLine.AddVisual(line);
             page.AddVisual(measureLine);
+        }
+
+        private void DrawPrimitiveMeasure()
+        {
+
         }
         internal CanvasList Page
         {
