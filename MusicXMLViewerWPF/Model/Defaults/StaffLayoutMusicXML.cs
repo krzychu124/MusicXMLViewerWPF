@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,6 +10,7 @@ namespace MusicXMLScore.Model.Defaults
 {
     [Serializable]
     [XmlType("staff-layout")]
+    [DebuggerDisplay("Number {number}, StaffDist. {staffDistance} Specified?: {staffDistanceSpecified}")]
     public class StaffLayoutMusicXML
     {
         private double staffDistance;
@@ -26,6 +28,7 @@ namespace MusicXMLScore.Model.Defaults
             set
             {
                 staffDistance = value;
+                staffDistanceSpecified = true;
             }
         }
         [XmlIgnore]
