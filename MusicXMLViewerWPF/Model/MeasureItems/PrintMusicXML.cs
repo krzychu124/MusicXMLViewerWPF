@@ -3,6 +3,7 @@ using MusicXMLScore.Model.Helpers;
 using MusicXMLScore.Model.Helpers.SimpleTypes;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Xml.Serialization;
 
 namespace MusicXMLScore.Model.MeasureItems
@@ -45,7 +46,7 @@ namespace MusicXMLScore.Model.MeasureItems
                 pageLayout = value;
             }
         }
-        [XmlElement("systemlayout")]
+        [XmlElement("system-layout")]
         public SystemLayoutMusicXML SystemLayout
         {
             get
@@ -266,6 +267,7 @@ namespace MusicXMLScore.Model.MeasureItems
 
     [Serializable]
     [XmlType(TypeName ="measure-numbering")]
+    [DebuggerDisplay("Value = {value}")]
     public class MeasureNumberingMusicXML
     {
         private MeasureNumberingValueMusicXML value;

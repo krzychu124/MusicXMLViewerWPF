@@ -5,14 +5,17 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 using MusicXMLScore.Model.Helpers;
+using System.Diagnostics;
 
 namespace MusicXMLScore.Model.Defaults
 {
     [Serializable]
     [XmlType(TypeName ="system-layout")]
+    [DebuggerDisplay("Margins L,P: {systemMargins.leftMargin}, {systemMargins.rightMargin};  S=> {systemDistance} T=> {topSystemDistance}")]
     public class SystemLayoutMusicXML
     {
-        private SystemMarginsMusicXML systemMargins;
+        private SystemMarginsMusicXML systemMargins = new SystemMarginsMusicXML();
+        private bool systemMarginsSpecified = false;
         private double systemDistance;
         private bool systemDistanceSpecified;
         private double topSystemDistance;
@@ -32,6 +35,7 @@ namespace MusicXMLScore.Model.Defaults
                 systemMargins = value;
             }
         }
+        
         [XmlElement("system-distance")]
         public double SystemDistance
         {
@@ -43,6 +47,7 @@ namespace MusicXMLScore.Model.Defaults
             set
             {
                 systemDistance = value;
+                systemDistanceSpecified = true;
             }
         }
         [XmlIgnore]
@@ -69,6 +74,7 @@ namespace MusicXMLScore.Model.Defaults
             set
             {
                 topSystemDistance = value;
+                topSystemDistanceSpecified = true;
             }
         }
         [XmlIgnore]
@@ -103,8 +109,8 @@ namespace MusicXMLScore.Model.Defaults
     [XmlType(TypeName ="system-margins")]
     public class SystemMarginsMusicXML
     {
-        private double leftMargin;
-        private double rightMargin;
+        private double leftMargin = 0.0;
+        private double rightMargin = 0.0;
 
         [XmlElement("left-margin")]
         public double LeftMargin

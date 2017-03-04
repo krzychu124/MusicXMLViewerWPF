@@ -16,6 +16,7 @@ using MusicXMLViewerWPF;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Messaging;
 using MusicXMLViewerWPF.ScoreParts.MeasureContent;
+using MusicXMLScore.Model;
 
 namespace MusicXMLScore.ViewModel
 {
@@ -53,6 +54,16 @@ namespace MusicXMLScore.ViewModel
             PartList = partList; //TODO_I test, improve, continue
             CreatePartSegment();
             FillPartSegment();
+        }
+
+        public PageViewModel(ScorePartwiseMusicXML scorePartwise, DefaultsMusicXML defaultsCopy)
+        {
+            PrimitivePageGenerator p = new PrimitivePageGenerator(scorePartwise);
+            Point dimensions = ViewModelLocator.Instance.Main.CurrentTabLayout.PageProperties.PageDimensions.GetPageDimensionsInPx();
+            PageWidth = dimensions.X;
+            PageHeight = dimensions.Y;
+            Page = p.Page;
+            PartsSegments.Add(Page);
         }
         #endregion
 

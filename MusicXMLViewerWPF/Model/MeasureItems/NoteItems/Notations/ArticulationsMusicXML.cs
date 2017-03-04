@@ -14,7 +14,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems.Notations
     public class ArticulationsMusicXML
     {
         private object[] items;
-        private ArticulationsChoiceTypeMusicXML itemsElementName;
+        private ArticulationsChoiceTypeMusicXML[] itemsElementName;
 
         public ArticulationsMusicXML()
         {
@@ -52,7 +52,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems.Notations
         }
         [XmlElement("ItemsElementName")]
         [XmlIgnore()]
-        public ArticulationsChoiceTypeMusicXML ItemsElementName
+        public ArticulationsChoiceTypeMusicXML[] ItemsElementName
         {
             get
             {
@@ -143,6 +143,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems.Notations
         falloff,
         [XmlEnum("other-articulation")]
         otherarticulation,
+        plop,
         scoop,
         spiccato,
         staccatissimo,

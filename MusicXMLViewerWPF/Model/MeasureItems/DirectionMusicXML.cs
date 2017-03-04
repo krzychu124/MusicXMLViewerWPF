@@ -23,6 +23,149 @@ namespace MusicXMLScore.Model.MeasureItems
         private YesNoMusicXML directive;
         private bool directiveSpecified;
 
+        [XmlElement("direction-type")]
+        public List<DirectionTypeMusicXML> DirectionType
+        {
+            get
+            {
+                return directionType;
+            }
+
+            set
+            {
+                directionType = value;
+            }
+        }
+        [XmlElement("offset")]
+        public OffsetMusicXML Offset
+        {
+            get
+            {
+                return offset;
+            }
+
+            set
+            {
+                offset = value;
+            }
+        }
+        [XmlElement("footnote")]
+        public FormattedTextMusicXML Footnote
+        {
+            get
+            {
+                return footnote;
+            }
+
+            set
+            {
+                footnote = value;
+            }
+        }
+        [XmlElement("level")]
+        public LevelMusicXML Level
+        {
+            get
+            {
+                return level;
+            }
+
+            set
+            {
+                level = value;
+            }
+        }
+        [XmlElement("voice")]
+        public string Voice
+        {
+            get
+            {
+                return voice;
+            }
+
+            set
+            {
+                voice = value;
+            }
+        }
+        [XmlElement("staff")]
+        public string Staff
+        {
+            get
+            {
+                return staff;
+            }
+
+            set
+            {
+                staff = value;
+            }
+        }
+        [XmlElement("sound")]
+        public SoundMusicXML Sound
+        {
+            get
+            {
+                return sound;
+            }
+
+            set
+            {
+                sound = value;
+            }
+        }
+        [XmlAttribute("placement")]
+        public AboveBelowMusicXML Placement
+        {
+            get
+            {
+                return placement;
+            }
+
+            set
+            {
+                placement = value;
+            }
+        }
+        [XmlIgnore]
+        public bool PlacementSpecified
+        {
+            get
+            {
+                return placementSpecified;
+            }
+
+            set
+            {
+                placementSpecified = value;
+            }
+        }
+        [XmlAttribute("directive")]
+        public YesNoMusicXML Directive
+        {
+            get
+            {
+                return directive;
+            }
+
+            set
+            {
+                directive = value;
+            }
+        }
+        [XmlIgnore]
+        public bool DirectiveSpecified
+        {
+            get
+            {
+                return directiveSpecified;
+            }
+
+            set
+            {
+                directiveSpecified = value;
+            }
+        }
     }
 
     [Serializable]
@@ -30,7 +173,12 @@ namespace MusicXMLScore.Model.MeasureItems
     public class DirectionTypeMusicXML
     {
         private object[] items;
-        private DirectionChoiceTypeMusicXML itemsElementName;
+        private DirectionChoiceTypeMusicXML[] itemsElementName;
+
+        public DirectionTypeMusicXML()
+        {
+
+        }
 
         [XmlElement("accordion-registration", typeof(AccordionRegistrationMusicXML))] //! no-implementation
         [XmlElement("bracket", typeof(BracketMusicXML))] //! no-implementation
@@ -70,7 +218,7 @@ namespace MusicXMLScore.Model.MeasureItems
 
         [XmlElement("ItemsElementName")]
         [XmlIgnore]
-        public DirectionChoiceTypeMusicXML ItemsElementName
+        public DirectionChoiceTypeMusicXML[] ItemsElementName
         {
             get
             {
@@ -86,6 +234,7 @@ namespace MusicXMLScore.Model.MeasureItems
 
 
     [Serializable]
+    [XmlType(TypeName ="ItemsElementName")]
     public enum DirectionChoiceTypeMusicXML
     {
         [XmlEnum("accordion-registration")]

@@ -63,6 +63,7 @@ namespace MusicXMLScore.Model.Defaults
         private double bottomMargin;
         private MarginTypeMusicXML marginType;
         private bool marginTypeSpecified;
+
         [XmlElement("left-margin")]
         public double LeftMargin
         {

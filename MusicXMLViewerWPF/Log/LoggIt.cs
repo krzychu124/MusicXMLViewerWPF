@@ -19,6 +19,7 @@ namespace MusicXMLScore.Log
             public string Message { get; set; }
             public string Date { get; set; }
             public Brush MessageColor { get; set; }
+            public Brush MessageBackgroundColor { get; set; } = Brushes.White;
             public Logger(LogType t, string memname, string message, string date)
             {
                 LogType = t;
@@ -42,7 +43,8 @@ namespace MusicXMLScore.Log
                         MessageColor = Brushes.Red;
                         break;
                     case LogType.Exception:
-                        MessageColor = Brushes.Violet;
+                        MessageColor = Brushes.White;
+                        MessageBackgroundColor = Brushes.DarkRed;
                         break;
                     default:
                         break;

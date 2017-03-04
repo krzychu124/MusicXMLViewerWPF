@@ -33,8 +33,8 @@ namespace MusicXMLScore.Helpers
 
             Type brushesType = typeof(Brushes);
 
-            PropertyInfo[] properties = brushesType.GetProperties();
-
+            PropertyInfo[] properties = brushesType.GetProperties().Select(i=> i).Where(i => i.Name[0].ToString() == "D").ToArray();
+            //! colors with first letter "D"
             int random = rndom.Next(properties.Length);
             result = (Brush)properties[random].GetValue(null, null);
 

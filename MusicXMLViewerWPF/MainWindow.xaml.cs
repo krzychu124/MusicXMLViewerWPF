@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MusicXMLViewerWPF;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,6 +24,7 @@ namespace MusicXMLScore
         public MainWindow()
         {
             InitializeComponent();
+            //! test // ScorePartwiseMusicXML xml = MusicXMLScore.ViewModel.MainWindowViewModel.TempMethod<ScorePartwiseMusicXML>("C:\\Users\\Krzychu124\\Desktop\\xml_test_samples\\Echigo-Jishi.xml");
         }
         protected override void OnClosed(EventArgs e)
         {

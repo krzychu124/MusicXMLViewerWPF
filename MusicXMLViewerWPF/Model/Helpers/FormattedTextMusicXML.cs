@@ -14,8 +14,8 @@ namespace MusicXMLScore.Model.Helpers
         private string space;
         private string value;
 
-        private double defaultX = 0.0;
-        private double defaultY = 0.0;
+        private string defaultX;
+        private string defaultY;
         private string justify;
         private string halign;
         private string valign;
@@ -77,7 +77,7 @@ namespace MusicXMLScore.Model.Helpers
 
             set
             {
-                defaultX = double.Parse(value);
+                defaultX = value;
             }
         }
         [XmlAttribute("default-y")]
@@ -90,7 +90,7 @@ namespace MusicXMLScore.Model.Helpers
 
             set
             {
-                defaultY = double.Parse(value);
+                defaultY = value;
             }
         }
         [XmlAttribute("justify")]

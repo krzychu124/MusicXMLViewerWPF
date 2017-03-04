@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MusicXMLViewerWPF;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -26,6 +27,10 @@ namespace MusicXMLScore.LayoutStyle
             systemStyle = new SystemLayoutStyle();
         }
 
+        public Layout(ScorePartwiseMusicXML score):this()
+        {
+            
+        }
         public BarlineLayoutStyle BarlineStyle
         {
             get

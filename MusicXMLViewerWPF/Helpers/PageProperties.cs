@@ -1,4 +1,7 @@
-﻿using MusicXMLViewerWPF;
+﻿using MusicXMLScore.Model;
+using MusicXMLScore.Model.Defaults;
+using MusicXMLScore.ViewModel;
+using MusicXMLViewerWPF;
 using MusicXMLViewerWPF.Defaults;
 using System;
 using System.Collections.Generic;
@@ -15,16 +18,22 @@ namespace MusicXMLScore.Helpers
     public class PageProperties : ISerializable
     {
         private string id;
-        PageDimensions pageDimensions;
-        static double DPI = 144; // def 96 -may be changed in the future
-        double scale = 40; // in tenths
-        double staffHeight = 7.0556; // in mm
-        double staffSpace = 1.764; // staffheight / 4
-        double default_width = 1190.88; // in tenths 210mm
-        double default_height = 1683.36;  // in tenths 297mm
-        double converterFactor = 0.1764; // staffheight / scale
-        PageType pagetype = PageType.A4;
-        PageOrientation pageOrientation = PageOrientation.portait;
+        private PageDimensions pageDimensions;
+        private List<PageMarginsMusicXML> loadedPageMargins;
+        private PageMarginsMusicXML pageMarginEven;
+        private PageMarginsMusicXML pageMarginOdd;
+        private PageMarginsMusicXML pageMarginBoth;
+        private SystemLayoutMusicXML systemLayout;
+        private List<StaffLayoutMusicXML> staffLayout = new List<StaffLayoutMusicXML>() { new StaffLayoutMusicXML() };
+        private static double DPI = 144; // def 96, may be changed in the future
+        private double scale = 40; // in tenths
+        private double staffHeight = 7.0556; // in mm
+        private double staffSpace = 1.764; // staffheight / 4
+        private double default_width = 1195.62; // 210mm in tenths 
+        private double default_height = 1683.67;  // 297mm in tenths
+        private double converterFactor = 0.1764; // staffheight / scale
+        private PageType pagetype = PageType.A4;
+        private PageOrientation pageOrientation = PageOrientation.portait;
 
         public double Scale
         {
@@ -63,6 +72,43 @@ namespace MusicXMLScore.Helpers
             get
             {
                 return staffSpace;
+            }
+        }
+
+        //public List<PageMarginsMusicXML> PageMargins
+        //{
+        //    get
+        //    {
+        //        return pageMargins;
+        //    }
+
+        //    set
+        //    {
+        //        pageMargins = value;
+        //    }
+        //}
+
+        public PageMarginsMusicXML PageMarginEven
+        {
+            get
+            {
+                return pageMarginEven ?? PageMarginBoth;
+            }
+        }
+
+        public PageMarginsMusicXML PageMarginOdd
+        {
+            get
+            {
+                return pageMarginOdd ?? PageMarginBoth;
+            }
+        }
+
+        public PageMarginsMusicXML PageMarginBoth
+        {
+            get
+            {
+                return pageMarginBoth ?? GetDefaultMargins();
             }
         }
 
@@ -105,6 +151,83 @@ namespace MusicXMLScore.Helpers
             CalculateConverterFactor();
             CalculatePageDimensions();
         }
+
+        public PageProperties(DefaultsMusicXML defaults)
+        {
+            if (defaults == null)
+            {
+                CalculateConverterFactor();
+                CalculatePageDimensions();
+            }
+            else
+            {
+                staffHeight = defaults.Scaling.Millimeters;
+                scale = defaults.Scaling.Tenths;
+                CalculateStaffSpace();
+                CalculateConverterFactor();
+                SetPageDimensions(defaults.PageLayout.PageWidth, defaults.PageLayout.PageHeight);
+                loadedPageMargins = defaults.PageLayout.PageMargins;
+                SetPageMargins(loadedPageMargins);
+                systemLayout = defaults.SystemLayout;
+                staffLayout = new List<StaffLayoutMusicXML>(defaults.StaffLayout){ };
+            }
+        }
+        private void SetPageMargins(List<PageMarginsMusicXML> marginsList)
+        {
+            if (marginsList == null)
+            {
+                SetDefaultMargins();
+                return;
+            }
+
+            var notSpecified = marginsList.Any(i => i.MarginTypeSpecified == false);
+            if (notSpecified)
+            {
+                pageMarginBoth = marginsList.ElementAtOrDefault(0);
+                pageMarginBoth.MarginType = MarginTypeMusicXML.both;
+                pageMarginBoth.MarginTypeSpecified = true;
+             }
+            else
+            {
+                foreach (var item in marginsList)
+                {
+                    switch (item.MarginType)
+                    {
+                        case MarginTypeMusicXML.odd:
+                            pageMarginOdd = item;
+                            break;
+                        case MarginTypeMusicXML.even:
+                            pageMarginEven = item;
+                            break;
+                        case MarginTypeMusicXML.both:
+                            pageMarginBoth = item;
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+        }
+
+        private void SetDefaultMargins()
+        {
+            PageDefaults defaults = new PageDefaults();
+            Size currentPageDimensions = this.PageDimensions.Dimensions;
+            double left = currentPageDimensions.Width * defaults.Leftmargin;
+            double right = currentPageDimensions.Width * defaults.RightMargin;
+            double top = currentPageDimensions.Height * defaults.TopMargin;
+            double bottom= currentPageDimensions.Height * defaults.BottomMargin;
+            pageMarginBoth = new PageMarginsMusicXML()
+            {
+                MarginTypeSpecified = true,
+                MarginType = MarginTypeMusicXML.both,
+                LeftMargin = left,
+                RightMargin = right,
+                TopMargin = top,
+                BottomMargin = bottom
+            };
+        }
+
         public void SetPageDimensions(double width, double height)
         {
             SetOrientation(width, height);
@@ -135,6 +258,12 @@ namespace MusicXMLScore.Helpers
             {
                 pageOrientation = PageOrientation.portait;
             }
+        }
+
+        private PageMarginsMusicXML GetDefaultMargins()
+        {
+            SetDefaultMargins();
+            return pageMarginBoth;
         }
 
         public void SwitchOrientation()
@@ -171,8 +300,8 @@ namespace MusicXMLScore.Helpers
             pageDimensions = new PageDimensions(default_width, default_height, converterFactor);
         }
         public static double PxPerMM()
-        { 
-            return DPI / 25.4;
+        {
+            return Converters.ExtensionMethods.PxPerMM(); //? return DPI / 25.4;
         }
         public double TenthToPx(double tenths)
         {
@@ -187,6 +316,134 @@ namespace MusicXMLScore.Helpers
             info.AddValue("Height", default_height, typeof(double));
             info.AddValue("PageFormat", pagetype.ToString());
             info.AddValue("PageOrientation", pageOrientation.ToString());
+        }
+        public class PageDefaults
+        {
+            private double leftmargin = 0.05; // percent of width, dimensions+scale dependent
+            private double rightMargin = 0.05; // percent of width, dimensions+scale dependent
+            private double topMargin = 0.05; // percent of height, dimensions+scale dependent
+            private double bottomMargin = 0.05; // percent of height, dimensions+scale dependent
+            private double scale = 40;
+            private double staffHeight = 7; // in mm may be used converter
+            private double defaultWidth = 210; //in mm
+            private double defaultHeight = 297; //in mm
+
+            /// <summary>
+            /// Percent of Width
+            /// </summary>
+            public double Leftmargin
+            {
+                get
+                {
+                    return leftmargin;
+                }
+
+                set
+                {
+                    leftmargin = value;
+                }
+            }
+            /// <summary>
+            /// Percent of width
+            /// </summary>
+            public double RightMargin
+            {
+                get
+                {
+                    return rightMargin;
+                }
+
+                set
+                {
+                    rightMargin = value;
+                }
+            }
+            /// <summary>
+            /// Percent of height
+            /// </summary>
+            public double TopMargin
+            {
+                get
+                {
+                    return topMargin;
+                }
+
+                set
+                {
+                    topMargin = value;
+                }
+            }
+            /// <summary>
+            /// Percent of height
+            /// </summary>
+            public double BottomMargin
+            {
+                get
+                {
+                    return bottomMargin;
+                }
+
+                set
+                {
+                    bottomMargin = value;
+                }
+            }
+            /// <summary>
+            /// In tenths, for proper MusicXML scalling 40 is used
+            /// </summary>
+            public double Scale
+            {
+                get
+                {
+                    return scale;
+                }
+            }
+            /// <summary>
+            /// In mm, use extension method to convert from other supported Unit
+            /// </summary>
+            public double StaffHeight
+            {
+                get
+                {
+                    return staffHeight;
+                }
+
+                set
+                {
+                    staffHeight = value;
+                }
+            }
+            /// <summary>
+            /// In mm. use extension method to convert from other supported Unit
+            /// </summary>
+            public double DefaultWidth
+            {
+                get
+                {
+                    return defaultWidth;
+                }
+
+                set
+                {
+                    defaultWidth = value;
+                }
+            }
+            /// <summary>
+            /// In mm, use extension method to convert from other supported Unit
+            /// </summary>
+            public double DefaultHeight
+            {
+                get
+                {
+                    return defaultHeight;
+                }
+
+                set
+                {
+                    defaultHeight = value;
+                }
+            }
+            //private PageType pageType
         }
     }
     class PageDimensions
@@ -218,6 +475,13 @@ namespace MusicXMLScore.Helpers
             Point temp = GetPageDimensionsInMM();
             double pxpermm = PageProperties.PxPerMM();
             return new Point(temp.X * pxpermm, temp.Y * pxpermm);
+        }
+        public Size Dimensions
+        {
+            get
+            {
+                return new Size(width, height);
+            }
         }
     }
     enum PageType

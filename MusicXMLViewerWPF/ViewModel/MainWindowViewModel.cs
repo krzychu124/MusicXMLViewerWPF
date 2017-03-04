@@ -13,6 +13,8 @@ using GalaSoft.MvvmLight;
 using System.IO;
 using System.Collections.Generic;
 using System.Xml.Serialization;
+using System.Diagnostics;
+using System.Collections;
 
 namespace MusicXMLScore.ViewModel
 {
@@ -31,6 +33,15 @@ namespace MusicXMLScore.ViewModel
             OpenFileCommand = new RelayCommand<string>(s => OnOpenFileCommand(s));
             OpenOptionsWindowCommand = new RelayCommand(OnOpenOptionWindow);
             CreateBlankTab();
+            CacheXMLSerializer();
+        }
+
+        private void CacheXMLSerializer()
+        {
+            object key = typeof(ScorePartwiseMusicXML);
+            ScorePartwiseMusicXML scoreTemp = new ScorePartwiseMusicXML();
+            XmlSerializer x = new XmlSerializer(typeof(ScorePartwiseMusicXML));
+            serializers[key] = x;
         }
 
         #region PropertyChanged
@@ -87,14 +98,23 @@ namespace MusicXMLScore.ViewModel
         {
             Application.Current.Shutdown();
         }
-        private T TempMethod<T>(string parameter) where T : new ()
+        public static T TempMethod<T>(string parameter) where T : new ()
         {
             TextReader reader = null;
             try
             {
-                var serializer = new XmlSerializer(typeof(T));
+                XmlSerializer serializer = (XmlSerializer)serializers[typeof(T)];
+                if (serializer == null)
+                {
+                    serializer = new XmlSerializer(typeof(T));
+                }
                 reader = new StreamReader(parameter);
                 return (T)serializer.Deserialize(reader);
+            }
+            catch(Exception ex)
+            {
+                Log.LoggIt.Log(ex.InnerException.Message.ToString(), Log.LogType.Exception);
+                return default(T);
             }
             finally
             {
@@ -154,10 +174,27 @@ namespace MusicXMLScore.ViewModel
             }
             XmlDataProvider dataprovider = new XmlDataProvider() { Source = new Uri(filedestination, UriKind.RelativeOrAbsolute), XPath = "./*" };
             Log.LoggIt.Log($"File {filedestination} been loaded", Log.LogType.Info);
-            XDocument XDoc = XDocument.Load(filedestination, LoadOptions.SetLineInfo); // std + add line info(number)
+            XDocument XDoc = new XDocument();
+            try
+            {
+                XDoc = XDocument.Load(filedestination, LoadOptions.SetLineInfo);
+            }
+            catch (Exception ex)
+            {
+                Log.LoggIt.Log("Error has occured while reading file: "+ex.Message.ToString(), Log.LogType.Exception);
+                //throw;
+            }
+            // std + add line info(number)
+            var sw = new Stopwatch();
+            sw.Start();
             MusicScore musicscore = new MusicScore();
+            sw.Stop();
+            Log.LoggIt.Log($"Empty Default MusicScore object in : {sw.ElapsedMilliseconds} ms", Log.LogType.Exception);
+            sw = new Stopwatch();
+            sw.Start();
             ScorePartwiseMusicXML xml = TempMethod<ScorePartwiseMusicXML>(filedestination);
-
+            sw.Stop();
+            Log.LoggIt.Log($"XML file deserialization to ScorePartwise object in : {sw.ElapsedMilliseconds} ms", Log.LogType.Exception);
 #if LOADSPEEDTEST
              var sw = new Stopwatch();
              sw.Start();
@@ -170,22 +207,29 @@ namespace MusicXMLScore.ViewModel
             sw = new Stopwatch();
             sw.Start();
 #endif
-            musicscore = new MusicScore(XDoc);
-
+            sw = new Stopwatch();
+            sw.Start();
+            //musicscore = new MusicScore(XDoc);
+            sw.Stop();
+            Log.LoggIt.Log($"XML file deserialization to MusicScore object in : {sw.ElapsedMilliseconds} ms", Log.LogType.Exception);
             var vm = (PagesControllerViewModel)SelectedTabItem.DataContext;
             if (vm.IsBlank) //! check if currently selected tab is blank
             {
-                GenerateLayout(musicscore);
-                vm.AddMusicScore(musicscore);
+                GenerateLayout(xml);//! 02.03 GenerateLayout(musicscore);
+                vm.AddScorePartwise(xml);
+                //vm.AddMusicScore(musicscore);
                 TabsCreated.Remove(SelectedTabItem);
                 TabItem newTab = new TabItem() { Header = filedestination, Content = new PagesControllerView(), DataContext = vm };
                 TabsCreated.Add(newTab);
                 SelectedTabItem = newTab;
+                double conv = Converters.ExtensionMethods.TenthsToWPFUnit(10);
             }
             else
             {
-                GenerateLayout(musicscore);
-                TabItem newTab = new TabItem() { Header = filedestination, Tag=musicscore.ID, Content = new PagesControllerView(), DataContext = new PagesControllerViewModel(musicscore) };
+                GenerateLayout(xml);//! 02.03 GenerateLayout(musicscore);
+                PagesControllerViewModel pcvm = new PagesControllerViewModel();
+                pcvm.AddScorePartwise(xml);
+                TabItem newTab = new TabItem() { Header = filedestination, Tag=xml.ID, Content = new PagesControllerView(), DataContext = pcvm };
                 TabsCreated.Add(newTab);
                 SelectedTabItem = newTab;
             }
@@ -201,7 +245,12 @@ namespace MusicXMLScore.ViewModel
             tabsLayouts.Add(musicscore.ID, layout);
             CurrentTabLayout = layout;
         }
-
+        private void GenerateLayout(ScorePartwiseMusicXML score)
+        {
+            LayoutControl.LayoutGeneral layout = new LayoutControl.LayoutGeneral(score);
+            tabsLayouts.Add(score.ID, layout);
+            CurrentTabLayout = layout;
+        }
         private void OnOpenOptionWindow()
         {
             ViewModel.ConfigurationView optionswindow = new ViewModel.ConfigurationView();
@@ -230,7 +279,7 @@ namespace MusicXMLScore.ViewModel
         private ObservableCollection<TabItem> tabscreated = new ObservableCollection<TabItem>();
         private Dictionary<string, LayoutControl.LayoutGeneral> tabsLayouts = new Dictionary<string, LayoutControl.LayoutGeneral>() { { "default", new LayoutControl.LayoutGeneral() } };
         private LayoutControl.LayoutGeneral currentTabLayout = new LayoutControl.LayoutGeneral();
-        private bool xmlfileloaded;
+        private static Hashtable serializers = new Hashtable();
 #endregion
 
 #region Properties, Commands
@@ -271,7 +320,7 @@ namespace MusicXMLScore.ViewModel
                     {
                         PagesControllerViewModel pcvm = (PagesControllerViewModel)value.DataContext;
                         LayoutControl.LayoutGeneral layout;
-                        tabsLayouts.TryGetValue(pcvm.MusicScore.ID, out layout);
+                        tabsLayouts.TryGetValue(pcvm.ID, out layout);
                         CurrentTabLayout = layout;
                     }
                 }
