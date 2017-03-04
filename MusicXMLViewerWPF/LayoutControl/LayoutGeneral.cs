@@ -1,4 +1,5 @@
 ﻿using MusicXMLScore.Helpers;
+using MusicXMLScore.Model.Defaults;
 using MusicXMLViewerWPF;
 using System;
 using System.Collections.Generic;
@@ -16,7 +17,6 @@ namespace MusicXMLScore.LayoutControl
     public class LayoutGeneral
     {
         private PageProperties pageProperties;
-        private PageMargins pagePargins;
         private LayoutStyle.Layout layoutStyle;
         public LayoutGeneral()
         {
@@ -48,5 +48,8 @@ namespace MusicXMLScore.LayoutControl
             }
         }
         public PageProperties PageProperties { get { return pageProperties; } }
+        public PageMarginsMusicXML PageMarginsEven { get { return PageProperties.PageMarginEven; } }
+        public PageMarginsMusicXML PageMarginsOdd { get { return PageProperties.PageMarginOdd; } }
+        public PageMarginsMusicXML PageMargins { get { return PageProperties.PageMarginBoth; } }
     }
 }
