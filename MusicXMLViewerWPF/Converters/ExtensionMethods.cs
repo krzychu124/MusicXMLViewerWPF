@@ -1,6 +1,7 @@
 ﻿using MusicXMLScore.Model;
 using MusicXMLScore.Model.MeasureItems;
 using MusicXMLScore.ViewModel;
+using MusicXMLViewerWPF;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -128,6 +129,19 @@ namespace MusicXMLScore.Converters
                     {
                         result++;
                     }
+                }
+            }
+            return result;
+        }
+
+        public static List<string> TryGetEveryPartId(this ScorePartwiseMusicXML score)
+        {
+            List<string> result = new List<string>();
+            foreach (var part in score.Part)
+            {
+                if (score.Partlist.ScoreParts.Any(i=> i.PartId == part.Id))
+                {
+                    result.Add(part.Id);
                 }
             }
             return result;
