@@ -1,6 +1,7 @@
 ﻿using MusicXMLScore.Converters;
 using MusicXMLScore.LayoutControl;
 using MusicXMLScore.LayoutStyle;
+using MusicXMLScore.Model;
 using MusicXMLScore.Model.Defaults;
 using MusicXMLScore.Model.MeasureItems;
 using MusicXMLScore.ViewModel;
@@ -19,25 +20,85 @@ namespace MusicXMLScore.Helpers
 {
     public class PrimitivePageGenerator
     {
+        Dictionary<string, MusicXMLScore.DrawingHelpers.PartProperties> partsProperties;
         private CanvasList page;
+        private Canvas pageHost;
         private LayoutGeneral layout;
         private ScorePartwiseMusicXML score;
         private Size dimensions;
         private List<double> topLines;
+        private Dictionary<string, Point> measureCoords;
+        MusicXMLScore.DrawingHelpers.PartProperties partProperties;
         public PrimitivePageGenerator(ScorePartwiseMusicXML score, PageMarginType pageSide = PageMarginType.both)
         {
             layout = ViewModelLocator.Instance.Main.CurrentTabLayout;
             dimensions = layout.PageProperties.PageDimensions.Dimensions;
             page = new CanvasList(dimensions.Width.TenthsToWPFUnit(), dimensions.Height.TenthsToWPFUnit());
+            pageHost = new Canvas() { Width = dimensions.Width.TenthsToWPFUnit(), Height = dimensions.Height.TenthsToWPFUnit() };
             this.score = score;
             var partId =  this.score.TryGetEveryPartId();
             DrawMargins();
             DrawCreditsSpace();
             //DrawMeasuresTopLine();
             CalculateMeasureTopLines();
-            MusicXMLScore.DrawingHelpers.PartProperties pp = new MusicXMLScore.DrawingHelpers.PartProperties(score, "P1");
+            partProperties = new MusicXMLScore.DrawingHelpers.PartProperties(score, "P1");
+            //var pp = new MusicXMLScore.DrawingHelpers.PartProperties(score, "P2");
+            GetPartsProperties();
+            partsProperties.CorrectCoords();
+            Correct();
+            measureCoords = partProperties.Coords;
+            DrawPrimitiveMeasure();
         }
 
+        private void GetPartsProperties()
+        {
+            partsProperties = new Dictionary<string, MusicXMLScore.DrawingHelpers.PartProperties>();
+            foreach (var part in score.Part)
+            {
+                MusicXMLScore.DrawingHelpers.PartProperties pp = new MusicXMLScore.DrawingHelpers.PartProperties(score, part.Id);
+                int partIndex = score.Part.IndexOf(part);
+                if (partIndex != 0)
+                {
+                    //pp.Coords = CorrectCoords(pp.Coords, pp, partsProperties.ElementAt(partIndex - 1).Value);
+                    partsProperties.Add(part.Id, pp);
+                }
+                else
+                {
+                    partsProperties.Add(part.Id, pp);
+                }
+            }
+            var coords =partsProperties.ElementAt(0).Value.Coords;
+            double correction = 0;
+            foreach (var coord in partsProperties.Select(i=>i).Where(i=>i.Key != partsProperties.ElementAt(0).Key))
+            {
+                correction += coord.Value.Coords.ElementAt(0).Value.Y;
+            }
+        }
+        private void Correct()
+        {
+            for (int i = 1; i < partsProperties.Count; i++)
+            {
+                string key = partsProperties.Keys.ToList()[i];
+                string keyPrevious = partsProperties.Keys.ToList()[i - 1];
+                partsProperties[key].Coords = CorrectCoords(partsProperties[key].Coords, partsProperties[key], partsProperties[keyPrevious]);
+            }
+        }
+        private Dictionary<string, Point> CorrectCoords(Dictionary<string, Point> coordsToCorrect, MusicXMLScore.DrawingHelpers.PartProperties actualPartProperties, MusicXMLScore.DrawingHelpers.PartProperties previousPartProperties)
+        {
+            Dictionary<string, Point> corrected = new Dictionary<string, Point>();
+            var measuresPerSystem = previousPartProperties.MeasuresPerSystem;
+            foreach (var item in measuresPerSystem)
+            {
+                int index = measuresPerSystem.IndexOf(item);
+                double staffDistance = actualPartProperties.StaffLayout.ElementAt(index).StaffDistance;
+                double staffHeight = layout.PageProperties.StaffHeight.MMToWPFUnit();
+                foreach (var measure in item)
+                {
+                    corrected.Add(measure, new Point(coordsToCorrect[measure].X, coordsToCorrect[measure].Y + staffDistance.TenthsToWPFUnit() + staffHeight));
+                }
+            }
+            return corrected;
+        }
         private void DrawMeasuresTopLine()
         {
             double topLineDistance = 0.0;
@@ -159,7 +220,7 @@ namespace MusicXMLScore.Helpers
             double staffHeight = layout.PageProperties.StaffHeight.MMToWPFUnit();
             foreach (var item in firstPage)
             {
-                string numberToken = item;
+                string numberToken = item.Item1;
                 var measure = score.Part.ElementAt(0).Measure.Where(i => i.Number == numberToken).FirstOrDefault();
                 if (firstPage.IndexOf(item) == 0)
                 {
@@ -235,8 +296,23 @@ namespace MusicXMLScore.Helpers
 
         private void DrawPrimitiveMeasure()
         {
+            foreach (var part in score.Part)
+            {
+                measureCoords = partsProperties.ElementAt(score.Part.IndexOf(part)).Value.Coords;
+                foreach (var item in part.Measure)
+                {
+                    MusicXMLScore.DrawingHelpers.DrawableMeasure measure = new MusicXMLScore.DrawingHelpers.DrawableMeasure(item, layout);
+                    Point position = new Point();
 
+                    position = item.GetMeasurePosition(measureCoords);
+                    Canvas.SetTop(measure.BaseObjectVisual, position.Y);
+                    Canvas.SetLeft(measure.BaseObjectVisual, position.X);
+                    pageHost.Children.Add(measure.BaseObjectVisual);
+                }
+            }
+            //page.AddVisual(pageHost);
         }
+
         internal CanvasList Page
         {
             get
@@ -247,6 +323,19 @@ namespace MusicXMLScore.Helpers
             set
             {
                 page = value;
+            }
+        }
+
+        public Canvas PageHost
+        {
+            get
+            {
+                return pageHost;
+            }
+
+            set
+            {
+                pageHost = value;
             }
         }
     }
