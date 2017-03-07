@@ -13,6 +13,7 @@ namespace MusicXMLScore.Model
     {
         private List<ScorePartwisePartMeasureMusicXML> measure;
         private string id;
+        private Dictionary<string, ScorePartwisePartMeasureMusicXML> measures;
 
         [XmlElement("measure")]
         public List<ScorePartwisePartMeasureMusicXML> Measure
@@ -38,6 +39,29 @@ namespace MusicXMLScore.Model
             set
             {
                 id = value;
+            }
+        }
+        /// <summary>
+        /// Measures Dictionary, Measure.Number as Key
+        /// </summary>
+        [XmlIgnore]
+        public Dictionary<string, ScorePartwisePartMeasureMusicXML> MeasuresByNumber
+        {
+            get
+            {
+                return measures;
+            }
+            set
+            {
+                measures = value;
+            }
+        }
+        public void SetMeasuresDictionary()
+        {
+            measures = new Dictionary<string, ScorePartwisePartMeasureMusicXML>();
+            foreach (var m in Measure)
+            {
+                measures.Add(m.Number, m);
             }
         }
     }
