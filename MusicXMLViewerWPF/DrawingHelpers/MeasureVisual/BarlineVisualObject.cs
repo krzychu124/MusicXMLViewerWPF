@@ -13,7 +13,7 @@ namespace MusicXMLScore.DrawingHelpers.MeasureVisual
     class BarlineVisualObject : IDrawableObjectBase
     {
         private Barline barline;
-        private DrawableMeasure dm;
+        private MeasureDrawing dm;
 
         private CanvasList baseObjectVisual;
         private bool invalidated = true;
@@ -44,7 +44,7 @@ namespace MusicXMLScore.DrawingHelpers.MeasureVisual
             this.Barline = barline;
         }
 
-        public BarlineVisualObject(DrawableMeasure dm, Barline barline)
+        public BarlineVisualObject(MeasureDrawing dm, Barline barline)
         {
             this.Barline = barline;
             this.dm = dm;
