@@ -157,8 +157,8 @@ namespace MusicXMLScore.DrawingHelpers
             while (currentLineIndex < Lines)
             {
                 dc.DrawLine(pen, startPosition, endPosition);
-                startPosition = new Point(startPosition.X, startPosition.Y + t);
-                endPosition = new Point(StaffLineWidth, endPosition.Y + t);
+                startPosition = new Point(startPosition.X, startPosition.Y - t);
+                endPosition = new Point(StaffLineWidth, endPosition.Y - t);
                 ++currentLineIndex;
             }
         }

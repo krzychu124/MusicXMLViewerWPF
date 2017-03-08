@@ -163,5 +163,12 @@ namespace MusicXMLViewerWPF
             this.version = "1.0";
             ID = Misc.RandomGenerator.GetRandomHexNumber();
         }
+        public void InitPartsDictionaries()
+        {
+            foreach (var part in Part)
+            {
+                part.SetMeasuresDictionary();
+            }
+        }
     }
 }

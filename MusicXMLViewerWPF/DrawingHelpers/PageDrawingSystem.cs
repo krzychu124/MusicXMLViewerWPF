@@ -2,6 +2,7 @@
 using MusicXMLScore.Helpers;
 using MusicXMLScore.Model.Defaults;
 using MusicXMLScore.Model.MeasureItems;
+using MusicXMLScore.Converters;
 using MusicXMLScore.ViewModel;
 using MusicXMLViewerWPF;
 using System;
@@ -10,102 +11,131 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
 using System.Xml.Serialization;
 
 namespace MusicXMLScore.DrawingHelpers
 {
     class PageDrawingSystem
     {
-        private CanvasList pageDrawingSystemCanvas;
-        private double leftMargin;
+        private Canvas pageCanvas;
         LayoutControl.LayoutGeneral pageLayout;
-        List<string> partsIdToDraw;
+        List<string> partIDsToDraw = new List<string>();
         ScorePartwiseMusicXML score;
         List<string> firstMeasureIdPerSystem;
-        Dictionary<string, double> partStafDistances;
-        public CanvasList PageDrawingSystemCanvas
+        List<int> firstMeasureIndexPerSystem;
+        Dictionary<string, double> partStafDistances; //! <partId, distance from previous>
+        private List<PartSegmentDrawing> listOfSegments;
+        private List<string> measureIdList;
+        Size pageDimensions;
+        List<List<string>> measuresIdRangePerSystem; //! PartsSystem<MeasuresIDsList<MeasureId>
+        Dictionary<string, PartProperties> partsProperties = new Dictionary<string, PartProperties>();
+        List<PartsSystemDrawing> partSystemsList;
+        public Canvas PageCanvas
         {
             get
             {
-                bool isNull = PageDrawingSystemCanvas == null ? true : false;
-                if (isNull)
+                return pageCanvas;
+            }
+
+            set
+            {
+                pageCanvas = value;
+            }
+        }
+
+        public PageDrawingSystem(ScorePartwiseMusicXML score)
+        {
+            pageLayout = ViewModelLocator.Instance.Main.CurrentTabLayout;
+            this.score = score;
+            pageDimensions = pageLayout.PageProperties.PageDimensions.Dimensions;
+            PageCanvas = new Canvas() { Width = pageDimensions.Width, Height = pageDimensions.Height };
+            GenerateMeasuresRangePerSystem();
+            GetFirstMeasureDistancesPerSystem();
+            AddAllPartsToDrawing();
+            AddPartsSystem();
+            ArrangeSystems();
+        }
+
+        private void GenerateMeasuresRangePerSystem()
+        {
+            foreach (var part in score.Part)
+            {
+                PartProperties pp = new PartProperties(score, part.Id); //! TODO Correct margins.... left margin per system
+                int partIndex = score.Part.IndexOf(part);
+                if (partIndex != 0)
                 {
-                    Log.LoggIt.Log("Null PageDrawinSystemCanvas !!", Log.LogType.Warning); // temp
-                    return new CanvasList(5, 5);
+                    partsProperties.Add(part.Id, pp);
                 }
                 else
                 {
-                    return pageDrawingSystemCanvas;
+                    partsProperties.Add(part.Id, pp);
                 }
             }
-            set
+            measuresIdRangePerSystem = partsProperties.ElementAt(0).Value.MeasuresPerSystem;
+        }
+
+        private void GetFirstMeasureDistancesPerSystem()
+        {
+            firstMeasureIdPerSystem = new List<string>();
+            firstMeasureIndexPerSystem = new List<int>();
+            foreach (var measure in measuresIdRangePerSystem)
             {
-                PageDrawingSystemCanvas = value;
+                firstMeasureIdPerSystem.Add(measure.ElementAt(0));
+                firstMeasureIndexPerSystem.Add(measure.ElementAt(0).GetMeasureIdIndex());
             }
         }
 
-        public double LeftMargin
+        private void AddAllPartsToDrawing()
         {
-            get
+            var parts = ViewModelLocator.Instance.Main.CurrentSelectedScore.Part;
+            foreach (var part in parts)
             {
-                return leftMargin;
-            }
-
-            set
-            {
-                leftMargin = value;
+                partIDsToDraw.Add(part.Id);
             }
         }
-
-        public PageDrawingSystem(LayoutControl.LayoutGeneral layout, ScorePartwiseMusicXML score)
+        private void AddPartsSystem()
         {
-            pageLayout = layout;
-            this.score = score;
-        }
-
-        private void PrepareSystemProperties()
-        {
-            CalculateSystemDimensions();
-        }
-
-        private void CalculateSystemDimensions()
-        {
-            CalculateSystemWidth();
-            CalculateSystemHeight();
-        }
-
-        private void CalculateSystemHeight()
-        {
-            double finalHeight = 0.0;
-            foreach (var item in firstMeasureIdPerSystem)
+            partSystemsList = new List<PartsSystemDrawing>();
+            foreach (var measuresIDs in measuresIdRangePerSystem)
             {
-                foreach (var part in partsIdToDraw)
+                int index = measuresIdRangePerSystem.IndexOf(measuresIDs);
+                PartsSystemDrawing partsSystem = new PartsSystemDrawing(index, measuresIDs, partIDsToDraw, partsProperties);
+                partSystemsList.Add(partsSystem);
+                pageCanvas.Children.Add(partsSystem.PartSystemCanvas);
+            }
+        }
+
+        private void ArrangeSystems()
+        {
+            double systemDistanceToPrevious = 0.0;
+            var firstSystemPartProperties = partsProperties.ElementAt(0).Value;
+            double lmargin = pageLayout.PageMargins.LeftMargin.TenthsToWPFUnit();
+            
+            foreach (var system in partSystemsList)
+            {
+                int systemIndex = partSystemsList.IndexOf(system);
+                if (systemIndex != 0)
                 {
-
+                    systemDistanceToPrevious += system.Size.Height.TenthsToWPFUnit() +  firstSystemPartProperties.SystemLayout.ElementAt(systemIndex).SystemDistance.TenthsToWPFUnit();
+                }
+                Canvas.SetTop(system.PartSystemCanvas, systemDistanceToPrevious);
+                Canvas.SetLeft(system.PartSystemCanvas, lmargin);
+                if (systemIndex == 0)
+                {
+                    systemDistanceToPrevious += firstSystemPartProperties.SystemLayout.ElementAt(0).TopSystemDistance.TenthsToWPFUnit(); //system.Size.Height.TenthsToWPFUnit(); //! 
                 }
             }
-        }
-
-        private void CalculateSystemWidth()
-        {
-            throw new NotImplementedException();
         }
 
         public void AddPartsIdToDraw(List<string> partsId)
         {
-            partsIdToDraw = partsId;
+            partIDsToDraw = partsId;
         }
         public void MeasureIdList(List<string> measureId)
         {
             firstMeasureIdPerSystem = measureId;
-        }
-        private void AddToCanvas(CanvasList canvas)
-        {
-            if(PageDrawingSystemCanvas == null)
-            {
-                PageDrawingSystemCanvas = new CanvasList(1,1);
-                PageDrawingSystemCanvas.ClipToBounds = false;
-            }
         }
     }
 }

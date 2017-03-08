@@ -82,7 +82,7 @@ namespace MusicXMLScore.Model.MeasureItems
                 time = value;
             }
         }
-        [XmlElement(DataType = "nonNegativeInteger")]
+        [XmlElement("staves", DataType ="nonNegativeInteger")]
         public string Staves
         {
             get

@@ -33,6 +33,9 @@ namespace MusicXMLScore.ViewModel
         private double pageHeight = 0.0;
         private double pageWidth = 0.0;
         #endregion
+        #region NewConcept
+        DrawingHelpers.PageDrawingSystem newPage;
+        #endregion
 
         #region Contructors
         public PageViewModel() // todo_l get view dimensions !!!
@@ -58,12 +61,15 @@ namespace MusicXMLScore.ViewModel
 
         public PageViewModel(ScorePartwiseMusicXML scorePartwise, DefaultsMusicXML defaultsCopy)
         {
-            PrimitivePageGenerator p = new PrimitivePageGenerator(scorePartwise);
+            //PrimitivePageGenerator p = new PrimitivePageGenerator(scorePartwise);
+            newPage = new DrawingHelpers.PageDrawingSystem(scorePartwise);
             Point dimensions = ViewModelLocator.Instance.Main.CurrentTabLayout.PageProperties.PageDimensions.GetPageDimensionsInPx();
             PageWidth = dimensions.X;
             PageHeight = dimensions.Y;
-            Page = p.Page;
-            PartsSegments.Add(Page);
+            //Page = p.Page;
+            //partsSegments.Add(page);
+            //PartsSegments.Add(p.PageHost);
+            PartsSegments.Add(newPage.PageCanvas);
         }
         #endregion
 

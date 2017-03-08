@@ -94,7 +94,7 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="Converters\ExtensionMethods.cs" />
-    <Compile Include="DrawingHelpers\DrawableMeasure.cs" />
+    <Compile Include="DrawingHelpers\MeasureDrawing.cs" />
     <Compile Include="DrawingHelpers\DrawableStaffLine.cs" />
     <Compile Include="DrawingHelpers\DrawableSymbol.cs" />
     <Compile Include="DrawingHelpers\DrawingMethods.cs" />
@@ -110,6 +110,8 @@
     <Compile Include="DrawingHelpers\MeasureVisual\NoteVisualPart\StemPartObject.cs" />
     <Compile Include="DrawingHelpers\PageDrawingSystem.cs" />
     <Compile Include="DrawingHelpers\PartProperties.cs" />
+    <Compile Include="DrawingHelpers\PartSegmentDrawing.cs" />
+    <Compile Include="DrawingHelpers\PartsSystemDrawing.cs" />
     <Compile Include="Helpers\ComparisonHelpers.cs" />
     <Compile Include="Helpers\CustomMeasurePanel.cs" />
     <Compile Include="Helpers\CustomPartsSegmentPanel.cs" />
@@ -117,7 +119,6 @@
     <Compile Include="Helpers\PageProperties.cs" />
     <Compile Include="Helpers\PrimitivePageGenerator.cs" />
     <Compile Include="LayoutControl\LayoutGeneral.cs" />
-    <Compile Include="LayoutControl\PageController.cs" />
     <Compile Include="LayoutStyle\Styles\BarlineLayoutStyle.cs" />
     <Compile Include="LayoutStyle\Styles\BeamLayoutStyle.cs" />
     <Compile Include="LayoutStyle\Layout.cs" />

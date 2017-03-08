@@ -15,6 +15,7 @@ using System.Collections.Generic;
 using System.Xml.Serialization;
 using System.Diagnostics;
 using System.Collections;
+using MusicXMLScore.Converters;
 
 namespace MusicXMLScore.ViewModel
 {
@@ -148,8 +149,6 @@ namespace MusicXMLScore.ViewModel
 
         private void OnOldViewCommand()
         {
-            //MusicXMLViewerWPF.MainWindow oldwindow = new MusicXMLViewerWPF.MainWindow();
-            //oldwindow.ShowDialog();
         }
 
         private void OnOpenFileCommand(object parameter) //! For now xml file load avaliable only
@@ -174,44 +173,26 @@ namespace MusicXMLScore.ViewModel
             }
             XmlDataProvider dataprovider = new XmlDataProvider() { Source = new Uri(filedestination, UriKind.RelativeOrAbsolute), XPath = "./*" };
             Log.LoggIt.Log($"File {filedestination} been loaded", Log.LogType.Info);
-            XDocument XDoc = new XDocument();
-            try
-            {
-                XDoc = XDocument.Load(filedestination, LoadOptions.SetLineInfo);
-            }
-            catch (Exception ex)
-            {
-                Log.LoggIt.Log("Error has occured while reading file: "+ex.Message.ToString(), Log.LogType.Exception);
-                //throw;
-            }
-            // std + add line info(number)
+            //XDocument XDoc = new XDocument();
+            //try
+            //{
+            //    XDoc = XDocument.Load(filedestination, LoadOptions.SetLineInfo);
+            //}
+            //catch (Exception ex)
+            //{
+            //    Log.LoggIt.Log("Error has occured while reading file: "+ex.Message.ToString(), Log.LogType.Exception);
+            //    //throw;
+            //}
             var sw = new Stopwatch();
-            sw.Start();
-            MusicScore musicscore = new MusicScore();
-            sw.Stop();
-            Log.LoggIt.Log($"Empty Default MusicScore object in : {sw.ElapsedMilliseconds} ms", Log.LogType.Exception);
             sw = new Stopwatch();
             sw.Start();
             ScorePartwiseMusicXML xml = TempMethod<ScorePartwiseMusicXML>(filedestination);
+            xml.InitPartsDictionaries();
+            xml.SetLargestWidth();
             sw.Stop();
             Log.LoggIt.Log($"XML file deserialization to ScorePartwise object in : {sw.ElapsedMilliseconds} ms", Log.LogType.Exception);
-#if LOADSPEEDTEST
-             var sw = new Stopwatch();
-             sw.Start();
-            for (int i = 0; i < 1; i++)
-            {
-                musicscore = new MusicScore(XDoc);
-            }
-            sw.Stop();
-            Console.WriteLine($"file loaded in: {sw.ElapsedMilliseconds / 100}");
             sw = new Stopwatch();
             sw.Start();
-#endif
-            sw = new Stopwatch();
-            sw.Start();
-            //musicscore = new MusicScore(XDoc);
-            sw.Stop();
-            Log.LoggIt.Log($"XML file deserialization to MusicScore object in : {sw.ElapsedMilliseconds} ms", Log.LogType.Exception);
             var vm = (PagesControllerViewModel)SelectedTabItem.DataContext;
             if (vm.IsBlank) //! check if currently selected tab is blank
             {
@@ -222,6 +203,9 @@ namespace MusicXMLScore.ViewModel
                 TabItem newTab = new TabItem() { Header = filedestination, Content = new PagesControllerView(), DataContext = vm };
                 TabsCreated.Add(newTab);
                 SelectedTabItem = newTab;
+
+                sw.Stop();
+                Log.LoggIt.Log($"Drawing ScorePartwise object in : {sw.ElapsedMilliseconds} ms", Log.LogType.Exception);
                 double conv = Converters.ExtensionMethods.TenthsToWPFUnit(10);
             }
             else
@@ -232,11 +216,9 @@ namespace MusicXMLScore.ViewModel
                 TabItem newTab = new TabItem() { Header = filedestination, Tag=xml.ID, Content = new PagesControllerView(), DataContext = pcvm };
                 TabsCreated.Add(newTab);
                 SelectedTabItem = newTab;
+                sw.Stop();
+                Log.LoggIt.Log($"Drawing ScorePartwise object in : {sw.ElapsedMilliseconds} ms", Log.LogType.Exception);
             }
-#if LOADSPEEDTEST
-            sw.Stop();
-            Console.WriteLine($"Layout generated in: {sw.ElapsedMilliseconds} ms");
-#endif
         }
 
         private void GenerateLayout(MusicScore musicscore)
@@ -249,6 +231,8 @@ namespace MusicXMLScore.ViewModel
         {
             LayoutControl.LayoutGeneral layout = new LayoutControl.LayoutGeneral(score);
             tabsLayouts.Add(score.ID, layout);
+            LoadedScores.Add(score.ID, score);
+            CurrentSelectedScore = score;
             CurrentTabLayout = layout;
         }
         private void OnOpenOptionWindow()
@@ -279,6 +263,8 @@ namespace MusicXMLScore.ViewModel
         private ObservableCollection<TabItem> tabscreated = new ObservableCollection<TabItem>();
         private Dictionary<string, LayoutControl.LayoutGeneral> tabsLayouts = new Dictionary<string, LayoutControl.LayoutGeneral>() { { "default", new LayoutControl.LayoutGeneral() } };
         private LayoutControl.LayoutGeneral currentTabLayout = new LayoutControl.LayoutGeneral();
+        private Dictionary<string, ScorePartwiseMusicXML> LoadedScores = new Dictionary<string, ScorePartwiseMusicXML>();
+        private ScorePartwiseMusicXML selectedScore;
         private static Hashtable serializers = new Hashtable();
 #endregion
 
@@ -309,6 +295,7 @@ namespace MusicXMLScore.ViewModel
         }
 
         public LayoutControl.LayoutGeneral CurrentTabLayout { get { return currentTabLayout; } set { currentTabLayout = value; } }
+        public ScorePartwiseMusicXML CurrentSelectedScore { get { return selectedScore; } set { selectedScore = value; } }
         public TabItem SelectedTabItem
         {
             get { return selectedTabItem; }
@@ -321,6 +308,7 @@ namespace MusicXMLScore.ViewModel
                         PagesControllerViewModel pcvm = (PagesControllerViewModel)value.DataContext;
                         LayoutControl.LayoutGeneral layout;
                         tabsLayouts.TryGetValue(pcvm.ID, out layout);
+                        LoadedScores.TryGetValue(pcvm.ID, out selectedScore);
                         CurrentTabLayout = layout;
                     }
                 }

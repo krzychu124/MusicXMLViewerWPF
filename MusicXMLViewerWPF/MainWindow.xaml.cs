@@ -2,6 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -34,15 +36,25 @@ namespace MusicXMLScore
         }
         public void checkdpi()
         {
-            double dpiX =0;
-            double dpiY =0;
-            PresentationSource presentationsource = PresentationSource.FromVisual(this);
+            var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
+            var dpiYProperty = typeof(SystemParameters).GetProperty("Dpi", BindingFlags.NonPublic | BindingFlags.Static);
 
-            if (presentationsource != null) // make sure it's connected
-            {
-                dpiX = 96.0 * presentationsource.CompositionTarget.TransformToDevice.M11;
-                dpiY = 96.0 * presentationsource.CompositionTarget.TransformToDevice.M22;
-            }
+            var dpiX = (int)dpiXProperty.GetValue(null, null);
+            var dpiY = (int)dpiYProperty.GetValue(null, null);
+
+
+            //double dpiX =0;
+            //double dpiY =0;
+            //PresentationSource presentationsource = PresentationSource.FromVisual(this);
+
+            //if (presentationsource != null) // make sure it's connected
+            //{
+            //    dpiX = 96.0 * presentationsource.CompositionTarget.TransformToDevice.M11;
+            //    dpiY = 96.0 * presentationsource.CompositionTarget.TransformToDevice.M22;
+            //}
+            IntPtr hdc = GetDC(IntPtr.Zero);
+            Console.WriteLine(GetDeviceCaps(hdc, LOGPIXELSX));
+            Console.WriteLine(GetDeviceCaps(hdc, LOGPIXELSY));
             Console.WriteLine($"Current dpi: {dpiX}, {dpiY}");
         }
 
@@ -50,5 +62,20 @@ namespace MusicXMLScore
         {
             checkdpi();
         }
+        [DllImport("gdi32.dll")]
+        static extern int GetDeviceCaps(IntPtr hdc, int nIndex);
+
+        [DllImport("user32.dll")]
+        static extern IntPtr GetDC(IntPtr hWnd);
+
+        /// <summary>
+        /// Logical pixels inch in X
+        /// </summary>
+        const int LOGPIXELSX = 88;
+        /// <summary>
+        /// Logical pixels inch in Y
+        /// </summary>
+        const int LOGPIXELSY = 90;
+
     }
 }

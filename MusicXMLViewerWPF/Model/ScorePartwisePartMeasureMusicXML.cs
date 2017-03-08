@@ -17,7 +17,7 @@ namespace MusicXMLScore.Model
         private bool nonControllingSpecified;
         private double width;
         private bool widthSpecified;
-
+        private double calculatedWidth;
 
 
         [XmlAttribute("number")]
@@ -132,6 +132,19 @@ namespace MusicXMLScore.Model
             set
             {
                 items = value;
+            }
+        }
+        [XmlIgnore]
+        public double CalculatedWidth
+        {
+            get
+            {
+                return calculatedWidth;
+            }
+
+            set
+            {
+                calculatedWidth = value;
             }
         }
 

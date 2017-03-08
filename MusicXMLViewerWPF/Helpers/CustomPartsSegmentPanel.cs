@@ -80,7 +80,7 @@ namespace MusicXMLScore.Helpers
                 }
                 child.Arrange(new Rect(width, accumulatedHeight + topmargin,
                                        childWidth, accumulatedHeight + topmargin + childHeight));
-                accumulatedHeight += childHeight + topmargin;
+                //accumulatedHeight += childHeight + topmargin;
             }
             return new Size(maxWidth, accumulatedHeight); //! base.ArrangeOverride(finalSize);
         }
