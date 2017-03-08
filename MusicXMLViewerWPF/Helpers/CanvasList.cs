@@ -10,7 +10,7 @@ using System.Windows.Media;
 
 namespace MusicXMLScore.Helpers
 {
-    class CanvasList : Panel
+    public class CanvasList : Panel
     {
         ToolTip t = new ToolTip();
         //private VisualCollection visuals;

@@ -94,7 +94,7 @@ namespace MusicXMLScore.Helpers
                 double staffHeight = layout.PageProperties.StaffHeight.MMToWPFUnit();
                 foreach (var measure in item)
                 {
-                    corrected.Add(measure, new Point(coordsToCorrect[measure].X, coordsToCorrect[measure].Y + staffDistance.TenthsToWPFUnit() + staffHeight));
+                    corrected.Add(measure, new Point(coordsToCorrect[measure].X, coordsToCorrect[measure].Y + previousPartProperties.Coords[measure].Y));
                 }
             }
             return corrected;
@@ -301,7 +301,7 @@ namespace MusicXMLScore.Helpers
                 measureCoords = partsProperties.ElementAt(score.Part.IndexOf(part)).Value.Coords;
                 foreach (var item in part.Measure)
                 {
-                    MusicXMLScore.DrawingHelpers.DrawableMeasure measure = new MusicXMLScore.DrawingHelpers.DrawableMeasure(item, layout);
+                    MusicXMLScore.DrawingHelpers.MeasureDrawing measure = new MusicXMLScore.DrawingHelpers.MeasureDrawing(item, layout, part.Id);
                     Point position = new Point();
 
                     position = item.GetMeasurePosition(measureCoords);

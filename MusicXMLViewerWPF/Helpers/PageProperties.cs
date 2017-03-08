@@ -1,4 +1,5 @@
-﻿using MusicXMLScore.Model;
+﻿using MusicXMLScore.Converters;
+using MusicXMLScore.Model;
 using MusicXMLScore.Model.Defaults;
 using MusicXMLScore.ViewModel;
 using MusicXMLViewerWPF;
@@ -25,7 +26,7 @@ namespace MusicXMLScore.Helpers
         private PageMarginsMusicXML pageMarginBoth;
         private SystemLayoutMusicXML systemLayout;
         private List<StaffLayoutMusicXML> staffLayout = new List<StaffLayoutMusicXML>() { new StaffLayoutMusicXML() };
-        private static double DPI = 144; // def 96, may be changed in the future
+        private static double DPI = 96;//144; // def 96, may be changed in the future
         private double scale = 40; // in tenths
         private double staffHeight = 7.0556; // in mm
         private double staffSpace = 1.764; // staffheight / 4
@@ -474,13 +475,14 @@ namespace MusicXMLScore.Helpers
         {
             Point temp = GetPageDimensionsInMM();
             double pxpermm = PageProperties.PxPerMM();
-            return new Point(temp.X * pxpermm, temp.Y * pxpermm);
+            //return new Point(temp.X * pxpermm, temp.Y * pxpermm);
+            return new Point(width.TenthsToWPFUnit(), height.TenthsToWPFUnit());
         }
         public Size Dimensions
         {
             get
             {
-                return new Size(width, height);
+                return new Size(width.TenthsToWPFUnit(), height.TenthsToWPFUnit());
             }
         }
     }

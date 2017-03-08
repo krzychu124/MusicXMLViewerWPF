@@ -15,7 +15,7 @@ namespace MusicXMLScore.Converters
     {
         public static double PxPerMM()
         {
-            return 141 / 25.4;
+            return 144 / 25.4; //? 141
         }
         public static double TenthsToMM(this double tenths)
         {
@@ -174,7 +174,7 @@ namespace MusicXMLScore.Converters
             List<string> measuresRange = new List<string>();
             int startindex = part.Measure.IndexOf(part.Measure.Select(i => i).Where(i => i.Number == rangeOfMeasures.Item1).FirstOrDefault());
             int endindex = part.Measure.IndexOf(part.Measure.Select(i => i).Where(i => i.Number == rangeOfMeasures.Item2).FirstOrDefault());
-            int count = endindex -startindex;
+            int count = endindex -startindex +1;
             measuresRange = part.Measure.GetRange(startindex, count).Select(i=>i.Number).ToList();
             return measuresRange;
         }
@@ -189,6 +189,88 @@ namespace MusicXMLScore.Converters
                 }
             }
             return position;
+        }
+        public static double GetLargestWidth(this ScorePartwiseMusicXML score, string measureId)
+        {
+            double result = score.Part.ElementAt(0).GetMeasureUsingId(measureId).Width;
+            foreach (var part in score.Part)
+            {
+                double width = part.GetMeasureUsingId(measureId).Width;
+                if (width > result)
+                {
+                    result = width;
+                }
+            }
+            return result;
+        }
+        public static ScorePartwisePartMeasureMusicXML GetMeasureUsingId(this ScorePartwisePartMusicXML part, string measureId)
+        {
+            var measure = part.Measure.Select(i => i).Where(i => i.Number == measureId).FirstOrDefault();
+            return measure;
+        }
+        public static void SetLargestWidth(this ScorePartwiseMusicXML score)
+        {
+            foreach (var measure in score.Part.ElementAt(0).Measure)
+            {
+                string id = measure.Number;
+                var maxWidth = score.GetLargestWidth(id);
+                foreach (var part in score.Part)
+                {
+                    var m = part.GetMeasureUsingId(id);
+                    m.CalculatedWidth = maxWidth;
+                }
+            }
+        }
+        public static Dictionary<string, DrawingHelpers.PartProperties> CorrectCoords(this Dictionary<string, DrawingHelpers.PartProperties> pp)
+        {
+            Dictionary<string, DrawingHelpers.PartProperties> result = new Dictionary<string, DrawingHelpers.PartProperties>();
+            var coords = pp.ElementAt(0).Value.Coords;
+            List<List<string>> systems = pp.ElementAt(0).Value.MeasuresPerSystem;
+            double correction = 0;
+            foreach (var coord in pp.Select(i => i).Where(i => i.Key != pp.ElementAt(0).Key))
+            {
+                correction += coord.Value.Coords.ElementAt(0).Value.Y;
+            }
+            correction -= coords.ElementAt(0).Value.Y;
+            foreach (var measureline in systems)
+            {
+                if (systems.IndexOf(measureline) != 0)
+                {
+                    for (int i = 0; i < measureline.Count; i++)
+                    {
+                        coords[measureline[i]] = new Point(coords[measureline[i]].X, coords[measureline[i]].Y + correction);
+                    }
+                    correction = 0;
+                    int index = coords.Keys.ToList().IndexOf(measureline.ElementAt(0));
+                    foreach (var coord in pp.Select(i => i).Where(i => i.Key != pp.ElementAt(0).Key))
+                    {
+                        correction += coord.Value.Coords.ElementAt(index).Value.Y;
+                    }
+                    correction -= coords.ElementAt(index).Value.Y;
+                }
+            }
+
+            return result;
+        }
+        public static double CalculateWidth(this List<string> measuresIds, string partId)
+        {
+            double result = 0.0;
+            var part = ViewModelLocator.Instance.Main.CurrentSelectedScore.Part.Where(i => i.Id == partId).FirstOrDefault();
+            foreach(var measureId in measuresIds)
+            {
+                result += part.MeasuresByNumber[measureId].CalculatedWidth;
+            }
+
+            return result;
+        }
+        public static int GetPartIdIndex(this string partID)
+        {
+            return ViewModelLocator.Instance.Main.CurrentSelectedScore.Part.IndexOf(ViewModelLocator.Instance.Main.CurrentSelectedScore.Part.Where(i => i.Id == partID).FirstOrDefault());
+        }
+        public static int GetMeasureIdIndex(this string measureId)
+        {
+            var measure = ViewModelLocator.Instance.Main.CurrentSelectedScore.Part.ElementAt(0).MeasuresByNumber[measureId];
+            return ViewModelLocator.Instance.Main.CurrentSelectedScore.Part.ElementAt(0).Measure.IndexOf(measure);
         }
     }
 }
