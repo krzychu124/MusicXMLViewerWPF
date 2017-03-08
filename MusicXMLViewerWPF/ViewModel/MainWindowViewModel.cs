@@ -25,7 +25,7 @@ namespace MusicXMLScore.ViewModel
         {
             PropertyChanged += MainWindowViewModel_PropertyChanged;
             AddMeasureCommand = new RelayCommand(OnAddMeasure);
-            CloseFileCommand = new RelayCommand(OnCloseFile, () => SelectedTabItem != null ? true : false); //? XmlFileLoaded);
+            CloseFileCommand = new RelayCommand(OnCloseFile, () => IsBlank ==false ? true : false); //? XmlFileLoaded);
             TestButtonCommand = new RelayCommand(OnTestButtonCommand);
             ExitCommand = new RelayCommand(OnExitApp);
             NewCustomScoreCreatorCommand = new RelayCommand(OnNewCustomScoreCreator);
@@ -63,6 +63,7 @@ namespace MusicXMLScore.ViewModel
         {
             string header = "New Document";
             TabItem tab = new TabItem() { Header = header, Content = new PagesControllerView(), DataContext = new PagesControllerViewModel() };
+            IsBlank = true;
             TabsCreated.Add(tab);
             SelectedTabItem = tab;
         }
@@ -77,7 +78,7 @@ namespace MusicXMLScore.ViewModel
         {
             var name = SelectedTabItem.DataContext as ViewModel.PagesControllerViewModel;
             Log.LoggIt.Log($"File {name.Title} has been closed");
-            tabsLayouts.Remove(name.MusicScore.ID);
+            tabsLayouts.Remove(name.Partwise.ID);
             TabsCreated.Remove(SelectedTabItem); // TODO_L Refactor commands to work on selected tab (loaded file/new score)
             if (TabsCreated.Count == 0)
             {
@@ -207,6 +208,7 @@ namespace MusicXMLScore.ViewModel
                 sw.Stop();
                 Log.LoggIt.Log($"Drawing ScorePartwise object in : {sw.ElapsedMilliseconds} ms", Log.LogType.Exception);
                 double conv = Converters.ExtensionMethods.TenthsToWPFUnit(10);
+                IsBlank = false;
             }
             else
             {
@@ -218,6 +220,7 @@ namespace MusicXMLScore.ViewModel
                 SelectedTabItem = newTab;
                 sw.Stop();
                 Log.LoggIt.Log($"Drawing ScorePartwise object in : {sw.ElapsedMilliseconds} ms", Log.LogType.Exception);
+                IsBlank = false;
             }
         }
 
@@ -257,6 +260,7 @@ namespace MusicXMLScore.ViewModel
             }
         }
         #region Fields
+        private bool isBlank = true;
         private Orientation orientation = Orientation.Horizontal;
         private ObservableCollection<PageView> pages = new ObservableCollection<PageView>();
         private TabItem selectedTabItem;
@@ -317,6 +321,20 @@ namespace MusicXMLScore.ViewModel
             }
         }
         public ObservableCollection<TabItem> TabsCreated { get { return tabscreated; } set { if (value != null) { tabscreated = value; } } }
-#endregion
+
+        public bool IsBlank
+        {
+            get
+            {
+                return isBlank;
+            }
+
+            set
+            {
+                Set(() => IsBlank, ref isBlank, value);
+                CloseFileCommand.RiseCanExecuteChanged();
+            }
+        }
+        #endregion
     }
 }
