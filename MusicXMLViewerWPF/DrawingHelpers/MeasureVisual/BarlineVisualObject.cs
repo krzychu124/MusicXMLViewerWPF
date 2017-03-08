@@ -7,12 +7,14 @@ using MusicXMLScore.Helpers;
 using MusicXMLViewerWPF;
 using System.Windows.Media;
 using System.Windows;
+using MusicXMLScore.Model.MeasureItems;
+using MusicXMLScore.Converters;
 
 namespace MusicXMLScore.DrawingHelpers.MeasureVisual
 {
     class BarlineVisualObject : IDrawableObjectBase
     {
-        private Barline barline;
+        private BarlineMusicXML barline;
         private MeasureDrawing dm;
 
         private CanvasList baseObjectVisual;
@@ -26,7 +28,7 @@ namespace MusicXMLScore.DrawingHelpers.MeasureVisual
             }
         }
 
-        internal Barline Barline
+        internal BarlineMusicXML Barline
         {
             get
             {
@@ -39,12 +41,12 @@ namespace MusicXMLScore.DrawingHelpers.MeasureVisual
             }
         }
 
-        public BarlineVisualObject(Barline barline)
-        {
-            this.Barline = barline;
-        }
+        //public BarlineVisualObject(Barline barline)
+        //{
+        //    this.Barline = barline;
+        //}
 
-        public BarlineVisualObject(MeasureDrawing dm, Barline barline)
+        public BarlineVisualObject(MeasureDrawing dm, BarlineMusicXML barline)
         {
             this.Barline = barline;
             this.dm = dm;
@@ -54,19 +56,19 @@ namespace MusicXMLScore.DrawingHelpers.MeasureVisual
         private void Draw()
         {
             baseObjectVisual = new CanvasList(4, dm.PageProperties.StaffHeight * PageProperties.PxPerMM());
-            baseObjectVisual.Tag = Barline.ID;
+            //baseObjectVisual.Tag = Barline.ID;
             DrawBarline();
         }
 
         private void DrawBarline()
         {
-            Point pos = new Point(dm.PageProperties.TenthToPx(dm.MeasureWidth), 0);
+            Point pos = new Point(dm.MeasureWidth, 0);
             DrawingVisualPlus dvp = new DrawingVisualPlus();
             
             double barlineThicknes = dm.PageProperties.TenthToPx(1.4583);
-            pos.X -= barlineThicknes * 2;
+            pos.X -= barlineThicknes * 0.5;// * 2.5;
             Point startPoint = pos;
-            Point endPoint = new Point(pos.X, BaseObjectVisual.Height);
+            Point endPoint = new Point(pos.X, -BaseObjectVisual.Height);
             Pen pen = new Pen(Brushes.Black, barlineThicknes); // thin 0.7487 thick 5
             using (DrawingContext dc = dvp.RenderOpen())
             {
