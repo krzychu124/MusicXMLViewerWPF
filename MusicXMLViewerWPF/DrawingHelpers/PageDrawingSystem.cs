@@ -123,15 +123,15 @@ namespace MusicXMLScore.DrawingHelpers
                 int systemIndex = partSystemsList.IndexOf(system);
                 if (systemIndex == 0)
                 {
-                    systemDistanceToPrevious += firstSystemPartProperties.SystemLayoutPerPage.ElementAt(pageIndex).ElementAt(0).TopSystemDistance.TenthsToWPFUnit(); //system.Size.Height.TenthsToWPFUnit(); //! 
+                    systemDistanceToPrevious += firstSystemPartProperties.SystemLayoutPerPage.ElementAt(pageIndex).ElementAt(0).TopSystemDistance.TenthsToWPFUnit();
                 }
                 if (systemIndex != 0)
                 {
-                    systemDistanceToPrevious += system.Size.Height.TenthsToWPFUnit() +  firstSystemPartProperties.SystemLayoutPerPage.ElementAt(pageIndex).ElementAt(systemIndex).SystemDistance.TenthsToWPFUnit();
+                    systemDistanceToPrevious += firstSystemPartProperties.SystemLayoutPerPage.ElementAt(pageIndex).ElementAt(systemIndex).SystemDistance.TenthsToWPFUnit();
                 }
                 Canvas.SetTop(system.PartSystemCanvas, systemDistanceToPrevious);
                 Canvas.SetLeft(system.PartSystemCanvas, lmargin);
-                
+                systemDistanceToPrevious += system.Size.Height;//.TenthsToWPFUnit();
             }
         }
 

@@ -87,8 +87,9 @@ namespace MusicXMLScore.DrawingHelpers
                 else
                 {
                     distanceToPrevious = currentPartProperties.StaffLayout.ElementAt(systemIndex).StaffDistance.TenthsToWPFUnit();
-                    distanceToTop += distanceToPrevious + partSegment.Size.Height;
+                    distanceToTop += distanceToPrevious; //? + partSegment.Size.Height;
                     partsPositions.Add(partSegmentID, new Tuple<double, double, double>(leftMargin, distanceToPrevious, distanceToTop));
+                    distanceToTop += partSegment.Size.Height; //? test
                 }
             }
             this.size = new Size(partWidth + leftMargin, distanceToTop);
@@ -98,7 +99,7 @@ namespace MusicXMLScore.DrawingHelpers
             var lastSegmentPosition = partsPositions.LastOrDefault();
             this.size = new Size(partWidth + lastSegmentPosition.Value.Item1, lastSegmentPosition.Value.Item3);
         }
-        private void GetSetSystemMargins() //TODO_H do more tests...
+        private void GetSetSystemMargins() //TODO_H do more tests... //
         {
             var currentPartProperties = partsPropertiesList.ElementAt(0).Value;
             //var measureId

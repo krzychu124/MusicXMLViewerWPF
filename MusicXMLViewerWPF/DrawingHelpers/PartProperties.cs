@@ -21,6 +21,7 @@ namespace MusicXMLScore.DrawingHelpers
         List<StaffLayoutMusicXML> staffLayout = new List<StaffLayoutMusicXML>();
         List<List<StaffLayoutMusicXML>> staffLayoutPerPage = new List<List<StaffLayoutMusicXML>>();
         List<MeasureNumberingMusicXML> measureNumbering = new List<MeasureNumberingMusicXML>();
+        List<List<MeasureNumberingMusicXML>> measureNumberingPerPage = new List<List<MeasureNumberingMusicXML>>();
         int numberOfStaves = 1;
         double stavesDistance = 0.0;
         double partHeight = 0;
@@ -205,27 +206,33 @@ namespace MusicXMLScore.DrawingHelpers
                             {
                                 UpdateListWithObjectsOfType(printLayouts.SystemLayout, ref systemLayout, 0);
                             }
+                            else
+                            {
+                                if (item.IndexOf(measureNumber) == 0)
+                                {
+                                    systemLayout.Add(new SystemLayoutMusicXML() { SystemDistance = defaultSystemDistance, TopSystemDistance = defaultTopSystemDistance });
+                                }
+                            }
                             if (printLayouts.MeasureNumbering != null)
                             {
                                 UpdateListWithObjectsOfType(printLayouts.MeasureNumbering, ref measureNumbering, 0);
                             }
-                            if (printLayouts.StaffLayout != null)
+                            if (printLayouts.StaffLayout.Count != 0)
                             {
                                 if (printLayouts.StaffLayout.Count != 0)
                                 {
                                     UpdateListWithObjectsOfType(printLayouts.StaffLayout.ElementAtOrDefault(0), ref staffLayout, 0);
                                 }
                             }
+                            else
+                            {
+                                if (item.IndexOf(measureNumber) == 0)
+                                {
+                                    staffLayout.Add(new StaffLayoutMusicXML() { Number = staves, StaffDistance = defaultStaffDistance });
+                                }
+                            }
                         }
-                        if (measureNumbering.Count == 0)
-                        {
-                            measureNumbering.Add(new MeasureNumberingMusicXML() { Value = MeasureNumberingValueMusicXML.system });
-                        }
-                        if (measureNumbering.Count < currentSystemIndex + 1)
-                        {
-                            measureNumbering.Add(measureNumbering.LastOrDefault());
-                        }
-                        if (systemLayout.Count == 0)
+                        if (systemLayout.Count == 0 )
                         {
                             systemLayout.Add(new SystemLayoutMusicXML() { SystemDistance = defaultSystemDistance, TopSystemDistance = defaultTopSystemDistance });
                         }
@@ -241,12 +248,20 @@ namespace MusicXMLScore.DrawingHelpers
                         {
                             staffLayout.Add(staffLayout.LastOrDefault());
                         }
+                        if (measureNumbering.Count == 0)
+                        {
+                            measureNumbering.Add(new MeasureNumberingMusicXML() { Value = MeasureNumberingValueMusicXML.system });
+                        }
+                        if (measureNumbering.Count != systemLayout.Count)
+                        {
+                            measureNumbering.Add(measureNumbering.LastOrDefault());
+                        }
                         currentSystemIndex++;
                     }
                     currPageListIndex = systemLayout.Count - previousPageListIndex;
-                    tempSysLayouts = systemLayout.GetRange(previousPageListIndex, currPageListIndex);
-                    systemLayoutPerPage.Add(new List<SystemLayoutMusicXML>(tempSysLayouts));
+                    systemLayoutPerPage.Add(systemLayout.GetRange(previousPageListIndex, currPageListIndex));
                     staffLayoutPerPage.Add(staffLayout.GetRange(previousPageListIndex, currPageListIndex));
+                    //measureNumberingPerPage.Add(measureNumbering.GetRange(previousPageListIndex, currPageListIndex));
                     previousPageListIndex = currPageListIndex;
                 }
             }
@@ -300,7 +315,7 @@ namespace MusicXMLScore.DrawingHelpers
                         topMargin = defaultTopMargin + staffLayout.ElementAt(systemIndex).StaffDistance;
                     }
                     previousWidth = 0.0; //! test marginL.TenthsToWPFUnit();
-                    currentLineY = topMargin.TenthsToWPFUnit();
+                    //currentLineY = topMargin.TenthsToWPFUnit();
                     foreach (var measureId in measuresLine)
                     {
                         coords.Add(measureId, new Point(previousWidth, currentLineY));
@@ -311,11 +326,11 @@ namespace MusicXMLScore.DrawingHelpers
                 {
                     if (partIndex == 0)
                     {
-                        currentLineY += systemLayout.ElementAt(systemIndex).SystemDistance.TenthsToWPFUnit() + currentLayout.PageProperties.StaffHeight.MMToWPFUnit();
+                        //currentLineY += systemLayout.ElementAt(systemIndex).SystemDistance.TenthsToWPFUnit() + currentLayout.PageProperties.StaffHeight.MMToWPFUnit();
                     }
                     else
                     {
-                        currentLineY += staffLayout.ElementAt(systemIndex).StaffDistance.TenthsToWPFUnit() + currentLayout.PageProperties.StaffHeight.MMToWPFUnit();
+                        //currentLineY += staffLayout.ElementAt(systemIndex).StaffDistance.TenthsToWPFUnit() + currentLayout.PageProperties.StaffHeight.MMToWPFUnit();
                     }
                     previousWidth = 0.0; //! test (defaultLeftMargin + systemLayout.ElementAt(systemIndex).SystemMargins.LeftMargin).TenthsToWPFUnit();
                     foreach (var measureId in measuresLine)
@@ -330,9 +345,9 @@ namespace MusicXMLScore.DrawingHelpers
         private void SetDefaultDistances(MusicXMLViewerWPF.ScorePartwiseMusicXML score)
         {
             var layout = ViewModel.ViewModelLocator.Instance.Main.CurrentTabLayout;
-            defaultSystemDistance = 2.5 * layout.PageProperties.StaffHeight.TenthsToWPFUnit();
-            defaultTopSystemDistance = 3 * layout.PageProperties.StaffHeight.TenthsToWPFUnit();
-            defaultStaffDistance = 1.5 * layout.PageProperties.StaffHeight.TenthsToWPFUnit();
+            defaultSystemDistance = 2.5 * layout.PageProperties.StaffHeight.MMToTenths();
+            defaultTopSystemDistance = 3 * layout.PageProperties.StaffHeight.MMToTenths();
+            defaultStaffDistance = 1.7 * layout.PageProperties.StaffHeight.MMToTenths();
             if (score.Defaults != null)
             {
                 if (score.Defaults.StaffLayout != null)

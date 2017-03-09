@@ -243,7 +243,7 @@ namespace MusicXMLScore.DrawingHelpers
         {
             barlineVisuals = new List<BarlineVisualObject>();
             MusicXMLScore.Model.MeasureItems.BarlineMusicXML bar = new Model.MeasureItems.BarlineMusicXML();
-                BarlineVisualObject barline = new BarlineVisualObject(this, bar);
+                BarlineVisualObject barline = new BarlineVisualObject(this, bar, size.Height);
                 barlineVisuals.Add(barline);
                 visualObject.AddVisual(barline.BaseObjectVisual);
             
