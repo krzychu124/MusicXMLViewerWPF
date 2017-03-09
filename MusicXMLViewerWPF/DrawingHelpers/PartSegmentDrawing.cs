@@ -34,6 +34,9 @@ namespace MusicXMLScore.DrawingHelpers
             }
         }
 
+        /// <summary>
+        /// Part size in Tenths, convert to WPFUnit when using for drawing dimensions
+        /// </summary>
         public Size Size
         {
             get
@@ -85,7 +88,7 @@ namespace MusicXMLScore.DrawingHelpers
             foreach (var measureId in measuresList)
             {
                 MeasureDrawing measureCanvas = new MeasureDrawing(measureId, partId, staffDistance, stavesCount);
-                Canvas.SetBottom(measureCanvas.BaseObjectVisual, size.Height);
+                Canvas.SetTop(measureCanvas.BaseObjectVisual, 0/*size.Height*/);
                 Canvas.SetLeft(measureCanvas.BaseObjectVisual, partProperties.Coords[measureId].X);
                 PartSegmentCanvas.Children.Add(measureCanvas.BaseObjectVisual);
             }

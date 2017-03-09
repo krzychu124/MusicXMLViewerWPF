@@ -139,7 +139,7 @@ namespace MusicXMLScore.DrawingHelpers
         private void CreateVisualObject()
         {
             //
-            PrimitiveRectangle();
+            //PrimitiveRectangle();
             CreateStaffLine();
             CreateVisualObjectChilds();
         }
@@ -148,7 +148,7 @@ namespace MusicXMLScore.DrawingHelpers
         {
             
             CanvasList measureCanvas = new CanvasList(measureWidth,measureHeight);
-            Point p = new Point();
+            Point p = new Point(0, layout.PageProperties.StaffHeight.MMToWPFUnit());
             staffLinesCoords = new Point[stavesCount];
             for (uint i = 0; i < stavesCount; i++)
             {
@@ -158,6 +158,7 @@ namespace MusicXMLScore.DrawingHelpers
                 measureCanvas.AddVisual(staff.PartialObjectVisual);
             }
             visualObject.AddVisual(measureCanvas);
+            visualObject.SetToolTipText($"measure {id}, {partId} width: {measureWidth}");
         }
 
         private void DrawAttributes()
@@ -242,7 +243,7 @@ namespace MusicXMLScore.DrawingHelpers
         {
             barlineVisuals = new List<BarlineVisualObject>();
             MusicXMLScore.Model.MeasureItems.BarlineMusicXML bar = new Model.MeasureItems.BarlineMusicXML();
-                BarlineVisualObject barline = new BarlineVisualObject(this, bar);
+                BarlineVisualObject barline = new BarlineVisualObject(this, bar, size.Height);
                 barlineVisuals.Add(barline);
                 visualObject.AddVisual(barline.BaseObjectVisual);
             

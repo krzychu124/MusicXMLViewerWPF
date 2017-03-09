@@ -60,7 +60,7 @@ namespace MusicXMLScore.DrawingHelpers
             foreach (var partSegment in partsSegments.Values)
             {
                 string partSegmentId = partSegment.PartId;
-                Canvas.SetTop(partSegment.PartSegmentCanvas, partsPositions[partSegmentId].Item3);
+                Canvas.SetTop(partSegment.PartSegmentCanvas, partsPositions[partSegmentId].Item3); //TODO_H layout-problem with first part...
                 Canvas.SetLeft(partSegment.PartSegmentCanvas, partsPositions[partSegmentId].Item1);
             }
         }
@@ -75,24 +75,21 @@ namespace MusicXMLScore.DrawingHelpers
             {
                 string partSegmentID = partSegment.PartId;
                 int partIndex = partSegmentID.GetPartIdIndex();
-                int firstMeasureIndex = systemIndex; //? measuresList.ElementAt(0).GetMeasureIdIndex();
                 var currentPartProperties = partsPropertiesList[partSegmentID];
-                //leftMargin = currentPartProperties.SystemLayout.ElementAt(firstMeasureIndex).SystemMargins.LeftMargin.TenthsToWPFUnit(); //? system index
                 if (partIndex== 0)
                 {
-                    distanceToPrevious = currentPartProperties.SystemLayout.ElementAt(firstMeasureIndex).TopSystemDistance.TenthsToWPFUnit();
-                    distanceToPrevious += partSegment.Size.Height;
-                    distanceToTop = currentPartProperties.SystemLayout.ElementAt(firstMeasureIndex).TopSystemDistance.TenthsToWPFUnit();
-                    distanceToTop += partSegment.Size.Height;
-                    partsPositions.Add(partSegmentID, new Tuple<double, double, double>(leftMargin, distanceToPrevious, distanceToTop));
+                    distanceToPrevious = 0;
+                    distanceToTop = partSegment.Size.Height;
+                    partsPositions.Add(partSegmentID, new Tuple<double, double, double>(leftMargin, distanceToPrevious, distanceToPrevious)); 
+                    //? distanceToPrevious instead of distanceToTop, no top offset while first part in system
+                    //? distanceToTop set to partHeight to simulate bottom line of part ;)
                 }
                 else
                 {
-                    distanceToPrevious = currentPartProperties.SystemLayout.ElementAt(firstMeasureIndex).SystemDistance.TenthsToWPFUnit();
-                    distanceToPrevious += partSegment.Size.Height;
-                    distanceToTop += currentPartProperties.SystemLayout.ElementAt(firstMeasureIndex).SystemDistance.TenthsToWPFUnit();
-                    distanceToTop += partSegment.Size.Height;
+                    distanceToPrevious = currentPartProperties.StaffLayout.ElementAt(systemIndex).StaffDistance.TenthsToWPFUnit();
+                    distanceToTop += distanceToPrevious; //? + partSegment.Size.Height;
                     partsPositions.Add(partSegmentID, new Tuple<double, double, double>(leftMargin, distanceToPrevious, distanceToTop));
+                    distanceToTop += partSegment.Size.Height; //? test
                 }
             }
             this.size = new Size(partWidth + leftMargin, distanceToTop);
@@ -102,7 +99,7 @@ namespace MusicXMLScore.DrawingHelpers
             var lastSegmentPosition = partsPositions.LastOrDefault();
             this.size = new Size(partWidth + lastSegmentPosition.Value.Item1, lastSegmentPosition.Value.Item3);
         }
-        private void GetSetSystemMargins() //TODO_H do more tests...
+        private void GetSetSystemMargins() //TODO_H do more tests... //
         {
             var currentPartProperties = partsPropertiesList.ElementAt(0).Value;
             //var measureId

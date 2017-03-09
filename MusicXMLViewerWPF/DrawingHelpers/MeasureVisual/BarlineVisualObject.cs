@@ -41,13 +41,16 @@ namespace MusicXMLScore.DrawingHelpers.MeasureVisual
             }
         }
 
+        public double Height { get; private set; }
+
         //public BarlineVisualObject(Barline barline)
         //{
         //    this.Barline = barline;
         //}
 
-        public BarlineVisualObject(MeasureDrawing dm, BarlineMusicXML barline)
+        public BarlineVisualObject(MeasureDrawing dm, BarlineMusicXML barline, double measureHeight)
         {
+            this.Height = measureHeight;
             this.Barline = barline;
             this.dm = dm;
             Draw();
@@ -55,7 +58,7 @@ namespace MusicXMLScore.DrawingHelpers.MeasureVisual
 
         private void Draw()
         {
-            baseObjectVisual = new CanvasList(4, dm.PageProperties.StaffHeight * PageProperties.PxPerMM());
+            baseObjectVisual = new CanvasList(4, Height);
             //baseObjectVisual.Tag = Barline.ID;
             DrawBarline();
         }
@@ -68,7 +71,7 @@ namespace MusicXMLScore.DrawingHelpers.MeasureVisual
             double barlineThicknes = dm.PageProperties.TenthToPx(1.4583);
             pos.X -= barlineThicknes * 0.5;// * 2.5;
             Point startPoint = pos;
-            Point endPoint = new Point(pos.X, -BaseObjectVisual.Height);
+            Point endPoint = new Point(pos.X, +BaseObjectVisual.Height);
             Pen pen = new Pen(Brushes.Black, barlineThicknes); // thin 0.7487 thick 5
             using (DrawingContext dc = dvp.RenderOpen())
             {

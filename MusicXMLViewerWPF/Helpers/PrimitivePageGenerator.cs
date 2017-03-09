@@ -8,6 +8,7 @@ using MusicXMLScore.ViewModel;
 using MusicXMLViewerWPF;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -33,21 +34,21 @@ namespace MusicXMLScore.Helpers
         {
             layout = ViewModelLocator.Instance.Main.CurrentTabLayout;
             dimensions = layout.PageProperties.PageDimensions.Dimensions;
-            page = new CanvasList(dimensions.Width.TenthsToWPFUnit(), dimensions.Height.TenthsToWPFUnit());
-            pageHost = new Canvas() { Width = dimensions.Width.TenthsToWPFUnit(), Height = dimensions.Height.TenthsToWPFUnit() };
+            page = new CanvasList(dimensions.Width, dimensions.Height);
+            pageHost = new Canvas() { Width = dimensions.Width, Height = dimensions.Height };
             this.score = score;
             var partId =  this.score.TryGetEveryPartId();
             DrawMargins();
             DrawCreditsSpace();
             //DrawMeasuresTopLine();
-            CalculateMeasureTopLines();
+            //CalculateMeasureTopLines();
             partProperties = new MusicXMLScore.DrawingHelpers.PartProperties(score, "P1");
             //var pp = new MusicXMLScore.DrawingHelpers.PartProperties(score, "P2");
-            GetPartsProperties();
-            partsProperties.CorrectCoords();
-            Correct();
-            measureCoords = partProperties.Coords;
-            DrawPrimitiveMeasure();
+            //GetPartsProperties();
+            //partsProperties.CorrectCoords();
+            //Correct();
+            //measureCoords = partProperties.Coords;
+            //DrawPrimitiveMeasure();
         }
 
         private void GetPartsProperties()
@@ -118,14 +119,14 @@ namespace MusicXMLScore.Helpers
             Line defaultTopDistance = new Line();
             defaultTopDistance.X1 = 0;
             defaultTopDistance.Y1 = topLineDistance + topmargin;
-            defaultTopDistance.X2 = dimensions.Width.TenthsToWPFUnit();
+            defaultTopDistance.X2 = dimensions.Width;
             defaultTopDistance.Y2 = topLineDistance + topmargin;
             defaultTopDistance.Stroke = Brushes.Green;
             defaultTopDistance.StrokeThickness = 1;
             ToolTip t1 = new ToolTip();
             t1.Content = "Default Top Distance";
             defaultTopDistance.ToolTip = t1;
-            CanvasList c1 = new CanvasList(dimensions.Width.TenthsToWPFUnit(), 5);
+            CanvasList c1 = new CanvasList(dimensions.Width, 5);
             DrawingVisual toplineVisual = new DrawingVisual();
             using (DrawingContext dc = toplineVisual.RenderOpen())
             {
@@ -142,7 +143,7 @@ namespace MusicXMLScore.Helpers
                     measureTopDistance = printList.ElementAt(0).SystemLayout.TopSystemDistanceSpecified? printList.ElementAt(0).SystemLayout.TopSystemDistance: 0.0;
                 }
             }
-            CanvasList c2 = new CanvasList(dimensions.Width.TenthsToWPFUnit(), 5);
+            CanvasList c2 = new CanvasList(dimensions.Width, 5);
             DrawingVisual toplineVisual2 = new DrawingVisual();
             using (DrawingContext dc = toplineVisual2.RenderOpen())
             {
@@ -160,9 +161,9 @@ namespace MusicXMLScore.Helpers
             {
                 foreach (var credit in score.Credits)
                 {
-                    Size dimensionsInWPF = new Size(dimensions.Width.TenthsToWPFUnit(), dimensions.Height.TenthsToWPFUnit());
-                    double X = double.Parse(credit.CreditW.DefaultX).TenthsToWPFUnit();
-                    double Y = double.Parse(credit.CreditW.DefaultY).TenthsToWPFUnit();
+                    Size dimensionsInWPF = new Size(dimensions.Width, dimensions.Height);
+                    double X = double.Parse(credit.CreditW.DefaultX, CultureInfo.InvariantCulture).TenthsToWPFUnit();
+                    double Y = double.Parse(credit.CreditW.DefaultY, CultureInfo.InvariantCulture).TenthsToWPFUnit();
                     Y = dimensionsInWPF.Height - Y;
                     Point p1 = new Point(X-5, Y-5);
                     Point p2 = new Point(X+5, Y+5);
@@ -189,14 +190,15 @@ namespace MusicXMLScore.Helpers
             PageMarginsMusicXML pageMargins = layout.PageMargins;
             Size dimensions = layout.PageProperties.PageDimensions.Dimensions;
             Point lt = new Point(pageMargins.LeftMargin.TenthsToWPFUnit(), pageMargins.TopMargin.TenthsToWPFUnit());
-            Point rb = new Point(dimensions.Width.TenthsToWPFUnit() - pageMargins.RightMargin.TenthsToWPFUnit(),
-                                 dimensions.Height.TenthsToWPFUnit() - pageMargins.BottomMargin.TenthsToWPFUnit());
+            Point rb = new Point(dimensions.Width - pageMargins.RightMargin.TenthsToWPFUnit(),
+                                 dimensions.Height - pageMargins.BottomMargin.TenthsToWPFUnit());
             Rect rectangle = new Rect(lt, rb);
             using (DrawingContext dc= marginsVisual.RenderOpen())
             {
                 dc.DrawRectangle(Brushes.Transparent, new Pen(Brushes.Blue, 1), rectangle);
             }
             page.AddVisual(marginsVisual);
+            pageHost.Children.Add(page);
         }
 
         private void CalculateMeasureTopLines()
@@ -279,7 +281,7 @@ namespace MusicXMLScore.Helpers
         {
             double staffHeight = layout.PageProperties.StaffHeight.MMToWPFUnit();
             Point p1 = new Point(0, Y);
-            Point p2 = new Point(dimensions.Width.TenthsToWPFUnit(), Y);
+            Point p2 = new Point(dimensions.Width, Y);
             Point mp1 = new Point(margin, Y);
             Point mp2 = new Point(margin, Y - staffHeight);
             DrawingVisual line = new DrawingVisual();
@@ -288,7 +290,7 @@ namespace MusicXMLScore.Helpers
                 dc.DrawLine(new Pen(Brushes.ForestGreen, 2), p1, p2);
                 dc.DrawLine(new Pen(Brushes.Red, 3), mp1, mp2);
             }
-            CanvasList measureLine = new CanvasList(dimensions.Width.TenthsToWPFUnit(), 5);
+            CanvasList measureLine = new CanvasList(dimensions.Width, 5);
             measureLine.SetToolTipText("Measure: " + tooltip + "\n" + mp1.X.ToString("X: 0.##") + " " + mp1.Y.ToString("Y: 0.##") + "\n" + staffHeight.ToString("Staff Height: 0.###"));
             measureLine.AddVisual(line);
             page.AddVisual(measureLine);

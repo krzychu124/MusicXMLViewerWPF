@@ -54,7 +54,7 @@ namespace MusicXMLScore.Helpers
             return calculatedSize; // availableSize; //! base.MeasureOverride(availableSize);
         }
 
-        protected override Size ArrangeOverride(Size finalSize) //TODO_I bug with position
+        protected override Size ArrangeOverride(Size finalSize) //TODO_L bug with position
         {
             var childrens = InternalChildren;
             if (childrens == null) { return finalSize; }
@@ -80,7 +80,7 @@ namespace MusicXMLScore.Helpers
                 }
                 child.Arrange(new Rect(width, accumulatedHeight + topmargin,
                                        childWidth, accumulatedHeight + topmargin + childHeight));
-                //accumulatedHeight += childHeight + topmargin;
+                //TODO_WIP accumulatedHeight += childHeight + topmargin;
             }
             return new Size(maxWidth, accumulatedHeight); //! base.ArrangeOverride(finalSize);
         }

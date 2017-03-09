@@ -15,7 +15,7 @@ namespace MusicXMLScore.Converters
     {
         public static double PxPerMM()
         {
-            return 144 / 25.4; //? 141
+            return 141 / 25.4; //? 141
         }
         public static double TenthsToMM(this double tenths)
         {
@@ -93,6 +93,7 @@ namespace MusicXMLScore.Converters
                     {
                         if (print.NewPage == Model.Helpers.SimpleTypes.YesNoMusicXML.yes)
                         {
+                            lastNumber = part.Measure.ElementAt(part.Measure.IndexOf(measure) - 1).Number;
                             Tuple<string, string> t = new Tuple<string, string>(fistNumber, lastNumber);
                             measuresPerLine.Add(t);
                             linesPerPage.Add(new List<Tuple<string, string>>(measuresPerLine));
