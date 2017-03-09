@@ -19,14 +19,17 @@ namespace MusicXMLScore.DrawingHelpers
         double defaultTopSystemDistance = 0.0;
         double defaultStaffDistance = 0.0;
         List<StaffLayoutMusicXML> staffLayout = new List<StaffLayoutMusicXML>();
+        List<List<StaffLayoutMusicXML>> staffLayoutPerPage = new List<List<StaffLayoutMusicXML>>();
         List<MeasureNumberingMusicXML> measureNumbering = new List<MeasureNumberingMusicXML>();
         int numberOfStaves = 1;
         double stavesDistance = 0.0;
+        double partHeight = 0;
         List<List<Tuple<string, string>>> partSysemsInPages;
         List<Tuple<string, string>> measuresRangeInPartSystem = new List<Tuple<string, string>>();
         Dictionary<string, Point> coords;
         int partIndex = 0;
         List<List<string>> measuresPerSystem = new List<List<string>>();
+        List<List<List<string>>> measuresPerSystemPerPage = new List<List<List<string>>>();
         public Dictionary<string, Point> Coords
         {
             get
@@ -117,6 +120,60 @@ namespace MusicXMLScore.DrawingHelpers
                 stavesDistance = value;
             }
         }
+        /// <summary>
+        /// Part height in Tenths
+        /// </summary>
+        public double PartHeight
+        {
+            get
+            {
+                return partHeight;
+            }
+
+            set
+            {
+                partHeight = value;
+            }
+        }
+
+        public List<List<List<string>>> MeasuresPerSystemPerPage
+        {
+            get
+            {
+                return measuresPerSystemPerPage;
+            }
+
+            set
+            {
+                measuresPerSystemPerPage = value;
+            }
+        }
+
+        public List<List<StaffLayoutMusicXML>> StaffLayoutPerPage
+        {
+            get
+            {
+                return staffLayoutPerPage;
+            }
+
+            set
+            {
+                staffLayoutPerPage = value;
+            }
+        }
+
+        public List<List<SystemLayoutMusicXML>> SystemLayoutPerPage
+        {
+            get
+            {
+                return systemLayoutPerPage;
+            }
+
+            set
+            {
+                systemLayoutPerPage = value;
+            }
+        }
 
         public PartProperties(MusicXMLViewerWPF.ScorePartwiseMusicXML score, string partId)
         {
@@ -132,9 +189,12 @@ namespace MusicXMLScore.DrawingHelpers
             }
             if (partIndex != null)
             {
+                int currPageListIndex = 0;
+                int previousPageListIndex = 0;
                 foreach (var item in partSysemsInPages)
                 {
                     int currentSystemIndex = 0;
+                    List<SystemLayoutMusicXML> tempSysLayouts = new List<SystemLayoutMusicXML>();
                     foreach (var measureNumber in item)
                     {
                         var measure = part.First(i => i.Number == measureNumber.Item1);
@@ -183,10 +243,22 @@ namespace MusicXMLScore.DrawingHelpers
                         }
                         currentSystemIndex++;
                     }
+                    currPageListIndex = systemLayout.Count - previousPageListIndex;
+                    tempSysLayouts = systemLayout.GetRange(previousPageListIndex, currPageListIndex);
+                    systemLayoutPerPage.Add(new List<SystemLayoutMusicXML>(tempSysLayouts));
+                    staffLayoutPerPage.Add(staffLayout.GetRange(previousPageListIndex, currPageListIndex));
+                    previousPageListIndex = currPageListIndex;
                 }
             }
             stavesDistance = staffLayout.ElementAt(0).StaffDistance;
             SetSystemMeasureRanges(score);
+            SetPartHeight();
+        }
+
+        private void SetPartHeight()
+        {
+            double staffHeight = ViewModel.ViewModelLocator.Instance.Main.CurrentTabLayout.PageProperties.StaffHeight.MMToTenths();
+            partHeight = staffHeight * numberOfStaves + (stavesDistance * (numberOfStaves - 1));
         }
 
         private void SetSystemMeasureRanges(MusicXMLViewerWPF.ScorePartwiseMusicXML score)
@@ -196,12 +268,15 @@ namespace MusicXMLScore.DrawingHelpers
             double defaultTopMargin = currentLayout.PageMargins.TopMargin;
             var part = score.Part.ElementAt(partIndex);
             measuresPerSystem = new List<List<string>>();
-            foreach (var item in partSysemsInPages)
+            foreach (var page in partSysemsInPages)
             {
-                foreach (var item2 in item)
+                List<List<string>> tempList = new List<List<string>>();
+                foreach (var item2 in page)
                 {
                     measuresPerSystem.Add(part.TryGetMeasuresIdRange(item2));
+                    tempList.Add(part.TryGetMeasuresIdRange(item2));
                 }
+                measuresPerSystemPerPage.Add(new List<List<string>>(tempList));
             }
             var measures = score.Part.ElementAt(partIndex).Measure;
             score.SetLargestWidth();
