@@ -15,7 +15,7 @@ namespace MusicXMLScore.Converters
     {
         public static double PxPerMM()
         {
-            return 144 / 25.4; //? 141
+            return 141 / 25.4; //? 141
         }
         public static double TenthsToMM(this double tenths)
         {
