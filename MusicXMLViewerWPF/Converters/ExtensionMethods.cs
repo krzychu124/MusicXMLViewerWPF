@@ -93,6 +93,7 @@ namespace MusicXMLScore.Converters
                     {
                         if (print.NewPage == Model.Helpers.SimpleTypes.YesNoMusicXML.yes)
                         {
+                            lastNumber = part.Measure.ElementAt(part.Measure.IndexOf(measure) - 1).Number;
                             Tuple<string, string> t = new Tuple<string, string>(fistNumber, lastNumber);
                             measuresPerLine.Add(t);
                             linesPerPage.Add(new List<Tuple<string, string>>(measuresPerLine));
