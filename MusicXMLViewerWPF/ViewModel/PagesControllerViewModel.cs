@@ -66,6 +66,19 @@ namespace MusicXMLScore.ViewModel
         public string Title {  get { return title; } set { Set(nameof(Title), ref title, value); } }
         
         public string ID {  get { return id; } }
+
+        public ScorePartwiseMusicXML Partwise
+        {
+            get
+            {
+                return partwise;
+            }
+
+            set
+            {
+                partwise = value;
+            }
+        }
         #endregion
         public PagesControllerViewModel()
         {
@@ -109,19 +122,12 @@ namespace MusicXMLScore.ViewModel
         {
             IsBlank = false;
             partwise = spmXML;
-            //DefaultsMusicXML def = partwise.Defaults;
-            //if (def != null)
-            //{
-            //    XmlSerializer xmls = new XmlSerializer(def.GetType());
-            //    MemoryStream memStream = new MemoryStream();
-            //    xmls.Serialize(memStream, def);
-
-            //    memStream.Position = 0;
-            //    xmls = new XmlSerializer(def.GetType());
-            //    defaultsCopy = ((DefaultsMusicXML)xmls.Deserialize(memStream));
-            //}
             PagesCollection = new ObservableCollection<UIElement>();
-            AddPageToCollection(spmXML);
+            DrawingHelpers.PartProperties pp = new DrawingHelpers.PartProperties(spmXML, spmXML.Part.ElementAt(0).Id);
+            foreach (var pages in pp.PartSysemsInPages)
+            {
+                AddPageToCollection(spmXML);
+            }
         }
 
         private void AddPageToCollection() //default page
@@ -141,7 +147,8 @@ namespace MusicXMLScore.ViewModel
         private void AddPageToCollection(ScorePartwiseMusicXML sp) //default page
         {
             id = sp.ID;
-            PageViewModel pvm = new PageViewModel(sp, defaultsCopy);
+            int index = pageCollection.Count;
+            PageViewModel pvm = new PageViewModel(sp, index);
             PagesCollection.Add(new PageView() { DataContext = pvm });
         }
 

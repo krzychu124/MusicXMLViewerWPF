@@ -35,6 +35,7 @@ namespace MusicXMLScore.ViewModel
         #endregion
         #region NewConcept
         DrawingHelpers.PageDrawingSystem newPage;
+        int pageIndex = 0;
         #endregion
 
         #region Contructors
@@ -59,16 +60,17 @@ namespace MusicXMLScore.ViewModel
             FillPartSegment();
         }
 
-        public PageViewModel(ScorePartwiseMusicXML scorePartwise, DefaultsMusicXML defaultsCopy)
+        public PageViewModel(ScorePartwiseMusicXML scorePartwise, int index)
         {
-            //PrimitivePageGenerator p = new PrimitivePageGenerator(scorePartwise);
-            newPage = new DrawingHelpers.PageDrawingSystem(scorePartwise);
+            pageIndex = index;
+            PrimitivePageGenerator p = new PrimitivePageGenerator(scorePartwise);
+            newPage = new DrawingHelpers.PageDrawingSystem(scorePartwise, pageIndex);
             Point dimensions = ViewModelLocator.Instance.Main.CurrentTabLayout.PageProperties.PageDimensions.GetPageDimensionsInPx();
             PageWidth = dimensions.X;
             PageHeight = dimensions.Y;
             //Page = p.Page;
             //partsSegments.Add(page);
-            //PartsSegments.Add(p.PageHost);
+            PartsSegments.Add(p.PageHost);
             PartsSegments.Add(newPage.PageCanvas);
         }
         #endregion
