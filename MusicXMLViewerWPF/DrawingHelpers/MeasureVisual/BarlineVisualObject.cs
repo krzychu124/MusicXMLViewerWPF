@@ -41,13 +41,16 @@ namespace MusicXMLScore.DrawingHelpers.MeasureVisual
             }
         }
 
+        public double Height { get; private set; }
+
         //public BarlineVisualObject(Barline barline)
         //{
         //    this.Barline = barline;
         //}
 
-        public BarlineVisualObject(MeasureDrawing dm, BarlineMusicXML barline)
+        public BarlineVisualObject(MeasureDrawing dm, BarlineMusicXML barline, double measureHeight)
         {
+            this.Height = measureHeight;
             this.Barline = barline;
             this.dm = dm;
             Draw();
@@ -55,7 +58,7 @@ namespace MusicXMLScore.DrawingHelpers.MeasureVisual
 
         private void Draw()
         {
-            baseObjectVisual = new CanvasList(4, dm.PageProperties.StaffHeight * PageProperties.PxPerMM());
+            baseObjectVisual = new CanvasList(4, Height);
             //baseObjectVisual.Tag = Barline.ID;
             DrawBarline();
         }
