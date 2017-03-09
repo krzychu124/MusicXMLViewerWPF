@@ -8,6 +8,7 @@ using MusicXMLScore.ViewModel;
 using MusicXMLViewerWPF;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -40,14 +41,14 @@ namespace MusicXMLScore.Helpers
             DrawMargins();
             DrawCreditsSpace();
             //DrawMeasuresTopLine();
-            CalculateMeasureTopLines();
+            //CalculateMeasureTopLines();
             partProperties = new MusicXMLScore.DrawingHelpers.PartProperties(score, "P1");
             //var pp = new MusicXMLScore.DrawingHelpers.PartProperties(score, "P2");
-            GetPartsProperties();
-            partsProperties.CorrectCoords();
-            Correct();
-            measureCoords = partProperties.Coords;
-            DrawPrimitiveMeasure();
+            //GetPartsProperties();
+            //partsProperties.CorrectCoords();
+            //Correct();
+            //measureCoords = partProperties.Coords;
+            //DrawPrimitiveMeasure();
         }
 
         private void GetPartsProperties()
@@ -161,8 +162,8 @@ namespace MusicXMLScore.Helpers
                 foreach (var credit in score.Credits)
                 {
                     Size dimensionsInWPF = new Size(dimensions.Width.TenthsToWPFUnit(), dimensions.Height.TenthsToWPFUnit());
-                    double X = double.Parse(credit.CreditW.DefaultX).TenthsToWPFUnit();
-                    double Y = double.Parse(credit.CreditW.DefaultY).TenthsToWPFUnit();
+                    double X = double.Parse(credit.CreditW.DefaultX, CultureInfo.InvariantCulture).TenthsToWPFUnit();
+                    double Y = double.Parse(credit.CreditW.DefaultY, CultureInfo.InvariantCulture).TenthsToWPFUnit();
                     Y = dimensionsInWPF.Height - Y;
                     Point p1 = new Point(X-5, Y-5);
                     Point p2 = new Point(X+5, Y+5);
@@ -189,14 +190,15 @@ namespace MusicXMLScore.Helpers
             PageMarginsMusicXML pageMargins = layout.PageMargins;
             Size dimensions = layout.PageProperties.PageDimensions.Dimensions;
             Point lt = new Point(pageMargins.LeftMargin.TenthsToWPFUnit(), pageMargins.TopMargin.TenthsToWPFUnit());
-            Point rb = new Point(dimensions.Width.TenthsToWPFUnit() - pageMargins.RightMargin.TenthsToWPFUnit(),
-                                 dimensions.Height.TenthsToWPFUnit() - pageMargins.BottomMargin.TenthsToWPFUnit());
+            Point rb = new Point(dimensions.Width - pageMargins.RightMargin.TenthsToWPFUnit(),
+                                 dimensions.Height - pageMargins.BottomMargin.TenthsToWPFUnit());
             Rect rectangle = new Rect(lt, rb);
             using (DrawingContext dc= marginsVisual.RenderOpen())
             {
                 dc.DrawRectangle(Brushes.Transparent, new Pen(Brushes.Blue, 1), rectangle);
             }
             page.AddVisual(marginsVisual);
+            pageHost.Children.Add(page);
         }
 
         private void CalculateMeasureTopLines()

@@ -43,7 +43,9 @@ namespace MusicXMLScore.Helpers
                 return scale;
             }
         }
-
+        /// <summary>
+        /// Height of staff in millimeters, use converter extension method: MMToWPFUnit() when used for drawing 
+        /// </summary>
         public double StaffHeight
         {
             get
