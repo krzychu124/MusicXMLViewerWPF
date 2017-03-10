@@ -74,8 +74,8 @@ namespace MusicXMLScore.ViewModel
             //    }
             //}
 
-            MusicXMLScore.DrawingHelpers.MeasureDrawing dm = new MusicXMLScore.DrawingHelpers.MeasureDrawing(Measure);
-            MeasureContent.Add(dm.BaseObjectVisual);
+            //MusicXMLScore.DrawingHelpers.MeasureDrawing dm = new MusicXMLScore.DrawingHelpers.MeasureDrawing(Measure);
+            //MeasureContent.Add(dm.BaseObjectVisual);
             //foreach (var item in Measure.NotesList)
             //{
             //    if (item.DrawableObjectStatus == MusicXMLViewerWPF.Misc.DrawableMusicalObjectStatus.ready)

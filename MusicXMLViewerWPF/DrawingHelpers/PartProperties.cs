@@ -4,8 +4,6 @@ using MusicXMLScore.Model.MeasureItems;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Xml.Serialization;
 
@@ -13,168 +11,30 @@ namespace MusicXMLScore.DrawingHelpers
 {
     public class PartProperties //TODO_H Clean up unneccessary methods, field and properties
     {
-        List<SystemLayoutMusicXML> systemLayout = new List<SystemLayoutMusicXML>();
-        List<List<SystemLayoutMusicXML>> systemLayoutPerPage = new List<List<SystemLayoutMusicXML>>();
-        double defaultSystemDistance = 0.0;
-        double defaultTopSystemDistance = 0.0;
-        double defaultStaffDistance = 0.0;
-        List<StaffLayoutMusicXML> staffLayout = new List<StaffLayoutMusicXML>();
-        List<List<StaffLayoutMusicXML>> staffLayoutPerPage = new List<List<StaffLayoutMusicXML>>();
-        List<MeasureNumberingMusicXML> measureNumbering = new List<MeasureNumberingMusicXML>();
-        List<List<MeasureNumberingMusicXML>> measureNumberingPerPage = new List<List<MeasureNumberingMusicXML>>();
-        int numberOfStaves = 1;
-        double stavesDistance = 0.0;
-        double partHeight = 0;
-        List<List<Tuple<string, string>>> partSysemsInPages;
-        List<Tuple<string, string>> measuresRangeInPartSystem = new List<Tuple<string, string>>();
-        Dictionary<string, Point> coords;
-        int partIndex = 0;
-        List<List<string>> measuresPerSystem = new List<List<string>>();
-        List<List<List<string>>> measuresPerSystemPerPage = new List<List<List<string>>>();
-        public Dictionary<string, Point> Coords
-        {
-            get
-            {
-                return coords;
-            }
+        #region Fields
 
-            set
-            {
-                coords = value;
-            }
-        }
+        private Dictionary<string, Point> coords;
+        private double defaultStaffDistance = 0.0;
+        private double defaultSystemDistance = 0.0;
+        private double defaultTopSystemDistance = 0.0;
+        private List<MeasureNumberingMusicXML> measureNumbering = new List<MeasureNumberingMusicXML>();
+        private List<List<MeasureNumberingMusicXML>> measureNumberingPerPage = new List<List<MeasureNumberingMusicXML>>();
+        private List<List<string>> measuresPerSystem = new List<List<string>>();
+        private List<List<List<string>>> measuresPerSystemPerPage = new List<List<List<string>>>();
+        private List<Tuple<string, string>> measuresRangeInPartSystem = new List<Tuple<string, string>>();
+        private int numberOfStaves = 1;
+        private double partHeight = 0;
+        private int partIndex = 0;
+        private List<List<Tuple<string, string>>> partSysemsInPages;
+        private List<StaffLayoutMusicXML> staffLayout = new List<StaffLayoutMusicXML>();
+        private List<List<StaffLayoutMusicXML>> staffLayoutPerPage = new List<List<StaffLayoutMusicXML>>();
+        private double stavesDistance = 0.0;
+        private List<SystemLayoutMusicXML> systemLayout = new List<SystemLayoutMusicXML>();
+        private List<List<SystemLayoutMusicXML>> systemLayoutPerPage = new List<List<SystemLayoutMusicXML>>();
 
-        public List<List<string>> MeasuresPerSystem
-        {
-            get
-            {
-                return measuresPerSystem;
-            }
+        #endregion Fields
 
-            set
-            {
-                measuresPerSystem = value;
-            }
-        }
-
-        public List<StaffLayoutMusicXML> StaffLayout
-        {
-            get
-            {
-                return staffLayout;
-            }
-
-            set
-            {
-                staffLayout = value;
-            }
-        }
-
-        public List<List<Tuple<string, string>>> PartSysemsInPages
-        {
-            get
-            {
-                return partSysemsInPages;
-            }
-
-            set
-            {
-                partSysemsInPages = value;
-            }
-        }
-
-        public int NumberOfStaves
-        {
-            get
-            {
-                return numberOfStaves;
-            }
-
-            set
-            {
-                numberOfStaves = value;
-            }
-        }
-
-        public List<SystemLayoutMusicXML> SystemLayout
-        {
-            get
-            {
-                return systemLayout;
-            }
-
-            set
-            {
-                systemLayout = value;
-            }
-        }
-
-        public double StavesDistance
-        {
-            get
-            {
-                return stavesDistance;
-            }
-
-            set
-            {
-                stavesDistance = value;
-            }
-        }
-        /// <summary>
-        /// Part height in Tenths
-        /// </summary>
-        public double PartHeight
-        {
-            get
-            {
-                return partHeight;
-            }
-
-            set
-            {
-                partHeight = value;
-            }
-        }
-
-        public List<List<List<string>>> MeasuresPerSystemPerPage
-        {
-            get
-            {
-                return measuresPerSystemPerPage;
-            }
-
-            set
-            {
-                measuresPerSystemPerPage = value;
-            }
-        }
-
-        public List<List<StaffLayoutMusicXML>> StaffLayoutPerPage
-        {
-            get
-            {
-                return staffLayoutPerPage;
-            }
-
-            set
-            {
-                staffLayoutPerPage = value;
-            }
-        }
-
-        public List<List<SystemLayoutMusicXML>> SystemLayoutPerPage
-        {
-            get
-            {
-                return systemLayoutPerPage;
-            }
-
-            set
-            {
-                systemLayoutPerPage = value;
-            }
-        }
+        #region Constructors
 
         public PartProperties(MusicXMLViewerWPF.ScorePartwiseMusicXML score, string partId)
         {
@@ -232,7 +92,7 @@ namespace MusicXMLScore.DrawingHelpers
                                 }
                             }
                         }
-                        if (systemLayout.Count == 0 )
+                        if (systemLayout.Count == 0)
                         {
                             systemLayout.Add(new SystemLayoutMusicXML() { SystemDistance = defaultSystemDistance, TopSystemDistance = defaultTopSystemDistance });
                         }
@@ -261,13 +121,193 @@ namespace MusicXMLScore.DrawingHelpers
                     currPageListIndex = systemLayout.Count - previousPageListIndex;
                     systemLayoutPerPage.Add(systemLayout.GetRange(previousPageListIndex, currPageListIndex));
                     staffLayoutPerPage.Add(staffLayout.GetRange(previousPageListIndex, currPageListIndex));
-                    //measureNumberingPerPage.Add(measureNumbering.GetRange(previousPageListIndex, currPageListIndex));
                     previousPageListIndex = currPageListIndex;
                 }
             }
             stavesDistance = staffLayout.ElementAt(0).StaffDistance;
             SetSystemMeasureRanges(score);
             SetPartHeight();
+        }
+
+        #endregion Constructors
+
+        #region Properties
+
+        public Dictionary<string, Point> Coords
+        {
+            get
+            {
+                return coords;
+            }
+
+            set
+            {
+                coords = value;
+            }
+        }
+
+        public List<List<string>> MeasuresPerSystem
+        {
+            get
+            {
+                return measuresPerSystem;
+            }
+
+            set
+            {
+                measuresPerSystem = value;
+            }
+        }
+
+        public List<List<List<string>>> MeasuresPerSystemPerPage
+        {
+            get
+            {
+                return measuresPerSystemPerPage;
+            }
+
+            set
+            {
+                measuresPerSystemPerPage = value;
+            }
+        }
+
+        public int NumberOfStaves
+        {
+            get
+            {
+                return numberOfStaves;
+            }
+
+            set
+            {
+                numberOfStaves = value;
+            }
+        }
+
+        /// <summary>
+        /// Part height in Tenths
+        /// </summary>
+        public double PartHeight
+        {
+            get
+            {
+                return partHeight;
+            }
+
+            set
+            {
+                partHeight = value;
+            }
+        }
+
+        public List<List<Tuple<string, string>>> PartSysemsInPages
+        {
+            get
+            {
+                return partSysemsInPages;
+            }
+
+            set
+            {
+                partSysemsInPages = value;
+            }
+        }
+
+        public List<StaffLayoutMusicXML> StaffLayout
+        {
+            get
+            {
+                return staffLayout;
+            }
+
+            set
+            {
+                staffLayout = value;
+            }
+        }
+        public List<List<StaffLayoutMusicXML>> StaffLayoutPerPage
+        {
+            get
+            {
+                return staffLayoutPerPage;
+            }
+
+            set
+            {
+                staffLayoutPerPage = value;
+            }
+        }
+
+        public double StavesDistance
+        {
+            get
+            {
+                return stavesDistance;
+            }
+
+            set
+            {
+                stavesDistance = value;
+            }
+        }
+
+        public List<SystemLayoutMusicXML> SystemLayout
+        {
+            get
+            {
+                return systemLayout;
+            }
+
+            set
+            {
+                systemLayout = value;
+            }
+        }
+        public List<List<SystemLayoutMusicXML>> SystemLayoutPerPage
+        {
+            get
+            {
+                return systemLayoutPerPage;
+            }
+
+            set
+            {
+                systemLayoutPerPage = value;
+            }
+        }
+
+        #endregion Properties
+
+        #region Methods
+
+        private void SetDefaultDistances(MusicXMLViewerWPF.ScorePartwiseMusicXML score)
+        {
+            var layout = ViewModel.ViewModelLocator.Instance.Main.CurrentTabLayout;
+            defaultSystemDistance = 2.5 * layout.PageProperties.StaffHeight.MMToTenths();
+            defaultTopSystemDistance = 3 * layout.PageProperties.StaffHeight.MMToTenths();
+            defaultStaffDistance = 1.7 * layout.PageProperties.StaffHeight.MMToTenths();
+            if (score.Defaults != null)
+            {
+                if (score.Defaults.StaffLayout != null)
+                {
+                    if (score.Defaults.StaffLayout.Count != 0)
+                    {
+                        defaultStaffDistance = score.Defaults.StaffLayout.ElementAt(0).StaffDistance;
+                    }
+                }
+                if (score.Defaults.SystemLayout != null)
+                {
+                    if (score.Defaults.SystemLayout.SystemDistanceSpecified)
+                    {
+                        defaultSystemDistance = score.Defaults.SystemLayout.SystemDistance;
+                    }
+                    if (score.Defaults.SystemLayout.TopSystemDistanceSpecified)
+                    {
+                        defaultTopSystemDistance = score.Defaults.SystemLayout.TopSystemDistance;
+                    }
+                }
+            }
         }
 
         private void SetPartHeight()
@@ -341,36 +381,6 @@ namespace MusicXMLScore.DrawingHelpers
                 }
             }
         }
-
-        private void SetDefaultDistances(MusicXMLViewerWPF.ScorePartwiseMusicXML score)
-        {
-            var layout = ViewModel.ViewModelLocator.Instance.Main.CurrentTabLayout;
-            defaultSystemDistance = 2.5 * layout.PageProperties.StaffHeight.MMToTenths();
-            defaultTopSystemDistance = 3 * layout.PageProperties.StaffHeight.MMToTenths();
-            defaultStaffDistance = 1.7 * layout.PageProperties.StaffHeight.MMToTenths();
-            if (score.Defaults != null)
-            {
-                if (score.Defaults.StaffLayout != null)
-                {
-                    if (score.Defaults.StaffLayout.Count != 0)
-                    {
-                        defaultStaffDistance = score.Defaults.StaffLayout.ElementAt(0).StaffDistance;
-                    }
-                }
-                if (score.Defaults.SystemLayout != null)
-                {
-                    if (score.Defaults.SystemLayout.SystemDistanceSpecified)
-                    {
-                        defaultSystemDistance = score.Defaults.SystemLayout.SystemDistance;
-                    }
-                    if (score.Defaults.SystemLayout.TopSystemDistanceSpecified)
-                    {
-                        defaultTopSystemDistance = score.Defaults.SystemLayout.TopSystemDistance;
-                    }
-                }
-            }
-        }
-
         /// <summary>
         /// Compare and update differences
         /// </summary>
@@ -422,5 +432,6 @@ namespace MusicXMLScore.DrawingHelpers
             }
         }
 
+        #endregion Methods
     }
 }
