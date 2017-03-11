@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media;
 
 namespace MusicXMLScore.Converters
 {
@@ -215,6 +216,10 @@ namespace MusicXMLScore.Converters
             {
                 string id = measure.Number;
                 var maxWidth = score.GetLargestWidth(id);
+                if (maxWidth == 0)
+                {
+                    maxWidth = 60;
+                }
                 foreach (var part in score.Part)
                 {
                     var m = part.GetMeasureUsingId(id);
@@ -272,6 +277,27 @@ namespace MusicXMLScore.Converters
         {
             var measure = ViewModelLocator.Instance.Main.CurrentSelectedScore.Part.ElementAt(0).MeasuresByNumber[measureId];
             return ViewModelLocator.Instance.Main.CurrentSelectedScore.Part.ElementAt(0).Measure.IndexOf(measure);
+        }
+
+        public static ushort GetGlyphIndexOfCharacter(this string symbolCharacter)
+        {
+            int symbol = (int)symbolCharacter.ToCharArray().FirstOrDefault();
+            GlyphTypeface glyph;
+            GlyphTypeface typeface = Helpers.TypeFaces.GetMusicFont().TryGetGlyphTypeface(out glyph) ? glyph : null;
+            ushort glyphindex;
+            glyph.CharacterToGlyphMap.TryGetValue(symbol, out glyphindex);
+            return glyphindex;
+        }
+        public static int GetValueIndexFromObjectArray<T>(this T[] array, T type)
+        {
+            for (int i = 0; i < array.Length; i++)
+            {
+                if (array[i].Equals(type))
+                {
+                    return i;
+                }
+            }
+            return -1;
         }
     }
 }
