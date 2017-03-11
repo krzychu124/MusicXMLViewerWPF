@@ -66,7 +66,7 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
                 number = value;
             }
         }
-        [XmlAttribute("time-symbol")]
+        [XmlAttribute("symbol")]
         public TimeSymbolMusicXML TimeSymbol
         {
             get
