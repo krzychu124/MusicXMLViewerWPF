@@ -35,7 +35,7 @@ namespace MusicXMLScore.DrawingHelpers.MeasureVisual
             objectVisual = new CanvasList(new Size(10, 10));
             objectVisual.SetToolTipText(clef.Sign.ToString());
             DrawingVisual visual = new DrawingVisual();
-            DrawingHelpers.DrawingMethods.DrawCharacterGlyph(visual, new Point(0, linePosition), clefSymbol.GetIndexFromGlyph());
+            DrawingHelpers.DrawingMethods.DrawCharacterGlyph(visual, new Point(0, linePosition), clefSymbol.GetGlyphIndexOfCharacter());
             objectVisual.AddVisual(visual);
         }
 

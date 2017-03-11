@@ -36,7 +36,7 @@ namespace MusicXMLScore.DrawingHelpers.MeasureVisual
             if (isSymbol)
             {
                 DrawingVisual visual = new DrawingVisual();
-                DrawingHelpers.DrawingMethods.DrawCharacterGlyph(visual, new Point(0, staffLinesY[2]), symbol.GetIndexFromGlyph());
+                DrawingHelpers.DrawingMethods.DrawCharacterGlyph(visual, new Point(0, staffLinesY[2]), symbol.GetGlyphIndexOfCharacter());
                 visualObject.AddVisual(visual);
             }
             else
@@ -51,7 +51,7 @@ namespace MusicXMLScore.DrawingHelpers.MeasureVisual
                 {
                     var shift = offset - width;
                     DrawingVisual visual = new DrawingVisual();
-                    DrawingMethods.DrawCharacterGlyph(visual, new Point(shift +30, beatY), item.ToString().GetIndexFromGlyph());
+                    DrawingMethods.DrawCharacterGlyph(visual, new Point(shift +30, beatY), item.ToString().GetGlyphIndexOfCharacter());
                     visualObject.AddVisual(visual);
                     offset += width;
                 }
@@ -64,7 +64,7 @@ namespace MusicXMLScore.DrawingHelpers.MeasureVisual
                 {
                     var shift = offset - width;
                     DrawingVisual visual = new DrawingVisual();
-                    DrawingMethods.DrawCharacterGlyph(visual, new Point(shift + 30, beatTimeY), item.ToString().GetIndexFromGlyph());
+                    DrawingMethods.DrawCharacterGlyph(visual, new Point(shift + 30, beatTimeY), item.ToString().GetGlyphIndexOfCharacter());
                     visualObject.AddVisual(visual);
                     offset += width;
                 }
@@ -81,8 +81,8 @@ namespace MusicXMLScore.DrawingHelpers.MeasureVisual
             }
             else
             {
-                var beatsValue = timeSig.Items[timeSig.ItemsElementName.GetIndexFromObjectArray(TimeChoiceTypeMusicXML.beats)].ToString();
-                var beatTimeValue = timeSig.Items[timeSig.ItemsElementName.GetIndexFromObjectArray(TimeChoiceTypeMusicXML.beattype)].ToString();
+                var beatsValue = timeSig.Items[timeSig.ItemsElementName.GetValueIndexFromObjectArray(TimeChoiceTypeMusicXML.beats)].ToString();
+                var beatTimeValue = timeSig.Items[timeSig.ItemsElementName.GetValueIndexFromObjectArray(TimeChoiceTypeMusicXML.beattype)].ToString();
                 beatSymbol = MusicSymbols.GetCustomTimeNumber(beatsValue);
                 beatTimeSymbol = MusicSymbols.GetCustomTimeNumber(beatTimeValue);
             }
