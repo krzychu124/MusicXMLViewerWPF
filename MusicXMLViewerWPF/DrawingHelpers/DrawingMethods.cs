@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using MusicXMLScore.Converters;
 
 namespace MusicXMLScore.DrawingHelpers
 {
@@ -36,17 +37,18 @@ namespace MusicXMLScore.DrawingHelpers
             }
             return totalWidth;
         }
-        public static void DrawCharacterGlyph(DrawingVisual visual, Point position, ushort glyphIndex)
+        public static void DrawCharacterGlyph(DrawingVisual visual, Point position, ushort glyphIndex, bool isSmall = false)
         {
-            PageProperties pageproperties = (PageProperties)ViewModel.ViewModelLocator.Instance.Main.CurrentPageProperties;
-            double test = glyphIndex == 70? pageproperties.TenthToPx(3*pageproperties.StaffSpace) : pageproperties.TenthToPx(1*pageproperties.StaffSpace); //? temp
+            PageProperties pageProperties = (PageProperties)ViewModel.ViewModelLocator.Instance.Main.CurrentPageProperties;
+            double test = glyphIndex == 70? pageProperties.TenthToPx(3*pageProperties.StaffSpace) : pageProperties.TenthToPx(1*pageProperties.StaffSpace); //? temp
             //! ^^ measure lines - clef line property * staffspace(gets length from top line to choosen line) eg. clef line 4 == 5-4= 1*staffspace ==> 1staffspace from top
             GlyphTypeface gtf;
             Typeface typeFace = TypeFaces.BravuraMusicFont;
             typeFace.TryGetGlyphTypeface(out gtf);
+            double smallFactor = isSmall ? 0.7 : 1;
+            Point calculatedPosition = new Point(position.X, position.Y /** PageProperties.PxPerMM()*/);
 
-            Point calculatedPosition = new Point(position.X, 0 + test * PageProperties.PxPerMM());
-            double characterSize = 40;//todo refactor to scale
+            double characterSize = pageProperties.StaffHeight.MMToWPFUnit() * smallFactor; //40;//todo refactor to scale
 
             using (DrawingContext dc = visual.RenderOpen())
             {
