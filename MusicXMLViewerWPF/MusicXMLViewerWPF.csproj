@@ -102,12 +102,15 @@
     <Compile Include="DrawingHelpers\IDrawableObjectBase.cs" />
     <Compile Include="DrawingHelpers\IDrawableObjectPart.cs" />
     <Compile Include="DrawingHelpers\MeasureVisual\BarlineVisualObject.cs" />
+    <Compile Include="DrawingHelpers\MeasureVisual\ClefVisualObject.cs" />
     <Compile Include="DrawingHelpers\MeasureVisual\DirectionVisualObject.cs" />
+    <Compile Include="DrawingHelpers\MeasureVisual\KeySignatureVisualObject.cs" />
     <Compile Include="DrawingHelpers\MeasureVisual\NoteVisualObject.cs" />
     <Compile Include="DrawingHelpers\MeasureVisual\NoteVisualPart\AccidentalPartObject.cs" />
     <Compile Include="DrawingHelpers\MeasureVisual\NoteVisualPart\DotPartObject.cs" />
     <Compile Include="DrawingHelpers\MeasureVisual\NoteVisualPart\NoteHeadPartObject.cs" />
     <Compile Include="DrawingHelpers\MeasureVisual\NoteVisualPart\StemPartObject.cs" />
+    <Compile Include="DrawingHelpers\MeasureVisual\TimeSignatureVisualObject.cs" />
     <Compile Include="DrawingHelpers\PageDrawingSystem.cs" />
     <Compile Include="DrawingHelpers\PartProperties.cs" />
     <Compile Include="DrawingHelpers\PartSegmentDrawing.cs" />

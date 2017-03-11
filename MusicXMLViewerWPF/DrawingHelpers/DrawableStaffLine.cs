@@ -29,6 +29,7 @@ namespace MusicXMLScore.DrawingHelpers
         private PageProperties pageProperties;
         private DrawingVisual visualObject;
         private double width;
+        private double[] linesYpositions;
 
         #endregion Fields
 
@@ -107,6 +108,19 @@ namespace MusicXMLScore.DrawingHelpers
             }
         }
 
+        public double[] LinesYpositions
+        {
+            get
+            {
+                return linesYpositions;
+            }
+
+            set
+            {
+                linesYpositions = value;
+            }
+        }
+
         #endregion Properties
 
         #region Methods
@@ -127,6 +141,7 @@ namespace MusicXMLScore.DrawingHelpers
             Pen pen = new Pen(color, lineThickness);
             double t = pageProperties.StaffSpace * factor;
             int Lines = (int)measureLines; // default is 5;
+            linesYpositions = new double[Lines];
             int currentLineIndex = 0;
             Point shiftedPosition = GetCenteredStaffPosition(position); //! move y position to center staffline while stafflines < 5
 
@@ -134,6 +149,7 @@ namespace MusicXMLScore.DrawingHelpers
             Point endPosition = new Point(StaffLineWidth, shiftedPosition.Y);
             while (currentLineIndex < Lines)
             {
+                linesYpositions[currentLineIndex] = startPosition.Y;
                 dc.DrawLine(pen, startPosition, endPosition);
                 startPosition = new Point(startPosition.X, startPosition.Y - t);
                 endPosition = new Point(StaffLineWidth, endPosition.Y - t);

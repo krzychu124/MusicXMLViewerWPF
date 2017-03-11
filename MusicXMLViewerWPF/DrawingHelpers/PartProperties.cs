@@ -359,7 +359,7 @@ namespace MusicXMLScore.DrawingHelpers
                     foreach (var measureId in measuresLine)
                     {
                         coords.Add(measureId, new Point(previousWidth, currentLineY));
-                        previousWidth += part.GetMeasureUsingId(measureId).Width.TenthsToWPFUnit();
+                        previousWidth += part.GetMeasureUsingId(measureId).CalculatedWidth.TenthsToWPFUnit();
                     }
                 }
                 else
@@ -376,7 +376,7 @@ namespace MusicXMLScore.DrawingHelpers
                     foreach (var measureId in measuresLine)
                     {
                         coords.Add(measureId, new Point(previousWidth, currentLineY));
-                        previousWidth += part.GetMeasureUsingId(measureId).Width.TenthsToWPFUnit();
+                        previousWidth += part.GetMeasureUsingId(measureId).CalculatedWidth.TenthsToWPFUnit();
                     }
                 }
             }
