@@ -14,12 +14,29 @@ namespace MusicXMLScore.DrawingHelpers.MeasureVisual
 {
     class BarlineVisualObject : IDrawableObjectBase
     {
-        private BarlineMusicXML barline;
-        private MeasureDrawing dm;
+        #region Fields
 
+        private BarlineMusicXML barline;
         private CanvasList baseObjectVisual;
+        private MeasureDrawing dm;
         private bool invalidated = true;
-        public bool Invalidated { get { return invalidated; } set { invalidated = value; } }
+
+        #endregion Fields
+
+        #region Constructors
+
+        public BarlineVisualObject(MeasureDrawing dm, BarlineMusicXML barline, double measureHeight)
+        {
+            this.Height = measureHeight;
+            this.Barline = barline;
+            this.dm = dm;
+            Draw();
+        }
+
+        #endregion Constructors
+
+        #region Properties
+
         public CanvasList BaseObjectVisual
         {
             get
@@ -28,6 +45,8 @@ namespace MusicXMLScore.DrawingHelpers.MeasureVisual
             }
         }
 
+        public double Height { get; private set; }
+        public bool Invalidated { get { return invalidated; } set { invalidated = value; } }
         internal BarlineMusicXML Barline
         {
             get
@@ -41,25 +60,18 @@ namespace MusicXMLScore.DrawingHelpers.MeasureVisual
             }
         }
 
-        public double Height { get; private set; }
+        #endregion Properties
 
-        //public BarlineVisualObject(Barline barline)
-        //{
-        //    this.Barline = barline;
-        //}
+        #region Methods
 
-        public BarlineVisualObject(MeasureDrawing dm, BarlineMusicXML barline, double measureHeight)
+        public void InvalidateVisualObject()
         {
-            this.Height = measureHeight;
-            this.Barline = barline;
-            this.dm = dm;
-            Draw();
+            Invalidated = true;
         }
 
         private void Draw()
         {
             baseObjectVisual = new CanvasList(4, Height);
-            //baseObjectVisual.Tag = Barline.ID;
             DrawBarline();
         }
 
@@ -67,22 +79,18 @@ namespace MusicXMLScore.DrawingHelpers.MeasureVisual
         {
             Point pos = new Point(dm.MeasureWidth, 0);
             DrawingVisualPlus dvp = new DrawingVisualPlus();
-            
             double barlineThicknes = dm.PageProperties.TenthToPx(1.4583);
-            pos.X -= barlineThicknes * 0.5;// * 2.5;
+            pos.X -= barlineThicknes * 0.5;
             Point startPoint = pos;
             Point endPoint = new Point(pos.X, +BaseObjectVisual.Height);
-            Pen pen = new Pen(Brushes.Black, barlineThicknes); // thin 0.7487 thick 5
+            Pen pen = new Pen(Brushes.Black, barlineThicknes); // thin 0.7487 thick 5 in thenths ofc... ;)
             using (DrawingContext dc = dvp.RenderOpen())
             {
                 dc.DrawLine(pen, startPoint, endPoint);
-
             }
             baseObjectVisual.AddVisual(dvp);
         }
-        public void InvalidateVisualObject()
-        {
-            Invalidated = true;
-        }
+
+        #endregion Methods
     }
 }

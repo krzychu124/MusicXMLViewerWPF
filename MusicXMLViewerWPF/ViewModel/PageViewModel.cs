@@ -45,7 +45,7 @@ namespace MusicXMLScore.ViewModel
 
             //TOdo collection of PartSegmentViews to represent as Page
             //! here default page which contains one ParSegmentView for simple test
-            Point dimensions = ViewModelLocator.Instance.Main.CurrentTabLayout.PageProperties.PageDimensions.GetPageDimensionsInPx();
+            Point dimensions = ViewModelLocator.Instance.Main.CurrentLayout.PageProperties.PageDimensions.GetPageDimensionsInPx();
             Page.Width = dimensions.X;
             Page.Height = dimensions.Y;
             PageWidth = dimensions.X;
@@ -65,7 +65,7 @@ namespace MusicXMLScore.ViewModel
             pageIndex = index;
             PrimitivePageGenerator p = new PrimitivePageGenerator(scorePartwise);
             newPage = new DrawingHelpers.PageDrawingSystem(scorePartwise, pageIndex);
-            Point dimensions = ViewModelLocator.Instance.Main.CurrentTabLayout.PageProperties.PageDimensions.GetPageDimensionsInPx();
+            Point dimensions = ViewModelLocator.Instance.Main.CurrentLayout.PageProperties.PageDimensions.GetPageDimensionsInPx();
             PageWidth = dimensions.X;
             PageHeight = dimensions.Y;
             //Page = p.Page;

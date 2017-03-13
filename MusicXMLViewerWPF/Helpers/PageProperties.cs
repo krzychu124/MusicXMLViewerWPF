@@ -35,7 +35,8 @@ namespace MusicXMLScore.Helpers
         private double converterFactor = 0.1764; // staffheight / scale
         private PageType pagetype = PageType.A4;
         private PageOrientation pageOrientation = PageOrientation.portait;
-
+        private Dictionary<int, double> avaliableIndexLinePositions = new Dictionary<int, double>();
+        private Dictionary<int, double> staffLineCoords;
         public double Scale
         {
             get
@@ -69,7 +70,9 @@ namespace MusicXMLScore.Helpers
                 return converterFactor;
             }
         }
-
+        /// <summary>
+        /// Space between staff lines in MM, convert to WPFUnit to use for coordinates or lenght in canvas
+        /// </summary>
         public double StaffSpace
         {
             get
@@ -115,10 +118,37 @@ namespace MusicXMLScore.Helpers
             }
         }
 
+        public Dictionary<int, double> IndexStaffLinePositions
+        {
+            get
+            {
+                return avaliableIndexLinePositions;
+            }
+
+            set
+            {
+                avaliableIndexLinePositions = value;
+            }
+        }
+
+        public Dictionary<int, double> StaffLineCoords
+        {
+            get
+            {
+                return staffLineCoords;
+            }
+
+            set
+            {
+                staffLineCoords = value;
+            }
+        }
+
         public PageProperties()
         {
             CalculateConverterFactor();
             CalculatePageDimensions();
+            GenerateAvaliableLinePositions();
         }
         internal PageProperties(MusicScore ms)
         {
@@ -153,6 +183,7 @@ namespace MusicXMLScore.Helpers
 
             CalculateConverterFactor();
             CalculatePageDimensions();
+            GenerateAvaliableLinePositions();
         }
 
         public PageProperties(DefaultsMusicXML defaults)
@@ -173,6 +204,34 @@ namespace MusicXMLScore.Helpers
                 SetPageMargins(loadedPageMargins);
                 systemLayout = defaults.SystemLayout;
                 staffLayout = new List<StaffLayoutMusicXML>(defaults.StaffLayout){ };
+            }
+            GenerateAvaliableLinePositions();
+            GenerateStaffLine();
+        }
+
+        private void GenerateStaffLine()
+        {
+            double line = staffHeight.MMToWPFUnit();
+            double spaceBetween = StaffSpace.MMToWPFUnit();
+            staffLineCoords = new Dictionary<int, double>();
+            staffLineCoords.Add(0, 0);
+            for (int i = 1; i < 5; i++)
+            {
+                staffLineCoords.Add(i, line);
+                line -= spaceBetween;
+            }
+            staffLineCoords.Add(5, 0);
+        }
+
+        private void GenerateAvaliableLinePositions()
+        {
+            int lowestPositionIndex = -20;
+            int highestPositionIndex = 30;
+            double halfLineSpacing = StaffSpace.MMToWPFUnit() / 2;
+            // length to point in center between staff lines
+            for (int i = lowestPositionIndex; i <= highestPositionIndex; i++)
+            {
+                avaliableIndexLinePositions.Add(i, i * halfLineSpacing);
             }
         }
         private void SetPageMargins(List<PageMarginsMusicXML> marginsList)

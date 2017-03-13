@@ -10,7 +10,7 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
     {
         private ClefSignMusicXML sign;
         private string line;
-        private string clefoOtaveChange;
+        private string clefOctaveChange;
         private string number;
         private YesNoMusicXML additional;
         private bool additionalSpecified;
@@ -53,16 +53,16 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
             }
         }
         [XmlElement("clef-octave-change", DataType ="positiveInteger")]
-        public string ClefoOtaveChange
+        public string ClefOctaveChange
         {
             get
             {
-                return clefoOtaveChange;
+                return clefOctaveChange;
             }
 
             set
             {
-                clefoOtaveChange = value;
+                clefOctaveChange = value;
             }
         }
         [XmlAttribute("number", DataType ="positiveInteger")]

@@ -18,7 +18,6 @@ namespace MusicXMLScore.Helpers
         public List<Visual> Visuals { get { return visuals; } }
         public CanvasList() : base()
         {
-            
         }
         /// <summary>
         /// Sets Width and Height of Canvas

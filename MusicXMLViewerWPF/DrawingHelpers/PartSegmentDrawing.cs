@@ -1,10 +1,7 @@
-﻿using MusicXMLScore.Helpers;
-using System;
+﻿using MusicXMLScore.Converters;
+using MusicXMLScore.Model;
 using System.Collections.Generic;
-using MusicXMLScore.Converters;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -12,25 +9,44 @@ namespace MusicXMLScore.DrawingHelpers
 {
     public class PartSegmentDrawing
     {
-        private Canvas partSegmentCanvas;
-        private Point position;
-        private PartProperties partProperties;
+        #region Fields
+
         private List<string> measuresList;
-        private Dictionary<string, MeasureDrawing> measuresObjects;
         private string partId;
+        private PartProperties partProperties;
+        private Canvas partSegmentCanvas;
         private Size size;
-        private int stavesCount = 1;
         private double staffDistance = 0.0;
-        internal Canvas PartSegmentCanvas
+        private int stavesCount = 1;
+
+        #endregion Fields
+
+        #region Constructors
+
+        public PartSegmentDrawing(List<string> measuresList, string partId, PartProperties partProperites)
+        {
+            this.measuresList = measuresList;
+            this.partId = partId;
+            this.partProperties = partProperites;
+            stavesCount = partProperties.NumberOfStaves;
+            staffDistance = partProperites.StavesDistance;
+            CalculateDimensions();
+        }
+
+        #endregion Constructors
+
+        #region Properties
+
+        public string PartId
         {
             get
             {
-                return partSegmentCanvas;
+                return partId;
             }
 
             set
             {
-                partSegmentCanvas = value;
+                partId = value;
             }
         }
 
@@ -50,49 +66,52 @@ namespace MusicXMLScore.DrawingHelpers
             }
         }
 
-        public string PartId
+        internal Canvas PartSegmentCanvas
         {
             get
             {
-                return partId;
+                return partSegmentCanvas;
             }
 
             set
             {
-                partId = value;
+                partSegmentCanvas = value;
             }
         }
 
-        public PartSegmentDrawing(List<string> measuresList, string partId, PartProperties partProperites)
-        {
-            this.measuresList = measuresList;
-            this.partId = partId;
-            this.partProperties = partProperites;
-            stavesCount = partProperties.NumberOfStaves;
-            staffDistance = partProperites.StavesDistance;
-            CalculateDimensions();
-        }
+        #endregion Properties
 
-        private void CalculateDimensions()
-        {
-            double staffHeight = ViewModel.ViewModelLocator.Instance.Main.CurrentTabLayout.PageProperties.StaffHeight.MMToWPFUnit();
-            //staffDistance = partProperties.StaffLayout.ElementAt(measuresList.ElementAt(0).GetMeasureIdIndex()).StaffDistance.TenthsToWPFUnit();
-            double segmentHeight = (stavesCount * staffHeight) + ((stavesCount-1)* staffDistance);
-            double segmentWidth = measuresList.CalculateWidth(partId);
-            partSegmentCanvas = new Canvas() { Width = segmentWidth, Height = segmentHeight };
-            size = new Size(segmentWidth, segmentHeight);
-        }
+        #region Methods
 
         public Size GenerateContent()
         {
             foreach (var measureId in measuresList)
             {
                 MeasureDrawing measureCanvas = new MeasureDrawing(measureId, partId, staffDistance, stavesCount);
+                ScorePartwisePartMeasureMusicXML measureSerializable = ViewModel.ViewModelLocator.Instance.Main.CurrentSelectedScore.Part.ElementAt(partId.GetPartIdIndex()).MeasuresByNumber[measureId];
+                LayoutControl.MeasureSegmentController measureSegment = new LayoutControl.MeasureSegmentController(measureSerializable, partId);
+                LayoutControl.SegmentPanel spanel = measureSegment.GetContentPanel();
+                spanel.AddAttributesContainer(new LayoutControl.SegmentPanelContainers.MeasureAttributesContainer(measureSerializable.Items.OfType<Model.MeasureItems.AttributesMusicXML>().FirstOrDefault()));
+
+                Canvas.SetTop(spanel, 0/*size.Height*/);
+                Canvas.SetLeft(spanel, partProperties.Coords[measureId].X);
+                PartSegmentCanvas.Children.Add(spanel);
                 Canvas.SetTop(measureCanvas.BaseObjectVisual, 0/*size.Height*/);
                 Canvas.SetLeft(measureCanvas.BaseObjectVisual, partProperties.Coords[measureId].X);
                 PartSegmentCanvas.Children.Add(measureCanvas.BaseObjectVisual);
             }
             return size;
         }
+
+        private void CalculateDimensions()
+        {
+            double staffHeight = ViewModel.ViewModelLocator.Instance.Main.CurrentLayout.PageProperties.StaffHeight.MMToWPFUnit();
+            double segmentHeight = (stavesCount * staffHeight) + ((stavesCount - 1) * staffDistance);
+            double segmentWidth = measuresList.CalculateWidth(partId);
+            partSegmentCanvas = new Canvas() { Width = segmentWidth, Height = segmentHeight };
+            size = new Size(segmentWidth, segmentHeight);
+        }
+
+        #endregion Methods
     }
 }

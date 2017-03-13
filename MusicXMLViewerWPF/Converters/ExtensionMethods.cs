@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media;
 
 namespace MusicXMLScore.Converters
 {
@@ -19,14 +20,14 @@ namespace MusicXMLScore.Converters
         }
         public static double TenthsToMM(this double tenths)
         {
-            double converterFactor = ViewModelLocator.Instance.Main.CurrentTabLayout.PageProperties.ConverterFactor;
+            double converterFactor = ViewModelLocator.Instance.Main.CurrentLayout.PageProperties.ConverterFactor;
             double result = tenths * converterFactor;
             return result;
         }
 
         public static double MMToTenths(this double MM)
         {
-            double converterFactor = ViewModelLocator.Instance.Main.CurrentTabLayout.PageProperties.ConverterFactor;
+            double converterFactor = ViewModelLocator.Instance.Main.CurrentLayout.PageProperties.ConverterFactor;
             if (converterFactor == 0)
             {
                 return 0.0;
@@ -36,7 +37,7 @@ namespace MusicXMLScore.Converters
 
         public static double TenthsToWPFUnit(this double tenths)
         {
-            double converterFactor = ViewModelLocator.Instance.Main.CurrentTabLayout.PageProperties.ConverterFactor;
+            double converterFactor = ViewModelLocator.Instance.Main.CurrentLayout.PageProperties.ConverterFactor;
             double result = tenths * converterFactor * PxPerMM();
             return result;
         }
@@ -47,7 +48,7 @@ namespace MusicXMLScore.Converters
             {
                 return 0.0;
             }
-            double converterFactor = ViewModelLocator.Instance.Main.CurrentTabLayout.PageProperties.ConverterFactor;
+            double converterFactor = ViewModelLocator.Instance.Main.CurrentLayout.PageProperties.ConverterFactor;
             return WPFUnit / (converterFactor * PxPerMM());
         }
         public static double WPFUnitToMM(this double WPFUnit)
@@ -215,6 +216,10 @@ namespace MusicXMLScore.Converters
             {
                 string id = measure.Number;
                 var maxWidth = score.GetLargestWidth(id);
+                if (maxWidth == 0)
+                {
+                    maxWidth = 100;
+                }
                 foreach (var part in score.Part)
                 {
                     var m = part.GetMeasureUsingId(id);
@@ -272,6 +277,43 @@ namespace MusicXMLScore.Converters
         {
             var measure = ViewModelLocator.Instance.Main.CurrentSelectedScore.Part.ElementAt(0).MeasuresByNumber[measureId];
             return ViewModelLocator.Instance.Main.CurrentSelectedScore.Part.ElementAt(0).Measure.IndexOf(measure);
+        }
+
+        public static ushort GetGlyphIndexOfCharacter(this string symbolCharacter)
+        {
+            int symbol = (int)symbolCharacter.ToCharArray().FirstOrDefault();
+            GlyphTypeface glyph;
+            GlyphTypeface typeface = Helpers.TypeFaces.GetMusicFont().TryGetGlyphTypeface(out glyph) ? glyph : null;
+            ushort glyphindex;
+            glyph.CharacterToGlyphMap.TryGetValue(symbol, out glyphindex);
+            return glyphindex;
+        }
+        /// <summary>
+        /// Get index of type from this Array[Type] to find value in Array[Type.Value], more or less ;)
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="array"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static int GetValueIndexFromObjectArray<T>(this T[] array, T type)
+        {
+            for (int i = 0; i < array.Length; i++)
+            {
+                if (array[i].Equals(type))
+                {
+                    return i;
+                }
+            }
+            return -1;
+        }
+        public static double[] GetCharsVisualWidth(this char[] array)
+        {
+            double[] widths = new double[array.Length];
+            for (int i = 0; i < array.Length; i++)
+            {
+                widths[i] = DrawingHelpers.DrawingMethods.GetTextWidth(array[i].ToString(), Helpers.TypeFaces.GetMusicFont());
+            }
+            return widths;
         }
     }
 }

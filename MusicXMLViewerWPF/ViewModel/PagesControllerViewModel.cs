@@ -42,31 +42,66 @@ namespace MusicXMLScore.ViewModel
     ///                 --- Page.n
     class PagesControllerViewModel : ViewModelBase
     {
+
         #region Fields
-        private object content;
+        
         private string header;
+        private string id;
+
         private bool isBlank = true;
         private MusicScore musicScore;
         private ObservableCollection<UIElement> pageCollection;
+        private ScorePartwiseMusicXML partwise;
         private string title = "";
 
-        //!Prototypes=============================
-        private string id;
-        private ScorePartwiseMusicXML partwise;
-        private DefaultsMusicXML defaultsCopy;
-        #endregion
-        //TODO_I .. PageCollection<Page>
+        #endregion Fields
+
+        #region Constructors
+
+        public PagesControllerViewModel()
+        {
+            PropertyChanged += PagesControllerViewModel_PropertyChanged;
+            MessengerInstance.Register<GenericMessage<List<Part>>>(this, "toNextPage", false, RelocatePartsNextPage);
+        }
+
+        /// <summary>
+        /// Obsolete! Load Generated MusicScore object
+        /// </summary>
+        /// <param name="musicScore"></param>
+        [Obsolete("Use one with(int numberOfPages) or default()", true)]
+        public PagesControllerViewModel(MusicScore musicScore)
+        {
+            PropertyChanged += PagesControllerViewModel_PropertyChanged;
+            MessengerInstance.Register<GenericMessage<List<Part>>>(this, "toNextPage", false, RelocatePartsNextPage);
+            MessengerInstance.Register<GenericMessage<List<Part>>>(this, "toPreviousPage", false, RelocatePartsPreviousPage);
+            MusicScore = musicScore; ArrangePages();
+            PagesCollection = new ObservableCollection<UIElement>();
+            GeneratePages();
+        }
+
+        public PagesControllerViewModel(int numberOfPages)
+        {
+            PropertyChanged += PagesControllerViewModel_PropertyChanged;
+            IsBlank = false;
+            MusicScore = new MusicScore();
+            PagesCollection = new ObservableCollection<UIElement>();
+            for (int i = 0; i < numberOfPages; i++)
+            {
+                AddPageToCollection(); //! may add current nuber to generated page
+            }
+        }
+
+        #endregion Constructors
+
         #region Properties
+
         //public object Content { get { return new object(); } private set { content = value; } }
         public string Header { get { return header; } private set { header = value; } }
+        public string ID { get { return id; } }
         public bool IsBlank { get { return isBlank; } set { Set(nameof(IsBlank), ref isBlank, value); } }
         public MusicScore MusicScore { get { return musicScore; } private set { if (value != null) { Set(nameof(MusicScore), ref musicScore, value); } } }
         public ObservableCollection<UIElement> PagesCollection { get { return pageCollection; } set { pageCollection = value; } }
         public List<List<Part>> PagesList { get; set; }
-        public string Title {  get { return title; } set { Set(nameof(Title), ref title, value); } }
-        
-        public string ID {  get { return id; } }
-
         public ScorePartwiseMusicXML Partwise
         {
             get
@@ -79,35 +114,14 @@ namespace MusicXMLScore.ViewModel
                 partwise = value;
             }
         }
-        #endregion
-        public PagesControllerViewModel()
-        {
-            PropertyChanged += PagesControllerViewModel_PropertyChanged;
-            MessengerInstance.Register<GenericMessage<List<Part>>>(this, "toNextPage", false, RelocatePartsNextPage);
-        }
-        public PagesControllerViewModel(MusicScore musicScore)
-        {
-            PropertyChanged += PagesControllerViewModel_PropertyChanged;
-            MessengerInstance.Register<GenericMessage<List<Part>>>(this, "toNextPage", false, RelocatePartsNextPage);
-            MessengerInstance.Register<GenericMessage<List<Part>>>(this, "toPreviousPage", false, RelocatePartsPreviousPage);
-            MusicScore = musicScore;ArrangePages();
-            PagesCollection = new ObservableCollection<UIElement>();
-            GeneratePages();
-        }
-        public PagesControllerViewModel(int numberOfPages)
-        {
-            
-            PropertyChanged += PagesControllerViewModel_PropertyChanged;
-            
-            IsBlank = false;
-            MusicScore = new MusicScore();
-            PagesCollection = new ObservableCollection<UIElement>();
-            for (int i = 0; i < numberOfPages; i++)
-            {
-                AddPageToCollection(); //! may add current nuber to generated page
-            }
-        }
-        
+
+        public string Title { get { return title; } set { Set(nameof(Title), ref title, value); } }
+
+        #endregion Properties
+
+        #region Methods
+
+        [Obsolete("Use AddScorePartwise()", true)]
         public void AddMusicScore(MusicScore musicScore)
         {
             this.MusicScore = musicScore;
@@ -139,8 +153,6 @@ namespace MusicXMLScore.ViewModel
         private void AddPageToCollection(List<Part> partList, PageProperties pp) // page with given parts
         {
             PageViewModel pvm = new PageViewModel(partList) { PageWidth = pp.PageDimensions.GetPageDimensionsInPx().X, PageHeight = pp.PageDimensions.GetPageDimensionsInPx().Y };
-
-            //PageViewModel pvm = new PageViewModel(partList) { PageWidth = MusicScore.Defaults.Page.Width, PageHeight = MusicScore.Defaults.Page.Height };
             PagesCollection.Add(new PageView() { DataContext = pvm });
         }
 
@@ -184,7 +196,7 @@ namespace MusicXMLScore.ViewModel
 
         private void GeneratePages()
         {
-            PageProperties pp = ViewModelLocator.Instance.Main.CurrentTabLayout.PageProperties;
+            PageProperties pp = ViewModelLocator.Instance.Main.CurrentLayout.PageProperties;
             if (PagesList.Count != 0)
             {
                 foreach (var item in PagesList)
@@ -213,5 +225,7 @@ namespace MusicXMLScore.ViewModel
         {
             Console.WriteLine("relocated to previous page");
         }
+
+        #endregion Methods
     }
 }

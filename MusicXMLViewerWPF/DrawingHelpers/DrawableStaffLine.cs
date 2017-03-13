@@ -9,44 +9,45 @@ using System.Windows.Media;
 
 namespace MusicXMLScore.DrawingHelpers
 {
+    enum MeasureLineCount
+    {
+        one = 1,
+        two = 2,
+        three = 3,
+        four = 4,
+        five = 5,
+        six = 6
+    }
+
     class DrawableStaffLine : IDrawableObjectPart
     {
+        #region Fields
+
         private Brush color = Brushes.Black;
-        private double width;
-        private Point position = new Point();
         private MeasureLineCount measureLines = MeasureLineCount.five;
-        private string symbol = "*";
+        private Point position = new Point();
+        private PageProperties pageProperties;
         private DrawingVisual visualObject;
-        private PageProperties pp;
-        public DrawableStaffLine(PageProperties pp, double width, MeasureLineCount lineCount = MeasureLineCount.five, Point offsetPoint = new Point(), Brush color = null)
+        private double width;
+        private double[] linesYpositions;
+
+        #endregion Fields
+
+        #region Constructors
+
+        public DrawableStaffLine(PageProperties pageProperties, double width, MeasureLineCount linesCount = MeasureLineCount.five, Point offsetPoint = new Point(), Brush color = null)
         {
-            this.pp = pp;
+            this.pageProperties = pageProperties;
             StaffLineWidth = width;
             Position = offsetPoint;
             Color = color != null ? color : Brushes.Black;
-            MeasureLines = lineCount;
+            MeasureLines = linesCount;
             Draw();
-            //DrawingVisual dv_test1 = new DrawingVisual();
-            //DrawingHelpers.DrawingMethods.DrawCharacterGlyph(dv_test1, new Point(40, 0), 70);
-            //DrawingVisual rect1 = new DrawingVisual();
-            //Rect r1 = dv_test1.DescendantBounds;
-            //MusicXMLViewerWPF.Misc.DrawingHelpers.DrawRectangle(rect1, r1);
-            //visualObject.Children.Add(dv_test1);
-            //visualObject.Children.Add(rect1);
-            //DrawingVisual dv_test2 = new DrawingVisual();
-            //int index = (int)'\uE062';
-            //GlyphTypeface glyph;
-            //GlyphTypeface glyphTypeface = Helpers.TypeFaces.BravuraMusicFont.TryGetGlyphTypeface(out glyph) ? glyph : null;
-            ////! charactertoGlyphFace;
-            //ushort glyphindex;
-            //glyph.CharacterToGlyphMap.TryGetValue(index, out glyphindex);
-            //DrawingHelpers.DrawingMethods.DrawCharacterGlyph(dv_test2, new Point(0, 0), glyphindex);
-            //DrawingVisual rect2 = new DrawingVisual();
-            //Rect r2 = dv_test2.DescendantBounds;
-            //MusicXMLViewerWPF.Misc.DrawingHelpers.DrawRectangle(rect2, r2, Brushes.Red);
-            //visualObject.Children.Add(dv_test2);
-            //visualObject.Children.Add(rect2);
         }
+
+        #endregion Constructors
+
+        #region Properties
 
         public Brush Color
         {
@@ -61,16 +62,11 @@ namespace MusicXMLScore.DrawingHelpers
             }
         }
 
-        public double StaffLineWidth
+        public DrawingVisual PartialObjectVisual
         {
             get
             {
-                return width;
-            }
-
-            set
-            {
-                width = value;
+                return visualObject;
             }
         }
 
@@ -87,6 +83,18 @@ namespace MusicXMLScore.DrawingHelpers
             }
         }
 
+        public double StaffLineWidth
+        {
+            get
+            {
+                return width;
+            }
+
+            set
+            {
+                width = value;
+            }
+        }
         internal MeasureLineCount MeasureLines
         {
             get
@@ -100,13 +108,22 @@ namespace MusicXMLScore.DrawingHelpers
             }
         }
 
-        public DrawingVisual PartialObjectVisual
+        public double[] LinesYpositions
         {
             get
             {
-                return visualObject;
+                return linesYpositions;
+            }
+
+            set
+            {
+                linesYpositions = value;
             }
         }
+
+        #endregion Properties
+
+        #region Methods
 
         public void Draw()
         {
@@ -116,12 +133,38 @@ namespace MusicXMLScore.DrawingHelpers
                 GenerateGenericStaffLine(dc);
             }
         }
+        private void GenerateGenericStaffLine(DrawingContext dc)//scale dependent
+        {
+            Brush color = Brushes.Black;
+            double factor = PageProperties.PxPerMM(); // scalefactor 1mm to px
+            double lineThickness = pageProperties.TenthToPx(1/*.4583*/); //todo getThickness from loaded file/app/configuration menu
+            Pen pen = new Pen(color, lineThickness);
+            double t = pageProperties.StaffSpace * factor;
+            int Lines = (int)measureLines; // default is 5;
+            linesYpositions = new double[Lines];
+            int currentLineIndex = 0;
+            Point shiftedPosition = GetCenteredStaffPosition(position); //! move y position to center staffline while stafflines < 5
+
+            Point startPosition = shiftedPosition;
+            Point endPosition = new Point(StaffLineWidth, shiftedPosition.Y);
+            while (currentLineIndex < Lines)
+            {
+                linesYpositions[currentLineIndex] = startPosition.Y;
+                dc.DrawLine(pen, startPosition, endPosition);
+                startPosition = new Point(startPosition.X, startPosition.Y - t);
+                endPosition = new Point(StaffLineWidth, endPosition.Y - t);
+                ++currentLineIndex;
+            }
+        }
+
         /// <summary>
         /// Deprecated, use GenerateGenericStaffLine()
         /// </summary>
         /// <param name="dc"></param>
         /// <param name="StartPoint"></param>
         /// <param name="color"></param>
+        /// 
+        [Obsolete("Use genericStaffLine generator for staffline drawing", true)]
         private void GenerateGlyphStaffLine(DrawingContext dc, Point StartPoint, Brush color = null)
         {
             if (color == null) color = Brushes.Black;
@@ -141,44 +184,16 @@ namespace MusicXMLScore.DrawingHelpers
                 Helpers.DrawingHelpers.DrawString(dc, MusicSymbols.longStaffOneSymbol, Helpers.TypeFaces.BravuraTextFont, color, (float)(X + (StaffLineWidth - 29)), Y, Scale);
             }
         }
-        
-        private void GenerateGenericStaffLine(DrawingContext dc)//scale dependent
-        {
-            Brush color = Brushes.Black;
-            double factor = PageProperties.PxPerMM(); // scalefactor 1mm to px
-            Pen pen = new Pen(color, pp.TenthToPx(1.4583)); //todo getthickness from loaded file
-            double t = pp.StaffSpace * factor;
-            int Lines = (int)measureLines;//5;
-            int currentLineIndex = 0;
-            Point shiftedPosition = GetCenteredStaffPosition(position); //! move y position to center staffline while stafflines < 5
-            
-            Point startPosition = shiftedPosition;
-            Point endPosition = new Point(StaffLineWidth, shiftedPosition.Y);
-            while (currentLineIndex < Lines)
-            {
-                dc.DrawLine(pen, startPosition, endPosition);
-                startPosition = new Point(startPosition.X, startPosition.Y - t);
-                endPosition = new Point(StaffLineWidth, endPosition.Y - t);
-                ++currentLineIndex;
-            }
-        }
+        /// <summary>
+        /// Get center point of measure staff height, used to center staff with less number of lines than standard: 5
+        /// </summary>
+        /// <param name="pointToShift"></param>
+        /// <returns></returns>
         private Point GetCenteredStaffPosition(Point pointToShift)
         {
-            double shift = (pp.StaffHeight - (((int)measureLines - 1)* pp.StaffSpace))/ 2;
+            double shift = (pageProperties.StaffHeight - (((int)measureLines - 1)* pageProperties.StaffSpace))/ 2;
 
             return new Point(pointToShift.X, pointToShift.Y + shift *PageProperties.PxPerMM());
-        }
-        /// <summary>
-        /// Debug only... Vertical line from top to bottom of measure staff
-        /// </summary>
-        /// <param name="dc"></param>
-        private void DebugTestLine(DrawingContext dc) 
-        {
-            //! vertical line with length of staffLine Height
-            Pen pen = new Pen(Brushes.BlueViolet, 2);
-            Point p = new Point(0, 0 + (pp.StaffHeight* PageProperties.PxPerMM()));
-            dc.DrawLine(pen, new Point(0, 0), p);
-            
         }
         /// <summary>
         /// Deprecated since custom drawing using GenerateGenericStaffLine()
@@ -200,14 +215,7 @@ namespace MusicXMLScore.DrawingHelpers
             float filling = (float)l % 24;
             return filling;
         }
-    }
-    enum MeasureLineCount
-    {
-        one = 1,
-        two = 2,
-        three = 3,
-        four = 4,
-        five = 5,
-        six = 6
+
+        #endregion Methods
     }
 }

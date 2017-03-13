@@ -18,8 +18,19 @@ namespace MusicXMLScore.DrawingHelpers
         //public static string Staff5L = to_utf8("\u1d110");
         #region clefs
         public const string FClef = "\uE062";
+        public const string FClef8Up = "\uE065";
+        public const string FClef15Up = "\uE066";
+        public const string FClef8Down = "\uE064";
+        public const string FClef15Down = "\uE063";
         public const string GClef = "\uE050";//"\ue050";//"\U0001D11E";
+        public const string GClef8Up = "\uE053";
+        public const string GClef8Down = "\uE052";
+        public const string GClef15Up = "\uE054";
+        public const string GClef15Down = "\uE051";
         public const string CClef = "\uE05C";
+        public const string CClef8Down = "\uE05D";
+        public const string Percussion = "\uE069";
+        public const string TAB = "\uE06D";
         #endregion
 
         //static class StaffFiveLines
@@ -275,6 +286,20 @@ namespace MusicXMLScore.DrawingHelpers
         public const string nineT = "\uF56A";
         public const string zeroT = "\uF56C";
         #endregion
+        #region Custom Time
+        public const string TZero ="\uE080";
+        public const string TOne = "\uE081";
+        public const string TTwo = "\uE082";
+        public const string TThree = "\uE083";
+        public const string TFour = "\uE084";
+        public const string TFive = "\uE085";
+        public const string TSix = "\uE086";
+        public const string TSeven = "\uE087";
+        public const string TEight = "\uE088";
+        public const string TNine = "\uE089";
+        public const string TPlusSign = "\uE08D";
+        public const string TPlusSignBig = "\uE08C";
+        #endregion
         #endregion
 
         public static string getNoteSymbol(MusSymbolDuration m)
@@ -359,6 +384,36 @@ namespace MusicXMLScore.DrawingHelpers
             { MusSymbolDuration.d32nd, ThirtyTwoRest},
             { MusSymbolDuration.d64th, SixstyFourRest},
             { MusSymbolDuration.Unknown, "r?" }
+        };
+        public static string GetCustomTimeNumber(string number)
+        {
+            string result = string.Empty;
+            var array = number.ToCharArray();
+            foreach (var item in array)
+            {
+                if (char.IsNumber(item))
+                {
+                    result += customTimeNumbers[int.Parse(item.ToString())];
+                }
+                else
+                {
+                    result += TPlusSign;
+                }
+            }
+            return result;
+        }
+        private static Dictionary<int, string> customTimeNumbers = new Dictionary<int, string>()
+        {
+            {0,TZero },
+            {1,TOne },
+            {2,TTwo },
+            {3,TThree },
+            {4,TFour },
+            {5,TFive },
+            {6,TSix },
+            {7,TSeven },
+            {8,TEight },
+            {9,TNine },
         };
     }
 }
