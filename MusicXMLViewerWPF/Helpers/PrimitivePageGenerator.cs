@@ -42,7 +42,7 @@ namespace MusicXMLScore.Helpers
             DrawCreditsSpace();
             //DrawMeasuresTopLine();
             //CalculateMeasureTopLines();
-            partProperties = new MusicXMLScore.DrawingHelpers.PartProperties(score, "P1");
+            partProperties = new MusicXMLScore.DrawingHelpers.PartProperties(score, score.Part.ElementAt(0).Id);
             //var pp = new MusicXMLScore.DrawingHelpers.PartProperties(score, "P2");
             //GetPartsProperties();
             //partsProperties.CorrectCoords();

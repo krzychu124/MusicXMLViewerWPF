@@ -36,7 +36,7 @@ namespace MusicXMLScore.Helpers
         private PageType pagetype = PageType.A4;
         private PageOrientation pageOrientation = PageOrientation.portait;
         private Dictionary<int, double> avaliableIndexLinePositions = new Dictionary<int, double>();
-
+        private Dictionary<int, double> staffLineCoords;
         public double Scale
         {
             get
@@ -131,6 +131,19 @@ namespace MusicXMLScore.Helpers
             }
         }
 
+        public Dictionary<int, double> StaffLineCoords
+        {
+            get
+            {
+                return staffLineCoords;
+            }
+
+            set
+            {
+                staffLineCoords = value;
+            }
+        }
+
         public PageProperties()
         {
             CalculateConverterFactor();
@@ -193,7 +206,23 @@ namespace MusicXMLScore.Helpers
                 staffLayout = new List<StaffLayoutMusicXML>(defaults.StaffLayout){ };
             }
             GenerateAvaliableLinePositions();
+            GenerateStaffLine();
         }
+
+        private void GenerateStaffLine()
+        {
+            double line = staffHeight.MMToWPFUnit();
+            double spaceBetween = StaffSpace.MMToWPFUnit();
+            staffLineCoords = new Dictionary<int, double>();
+            staffLineCoords.Add(0, 0);
+            for (int i = 1; i < 5; i++)
+            {
+                staffLineCoords.Add(i, line);
+                line -= spaceBetween;
+            }
+            staffLineCoords.Add(5, 0);
+        }
+
         private void GenerateAvaliableLinePositions()
         {
             int lowestPositionIndex = -20;
