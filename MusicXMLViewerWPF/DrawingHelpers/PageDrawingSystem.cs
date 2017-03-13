@@ -33,7 +33,7 @@ namespace MusicXMLScore.DrawingHelpers
         {
             this.pageIndex = pageIndex;
             this.score = score;
-            pageLayout = ViewModelLocator.Instance.Main.CurrentTabLayout;
+            pageLayout = ViewModelLocator.Instance.Main.CurrentLayout;
 
             pageDimensions = pageLayout.PageProperties.PageDimensions.Dimensions;
             PageCanvas = new Canvas() { Width = pageDimensions.Width, Height = pageDimensions.Height };

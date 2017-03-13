@@ -79,7 +79,7 @@ namespace MusicXMLScore.DrawingHelpers
         {
             stavesDistance = staffDistance;
             this.stavesCount = (uint)stavesCount;
-            layout = ViewModelLocator.Instance.Main.CurrentTabLayout;
+            layout = ViewModelLocator.Instance.Main.CurrentLayout;
             pageProperies = layout.PageProperties;
             this.id = measureId;
             this.partId = partId;

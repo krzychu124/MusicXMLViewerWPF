@@ -196,7 +196,7 @@ namespace MusicXMLScore.ViewModel
 
         private void GeneratePages()
         {
-            PageProperties pp = ViewModelLocator.Instance.Main.CurrentTabLayout.PageProperties;
+            PageProperties pp = ViewModelLocator.Instance.Main.CurrentLayout.PageProperties;
             if (PagesList.Count != 0)
             {
                 foreach (var item in PagesList)

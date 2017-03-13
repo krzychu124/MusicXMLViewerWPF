@@ -105,7 +105,7 @@ namespace MusicXMLScore.DrawingHelpers
 
         private void CalculateDimensions()
         {
-            double staffHeight = ViewModel.ViewModelLocator.Instance.Main.CurrentTabLayout.PageProperties.StaffHeight.MMToWPFUnit();
+            double staffHeight = ViewModel.ViewModelLocator.Instance.Main.CurrentLayout.PageProperties.StaffHeight.MMToWPFUnit();
             double segmentHeight = (stavesCount * staffHeight) + ((stavesCount - 1) * staffDistance);
             double segmentWidth = measuresList.CalculateWidth(partId);
             partSegmentCanvas = new Canvas() { Width = segmentWidth, Height = segmentHeight };

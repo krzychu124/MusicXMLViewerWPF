@@ -32,7 +32,7 @@ namespace MusicXMLScore.Helpers
         MusicXMLScore.DrawingHelpers.PartProperties partProperties;
         public PrimitivePageGenerator(ScorePartwiseMusicXML score, PageMarginType pageSide = PageMarginType.both)
         {
-            layout = ViewModelLocator.Instance.Main.CurrentTabLayout;
+            layout = ViewModelLocator.Instance.Main.CurrentLayout;
             dimensions = layout.PageProperties.PageDimensions.Dimensions;
             page = new CanvasList(dimensions.Width, dimensions.Height);
             pageHost = new Canvas() { Width = dimensions.Width, Height = dimensions.Height };

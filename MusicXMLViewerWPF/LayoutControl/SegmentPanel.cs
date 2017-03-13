@@ -28,7 +28,7 @@ namespace MusicXMLScore.LayoutControl
         public SegmentPanel(string partID)
         {
             this.partID = partID;
-            partProperties = ViewModel.ViewModelLocator.Instance.Main.CurrentPartsProperties.PartProperties[this.partID];
+            partProperties = ViewModel.ViewModelLocator.Instance.Main.CurrentPartsProperties[this.partID];
             staves = partProperties.NumberOfStaves;
             defaultStavesDistance = partProperties.StavesDistance;
             SetHeight();

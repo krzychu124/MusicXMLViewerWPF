@@ -283,7 +283,7 @@ namespace MusicXMLScore.DrawingHelpers
 
         private void SetDefaultDistances(MusicXMLViewerWPF.ScorePartwiseMusicXML score)
         {
-            var layout = ViewModel.ViewModelLocator.Instance.Main.CurrentTabLayout;
+            var layout = ViewModel.ViewModelLocator.Instance.Main.CurrentLayout;
             defaultSystemDistance = 2.5 * layout.PageProperties.StaffHeight.MMToTenths();
             defaultTopSystemDistance = 3 * layout.PageProperties.StaffHeight.MMToTenths();
             defaultStaffDistance = 1.7 * layout.PageProperties.StaffHeight.MMToTenths();
@@ -312,13 +312,13 @@ namespace MusicXMLScore.DrawingHelpers
 
         private void SetPartHeight()
         {
-            double staffHeight = ViewModel.ViewModelLocator.Instance.Main.CurrentTabLayout.PageProperties.StaffHeight.MMToTenths();
+            double staffHeight = ViewModel.ViewModelLocator.Instance.Main.CurrentLayout.PageProperties.StaffHeight.MMToTenths();
             partHeight = staffHeight * numberOfStaves + (stavesDistance * (numberOfStaves - 1));
         }
 
         private void SetSystemMeasureRanges(MusicXMLViewerWPF.ScorePartwiseMusicXML score)
         {
-            LayoutControl.LayoutGeneral currentLayout = ViewModel.ViewModelLocator.Instance.Main.CurrentTabLayout;
+            LayoutControl.LayoutGeneral currentLayout = ViewModel.ViewModelLocator.Instance.Main.CurrentLayout;
             double defaultLeftMargin = currentLayout.PageMargins.LeftMargin;
             double defaultTopMargin = currentLayout.PageMargins.TopMargin;
             var part = score.Part.ElementAt(partIndex);
