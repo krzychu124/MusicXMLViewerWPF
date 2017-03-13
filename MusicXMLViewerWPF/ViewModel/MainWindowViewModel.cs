@@ -16,6 +16,7 @@ using System.Xml.Serialization;
 using System.Diagnostics;
 using System.Collections;
 using MusicXMLScore.Converters;
+using MusicXMLScore.DrawingHelpers;
 
 namespace MusicXMLScore.ViewModel
 {
@@ -233,10 +234,13 @@ namespace MusicXMLScore.ViewModel
         private void GenerateLayout(ScorePartwiseMusicXML score)
         {
             LayoutControl.LayoutGeneral layout = new LayoutControl.LayoutGeneral(score);
+            PartPropertiesContainer ppc = new PartPropertiesContainer(score);
             tabsLayouts.Add(score.ID, layout);
             LoadedScores.Add(score.ID, score);
+            partPropContainers.Add(score.ID, ppc);
             CurrentSelectedScore = score;
             CurrentTabLayout = layout;
+            CurrentPartsProperties = ppc;
         }
         private void OnOpenOptionWindow()
         {
@@ -267,6 +271,8 @@ namespace MusicXMLScore.ViewModel
         private ObservableCollection<TabItem> tabscreated = new ObservableCollection<TabItem>();
         private Dictionary<string, LayoutControl.LayoutGeneral> tabsLayouts = new Dictionary<string, LayoutControl.LayoutGeneral>() { { "default", new LayoutControl.LayoutGeneral() } };
         private LayoutControl.LayoutGeneral currentTabLayout = new LayoutControl.LayoutGeneral();
+        private PartPropertiesContainer currentpartPropertiesContainer;
+        private Dictionary<string, PartPropertiesContainer> partPropContainers = new Dictionary<string, PartPropertiesContainer>(); 
         private Dictionary<string, ScorePartwiseMusicXML> LoadedScores = new Dictionary<string, ScorePartwiseMusicXML>();
         private ScorePartwiseMusicXML selectedScore;
         private static Hashtable serializers = new Hashtable();
@@ -311,8 +317,11 @@ namespace MusicXMLScore.ViewModel
                     {
                         PagesControllerViewModel pcvm = (PagesControllerViewModel)value.DataContext;
                         LayoutControl.LayoutGeneral layout;
+                        PartPropertiesContainer ppc;
                         tabsLayouts.TryGetValue(pcvm.ID, out layout);
                         LoadedScores.TryGetValue(pcvm.ID, out selectedScore);
+                        partPropContainers.TryGetValue(pcvm.ID, out ppc);
+                        CurrentPartsProperties = ppc;
                         CurrentTabLayout = layout;
                     }
                 }
@@ -335,6 +344,8 @@ namespace MusicXMLScore.ViewModel
                 CloseFileCommand.RiseCanExecuteChanged();
             }
         }
+
+        internal PartPropertiesContainer CurrentPartsProperties { get { return currentpartPropertiesContainer; }  set { currentpartPropertiesContainer = value; } }
         #endregion
     }
 }
