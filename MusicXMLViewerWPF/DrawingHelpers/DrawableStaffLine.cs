@@ -137,7 +137,7 @@ namespace MusicXMLScore.DrawingHelpers
         {
             Brush color = Brushes.Black;
             double factor = PageProperties.PxPerMM(); // scalefactor 1mm to px
-            double lineThickness = pageProperties.TenthToPx(1.4583); //todo getThickness from loaded file/app/configuration menu
+            double lineThickness = pageProperties.TenthToPx(1/*.4583*/); //todo getThickness from loaded file/app/configuration menu
             Pen pen = new Pen(color, lineThickness);
             double t = pageProperties.StaffSpace * factor;
             int Lines = (int)measureLines; // default is 5;

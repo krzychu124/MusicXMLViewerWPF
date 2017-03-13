@@ -217,10 +217,14 @@ namespace MusicXMLScore.DrawingHelpers
         {
             if (clefVisible)
             {
-                ClefMusicXML clef = measureSerializable.Items.OfType<AttributesMusicXML>().FirstOrDefault().Clef.ElementAt(0);
-                int clefNumber = clef.Number != null? int.Parse(clef.Number) : 1;
-                ClefVisualObject clefVisual = new ClefVisualObject(clef, staffLinesYpositions[clefNumber]);
-                visualObject.AddVisual(clefVisual.BaseObjectVisual);
+
+                //LayoutControl.SegmentPanel spanel = new LayoutControl.SegmentPanel(partId);
+                //spanel.AddAttributesContainer(new LayoutControl.SegmentPanelContainers.MeasureAttributesContainer(measureSerializable.Items.OfType<AttributesMusicXML>().FirstOrDefault()));
+                ////ClefMusicXML clef = measureSerializable.Items.OfType<AttributesMusicXML>().FirstOrDefault().Clef.ElementAt(0);
+                ////int clefNumber = clef.Number != null? int.Parse(clef.Number) : 1;
+                ////ClefVisualObject clefVisual = new ClefVisualObject(clef, staffLinesYpositions[clefNumber]);
+                ////visualObject.AddVisual(clefVisual.BaseObjectVisual);
+                //visualObject.Children.Add(spanel);
             }
             if (keyVisible)
             {
@@ -228,10 +232,10 @@ namespace MusicXMLScore.DrawingHelpers
             }
             if (timeSigVisible)
             {
-                TimeMusicXML timeSig = measureSerializable.Items.OfType<AttributesMusicXML>().FirstOrDefault().Time.ElementAt(0);
-                int timeSigNumber = timeSig.Number != null ? int.Parse(timeSig.Number) : 1;
-                TimeSignatureVisualObject timeSigVisual = new TimeSignatureVisualObject(timeSig, staffLinesYpositions[timeSigNumber]);
-                visualObject.AddVisual(timeSigVisual.BaseObjectVisual);
+                //TimeMusicXML timeSig = measureSerializable.Items.OfType<AttributesMusicXML>().FirstOrDefault().Time.ElementAt(0);
+                //int timeSigNumber = timeSig.Number != null ? int.Parse(timeSig.Number) : 1;
+                //TimeSignatureVisualObject timeSigVisual = new TimeSignatureVisualObject(timeSig, staffLinesYpositions[timeSigNumber]);
+                //visualObject.AddVisual(timeSigVisual.BaseObjectVisual);
             }
         }
 

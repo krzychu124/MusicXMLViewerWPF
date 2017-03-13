@@ -297,6 +297,8 @@ namespace MusicXMLScore.DrawingHelpers
         public const string TSeven = "\uE087";
         public const string TEight = "\uE088";
         public const string TNine = "\uE089";
+        public const string TPlusSign = "\uE08D";
+        public const string TPlusSignBig = "\uE08C";
         #endregion
         #endregion
 
@@ -389,7 +391,14 @@ namespace MusicXMLScore.DrawingHelpers
             var array = number.ToCharArray();
             foreach (var item in array)
             {
-                result += customTimeNumbers[int.Parse(item.ToString())];
+                if (char.IsNumber(item))
+                {
+                    result += customTimeNumbers[int.Parse(item.ToString())];
+                }
+                else
+                {
+                    result += TPlusSign;
+                }
             }
             return result;
         }

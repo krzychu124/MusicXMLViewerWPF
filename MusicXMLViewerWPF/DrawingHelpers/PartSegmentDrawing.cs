@@ -1,5 +1,7 @@
 ﻿using MusicXMLScore.Converters;
+using MusicXMLScore.Model;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -86,6 +88,14 @@ namespace MusicXMLScore.DrawingHelpers
             foreach (var measureId in measuresList)
             {
                 MeasureDrawing measureCanvas = new MeasureDrawing(measureId, partId, staffDistance, stavesCount);
+                ScorePartwisePartMeasureMusicXML measureSerializable = ViewModel.ViewModelLocator.Instance.Main.CurrentSelectedScore.Part.ElementAt(partId.GetPartIdIndex()).MeasuresByNumber[measureId];
+                LayoutControl.MeasureSegmentController measureSegment = new LayoutControl.MeasureSegmentController(measureSerializable, partId);
+                LayoutControl.SegmentPanel spanel = measureSegment.GetContentPanel();
+                spanel.AddAttributesContainer(new LayoutControl.SegmentPanelContainers.MeasureAttributesContainer(measureSerializable.Items.OfType<Model.MeasureItems.AttributesMusicXML>().FirstOrDefault()));
+
+                Canvas.SetTop(spanel, 0/*size.Height*/);
+                Canvas.SetLeft(spanel, partProperties.Coords[measureId].X);
+                PartSegmentCanvas.Children.Add(spanel);
                 Canvas.SetTop(measureCanvas.BaseObjectVisual, 0/*size.Height*/);
                 Canvas.SetLeft(measureCanvas.BaseObjectVisual, partProperties.Coords[measureId].X);
                 PartSegmentCanvas.Children.Add(measureCanvas.BaseObjectVisual);

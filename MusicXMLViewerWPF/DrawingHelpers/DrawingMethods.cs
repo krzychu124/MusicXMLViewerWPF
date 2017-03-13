@@ -11,7 +11,7 @@ using MusicXMLScore.Converters;
 
 namespace MusicXMLScore.DrawingHelpers
 {
-    class DrawingMethods
+    static class DrawingMethods
     {
         public static double GetTextWidth(string text, Typeface typeFace)
         {
@@ -67,6 +67,39 @@ namespace MusicXMLScore.DrawingHelpers
                     null);   // xmlLanguage
                 dc.DrawGlyphRun(Brushes.Black, gr);
             }
+        }
+
+        public static void AddCharacterGlyph(this CanvasList canvas, Point position, string character, bool isSmall = false)
+        {
+            DrawingVisual visual = new DrawingVisual();
+            ushort glyphIndex = character.GetGlyphIndexOfCharacter();
+            PageProperties pageProperties = (PageProperties)ViewModel.ViewModelLocator.Instance.Main.CurrentPageProperties;
+            GlyphTypeface gtf;
+            Typeface typeFace = TypeFaces.BravuraMusicFont;
+            typeFace.TryGetGlyphTypeface(out gtf);
+            double smallFactor = isSmall ? 0.7 : 1;
+            Point calculatedPosition = new Point(position.X, position.Y);
+
+            double characterSize = pageProperties.StaffHeight.MMToWPFUnit() * smallFactor; //40;//todo refactor to scale
+
+            using (DrawingContext dc = visual.RenderOpen())
+            {
+                GlyphRun gr = new GlyphRun(gtf,
+                    0,       // Bi-directional nesting level
+                    false,   // isSideways
+                    characterSize,      // pt size
+                    new ushort[] { glyphIndex },   // glyphIndices
+                    calculatedPosition,          // baselineOrigin
+                    new double[] { 0.0 },  // advanceWidths
+                    null,    // glyphOffsets
+                    null,    // characters
+                    null,    // deviceFontName
+                    null,    // clusterMap
+                    null,    // caretStops
+                    null);   // xmlLanguage
+                dc.DrawGlyphRun(Brushes.Black, gr);
+            }
+            canvas.AddVisual(visual);
         }
 
         public static Size GetTextHeight(string text, double size, Typeface typeFace)

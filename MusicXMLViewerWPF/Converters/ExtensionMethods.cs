@@ -218,7 +218,7 @@ namespace MusicXMLScore.Converters
                 var maxWidth = score.GetLargestWidth(id);
                 if (maxWidth == 0)
                 {
-                    maxWidth = 60;
+                    maxWidth = 100;
                 }
                 foreach (var part in score.Part)
                 {
@@ -288,6 +288,13 @@ namespace MusicXMLScore.Converters
             glyph.CharacterToGlyphMap.TryGetValue(symbol, out glyphindex);
             return glyphindex;
         }
+        /// <summary>
+        /// Get index of type from this Array[Type] to find value in Array[Type.Value], more or less ;)
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="array"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
         public static int GetValueIndexFromObjectArray<T>(this T[] array, T type)
         {
             for (int i = 0; i < array.Length; i++)
@@ -298,6 +305,15 @@ namespace MusicXMLScore.Converters
                 }
             }
             return -1;
+        }
+        public static double[] GetCharsVisualWidth(this char[] array)
+        {
+            double[] widths = new double[array.Length];
+            for (int i = 0; i < array.Length; i++)
+            {
+                widths[i] = DrawingHelpers.DrawingMethods.GetTextWidth(array[i].ToString(), Helpers.TypeFaces.GetMusicFont());
+            }
+            return widths;
         }
     }
 }

@@ -113,6 +113,7 @@
     <Compile Include="DrawingHelpers\MeasureVisual\TimeSignatureVisualObject.cs" />
     <Compile Include="DrawingHelpers\PageDrawingSystem.cs" />
     <Compile Include="DrawingHelpers\PartProperties.cs" />
+    <Compile Include="DrawingHelpers\PartPropertiesContainer.cs" />
     <Compile Include="DrawingHelpers\PartSegmentDrawing.cs" />
     <Compile Include="DrawingHelpers\PartsSystemDrawing.cs" />
     <Compile Include="Helpers\ComparisonHelpers.cs" />
@@ -122,6 +123,17 @@
     <Compile Include="Helpers\PageProperties.cs" />
     <Compile Include="Helpers\PrimitivePageGenerator.cs" />
     <Compile Include="LayoutControl\LayoutGeneral.cs" />
+    <Compile Include="LayoutControl\MeasureSegmentController.cs" />
+    <Compile Include="LayoutControl\SegmentPanel.cs" />
+    <Compile Include="LayoutControl\SegmentPanelContainers\Attributes\ClefContainerItem.cs" />
+    <Compile Include="LayoutControl\SegmentPanelContainers\Attributes\IAttributeItemVisual.cs" />
+    <Compile Include="LayoutControl\SegmentPanelContainers\Attributes\KeyContainerItem.cs" />
+    <Compile Include="LayoutControl\SegmentPanelContainers\Attributes\TimeSignatureContainerItem.cs" />
+    <Compile Include="LayoutControl\SegmentPanelContainers\MeasureAttributesContainer.cs" />
+    <Compile Include="LayoutControl\SegmentPanelContainers\MeasureNotesContainer.cs" />
+    <Compile Include="LayoutControl\SegmentPanelContainers\Notes\INoteItemVisual.cs" />
+    <Compile Include="LayoutControl\SegmentPanelContainers\Notes\NoteContainerItem.cs" />
+    <Compile Include="LayoutControl\SegmentPanelContainers\Notes\RestContainterItem.cs" />
     <Compile Include="LayoutStyle\Styles\BarlineLayoutStyle.cs" />
     <Compile Include="LayoutStyle\Styles\BeamLayoutStyle.cs" />
     <Compile Include="LayoutStyle\Layout.cs" />
