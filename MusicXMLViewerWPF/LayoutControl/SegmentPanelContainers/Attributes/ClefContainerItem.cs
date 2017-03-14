@@ -205,5 +205,31 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Attributes
                 return itemWidth;
             }
         }
+
+        public bool Empty
+        {
+            get
+            {
+                return isEmpty;
+            }
+
+            set
+            {
+                isEmpty = value;
+            }
+        }
+
+        public bool Visible
+        {
+            get
+            {
+                return visible;
+            }
+
+            set
+            {
+                visible = value;
+            }
+        }
     }
 }
