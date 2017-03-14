@@ -1,6 +1,7 @@
 ﻿using MusicXMLScore.Converters;
 using MusicXMLScore.Model.Defaults;
 using MusicXMLScore.Model.MeasureItems;
+using MusicXMLScore.Model.MeasureItems.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,35 +12,39 @@ namespace MusicXMLScore.DrawingHelpers
 {
     public class PartProperties //TODO_H Clean up unneccessary methods, field and properties
     {
-        #region Fields
 
+        #region Fields
         private Dictionary<string, Point> coords;
+        private Dictionary<string, List<ClefMusicXML>> clefAttributes;
+        private Dictionary<string, KeyMusicXML> keyAttributes;
         private double defaultStaffDistance = 0.0;
         private double defaultSystemDistance = 0.0;
         private double defaultTopSystemDistance = 0.0;
-        private List<MeasureNumberingMusicXML> measureNumbering = new List<MeasureNumberingMusicXML>();
-        private List<List<MeasureNumberingMusicXML>> measureNumberingPerPage = new List<List<MeasureNumberingMusicXML>>();
-        private List<List<string>> measuresPerSystem = new List<List<string>>();
-        private List<List<List<string>>> measuresPerSystemPerPage = new List<List<List<string>>>();
-        private List<Tuple<string, string>> measuresRangeInPartSystem = new List<Tuple<string, string>>();
-        private int numberOfStaves = 1;
         private double partHeight = 0;
-        private int partIndex = 0;
-        private List<List<Tuple<string, string>>> partSysemsInPages;
-        private List<StaffLayoutMusicXML> staffLayout = new List<StaffLayoutMusicXML>();
-        private List<List<StaffLayoutMusicXML>> staffLayoutPerPage = new List<List<StaffLayoutMusicXML>>();
         private double stavesDistance = 0.0;
-        private List<SystemLayoutMusicXML> systemLayout = new List<SystemLayoutMusicXML>();
+        private int numberOfStaves = 1;
+        private int partIndex = 0;
+        private List<List<List<string>>> measuresPerSystemPerPage = new List<List<List<string>>>();
+        private List<List<MeasureNumberingMusicXML>> measureNumberingPerPage = new List<List<MeasureNumberingMusicXML>>();
+        private List<List<StaffLayoutMusicXML>> staffLayoutPerPage = new List<List<StaffLayoutMusicXML>>();
+        private List<List<string>> measuresPerSystem = new List<List<string>>();
         private List<List<SystemLayoutMusicXML>> systemLayoutPerPage = new List<List<SystemLayoutMusicXML>>();
-
+        private List<List<Tuple<string, string>>> partSysemsInPages;
+        private List<MeasureNumberingMusicXML> measureNumbering = new List<MeasureNumberingMusicXML>();
+        private List<StaffLayoutMusicXML> staffLayout = new List<StaffLayoutMusicXML>();
+        private List<SystemLayoutMusicXML> systemLayout = new List<SystemLayoutMusicXML>();
+        private List<Tuple<string, string>> measuresRangeInPartSystem = new List<Tuple<string, string>>();
+        private MusicXMLScore.Model.ScorePartwisePartMusicXML currentPart;
+        private string partId;
         #endregion Fields
 
         #region Constructors
 
         public PartProperties(MusicXMLViewerWPF.ScorePartwiseMusicXML score, string partId)
         {
+            this.partId = partId;
             SetDefaultDistances(score);
-
+            currentPart = score.Part.Where(i => i.Id == partId).FirstOrDefault();
             partIndex = score.Part.FindIndex(i => i.Id == partId);
             partSysemsInPages = score.Part.ElementAt(partIndex).TryGetLinesPerPage();
             var part = score.Part.ElementAt(partIndex).Measure;
@@ -127,6 +132,114 @@ namespace MusicXMLScore.DrawingHelpers
             stavesDistance = staffLayout.ElementAt(0).StaffDistance;
             SetSystemMeasureRanges(score);
             SetPartHeight();
+            GenerateClefAttributes();
+            GenerateKeyAttributes();
+        }
+
+        private void GenerateKeyAttributes()
+        {
+            //MusicXML support behaviour when key is different inside different part staves, 
+            //I can't find any reason why this could be usefull since part correspond with one instrument and is impossible to play in eg. two different keySignatures at the same time
+            //This feature will be omitted for now, so every staffline in part will have the same key signature.
+            keyAttributes = new Dictionary<string, KeyMusicXML>();
+            KeyMusicXML currentKeySignature = new KeyMusicXML();
+            foreach (var measure in currentPart.Measure)
+            {
+                if (measure.Items.OfType<AttributesMusicXML>().FirstOrDefault() != null)
+                {
+                    var attributes = measure.Items.OfType<AttributesMusicXML>().FirstOrDefault();
+                    if (attributes.Key.Count != 0)
+                    {
+                        var keySig = attributes.Key.ElementAt(0);
+                        currentKeySignature = keySig;
+                        currentKeySignature.PrintObject = Model.Helpers.SimpleTypes.YesNoMusicXML.yes;
+                        keyAttributes.Add(measure.Number, currentKeySignature);
+                    }
+                    else
+                    {
+                        KeyMusicXML key= currentKeySignature.Clone();
+                        key.PrintObject = Model.Helpers.SimpleTypes.YesNoMusicXML.no;
+                        keyAttributes.Add(measure.Number, key);
+                    }
+                }
+                else
+                {
+                    KeyMusicXML key = currentKeySignature.Clone();
+                    key.PrintObject = Model.Helpers.SimpleTypes.YesNoMusicXML.no;
+                    keyAttributes.Add(measure.Number, key);
+                }
+
+            }
+            var test = keyAttributes.Select(i => i).Where(i => i.Value.PrintObject == Model.Helpers.SimpleTypes.YesNoMusicXML.yes);
+        }
+
+        private void GenerateClefAttributes()
+        {
+            var firsMeasureInSystem = from zz in measuresPerSystem select zz.Select(t=> t).ElementAt(0);
+            clefAttributes = new Dictionary<string, List<ClefMusicXML>>();
+            ClefMusicXML[] clefsArray = new ClefMusicXML[numberOfStaves];
+            ClefMusicXML[] clefsArrayToClone = new ClefMusicXML[numberOfStaves];
+            string fistMeasureId = currentPart.Measure.FirstOrDefault().Number;
+            var firstMeasureClefs = currentPart.Measure.FirstOrDefault().Items.OfType<AttributesMusicXML>().FirstOrDefault().Clef.ToArray();
+            if (firstMeasureClefs == null)
+            {
+                throw new Exception("First measure in part does not contain Clef attribute"); //TODO_LATER Refactor to check before passing to this class.
+            }
+            List<ClefMusicXML> clefList = new List<ClefMusicXML>();
+            for (int i = 0; i < clefsArray.Length; i++)
+            {
+                var visibleClef = firstMeasureClefs[i].Clone();
+                visibleClef.PrintObject = Model.Helpers.SimpleTypes.YesNoMusicXML.yes;
+                visibleClef.PrintObjectSpecified = true;
+                clefsArray[i] = visibleClef;
+                clefList.Add(clefsArray[i]);
+                //clone to copy if missing
+                var temp = firstMeasureClefs[i].Clone();
+                temp.PrintObject = Model.Helpers.SimpleTypes.YesNoMusicXML.no;
+                temp.PrintObjectSpecified = true;
+                clefsArrayToClone[i] = temp;
+            }
+            clefAttributes.Add(fistMeasureId, clefList);
+            for (int i = 1; i < currentPart.Measure.Count; i++)
+            {
+                string measureId = currentPart.Measure[i].Number;
+                List<ClefMusicXML> currentMeasureClefList = new List<ClefMusicXML>();
+                var currentMeasure = currentPart.Measure[i];
+                var attributesClefs = currentMeasure.Items.OfType<AttributesMusicXML>().FirstOrDefault()?.Clef; // nullable clef, if present - clef is list if no will be null
+                if (attributesClefs != null ? attributesClefs.Count != 0 : false ) 
+                {
+                    var currentMeasureClefArray = currentMeasure.Items.OfType<AttributesMusicXML>().FirstOrDefault().Clef.ToArray();
+                    foreach (var clefNumber in currentMeasureClefArray.Select(z=>z.Number)) // loop through current measure clefs to find if any changed
+                    {
+                        int index = int.Parse(clefNumber) - 1;
+                        var temp = currentMeasureClefArray[index].Clone();
+                        temp.PrintObject = Model.Helpers.SimpleTypes.YesNoMusicXML.yes;
+                        temp.PrintObjectSpecified = true;
+                        clefsArrayToClone[index] = temp;
+                    }
+                    for (int x = 0; x < clefsArray.Length; x++) //add to list<clef>
+                    {
+                        var temp = clefsArrayToClone[x];
+                        currentMeasureClefList.Add(temp);
+                    }
+                }
+                else //if clef didn't changed in this measure
+                {
+                    for (int c = 0; c < clefsArrayToClone.Length; c++)
+                    {
+                        var temp = clefsArrayToClone[c].Clone();
+                        temp.PrintObject = Model.Helpers.SimpleTypes.YesNoMusicXML.no;
+                        if (firsMeasureInSystem.Contains(measureId))
+                        {
+                            temp.PrintObject = Model.Helpers.SimpleTypes.YesNoMusicXML.yes; // change when measure id fist in system
+                        }
+                        temp.PrintObjectSpecified = true;
+                        currentMeasureClefList.Add(temp);
+                    }
+                }
+                clefAttributes.Add(measureId, currentMeasureClefList); // add clef list to dictionary
+            }
+            //! test // var test = clefAttributes.Where(i => i.Value.ElementAt(0).PrintObject == Model.Helpers.SimpleTypes.YesNoMusicXML.yes);
         }
 
         #endregion Constructors
@@ -433,5 +546,6 @@ namespace MusicXMLScore.DrawingHelpers
         }
 
         #endregion Methods
+
     }
 }
