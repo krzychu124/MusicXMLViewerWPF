@@ -60,6 +60,7 @@ namespace MusicXMLScore.ScoreProperties
         private Dictionary<string, PartProperties> partProperties;
         private LayoutGeneral layout;
         private ScorePartwiseMusicXML score;
+        private TimeSignatures timeSignatures;
         private string id;
         public ScoreProperties(ScorePartwiseMusicXML score)
         {
@@ -70,6 +71,7 @@ namespace MusicXMLScore.ScoreProperties
             {
                 layout = new LayoutGeneral(score);
                 GetParts(score);
+                timeSignatures = new TimeSignatures(score);
             }
         }
         private void GetParts(ScorePartwiseMusicXML score)
@@ -131,6 +133,19 @@ namespace MusicXMLScore.ScoreProperties
             get
             {
                 return id;
+            }
+        }
+
+        public TimeSignatures TimeSignatures
+        {
+            get
+            {
+                return timeSignatures;
+            }
+
+            set
+            {
+                timeSignatures = value;
             }
         }
     }
