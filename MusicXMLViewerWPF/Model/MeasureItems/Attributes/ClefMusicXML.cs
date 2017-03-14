@@ -1,17 +1,19 @@
 ﻿using MusicXMLScore.Model.Helpers.SimpleTypes;
 using System;
+using System.Diagnostics;
 using System.Xml.Serialization;
 
 namespace MusicXMLScore.Model.MeasureItems.Attributes
 {
     [Serializable]
     [XmlType(TypeName ="clef")]
+    [DebuggerDisplay("{Number} {Sign.ToString()}{Line} P: {PrintObject.ToString()} Ps: {PrintObjectSpecified}")]
     public class ClefMusicXML
     {
         private ClefSignMusicXML sign;
         private string line;
         private string clefOctaveChange;
-        private string number;
+        private string number = "1";
         private YesNoMusicXML additional;
         private bool additionalSpecified;
         private SymbolSizeMusicXML size;
@@ -181,6 +183,25 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
             {
                 printObjectSpecified = value;
             }
+        }
+        public ClefMusicXML Clone()
+        {
+            ClefMusicXML new_clef = new ClefMusicXML()
+            {
+                Sign = Sign,
+                Line = Line,
+                ClefOctaveChange = ClefOctaveChange,
+                Number = Number,
+                Additional = Additional,
+                AdditionalSpecified = AdditionalSpecified,
+                Size = Size,
+                SizeSpecified = SizeSpecified,
+                AfterBarline = AfterBarline,
+                AfterBarlineSpecified = AfterBarlineSpecified,
+                PrintObject = PrintObject,
+                PrintObjectSpecified = PrintObjectSpecified
+            };
+            return new_clef;
         }
     }
     [Serializable]

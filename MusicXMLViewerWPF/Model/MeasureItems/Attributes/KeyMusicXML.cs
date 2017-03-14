@@ -1,12 +1,14 @@
 ﻿using MusicXMLScore.Model.Helpers.SimpleTypes;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Xml.Serialization;
 
 namespace MusicXMLScore.Model.MeasureItems.Attributes
 {
     [Serializable]
     [XmlType("key")]
+    [DebuggerDisplay("{Items[0]} {number}")]
     public class KeyMusicXML
     {
         private object[] items;
@@ -46,7 +48,7 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
             }
         }
         [XmlElement("key-octave")]
-        public List<KeyOctaveMusicXML> KeyoctaveField
+        public List<KeyOctaveMusicXML> KeyOctave
         {
             get
             {
@@ -96,6 +98,19 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
             {
                 printObjectSpecified = value;
             }
+        }
+        public KeyMusicXML Clone()
+        {
+            KeyMusicXML new_key = new KeyMusicXML()
+            {
+                Items = new List<object>(Items).ToArray(), //TODO_ dunno if work as intended
+                ItemsElementName = ItemsElementName,
+                KeyOctave = KeyOctave,
+                Number = Number,
+                PrintObject = PrintObject,
+                PrintObjectSpecified = PrintObjectSpecified
+            };
+            return new_key;
         }
     }
     [Serializable]
