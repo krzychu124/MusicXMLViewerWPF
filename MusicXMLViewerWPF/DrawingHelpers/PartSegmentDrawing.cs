@@ -91,7 +91,7 @@ namespace MusicXMLScore.DrawingHelpers
                 ScorePartwisePartMeasureMusicXML measureSerializable = ViewModel.ViewModelLocator.Instance.Main.CurrentSelectedScore.Part.ElementAt(partId.GetPartIdIndex()).MeasuresByNumber[measureId];
                 LayoutControl.MeasureSegmentController measureSegment = new LayoutControl.MeasureSegmentController(measureSerializable, partId);
                 LayoutControl.SegmentPanel spanel = measureSegment.GetContentPanel();
-                spanel.AddAttributesContainer(new LayoutControl.SegmentPanelContainers.MeasureAttributesContainer(measureSerializable.Items.OfType<Model.MeasureItems.AttributesMusicXML>().FirstOrDefault()));
+                spanel.AddAttributesContainer(new LayoutControl.SegmentPanelContainers.MeasureAttributesContainer(measureSerializable.Items.OfType<Model.MeasureItems.AttributesMusicXML>().FirstOrDefault(), measureId, partId));
 
                 Canvas.SetTop(spanel, 0/*size.Height*/);
                 Canvas.SetLeft(spanel, partProperties.Coords[measureId].X);

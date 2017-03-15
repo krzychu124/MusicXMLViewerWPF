@@ -17,6 +17,8 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
         private double containerWidth = 0.0;
         private Model.MeasureItems.AttributesMusicXML currentAttributes;
         private int staveNumber = 1;
+        private string measureId;
+        private string partId;
         public double ContainerWidth
         {
             get
@@ -30,9 +32,11 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
             }
         }
 
-        public MeasureAttributesContainer(Model.MeasureItems.AttributesMusicXML attributesXML, int stave = 1)
+        public MeasureAttributesContainer(Model.MeasureItems.AttributesMusicXML attributesXML, string measureId, string partId, int stave = 1)
         {
             attributes = new List<IAttributeItemVisual>();
+            this.measureId = measureId;
+            this.partId = partId;
             currentAttributes = attributesXML;
             if (currentAttributes != null)
             {
@@ -55,7 +59,14 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
             }
             if (currentAttributes.Key.Count != 0)
             {
-
+                int keyCount = currentAttributes.Key.Count;
+                if (keyCount == 1)
+                {
+                    var currentKey = currentAttributes.Key.ElementAt(0);
+                    KeyContainerItem keyItem = new KeyContainerItem(currentKey, measureId, partId);
+                    keySignatureWidth = keyItem.ItemWidth;
+                    AddKeySignature(keyItem);
+                }
             }
             if (currentAttributes.Time.Count != 0)
             {
@@ -78,6 +89,11 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
             {
                 offset += attributes.OfType<ClefContainerItem>().FirstOrDefault().ItemWidth;
             }
+            if (keySignatureWidth != 0)
+            {
+                SetLeft(attributes.OfType<KeyContainerItem>().FirstOrDefault(), offset);
+                offset += attributes.OfType<KeyContainerItem>().FirstOrDefault().ItemWidth;
+            }
             if (timeSignatureWidth != 0)
             {
                 SetLeft(attributes.OfType<TimeSignatureContainerItem>().FirstOrDefault(), offset);
@@ -99,6 +115,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
         {
             keySignatureWidth = keyVisualItem.ItemWidth;
             attributes.Add(keyVisualItem);
+            Children.Add(keyVisualItem);
         }
         public void AddTimeSignature(TimeSignatureContainerItem timeSignatureVisualItem)
         {

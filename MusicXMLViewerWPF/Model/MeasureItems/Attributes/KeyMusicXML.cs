@@ -17,6 +17,8 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
         private string number;
         private YesNoMusicXML printObject;
         private bool printObjectSpecified;
+        private static int[] defaultGSharphKeys = new int[] { 8, 5, 9, 6, 3, 7, 4, 0};
+        private static int[] defaultGFlatKeys = new int[] { 4, 7, 3, 6, 2, 5, 1, 0};
 
         [XmlElement("cancel", typeof(CancelMusicXML))]
         [XmlElement("fifths", typeof(string), DataType = "integer")]
@@ -99,6 +101,33 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
                 printObjectSpecified = value;
             }
         }
+        [XmlIgnore]
+        public static int[] DefaultGSharphKeys
+        {
+            get
+            {
+                return defaultGSharphKeys;
+            }
+
+            set
+            {
+                defaultGSharphKeys = value;
+            }
+        }
+        [XmlIgnore]
+        public static int[] DefaultGFlatKeys
+        {
+            get
+            {
+                return defaultGFlatKeys;
+            }
+
+            set
+            {
+                defaultGFlatKeys = value;
+            }
+        }
+
         public KeyMusicXML Clone()
         {
             KeyMusicXML new_key = new KeyMusicXML()

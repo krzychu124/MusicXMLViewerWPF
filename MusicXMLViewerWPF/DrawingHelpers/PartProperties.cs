@@ -390,6 +390,32 @@ namespace MusicXMLScore.DrawingHelpers
             }
         }
 
+        public Dictionary<string, List<ClefMusicXML>> ClefAttributes
+        {
+            get
+            {
+                return clefAttributes;
+            }
+
+            set
+            {
+                clefAttributes = value;
+            }
+        }
+
+        public Dictionary<string, KeyMusicXML> KeyAttributes
+        {
+            get
+            {
+                return keyAttributes;
+            }
+
+            set
+            {
+                keyAttributes = value;
+            }
+        }
+
         #endregion Properties
 
         #region Methods

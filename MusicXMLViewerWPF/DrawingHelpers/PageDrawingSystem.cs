@@ -114,7 +114,7 @@ namespace MusicXMLScore.DrawingHelpers
         {
             foreach (var part in score.Part)
             {
-                PartProperties tempPartProperties = new PartProperties(score, part.Id); 
+                PartProperties tempPartProperties = ViewModelLocator.Instance.Main.CurrentPartsProperties[part.Id]; /*new PartProperties(score, part.Id); */
                 int partIndex = score.Part.IndexOf(part);
                 if (partIndex != 0)
                 {
