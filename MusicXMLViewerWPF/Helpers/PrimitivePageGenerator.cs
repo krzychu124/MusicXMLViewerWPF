@@ -19,7 +19,7 @@ using System.Windows.Shapes;
 
 namespace MusicXMLScore.Helpers
 {
-    public class PrimitivePageGenerator
+    public class PrimitivePageGenerator //TODO_LATER check/refactor/remove
     {
         Dictionary<string, MusicXMLScore.DrawingHelpers.PartProperties> partsProperties;
         private CanvasList page;
@@ -42,7 +42,7 @@ namespace MusicXMLScore.Helpers
             DrawCreditsSpace();
             //DrawMeasuresTopLine();
             //CalculateMeasureTopLines();
-            partProperties = new MusicXMLScore.DrawingHelpers.PartProperties(score, score.Part.ElementAt(0).Id);
+            partProperties = ViewModelLocator.Instance.Main.CurrentPartsProperties[score.Part.ElementAt(0).Id];// new MusicXMLScore.DrawingHelpers.PartProperties(score, score.Part.ElementAt(0).Id);
             //var pp = new MusicXMLScore.DrawingHelpers.PartProperties(score, "P2");
             //GetPartsProperties();
             //partsProperties.CorrectCoords();
@@ -56,7 +56,7 @@ namespace MusicXMLScore.Helpers
             partsProperties = new Dictionary<string, MusicXMLScore.DrawingHelpers.PartProperties>();
             foreach (var part in score.Part)
             {
-                MusicXMLScore.DrawingHelpers.PartProperties pp = new MusicXMLScore.DrawingHelpers.PartProperties(score, part.Id);
+                MusicXMLScore.DrawingHelpers.PartProperties pp = ViewModelLocator.Instance.Main.CurrentPartsProperties[part.Id];
                 int partIndex = score.Part.IndexOf(part);
                 if (partIndex != 0)
                 {

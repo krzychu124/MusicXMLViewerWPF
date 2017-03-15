@@ -58,11 +58,8 @@ namespace MusicXMLScore.ViewModel
 
         public RelayCommand AddMeasureCommand { get; set; }
         public RelayCommand CloseFileCommand { get; set; }
-        public LayoutControl.LayoutGeneral CurrentLayout { get { return ScoreProperties.CurrentScoreProperties.Layout; } }
-        public PageProperties CurrentPageProperties
-        {
-            get { return ScoreProperties.CurrentScoreProperties.PageProperties;}
-        }
+        public LayoutControl.LayoutGeneral CurrentLayout { get { return ScoreProperties.CurrentLayoutProperties; } }
+        public PageProperties CurrentPageProperties { get { return ScoreProperties.CurrentLayoutProperties.PageProperties;} }
         public ScorePartwiseMusicXML CurrentSelectedScore { get { return ScoreProperties.CurrentScoreProperties.Score; } }
         public RelayCommand ExitCommand { get; set; }
         public bool IsBlank
@@ -113,7 +110,8 @@ namespace MusicXMLScore.ViewModel
         }
         public ObservableCollection<TabItem> TabsCreated { get { return tabscreated; } set { if (value != null) { tabscreated = value; } } }
         public RelayCommand TestButtonCommand { get; set; }
-        internal Dictionary<string, PartProperties>CurrentPartsProperties { get { return ScoreProperties.CurrentScoreProperties.PartProperties;/*currentpartPropertiesContainer;*/ } /*set { currentpartPropertiesContainer = value; }*/ }
+        internal Dictionary<string, PartProperties> CurrentPartsProperties { get { return ScoreProperties.CurrentScoreProperties.PartProperties;/*currentpartPropertiesContainer;*/ } /*set { currentpartPropertiesContainer = value; }*/ }
+        internal MusicXMLScore.ScoreProperties.ScoreProperties CurrentScoreProperties {  get { return scoreProperties.CurrentScoreProperties;  } }
         internal ScorePropertiesContainer ScoreProperties
         {
             get

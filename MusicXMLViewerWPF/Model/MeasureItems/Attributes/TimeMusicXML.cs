@@ -5,7 +5,7 @@ using System.Xml.Serialization;
 namespace MusicXMLScore.Model.MeasureItems.Attributes
 {
     [Serializable]
-    [XmlType(TypeName ="time")]
+    [XmlType(TypeName = "time")]
     public class TimeMusicXML
     {
         private object[] items;
@@ -53,7 +53,7 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
                 itemsElementName = value;
             }
         }
-        [XmlAttribute("number", DataType ="positiveInteger")]
+        [XmlAttribute("number", DataType = "positiveInteger")]
         public string Number
         {
             get
@@ -129,6 +129,7 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
             set
             {
                 printObject = value;
+                printObjectSpecified = true;
             }
         }
         [XmlIgnore]
@@ -143,6 +144,22 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
             {
                 printObjectSpecified = value;
             }
+        }
+        public TimeMusicXML Clone()
+        {
+            TimeMusicXML new_time = new TimeMusicXML()
+            {
+                Items = new object[] { items },
+                ItemsElementName = itemsElementName,
+                Number = number,
+                TimeSymbol = TimeSymbol,
+                TimeSymbolSpecified = TimeSymbolSpecified,
+                Separator = Separator,
+                SeparatorSpecified = SeparatorSpecified,
+                PrintObject = PrintObject,
+                PrintObjectSpecified = PrintObjectSpecified
+            };
+            return new_time;
         }
     }
 

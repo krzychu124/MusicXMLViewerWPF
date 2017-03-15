@@ -223,6 +223,7 @@
     <Compile Include="Model\ScorePartwisePartMusicXML.cs" />
     <Compile Include="Model\MeasureItems\SoundMusicXML.cs" />
     <Compile Include="ScoreProperties\ScorePropertiesContainer.cs" />
+    <Compile Include="ScoreProperties\TimeSignatures.cs" />
     <Compile Include="ViewModel\MeasureViewModel.cs" />
     <Compile Include="ViewModel\PartsSegmentViewModel.cs" />
     <Compile Include="ViewModel\PartViewModel.cs" />

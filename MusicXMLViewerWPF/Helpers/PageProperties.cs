@@ -144,6 +144,19 @@ namespace MusicXMLScore.Helpers
             }
         }
 
+        public Dictionary<int, double> AvaliableIndexLinePositions
+        {
+            get
+            {
+                return avaliableIndexLinePositions;
+            }
+
+            set
+            {
+                avaliableIndexLinePositions = value;
+            }
+        }
+
         public PageProperties()
         {
             CalculateConverterFactor();

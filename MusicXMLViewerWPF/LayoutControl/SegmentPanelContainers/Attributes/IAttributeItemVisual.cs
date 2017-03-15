@@ -9,7 +9,13 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Attributes
 {
     interface IAttributeItemVisual
     {
-        double ItemWidth { get; }
+        #region Properties
+
+        bool Empty { get; set; }
         Rect ItemRectBounds { get; set; }
+        double ItemWidth { get; }
+        bool Visible { get; set; }
+
+        #endregion Properties
     }
 }
