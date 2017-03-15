@@ -12,8 +12,9 @@ namespace MusicXMLScore.ScoreProperties
     class ScorePropertiesContainer
     {
         private Dictionary<string, ScoreProperties> scorePropertiesContainer;
-        private static ScoreProperties currentScoreProperties;
-
+        private Dictionary<string, LayoutGeneral> scoreLayoutContainer;
+        private ScoreProperties currentScoreProperties;
+        private LayoutGeneral currentLayoutProperties;
         internal ScoreProperties CurrentScoreProperties
         {
             get
@@ -22,23 +23,45 @@ namespace MusicXMLScore.ScoreProperties
             }
         }
 
+        public LayoutGeneral CurrentLayoutProperties
+        {
+            get
+            {
+                return currentLayoutProperties;
+            }
+
+            set
+            {
+                currentLayoutProperties = value;
+            }
+        }
+
         public ScorePropertiesContainer()
         {
+            scoreLayoutContainer = new Dictionary<string, LayoutGeneral>();
+            currentLayoutProperties = new LayoutGeneral();
+            scoreLayoutContainer.Add("default", currentLayoutProperties);
             scorePropertiesContainer = new Dictionary<string, ScoreProperties>();
             scorePropertiesContainer.Add("default", new ScoreProperties(new ScorePartwiseMusicXML()));
             SelectScore("default");
         }
         public void AddScore(ScorePartwiseMusicXML score)
-        {
+        { //! Layout init before scoreProperties
+            LayoutGeneral layout = new LayoutGeneral(score);
+            currentLayoutProperties = layout;
+            scoreLayoutContainer.Add(score.ID, layout);
+
             ScoreProperties scoreProperties = new ScoreProperties(score);
             scorePropertiesContainer.Add(score.ID, scoreProperties);
             SelectScore(score.ID);
+            //scoreProperties.Init();
         }
         public void RemoveScore(string scoreID)
         {
             if (scorePropertiesContainer.ContainsKey(scoreID))
             {
                 scorePropertiesContainer.Remove(scoreID);
+                scoreLayoutContainer.Remove(scoreID);
                 SelectScore(scorePropertiesContainer.LastOrDefault().Key);
             }
         }
@@ -46,10 +69,12 @@ namespace MusicXMLScore.ScoreProperties
         {
             if (scorePropertiesContainer.ContainsKey(scoreID))
             {
+                currentLayoutProperties = scoreLayoutContainer[scoreID];
                 currentScoreProperties = scorePropertiesContainer[scoreID];
             }
             else
             {
+                currentLayoutProperties = scoreLayoutContainer["default"];
                 currentScoreProperties = scorePropertiesContainer["default"];
             }
         }
@@ -58,7 +83,7 @@ namespace MusicXMLScore.ScoreProperties
     class ScoreProperties
     {
         private Dictionary<string, PartProperties> partProperties;
-        private LayoutGeneral layout;
+        //private LayoutGeneral layout;
         private ScorePartwiseMusicXML score;
         private TimeSignatures timeSignatures;
         private string id;
@@ -66,13 +91,16 @@ namespace MusicXMLScore.ScoreProperties
         {
             this.score = score;
             id = this.score.ID;
-            layout = new LayoutGeneral();
+           // layout = new LayoutGeneral();
             if (score != null)
             {
-                layout = new LayoutGeneral(score);
-                GetParts(score);
-                timeSignatures = new TimeSignatures(score);
+                Init();//layout = new LayoutGeneral(score);
             }
+        }
+        public void Init()
+        {
+            GetParts(this.score);
+            GetTimeSignatures(this.score);
         }
         private void GetParts(ScorePartwiseMusicXML score)
         {
@@ -84,6 +112,10 @@ namespace MusicXMLScore.ScoreProperties
                     partProperties.Add(part.Id, new PartProperties(score, part.Id));
                 }
             }
+        }
+        private void GetTimeSignatures(ScorePartwiseMusicXML score)
+        {
+            timeSignatures = new TimeSignatures(score);
         }
         public Dictionary<string, PartProperties> PartProperties
         {
@@ -97,17 +129,17 @@ namespace MusicXMLScore.ScoreProperties
             }
         }
 
-        public LayoutGeneral Layout
-        {
-            get
-            {
-                return layout;
-            }
-            set
-            {
-                layout = value;
-            }
-        }
+        //public LayoutGeneral Layout
+        //{
+        //    get
+        //    {
+        //        return layout;
+        //    }
+        //    set
+        //    {
+        //        layout = value;
+        //    }
+        //}
 
         public ScorePartwiseMusicXML Score
         {
@@ -118,13 +150,6 @@ namespace MusicXMLScore.ScoreProperties
             set
             {
                 score = value;
-            }
-        }
-        public Helpers.PageProperties PageProperties
-        {
-            get
-            {
-                return layout.PageProperties;
             }
         }
 

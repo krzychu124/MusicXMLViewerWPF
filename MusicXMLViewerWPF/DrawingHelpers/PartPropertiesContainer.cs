@@ -7,7 +7,7 @@ using MusicXMLScore.Converters;
 
 namespace MusicXMLScore.DrawingHelpers
 {
-    class PartPropertiesContainer
+    class PartPropertiesContainer //TODO_WIP check usage and remove in no
     {
         Dictionary<string, PartProperties> partProperties = new Dictionary<string, PartProperties>();
         public PartPropertiesContainer(MusicXMLViewerWPF.ScorePartwiseMusicXML score)

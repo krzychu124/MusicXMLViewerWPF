@@ -137,7 +137,7 @@ namespace MusicXMLScore.ViewModel
             IsBlank = false;
             partwise = spmXML;
             PagesCollection = new ObservableCollection<UIElement>();
-            DrawingHelpers.PartProperties pp = new DrawingHelpers.PartProperties(spmXML, spmXML.Part.ElementAt(0).Id);
+            DrawingHelpers.PartProperties pp = ViewModelLocator.Instance.Main.CurrentPartsProperties[spmXML.Part.ElementAt(0).Id];
             foreach (var pages in pp.PartSysemsInPages)
             {
                 AddPageToCollection(spmXML);
