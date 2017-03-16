@@ -119,6 +119,8 @@ namespace MusicXMLScore.DrawingHelpers
                 Canvas.SetTop(partSegment.PartSegmentCanvas, partsPositions[partSegmentId].Item3); //TODO_H layout-problem with first part...
                 Canvas.SetLeft(partSegment.PartSegmentCanvas, partsPositions[partSegmentId].Item1);
             }
+            //TODO_WIP arrange MeasureAttributesContainer items; If more than one part, rearange measureattributes placement of each part measure using largest width offset of every type 
+
         }
 
         private void CalculateSize()
@@ -140,7 +142,7 @@ namespace MusicXMLScore.DrawingHelpers
             partSystemCanvas = new Canvas();
             foreach (var partId in partIDsList)
             {
-                PartSegmentDrawing partSegment = new PartSegmentDrawing(measuresList, partId, partsPropertiesList[partId]);
+                PartSegmentDrawing partSegment = new PartSegmentDrawing(measuresList, partId, partsPropertiesList[partId], systemIndex);
                 partsSegments.Add(partId, partSegment);
                 partSegment.GenerateContent();
                 PartSystemCanvas.Children.Add(partSegment.PartSegmentCanvas);

@@ -12,6 +12,20 @@ namespace MusicXMLScore.ScoreProperties
     {
         Dictionary<string, TimeMusicXML> timeSignatures = new Dictionary<string, TimeMusicXML>();
         MusicXMLViewerWPF.ScorePartwiseMusicXML score;
+
+        public Dictionary<string, TimeMusicXML> TimeSignaturesDictionary
+        {
+            get
+            {
+                return timeSignatures;
+            }
+
+            set
+            {
+                timeSignatures = value;
+            }
+        }
+
         public TimeSignatures(MusicXMLViewerWPF.ScorePartwiseMusicXML score)
         {
             this.score = score;
@@ -51,7 +65,7 @@ namespace MusicXMLScore.ScoreProperties
                 }
               
             }
-            var test = timeSignatures.Select(i => i).Where(i => i.Value.PrintObject == Model.Helpers.SimpleTypes.YesNoMusicXML.yes);
+            //var test = timeSignatures.Select(i => i).Where(i => i.Value.PrintObject == Model.Helpers.SimpleTypes.YesNoMusicXML.yes);
         }
         
     }

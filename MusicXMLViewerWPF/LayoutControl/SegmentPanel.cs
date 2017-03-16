@@ -25,18 +25,25 @@ namespace MusicXMLScore.LayoutControl
         private string partID;
         private Dictionary<int, double> staffDistances = new Dictionary<int, double>() { { 1, 0.0 } };
         private PartProperties partProperties;
-        public SegmentPanel(string partID)
+        private int systemIndex = 0;
+        public SegmentPanel(string partID, int systemIndex)
         {
             this.partID = partID;
+            this.systemIndex = systemIndex;
             partProperties = ViewModel.ViewModelLocator.Instance.Main.CurrentPartsProperties[this.partID];
             staves = partProperties.NumberOfStaves;
-            defaultStavesDistance = partProperties.StavesDistance;
+            defaultStavesDistance = partProperties.StaffLayoutPerPage.ElementAt(0).ElementAt(systemIndex).StaffDistance;//? StavesDistance;
             SetHeight();
         }
         public void AddAttributesContainer(MeasureAttributesContainer measureAttributes, int numberOfStave = 1)
         {
             measureAttributes.Tag = numberOfStave.ToString();
-            Canvas.SetLeft(measureAttributes, 3);
+            Canvas.SetLeft(measureAttributes, (3.0).TenthsToWPFUnit()); //adding left offset, refactor to %of staffline height, or add to each child element
+            if (numberOfStave != 1)//works property if number of staves is 2, higher nuber will overlap with 2nd. stave, WiP
+            {
+                double staffHeight = ViewModel.ViewModelLocator.Instance.Main.CurrentLayout.PageProperties.StaffHeight.MMToTenths();
+                Canvas.SetTop(measureAttributes, staffHeight + defaultStavesDistance.TenthsToWPFUnit());
+            }
             Children.Add(measureAttributes);
             attributesContainer = new Dictionary<int, MeasureAttributesContainer>();
             attributesContainer.Add(numberOfStave, measureAttributes);

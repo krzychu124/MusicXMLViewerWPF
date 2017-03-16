@@ -14,6 +14,9 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
         private double clefWidth = 0.0;
         private double keySignatureWidth = 0.0;
         private double timeSignatureWidth = 0.0;
+        private double sharedClefWidth = 0.0;
+        private double sharedKeySignatureWidth = 0.0;
+        private double sharedTimeSignatureWidth = 0.0;
         private double containerWidth = 0.0;
         private Model.MeasureItems.AttributesMusicXML currentAttributes;
         private int staveNumber = 1;
@@ -32,52 +35,93 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
             }
         }
 
+        public double SharedClefWidth
+        {
+            get
+            {
+                return sharedClefWidth;
+            }
+
+            set
+            {
+                sharedClefWidth = value;
+            }
+        }
+
+        public double SharedKeySignatureWidth
+        {
+            get
+            {
+                return sharedKeySignatureWidth;
+            }
+
+            set
+            {
+                sharedKeySignatureWidth = value;
+            }
+        }
+
+        public double SharedTimeSignatureWidth
+        {
+            get
+            {
+                return sharedTimeSignatureWidth;
+            }
+
+            set
+            {
+                sharedTimeSignatureWidth = value;
+            }
+        }
+
         public MeasureAttributesContainer(Model.MeasureItems.AttributesMusicXML attributesXML, string measureId, string partId, int stave = 1)
         {
             attributes = new List<IAttributeItemVisual>();
             this.measureId = measureId;
             this.partId = partId;
             currentAttributes = attributesXML;
+            staveNumber = stave;
+            InitAtributes();
             if (currentAttributes != null)
             {
-            InitAtributes();
+                
             }
         }
 
         private void InitAtributes()
         {
-            if (currentAttributes.Clef.Count != 0)
+            DrawingHelpers.PartProperties partProperties = ViewModel.ViewModelLocator.Instance.Main.CurrentPartsProperties[partId];
+            //Adding clef if clef.PrintObject = Yes;
+            List<double> tempClefsWidth = new List<double>();
+            foreach (var clef in partProperties.ClefAttributes[measureId])
             {
-                int clefCount = currentAttributes.Clef.Count;
-                if (clefCount == 1 || currentAttributes.Clef.Where(i=> i.Number == "1").FirstOrDefault() != null)
+                if (clef.Number == staveNumber.ToString())
                 {
-                    var currentClef = currentAttributes.Clef.ElementAt(0);
-                    ClefContainerItem clefItem = new ClefContainerItem(currentClef);
-                    clefWidth = clefItem.ItemWidth;
-                    AddClef(clefItem);
+                    if(clef.PrintObject == Model.Helpers.SimpleTypes.YesNoMusicXML.yes)
+                    {
+                        ClefContainerItem clefItem = new ClefContainerItem(clef);
+                        tempClefsWidth.Add(clefItem.ItemWidth);
+                        AddClef(clefItem);
+                    }
                 }
             }
-            if (currentAttributes.Key.Count != 0)
+            clefWidth = tempClefsWidth.Count != 0 ? tempClefsWidth.Max() : 0;
+            
+            //Adding keySignature if clef.PrintObject = Yes;
+            Model.MeasureItems.Attributes.KeyMusicXML key = partProperties.KeyAttributes[measureId];
+            if (key.PrintObject == Model.Helpers.SimpleTypes.YesNoMusicXML.yes)
             {
-                int keyCount = currentAttributes.Key.Count;
-                if (keyCount == 1)
-                {
-                    var currentKey = currentAttributes.Key.ElementAt(0);
-                    KeyContainerItem keyItem = new KeyContainerItem(currentKey, measureId, partId);
-                    keySignatureWidth = keyItem.ItemWidth;
-                    AddKeySignature(keyItem);
-                }
+                KeyContainerItem keyItem = new KeyContainerItem(key, measureId, partId);
+                keySignatureWidth =keyItem.ItemWidth;
+                AddKeySignature(keyItem);
             }
-            if (currentAttributes.Time.Count != 0)
+            //Adding timeSignature if clef.PrintObject = Yes;
+            Model.MeasureItems.Attributes.TimeMusicXML timeSignature = ViewModel.ViewModelLocator.Instance.Main.CurrentScoreProperties.TimeSignatures.TimeSignaturesDictionary[measureId];
+            if (timeSignature.PrintObject == Model.Helpers.SimpleTypes.YesNoMusicXML.yes)
             {
-                int timeCount = currentAttributes.Time.Count;
-                if (timeCount == 1)
-                {
-                    var currentTime = currentAttributes.Time.ElementAt(0);
-                    TimeSignatureContainerItem timeItem = new TimeSignatureContainerItem(currentTime);
-                    timeSignatureWidth = timeItem.ItemWidth;
-                    AddTimeSignature(timeItem);
-                }
+                TimeSignatureContainerItem timeItem = new TimeSignatureContainerItem(timeSignature);
+                timeSignatureWidth = timeItem.ItemWidth;
+                AddTimeSignature(timeItem);
             }
             ArrangeAttribures();
         }
@@ -97,6 +141,27 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
             if (timeSignatureWidth != 0)
             {
                 SetLeft(attributes.OfType<TimeSignatureContainerItem>().FirstOrDefault(), offset);
+            }
+        }
+        public Tuple<double, double> GetKeyTimeSigWidths()
+        {
+            return new Tuple<double, double>(keySignatureWidth, timeSignatureWidth);
+        }
+        public void SetSharedPositions(double keyOffset, double timeSigOffset)
+        {
+            sharedKeySignatureWidth = keyOffset;
+            sharedTimeSignatureWidth = timeSigOffset;
+        }
+        public void ArrangeWithSharedPositions(bool useDefaultPosition = false)
+        {
+            if (!useDefaultPosition)
+            {
+                SetLeft(attributes.OfType<KeyContainerItem>().FirstOrDefault(), sharedKeySignatureWidth);
+                SetLeft(attributes.OfType<TimeSignatureContainerItem>().FirstOrDefault(), sharedTimeSignatureWidth);
+            }
+            else
+            {
+                ArrangeAttribures();
             }
         }
 

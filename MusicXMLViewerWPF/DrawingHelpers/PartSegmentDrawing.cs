@@ -18,16 +18,17 @@ namespace MusicXMLScore.DrawingHelpers
         private Size size;
         private double staffDistance = 0.0;
         private int stavesCount = 1;
-
+        private int systemIndex;
         #endregion Fields
 
         #region Constructors
 
-        public PartSegmentDrawing(List<string> measuresList, string partId, PartProperties partProperites)
+        public PartSegmentDrawing(List<string> measuresList, string partId, PartProperties partProperites, int systemIndex)
         {
             this.measuresList = measuresList;
             this.partId = partId;
             this.partProperties = partProperites;
+            this.systemIndex = systemIndex;
             stavesCount = partProperties.NumberOfStaves;
             staffDistance = partProperites.StavesDistance;
             CalculateDimensions();
@@ -89,9 +90,10 @@ namespace MusicXMLScore.DrawingHelpers
             {
                 MeasureDrawing measureCanvas = new MeasureDrawing(measureId, partId, staffDistance, stavesCount);
                 ScorePartwisePartMeasureMusicXML measureSerializable = ViewModel.ViewModelLocator.Instance.Main.CurrentSelectedScore.Part.ElementAt(partId.GetPartIdIndex()).MeasuresByNumber[measureId];
-                LayoutControl.MeasureSegmentController measureSegment = new LayoutControl.MeasureSegmentController(measureSerializable, partId);
+
+                LayoutControl.MeasureSegmentController measureSegment = new LayoutControl.MeasureSegmentController(measureSerializable, partId, stavesCount, systemIndex);
                 LayoutControl.SegmentPanel spanel = measureSegment.GetContentPanel();
-                spanel.AddAttributesContainer(new LayoutControl.SegmentPanelContainers.MeasureAttributesContainer(measureSerializable.Items.OfType<Model.MeasureItems.AttributesMusicXML>().FirstOrDefault(), measureId, partId));
+                //spanel.AddAttributesContainer(new LayoutControl.SegmentPanelContainers.MeasureAttributesContainer(measureSerializable.Items.OfType<Model.MeasureItems.AttributesMusicXML>().FirstOrDefault(), measureId, partId));
 
                 Canvas.SetTop(spanel, 0/*size.Height*/);
                 Canvas.SetLeft(spanel, partProperties.Coords[measureId].X);
