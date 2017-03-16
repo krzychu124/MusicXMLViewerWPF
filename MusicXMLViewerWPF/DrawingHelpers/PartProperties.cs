@@ -325,7 +325,7 @@ namespace MusicXMLScore.DrawingHelpers
             ClefMusicXML[] clefsArray = new ClefMusicXML[numberOfStaves];
             ClefMusicXML[] clefsArrayToClone = new ClefMusicXML[numberOfStaves];
             string fistMeasureId = currentPart.Measure.FirstOrDefault().Number;
-            var firstMeasureClefs = currentPart.Measure.FirstOrDefault().Items.OfType<AttributesMusicXML>().FirstOrDefault().Clef.ToArray();
+            var firstMeasureClefs = currentPart.Measure.FirstOrDefault().Items.OfType<AttributesMusicXML>().FirstOrDefault()?.Clef.ToArray();
             if (firstMeasureClefs == null)
             {
                 throw new Exception("First measure in part does not contain Clef attribute"); //TODO_LATER Refactor to check before passing to this class.
