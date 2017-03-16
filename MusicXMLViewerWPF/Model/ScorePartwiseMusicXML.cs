@@ -165,6 +165,10 @@ namespace MusicXMLViewerWPF
         }
         public void InitPartsDictionaries()
         {
+            if (Part.Count == 1 && part.ElementAt(0).Id == null)
+            {
+                part.ElementAt(0).Id = Partlist.ScoreParts.ElementAt(0).PartId;
+            }
             foreach (var part in Part)
             {
                 part.SetMeasuresDictionary();
