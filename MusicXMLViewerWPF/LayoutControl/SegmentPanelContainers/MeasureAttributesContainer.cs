@@ -86,8 +86,15 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
             {
                 
             }
+            CalculateContainerWidth();
         }
 
+        private double GetContainerWidth()
+        {
+            double result = 0.0;
+            result = attributes.Sum(i => i.ItemWidth);
+            return result;
+        }
         private void InitAtributes()
         {
             DrawingHelpers.PartProperties partProperties = ViewModel.ViewModelLocator.Instance.Main.CurrentPartsProperties[partId];
