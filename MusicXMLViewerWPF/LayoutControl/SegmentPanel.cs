@@ -45,8 +45,31 @@ namespace MusicXMLScore.LayoutControl
                 Canvas.SetTop(measureAttributes, staffHeight + defaultStavesDistance.TenthsToWPFUnit());
             }
             Children.Add(measureAttributes);
-            attributesContainer = new Dictionary<int, MeasureAttributesContainer>();
+            InitAttributesContainer();// attributesContainer = new Dictionary<int, MeasureAttributesContainer>();
             attributesContainer.Add(numberOfStave, measureAttributes);
+        }
+        public void AddNotesContainer(MeasureNotesContainer measureNotes, int numberOfStave = 1)
+        {
+            measureNotes.Tag = numberOfStave.ToString();
+            var t = attributesContainer.ElementAt(0).Value.ContainerWidth;
+            Canvas.SetLeft(measureNotes, t);
+            Children.Add(measureNotes);
+            InitNotesContainer();
+            notesContainer.Add(numberOfStave, measureNotes);
+        }
+        private void InitAttributesContainer()
+        {
+            if (attributesContainer == null)
+            {
+                attributesContainer = new Dictionary<int, MeasureAttributesContainer>();
+            }
+        }
+        private void InitNotesContainer()
+        {
+            if (notesContainer == null)
+            {
+                notesContainer = new Dictionary<int, MeasureNotesContainer>();
+            }
         }
         private void SetHeight()
         {

@@ -131,6 +131,7 @@
     <Compile Include="LayoutControl\SegmentPanelContainers\Attributes\TimeSignatureContainerItem.cs" />
     <Compile Include="LayoutControl\SegmentPanelContainers\MeasureAttributesContainer.cs" />
     <Compile Include="LayoutControl\SegmentPanelContainers\MeasureNotesContainer.cs" />
+    <Compile Include="LayoutControl\SegmentPanelContainers\Notes\CalculationHelpers.cs" />
     <Compile Include="LayoutControl\SegmentPanelContainers\Notes\INoteItemVisual.cs" />
     <Compile Include="LayoutControl\SegmentPanelContainers\Notes\NoteContainerItem.cs" />
     <Compile Include="LayoutControl\SegmentPanelContainers\Notes\RestContainterItem.cs" />

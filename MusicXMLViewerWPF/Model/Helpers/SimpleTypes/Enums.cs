@@ -259,4 +259,40 @@ namespace MusicXMLScore.Model.Helpers.SimpleTypes
         [XmlEnum("backward hook")]
         backwardhook,
     }
+    /// <summary>
+    /// Notes with shorter duration than eighth has prefix "Item" in name
+    /// </summary>
+    public enum NoteDurationValues
+    {
+        @long = 1,
+        brave = 2,
+        whole = 4,
+        half = 8,
+        quarter = 16,
+        eighth = 32,
+        Item16th = 64,
+        Item32nd = 128,
+        Item64th = 256,
+        Item128th= 512,
+        Item256th = 1024,
+        Item512th = 2048,
+        Item1024th = 4096,
+    }
+
+    public enum NoteDurationValuesInverted
+    {
+        @long = 4096,
+        brave = 2048,
+        whole = 1024,
+        half = 512,
+        quarter = 256,
+        eighth = 128,
+        Item16th = 64,
+        Item32nd = 32,
+        Item64th = 16,
+        Item128th = 8,
+        Item256th = 4,
+        Item512th = 2,
+        Item1024th = 1,
+    }
 }

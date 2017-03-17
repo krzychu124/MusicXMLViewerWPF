@@ -17,6 +17,7 @@ namespace MusicXMLScore.LayoutControl
             for (int i = 1; i <= stavesCount; i++)
             {
                 segmentPanel.AddAttributesContainer(new SegmentPanelContainers.MeasureAttributesContainer(measure.Items.OfType<Model.MeasureItems.AttributesMusicXML>().FirstOrDefault(), measure.Number, partID, i), i);
+                segmentPanel.AddNotesContainer(new SegmentPanelContainers.MeasureNotesContainer(measure, partID, i), i);
             }
             //segmentPanel.AddAttributesContainer(new SegmentPanelContainers.MeasureAttributesContainer(measure.Items.OfType<Model.MeasureItems.AttributesMusicXML>().FirstOrDefault(), measure.Number, partID), stavesCount);
         }
