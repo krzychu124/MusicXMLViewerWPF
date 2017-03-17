@@ -1,4 +1,5 @@
-﻿using MusicXMLViewerWPF;
+﻿using MusicXMLScore.Model.Helpers.SimpleTypes;
+using MusicXMLViewerWPF;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -151,16 +152,21 @@ namespace MusicXMLScore.DrawingHelpers
         #endregion
 
         #region rests
-        public const string WholeRest = "\uE4F4";
-        public const string HalfRest = "\uE4F5";
+        public const string BreveRest = "\uE4E1";
+        public const string LongRest = "\uE4E2";
+        public const string WholeRest = "\uE4E3";
+        public const string HalfRest = "\uE4E4";
         public const string QuarterRest = "\uE4E5";
         public const string EightRest = "\uE4E6";
-        public const string SixteenRest = "\uE4E7";
-        public const string ThirtyTwoRest = "\uE4E8";
-        public const string SixstyFourRest = "\uE4E9";
-        public const string MultiMeasureRest = "\uE4EE";
-        #endregion
-
+        public const string Item16thRest = "\uE4E7";
+        public const string Item32ndRest = "\uE4E8";
+        public const string Item64thRest = "\uE4E9";
+        public const string Item128thRest = "\uE4EA";
+        public const string Item256thRest = "\uE4EB";
+        public const string Item512thRest = "\uE4EC";
+        public const string Item1024thRest = "\uE4ED";
+        
+        #endregion          
         #region primitives
         public const string WholeDot = "\uE0A2";
         public const string HalfDot = "\uE0A3";
@@ -172,7 +178,7 @@ namespace MusicXMLScore.DrawingHelpers
         public const string FlagSixteen = "\U0001D16f";
         public const string FlagThirtyTwo = "\U0001D170";
         public const string FlagSixstyFour = "\U0001D171";
-        #endregion
+        #endregion          Item1024th
 
         #region articulations
         public const string Accent = "\uE4A0";
@@ -379,10 +385,10 @@ namespace MusicXMLScore.DrawingHelpers
             { MusSymbolDuration.Whole, WholeRest},
             { MusSymbolDuration.Half, HalfRest},
             { MusSymbolDuration.Quarter, QuarterRest},
-            { MusSymbolDuration.Eight, EightRest},
-            { MusSymbolDuration.Sixteen, SixteenRest},
-            { MusSymbolDuration.d32nd, ThirtyTwoRest},
-            { MusSymbolDuration.d64th, SixstyFourRest},
+            //{ MusSymbolDuration.Eight, EightRest},
+            //{ MusSymbolDuration.Sixteen, SixteenRest},
+            //{ MusSymbolDuration.d32nd, ThirtyTwoRest},
+            //{ MusSymbolDuration.d64th, SixstyFourRest},
             { MusSymbolDuration.Unknown, "r?" }
         };
         public static string GetCustomTimeNumber(string number)
@@ -414,6 +420,26 @@ namespace MusicXMLScore.DrawingHelpers
             {7,TSeven },
             {8,TEight },
             {9,TNine },
+        };
+        public static string GetRestSymbolNoteType(NoteTypeValueMusicXML noteTypeValue)
+        {
+            return NoteTypeSymbols[noteTypeValue];
+        }
+        private static Dictionary<NoteTypeValueMusicXML, string> NoteTypeSymbols = new Dictionary<NoteTypeValueMusicXML, string>()
+        {
+            {NoteTypeValueMusicXML.breve, BreveRest },
+            {NoteTypeValueMusicXML.@long, LongRest },
+            {NoteTypeValueMusicXML.whole, WholeRest},
+            {NoteTypeValueMusicXML.half, HalfRest },
+            {NoteTypeValueMusicXML.quarter, QuarterRest },
+            {NoteTypeValueMusicXML.eighth, EightRest },
+            {NoteTypeValueMusicXML.Item16th, Item16thRest },
+            {NoteTypeValueMusicXML.Item32nd, Item32ndRest },
+            {NoteTypeValueMusicXML.Item64th, Item64thRest },
+            {NoteTypeValueMusicXML.Item128th, Item128thRest },
+            {NoteTypeValueMusicXML.Item256th, Item256thRest },
+            {NoteTypeValueMusicXML.Item512th, Item512thRest },
+            {NoteTypeValueMusicXML.Item1024th,Item1024thRest },
         };
     }
 }

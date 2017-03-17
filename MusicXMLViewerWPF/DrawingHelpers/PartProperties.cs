@@ -21,6 +21,7 @@ namespace MusicXMLScore.DrawingHelpers
         private double defaultStaffDistance = 0.0;
         private double defaultSystemDistance = 0.0;
         private double defaultTopSystemDistance = 0.0;
+        private Dictionary<string, int> divisionsAttributes;
         private Dictionary<string, KeyMusicXML> keyAttributes;
         private List<MeasureNumberingMusicXML> measureNumbering = new List<MeasureNumberingMusicXML>();
         private List<List<MeasureNumberingMusicXML>> measureNumberingPerPage = new List<List<MeasureNumberingMusicXML>>();
@@ -136,6 +137,7 @@ namespace MusicXMLScore.DrawingHelpers
             SetPartHeight();
             GenerateClefAttributes();
             GenerateKeyAttributes();
+            GenerateDivisionChanges();
         }
 
         #endregion Constructors
@@ -165,6 +167,19 @@ namespace MusicXMLScore.DrawingHelpers
             set
             {
                 coords = value;
+            }
+        }
+
+        public Dictionary<string, int> DivisionsAttributes
+        {
+            get
+            {
+                return divisionsAttributes;
+            }
+
+            set
+            {
+                divisionsAttributes = value;
             }
         }
 
@@ -429,6 +444,24 @@ namespace MusicXMLScore.DrawingHelpers
             }
             //var test = keyAttributes.Select(i => i).Where(i => i.Value.PrintObject == Model.Helpers.SimpleTypes.YesNoMusicXML.yes);
         }
+        private void GenerateDivisionChanges()
+        {
+            divisionsAttributes = new Dictionary<string, int>();
+            var firstMeasure = currentPart.Measure.FirstOrDefault();
+            if (firstMeasure.Items.OfType<AttributesMusicXML>().FirstOrDefault().DivisionsSpecified)
+            {
+                var divisionsValue = firstMeasure.Items.OfType<AttributesMusicXML>().FirstOrDefault().Divisions;
+                divisionsAttributes.Add(firstMeasure.Number, int.Parse(divisionsValue.ToString()));
+            }
+            for (int i = 1; i < currentPart.Measure.Count; i++)
+            {
+                var measure = currentPart.Measure[i];
+                if (measure.Items.OfType<AttributesMusicXML>().FirstOrDefault()?.DivisionsSpecified != null ? measure.Items.OfType<AttributesMusicXML>().FirstOrDefault().DivisionsSpecified : false)
+                {
+                    divisionsAttributes.Add(measure.Number, int.Parse(measure.Items.OfType<AttributesMusicXML>().FirstOrDefault().Divisions.ToString()));
+                }
+            }
+        }
         private void SetDefaultDistances(MusicXMLViewerWPF.ScorePartwiseMusicXML score)
         {
             var layout = ViewModel.ViewModelLocator.Instance.Main.CurrentLayout;
@@ -464,6 +497,16 @@ namespace MusicXMLScore.DrawingHelpers
             partHeight = staffHeight * numberOfStaves + (stavesDistance * (numberOfStaves - 1));
         }
 
+        public int GetDivisionsMeasureId(string measureId)
+        {
+            string resultKey = divisionsAttributes.Keys.FirstOrDefault();
+            if (measureId.Contains('X'))
+            {
+                measureId = measureId.Substring(1);
+            }
+            resultKey = divisionsAttributes.Where(i => int.Parse(i.Key) <= int.Parse(measureId)).LastOrDefault().Key;
+            return divisionsAttributes[resultKey];
+        }
         private void SetSystemMeasureRanges(MusicXMLViewerWPF.ScorePartwiseMusicXML score)
         {
             LayoutControl.LayoutGeneral currentLayout = ViewModel.ViewModelLocator.Instance.Main.CurrentLayout;
