@@ -18,12 +18,15 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
     {
         private NoteMusicXML noteItem;
         private int itemIndex;
+        private double itemWidthMin = 0.0;
+        private double itemWidthOpt = 0.0; // optimal
         private bool measureRest = false;
-        private double positionY = 0.0;
         private string symbol;
         private string partId;
         private string measureId;
-        private int dotCount = 0;           
+        private int dotCount = 0;
+        private Dictionary<int, double> staffLines = new Dictionary<int, double>();
+        private NoteTypeValueMusicXML restType = NoteTypeValueMusicXML.whole;   
         public bool MeasureRest
         {
             get
@@ -37,6 +40,40 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
             }
         }
 
+        public double ItemWidthMin
+        {
+            get
+            {
+                return itemWidthMin;
+            }
+
+            set
+            {
+                itemWidthMin = value;
+            }
+        }
+
+        public double ItemWidthOpt
+        {
+            get
+            {
+                return itemWidthOpt;
+            }
+
+            set
+            {
+                itemWidthOpt = value;
+            }
+        }
+
+        public double ItemWeight
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
         public RestContainterItem(NoteMusicXML note, int itemIndex, string partId, string measureId)
         {
             noteItem = note;
@@ -44,53 +81,88 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
             this.partId = partId;
             this.measureId = measureId;
             Draw(CheckIfMeasure());
+            CalculateMinWidth();
+            CalculateOptWidth();
         }
 
         private bool CheckIfMeasure()
         {
             if (noteItem.Items.OfType<RestMusicXML>().FirstOrDefault().MeasureSpecified)
             {
-                return noteItem.Items.OfType<RestMusicXML>().FirstOrDefault().Measure == Model.Helpers.SimpleTypes.YesNoMusicXML.yes ? true : false;
+                return noteItem.Items.OfType<RestMusicXML>().FirstOrDefault().Measure == YesNoMusicXML.yes ? true : false;
             }
-            return true; //false;
+            return false; //false;
         }
 
         private void Draw(bool measure)
         {
-            
+            staffLines = ViewModel.ViewModelLocator.Instance.Main.CurrentPageProperties.AvaliableIndexLinePositions;
+            CanvasList rest = new CanvasList(10, 10);
             if (measure)
             {
                 measureRest = true;
                 GetSymbol();
-                SetPosition();
-                CanvasList rest = new CanvasList(10, 10);
+                double positionY =SetPosition(CalculateRestPositionY());
                 rest.AddCharacterGlyph(new Point(0, positionY), symbol);
-                Children.Add(rest);
             }
             else
             {
-
+                GetSymbol();
+                double positionY = SetPosition(CalculateRestPositionY());
+                rest.AddCharacterGlyph(new Point(0, positionY), symbol);
             }
+            if(dotCount!= 0)
+            {
+                Point dotPosition = new Point(14, SetPosition(3));
+                rest.AddCharacterGlyph(dotPosition, MusicSymbols.Dot);
+            }
+            Children.Add(rest);
         }
 
-        private void SetPosition(int customPosition = 0, bool useCustom = false)
+        private double SetPosition(int customPosition)
         {
-            var staffLine = ViewModel.ViewModelLocator.Instance.Main.CurrentPageProperties.AvaliableIndexLinePositions;
-            if (!useCustom)
-            {
-                positionY = staffLine[4];
-            }
-            else
-            {
-                positionY = staffLine[customPosition];
-            }
+            return staffLines[customPosition];
         }
 
+        private void CalculateMinWidth()
+        {
+            double restWidth = DrawingMethods.GetTextWidth(symbol, TypeFaces.GetMusicFont());
+            double dotWidth = DrawingMethods.GetTextWidth(MusicSymbols.Dot, TypeFaces.GetMusicFont());
+            double leftFreeSpace = restWidth * 0.05;
+            double dotSpaces = dotWidth * 0.25;
+            itemWidthMin = leftFreeSpace + restWidth + (dotWidth + dotSpaces) * dotCount;
+        }
+        private void CalculateOptWidth()
+        {
+            double restWidth = DrawingMethods.GetTextWidth(symbol, TypeFaces.GetMusicFont());
+            double dotWidth = DrawingMethods.GetTextWidth(MusicSymbols.Dot, TypeFaces.GetMusicFont());
+            double leftFreeSpace = restWidth * 0.1;
+            double dotSpaces = dotWidth * 0.5;
+
+            itemWidthOpt = leftFreeSpace + restWidth + (dotWidth + dotSpaces) * dotCount;
+        }
         private void GetSymbol()
         {
             int duration = int.Parse(noteItem.Items.OfType<decimal>().FirstOrDefault().ToString());
-            NoteTypeValueMusicXML value = CalculationHelpers.GetBaseDurationValue(duration, partId, measureId).Item1; // item1 =NoteType... item2 true if has dot/dots
-            symbol = MusicSymbols.GetRestSymbolNoteType(value);
+            Tuple<NoteTypeValueMusicXML, bool> value = CalculationHelpers.GetBaseDurationValue(duration, partId, measureId);
+            // item1 =NoteType... item2 true if has dot/dots
+            restType = value.Item1;
+            if (value.Item2)
+            {
+                dotCount++;
+            }
+            symbol = MusicSymbols.GetRestSymbolNoteType(restType);
+        }
+        private int CalculateRestPositionY()
+        {
+            if (restType == NoteTypeValueMusicXML.whole)
+            {
+                return 2;
+            }
+            else
+            {
+                return 4;
+            }
         }
     }
 }

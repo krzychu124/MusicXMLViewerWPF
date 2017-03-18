@@ -22,30 +22,40 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
             
             for (int i = 0; i < notesList.Count; i++)
             {
-                if (notesList[i].Items.OfType<RestMusicXML>().Any())
+                var noteType = notesList[i].GetNoteType();
+                if (noteType.HasFlag(NoteChoiceTypeMusicXML.rest))
                 {
                     RestContainterItem rest = new RestContainterItem(notesList[i], i, partId, measure.Number);
                     AddRest(rest);
                 }
+                if (noteType.HasFlag(NoteChoiceTypeMusicXML.pitch) || noteType.HasFlag(NoteChoiceTypeMusicXML.unpitched))
+                {
+                    NoteContainerItem note = new NoteContainerItem(notesList[i], i, partId, measure.Number, noteType);
+                    AddNote(note);
+                }
             }
-            ArrangeNotes(measure.CalculatedWidth);
         }
 
-        private void ArrangeNotes(double width)
+        public void ArrangeNotes(double avaliablewidth)
         {
             int count = notesVisuals.Count;
-            double offset = (width/count) / 2;
-            double accOffset = offset;
+            double offset = ((avaliablewidth * 0.9) / count);
+            double accOffset = offset /2;
+            if( count == 1)
+            {
+                accOffset = avaliablewidth / 2;
+            }
             foreach (var item in notesVisuals)
             {
                 Canvas.SetLeft(item as Canvas, accOffset);
-                accOffset += offset + offset;
+                accOffset += offset;
             }
         }
 
         public void AddNote(NoteContainerItem noteVisual)
         {
             notesVisuals.Add(noteVisual);
+            Children.Add(noteVisual);
         }
         public void AddRest(RestContainterItem restVisual)
         {

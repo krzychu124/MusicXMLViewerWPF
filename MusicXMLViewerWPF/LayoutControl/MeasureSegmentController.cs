@@ -13,11 +13,12 @@ namespace MusicXMLScore.LayoutControl
         public MeasureSegmentController(Model.ScorePartwisePartMeasureMusicXML measure, string partID, int stavesCount, int systemIndex)
         {
             this.systemIndex = systemIndex;
-            segmentPanel = new SegmentPanel(partID, systemIndex);
+            segmentPanel = new SegmentPanel(partID, measure.Number, systemIndex);
             for (int i = 1; i <= stavesCount; i++)
             {
                 segmentPanel.AddAttributesContainer(new SegmentPanelContainers.MeasureAttributesContainer(measure.Items.OfType<Model.MeasureItems.AttributesMusicXML>().FirstOrDefault(), measure.Number, partID, i), i);
                 segmentPanel.AddNotesContainer(new SegmentPanelContainers.MeasureNotesContainer(measure, partID, i), i);
+
             }
             //segmentPanel.AddAttributesContainer(new SegmentPanelContainers.MeasureAttributesContainer(measure.Items.OfType<Model.MeasureItems.AttributesMusicXML>().FirstOrDefault(), measure.Number, partID), stavesCount);
         }

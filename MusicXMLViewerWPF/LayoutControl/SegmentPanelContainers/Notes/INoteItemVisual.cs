@@ -8,5 +8,8 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
 {
     interface INoteItemVisual
     {
+        double ItemWidthMin { get; set; }
+        double ItemWidthOpt { get; set; }
+        double ItemWeight { get; }
     }
 }
