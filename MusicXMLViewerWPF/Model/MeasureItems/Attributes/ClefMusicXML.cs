@@ -12,7 +12,7 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
     {
         private ClefSignMusicXML sign;
         private string line;
-        private string clefOctaveChange;
+        private string clefOctaveChange = "0";
         private string number = "1";
         private YesNoMusicXML additional;
         private bool additionalSpecified;

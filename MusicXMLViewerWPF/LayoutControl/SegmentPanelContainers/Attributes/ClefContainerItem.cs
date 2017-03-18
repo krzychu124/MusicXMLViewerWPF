@@ -107,11 +107,14 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Attributes
                 }
                 if (sign == ClefSignMusicXML.TAB)
                 {
-                    line = 5;
+                    line = 3;
                 }
-                
             }
             if (sign == ClefSignMusicXML.percussion)
+            {
+                line = 3;
+            }
+            if (sign == ClefSignMusicXML.TAB)
             {
                 line = 3;
             }

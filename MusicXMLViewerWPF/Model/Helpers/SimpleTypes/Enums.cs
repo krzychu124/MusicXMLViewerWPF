@@ -75,13 +75,13 @@ namespace MusicXMLScore.Model.Helpers.SimpleTypes
     [XmlType(TypeName = "step")]
     public enum StepMusicXML
     {
-        A,
-        B,
         C,
         D,
         E,
         F,
-        G
+        G,
+        A,
+        B
     }
     [Serializable]
     [XmlType(TypeName = "cancel-location")]
@@ -265,7 +265,7 @@ namespace MusicXMLScore.Model.Helpers.SimpleTypes
     public enum NoteDurationValues
     {
         @long = 1,
-        brave = 2,
+        breve = 2,
         whole = 4,
         half = 8,
         quarter = 16,
@@ -282,7 +282,7 @@ namespace MusicXMLScore.Model.Helpers.SimpleTypes
     public enum NoteDurationValuesInverted
     {
         @long = 4096,
-        brave = 2048,
+        breve = 2048,
         whole = 1024,
         half = 512,
         quarter = 256,
