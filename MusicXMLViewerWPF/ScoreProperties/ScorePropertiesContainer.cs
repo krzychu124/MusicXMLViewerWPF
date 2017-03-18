@@ -136,7 +136,7 @@ namespace MusicXMLScore.ScoreProperties
         public Model.MeasureItems.Attributes.ClefMusicXML GetClef(string measureId, string partId, int staffNumber = 1)
         {
             Model.MeasureItems.Attributes.ClefMusicXML clef = partProperties[partId].ClefAttributes[measureId].ElementAt(staffNumber - 1);
-            return clef //? new Model.MeasureItems.Attributes.ClefMusicXML();
+            return clef; //? new Model.MeasureItems.Attributes.ClefMusicXML();
         }
 
         /// <summary>
