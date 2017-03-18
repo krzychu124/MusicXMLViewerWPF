@@ -151,6 +151,14 @@ namespace MusicXMLScore.DrawingHelpers
         public const string SixstyFourU = "\uE1DE";// "\U0001D163";
         #endregion
 
+        #region NoteHeads
+        public const string BraveStdNoteHead = "\uE0A0";
+        public const string LongStdNoteHead = "\uE0A0";
+        public const string WholeStdNoteHead = "\uE0A2";
+        public const string HalfStdNoteHead = "\uE0A3";
+        public const string QuarterStdNoteHead = "\uE0A4";
+        #endregion
+
         #region rests
         public const string BreveRest = "\uE4E1";
         public const string LongRest = "\uE4E2";
@@ -178,7 +186,7 @@ namespace MusicXMLScore.DrawingHelpers
         public const string FlagSixteen = "\U0001D16f";
         public const string FlagThirtyTwo = "\U0001D170";
         public const string FlagSixstyFour = "\U0001D171";
-        #endregion          Item1024th
+        #endregion     
 
         #region articulations
         public const string Accent = "\uE4A0";
@@ -421,11 +429,16 @@ namespace MusicXMLScore.DrawingHelpers
             {8,TEight },
             {9,TNine },
         };
+
+        public static string GetNoteHeadSymbolNoteType(NoteTypeValueMusicXML noteTypeValue)
+        {
+            return StandardNoteHeadSymbols[noteTypeValue];
+        }
         public static string GetRestSymbolNoteType(NoteTypeValueMusicXML noteTypeValue)
         {
-            return NoteTypeSymbols[noteTypeValue];
+            return RestNoteTypeSymbols[noteTypeValue];
         }
-        private static Dictionary<NoteTypeValueMusicXML, string> NoteTypeSymbols = new Dictionary<NoteTypeValueMusicXML, string>()
+        private static Dictionary<NoteTypeValueMusicXML, string> RestNoteTypeSymbols = new Dictionary<NoteTypeValueMusicXML, string>()
         {
             {NoteTypeValueMusicXML.breve, BreveRest },
             {NoteTypeValueMusicXML.@long, LongRest },
@@ -440,6 +453,22 @@ namespace MusicXMLScore.DrawingHelpers
             {NoteTypeValueMusicXML.Item256th, Item256thRest },
             {NoteTypeValueMusicXML.Item512th, Item512thRest },
             {NoteTypeValueMusicXML.Item1024th,Item1024thRest },
+        };
+        private static Dictionary<NoteTypeValueMusicXML, string> StandardNoteHeadSymbols = new Dictionary<NoteTypeValueMusicXML, string>()
+        {
+            {NoteTypeValueMusicXML.breve, BraveStdNoteHead },
+            {NoteTypeValueMusicXML.@long, LongStdNoteHead },
+            {NoteTypeValueMusicXML.whole, WholeStdNoteHead },
+            {NoteTypeValueMusicXML.half, HalfStdNoteHead },
+            {NoteTypeValueMusicXML.quarter, QuarterStdNoteHead },
+            {NoteTypeValueMusicXML.eighth, QuarterStdNoteHead },
+            {NoteTypeValueMusicXML.Item16th, QuarterStdNoteHead },
+            {NoteTypeValueMusicXML.Item32nd, QuarterStdNoteHead },
+            {NoteTypeValueMusicXML.Item64th, QuarterStdNoteHead },
+            {NoteTypeValueMusicXML.Item128th, QuarterStdNoteHead },
+            {NoteTypeValueMusicXML.Item256th, QuarterStdNoteHead },
+            {NoteTypeValueMusicXML.Item512th, QuarterStdNoteHead },
+            {NoteTypeValueMusicXML.Item1024th, QuarterStdNoteHead },
         };
     }
 }

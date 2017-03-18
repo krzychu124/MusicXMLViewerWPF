@@ -218,7 +218,7 @@ namespace MusicXMLScore.Converters
                 var maxWidth = score.GetLargestWidth(id);
                 if (maxWidth == 0)
                 {
-                    maxWidth = 100;
+                    maxWidth = 120;
                 }
                 foreach (var part in score.Part)
                 {

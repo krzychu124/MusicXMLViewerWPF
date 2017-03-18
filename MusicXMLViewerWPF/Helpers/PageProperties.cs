@@ -238,8 +238,8 @@ namespace MusicXMLScore.Helpers
 
         private void GenerateAvaliableLinePositions()
         {
-            int lowestPositionIndex = -20;
-            int highestPositionIndex = 30;
+            int lowestPositionIndex = -30;
+            int highestPositionIndex = 40;
             double halfLineSpacing = StaffSpace.MMToWPFUnit() / 2;
             // length to point in center between staff lines
             for (int i = lowestPositionIndex; i <= highestPositionIndex; i++)

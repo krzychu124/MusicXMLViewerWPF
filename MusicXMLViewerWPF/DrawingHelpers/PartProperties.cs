@@ -622,7 +622,7 @@ namespace MusicXMLScore.DrawingHelpers
                 listToUpdate.Add(currentLayout);
             }
         }
-
+        
         #endregion Methods
 
     }

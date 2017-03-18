@@ -87,5 +87,40 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
         {
             return (x != 0) && ((x & (x - 1)) == 0);
         }
+
+        public static int GetPitchIndexStaffLine(this Model.MeasureItems.PitchMusicXML pitch, Model.MeasureItems.Attributes.ClefMusicXML clef)
+        {
+            int pitchOctave = int.Parse(pitch.Octave);
+            int pitchStep = (int)pitch.Step; //0 = A, +5 from C
+            int clefOctave = clef.GetMiddleCIndexFromClef();
+            int caclulatedStaffLineShift = (clefOctave -(pitchStep +2)) - (-7 * (4 - pitchOctave));
+            return caclulatedStaffLineShift;
+        }
+        public static int GetMiddleCIndexFromClef(this Model.MeasureItems.Attributes.ClefMusicXML clef)
+        {
+            int index = 6; // G L=2
+            switch (clef.Sign)
+            {
+                case Model.MeasureItems.Attributes.ClefSignMusicXML.G:
+                    var lineG = int.Parse(clef.Line);
+                    index = 10 - ((lineG - 1) * 2) + 4 +(int.Parse(clef.ClefOctaveChange) * 7);
+                    break;
+                case Model.MeasureItems.Attributes.ClefSignMusicXML.F:
+                    var lineF = int.Parse(clef.Line);
+                    index = 10 - ((lineF - 1) * 2) - 4 +(int.Parse(clef.ClefOctaveChange) * 7);
+                    break;
+                case Model.MeasureItems.Attributes.ClefSignMusicXML.C:
+                    var lineC = int.Parse(clef.Line);
+                    index = 10 - ((lineC - 1) * 2) + (int.Parse(clef.ClefOctaveChange) * 7);
+                    break;
+                case Model.MeasureItems.Attributes.ClefSignMusicXML.percussion:
+                    index = 6;
+                    break;
+                case Model.MeasureItems.Attributes.ClefSignMusicXML.none:
+                    index = 6;
+                    break;
+            }
+            return index;
+        }
     }
 }

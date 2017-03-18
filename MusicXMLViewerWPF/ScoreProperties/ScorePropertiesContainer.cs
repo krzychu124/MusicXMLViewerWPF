@@ -36,6 +36,14 @@ namespace MusicXMLScore.ScoreProperties
             }
         }
 
+        public bool AutoLayoutSupported
+        {
+            get
+            {
+                return currentScoreProperties.AutoLayoutSupportByScore;
+            }
+        }
+
         public ScorePropertiesContainer()
         {
             scoreLayoutContainer = new Dictionary<string, LayoutGeneral>();
@@ -83,26 +91,26 @@ namespace MusicXMLScore.ScoreProperties
     class ScoreProperties
     {
         private Dictionary<string, PartProperties> partProperties;
-        //private LayoutGeneral layout;
         private ScorePartwiseMusicXML score;
         private TimeSignatures timeSignatures;
+        private bool autoLayoutSupportByScore = false;
         private string id;
         public ScoreProperties(ScorePartwiseMusicXML score)
         {
             this.score = score;
+            autoLayoutSupportByScore = this.score.LayoutInsideScore;
             id = this.score.ID;
-           // layout = new LayoutGeneral();
             if (score != null)
             {
-                Init();//layout = new LayoutGeneral(score);
+                InitScoreProperties();
             }
         }
-        public void Init()
+        public void InitScoreProperties()
         {
-            GetParts(this.score);
-            GetTimeSignatures(this.score);
+            InitParts(this.score);
+            InitTimeSignatures(this.score);
         }
-        private void GetParts(ScorePartwiseMusicXML score)
+        private void InitParts(ScorePartwiseMusicXML score)
         {
             if (score.Part != null)
             {
@@ -113,10 +121,47 @@ namespace MusicXMLScore.ScoreProperties
                 }
             }
         }
-        private void GetTimeSignatures(ScorePartwiseMusicXML score)
+        private void InitTimeSignatures(ScorePartwiseMusicXML score)
         {
             timeSignatures = new TimeSignatures(score);
         }
+
+        /// <summary>
+        /// Gets Clef attributes form Measure.Where(measureId ,partId and staffNumber)
+        /// </summary>
+        /// <param name="measureId">MeasureId token, which is Measure.Number</param>
+        /// <param name="partId">PartId token, which is Part.Id in list of Part inside ScorePartwiseMusicXML</param>
+        /// <param name="staffNumber">Staff number (counted from 1 TopDown), if part contains more than one staff line. Default=1</param>
+        /// <returns>Clef attributes attached to measureId in selected Part.Id</returns>
+        public Model.MeasureItems.Attributes.ClefMusicXML GetClef(string measureId, string partId, int staffNumber = 1)
+        {
+            Model.MeasureItems.Attributes.ClefMusicXML clef = partProperties[partId].ClefAttributes[measureId].ElementAt(staffNumber - 1);
+            return clef; //? new Model.MeasureItems.Attributes.ClefMusicXML();
+        }
+
+        /// <summary>
+        /// Gets Key Signature from Measure.Where(measureId, partId)
+        /// </summary>
+        /// <param name="measureId">MeasureId token, which is Measure.Number</param>
+        /// <param name="partId">PartId token, which is Part.Id in list of Part inside ScorePartwiseMusicXML</param>
+        /// <returns>Key attributes attached to measureId in selected Part.Id</returns>
+        public Model.MeasureItems.Attributes.KeyMusicXML GetKeySignature(string measureId, string partId)
+        {
+            Model.MeasureItems.Attributes.KeyMusicXML key = partProperties[partId].KeyAttributes[measureId];
+            return key; //? new Model.MeasureItems.Attributes.KeyMusicXML();
+        }
+
+        /// <summary>
+        /// Gets Time Signature of selected measureId
+        /// </summary>
+        /// <param name="measureId">MeasureId token, which is Measure.Number</param>
+        /// <returns>Time attributes attached to measureId, PartId is not necessary due to all parts shares the same time signature</returns>
+        public Model.MeasureItems.Attributes.TimeMusicXML GetTimeSignature(string measureId)
+        {
+            Model.MeasureItems.Attributes.TimeMusicXML time = timeSignatures.TimeSignaturesDictionary[measureId];
+            return time; //? new Model.MeasureItems.Attributes.TimeMusicXML();
+        }
+
         public Dictionary<string, PartProperties> PartProperties
         {
             get
@@ -128,18 +173,6 @@ namespace MusicXMLScore.ScoreProperties
                 partProperties = value;
             }
         }
-
-        //public LayoutGeneral Layout
-        //{
-        //    get
-        //    {
-        //        return layout;
-        //    }
-        //    set
-        //    {
-        //        layout = value;
-        //    }
-        //}
 
         public ScorePartwiseMusicXML Score
         {
@@ -171,6 +204,19 @@ namespace MusicXMLScore.ScoreProperties
             set
             {
                 timeSignatures = value;
+            }
+        }
+
+        public bool AutoLayoutSupportByScore
+        {
+            get
+            {
+                return autoLayoutSupportByScore;
+            }
+
+            set
+            {
+                autoLayoutSupportByScore = value;
             }
         }
     }

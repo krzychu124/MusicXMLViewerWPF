@@ -27,7 +27,7 @@ namespace MusicXMLViewerWPF
         private PartListMusicXML partlist;
         private List<ScorePartwisePartMusicXML> part;
         private string version;
-
+        private bool layoutInfoInsideScore = false;
         [XmlIgnore]
         public string ID
         {
@@ -158,6 +158,20 @@ namespace MusicXMLViewerWPF
             }
         }
 
+        [XmlIgnore]
+        public bool LayoutInsideScore
+        {
+            get
+            {
+                return layoutInfoInsideScore;
+            }
+
+            set
+            {
+                layoutInfoInsideScore = value;
+            }
+        }
+
         public ScorePartwiseMusicXML()
         {
             this.version = "1.0";
@@ -172,6 +186,17 @@ namespace MusicXMLViewerWPF
             foreach (var part in Part)
             {
                 part.SetMeasuresDictionary();
+            }
+            CheckVersion();
+        }
+        /// <summary>
+        /// If Version is lower than 3.0, whole layout system should be calculated and generated
+        /// </summary>
+        private void CheckVersion()
+        {
+            if (this.Version == "3.0")
+            {
+                layoutInfoInsideScore = true; // else false, missing new-system, new-page attributes, forces manual layout calculations
             }
         }
     }

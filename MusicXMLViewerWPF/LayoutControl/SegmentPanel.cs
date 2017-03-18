@@ -26,10 +26,12 @@ namespace MusicXMLScore.LayoutControl
         private Dictionary<int, double> staffDistances = new Dictionary<int, double>() { { 1, 0.0 } };
         private PartProperties partProperties;
         private int systemIndex = 0;
-        public SegmentPanel(string partID, int systemIndex)
+        private string measureId;
+        public SegmentPanel(string partID, string measureId, int systemIndex)
         {
             this.partID = partID;
             this.systemIndex = systemIndex;
+            this.measureId = measureId;
             partProperties = ViewModel.ViewModelLocator.Instance.Main.CurrentPartsProperties[this.partID];
             staves = partProperties.NumberOfStaves;
             defaultStavesDistance = partProperties.StaffLayoutPerPage.ElementAt(0).ElementAt(systemIndex).StaffDistance;//? StavesDistance;
@@ -52,6 +54,7 @@ namespace MusicXMLScore.LayoutControl
         {
             measureNotes.Tag = numberOfStave.ToString();
             var t = attributesContainer.ElementAt(0).Value.ContainerWidth;
+            measureNotes.ArrangeNotes(panelWidth - t);
             Canvas.SetLeft(measureNotes, t);
             Children.Add(measureNotes);
             InitNotesContainer();
@@ -74,7 +77,7 @@ namespace MusicXMLScore.LayoutControl
         private void SetHeight()
         {
             panelHeight = partProperties.PartHeight.TenthsToWPFUnit();
-            panelWidth = 40;
+            panelWidth = ViewModel.ViewModelLocator.Instance.Main.CurrentSelectedScore.Part.Where(i=> i.Id == partID).FirstOrDefault().MeasuresByNumber[measureId].CalculatedWidth.TenthsToWPFUnit();
             Width = panelWidth;
             Height = panelHeight;
         }
