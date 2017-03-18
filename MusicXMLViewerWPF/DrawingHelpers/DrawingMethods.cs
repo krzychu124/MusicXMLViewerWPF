@@ -78,7 +78,7 @@ namespace MusicXMLScore.DrawingHelpers
             Typeface typeFace = TypeFaces.BravuraMusicFont;
             typeFace.TryGetGlyphTypeface(out gtf);
             double smallFactor = isSmall ? 0.7 : 1;
-            Point calculatedPosition = new Point(position.X, position.Y);
+            Point calculatedPosition = new Point(position.X, position.Y/* + pageProperties.IndexStaffLinePositions[3]*/);
 
             double characterSize = pageProperties.StaffHeight.MMToWPFUnit() * smallFactor; //40;//todo refactor to scale
 
@@ -113,6 +113,20 @@ namespace MusicXMLScore.DrawingHelpers
             txtblck.Measure(new Size(Double.PositiveInfinity, Double.PositiveInfinity));
             txtblck.Arrange(new Rect(txtblck.DesiredSize));
             return new Size(txtblck.ActualWidth, txtblck.ActualHeight);
+        }
+
+        public static void AddLedgerLine(this CanvasList canvas, Point position, double noteHeadWidth)
+        {
+            DrawingVisual ledgerLine = new DrawingVisual();
+            Pen pen = new Pen(Brushes.Black, (0.9).TenthsToWPFUnit());
+            double offset = (2.2).TenthsToWPFUnit();
+            Point p1 = new Point(position.X - offset, position.Y);
+            Point p2 = new Point(position.X + noteHeadWidth + offset, position.Y);
+            using (DrawingContext dc = ledgerLine.RenderOpen())
+            {
+                dc.DrawLine(pen, p1, p2);
+            }
+            canvas.AddVisual(ledgerLine);
         }
     }
 }
