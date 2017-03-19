@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Xml.Serialization;
 using System.Linq;
+using MusicXMLScore.Converters;
 
 namespace MusicXMLScore.Model.MeasureItems
 {
@@ -531,7 +532,11 @@ namespace MusicXMLScore.Model.MeasureItems
 
         public NoteChoiceTypeMusicXML GetNoteType()
         {
-            NoteChoiceTypeMusicXML result = NoteChoiceTypeMusicXML.chord;
+            NoteChoiceTypeMusicXML result = NoteChoiceTypeMusicXML.none;
+            if (ItemsElementName.Contains(NoteChoiceTypeMusicXML.chord))
+            {
+                result = result.SetFlags(NoteChoiceTypeMusicXML.chord, true);
+            }
             if (ItemsElementName.Contains(NoteChoiceTypeMusicXML.cue))
             {
                 result = NoteChoiceTypeMusicXML.cue;
@@ -540,9 +545,9 @@ namespace MusicXMLScore.Model.MeasureItems
             {
                 result = NoteChoiceTypeMusicXML.grace;
             }
+            
             //Add additional attribute info
-            result = GetAdditionalType(result);
-            return result;
+           return GetAdditionalType(result);
         }
         public int GetDuration()
         {
@@ -568,23 +573,19 @@ namespace MusicXMLScore.Model.MeasureItems
         }
         public NoteChoiceTypeMusicXML GetAdditionalType(NoteChoiceTypeMusicXML type)
         {
-            NoteChoiceTypeMusicXML result = type;
             if (ItemsElementName.Contains(NoteChoiceTypeMusicXML.rest))
             {
-                result = result | NoteChoiceTypeMusicXML.rest;
+                type.SetFlags(NoteChoiceTypeMusicXML.rest, true);
+            }
+            if (ItemsElementName.Contains(NoteChoiceTypeMusicXML.pitch))
+            {
+                type.SetFlags(NoteChoiceTypeMusicXML.pitch, true);
             }
             else
             {
-                if (ItemsElementName.Contains(NoteChoiceTypeMusicXML.pitch))
-                {
-                    result = result | NoteChoiceTypeMusicXML.pitch;
-                }
-                else
-                {
-                    result = result | NoteChoiceTypeMusicXML.unpitched;
-                }
+                type.SetFlags(NoteChoiceTypeMusicXML.unpitched, true);
             }
-            return result;
+            return type;
         }
         public int GetIndexOfType(NoteChoiceTypeMusicXML attributeType)
         {
@@ -928,15 +929,17 @@ namespace MusicXMLScore.Model.MeasureItems
     }
 
     [Serializable]
+    [Flags]
     public enum NoteChoiceTypeMusicXML
     {
-        chord = 0,
-        cue = 1,
-        duration = 2,
-        grace = 4,
-        pitch = 8,
-        rest = 16,
-        tie = 32,
-        unpitched = 64,
+        none = 0,
+        chord = 1,
+        cue = 2,
+        duration = 4,
+        grace = 8,
+        pitch = 16,
+        rest = 32,
+        tie = 64,
+        unpitched = 128,
     }
 }
