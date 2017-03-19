@@ -547,7 +547,7 @@ namespace MusicXMLScore.Model.MeasureItems
         public int GetDuration()
         {
             int result =0;
-            if (GetNoteType() != NoteChoiceTypeMusicXML.grace) // grace note don't have duration specified
+            if (!GetNoteType().HasFlag(NoteChoiceTypeMusicXML.grace)) // grace note don't have duration specified
             {
                 int index = GetIndexOfType(NoteChoiceTypeMusicXML.duration);
                 result = int.Parse(Items[index].ToString());

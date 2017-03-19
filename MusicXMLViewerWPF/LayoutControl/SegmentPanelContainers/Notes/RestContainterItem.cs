@@ -18,6 +18,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
     {
         private NoteMusicXML noteItem;
         private int itemIndex;
+        private int itemDuration =0;
         private double itemWidthMin = 0.0;
         private double itemWidthOpt = 0.0; // optimal
         private bool measureRest = false;
@@ -26,7 +27,9 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
         private string measureId;
         private int dotCount = 0;
         private Dictionary<int, double> staffLines = new Dictionary<int, double>();
-        private NoteTypeValueMusicXML restType = NoteTypeValueMusicXML.whole;   
+        private NoteTypeValueMusicXML restType = NoteTypeValueMusicXML.whole;
+        private double itemWeight = 0.0;
+
         public bool MeasureRest
         {
             get
@@ -70,7 +73,19 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
         {
             get
             {
-                throw new NotImplementedException();
+                return itemWeight;//throw new NotImplementedException();
+            }
+            set
+            {
+                itemWeight = value;
+            }
+        }
+
+        public int ItemDuration
+        {
+            get
+            {
+                return itemDuration;
             }
         }
 
@@ -143,8 +158,8 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
         }
         private void GetSymbol()
         {
-            int duration = int.Parse(noteItem.Items.OfType<decimal>().FirstOrDefault().ToString());
-            Tuple<NoteTypeValueMusicXML, bool> value = CalculationHelpers.GetBaseDurationValue(duration, partId, measureId);
+            itemDuration = int.Parse(noteItem.Items.OfType<decimal>().FirstOrDefault().ToString());
+            Tuple<NoteTypeValueMusicXML, bool> value = CalculationHelpers.GetBaseDurationValue(itemDuration, partId, measureId);
             // item1 =NoteType... item2 true if has dot/dots
             restType = value.Item1;
             if (value.Item2)

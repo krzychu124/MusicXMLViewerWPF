@@ -298,8 +298,7 @@ namespace MusicXMLScore.ViewModel
                 TabsCreated.Add(newTab);
                 SelectedTabItem = newTab;
 
-                sw.Stop();
-                Log.LoggIt.Log($"Drawing ScorePartwise object in : {sw.ElapsedMilliseconds} ms", Log.LogType.Exception);
+                
                 IsBlank = false;
             }
             else
@@ -314,6 +313,8 @@ namespace MusicXMLScore.ViewModel
                 Log.LoggIt.Log($"Drawing ScorePartwise object in : {sw.ElapsedMilliseconds} ms", Log.LogType.Exception);
                 IsBlank = false;
             }
+            sw.Stop();
+            Log.LoggIt.Log($"Drawing ScorePartwise object in : {sw.ElapsedMilliseconds} ms", Log.LogType.Exception);
         }
 
         private void OnOpenOptionWindow()

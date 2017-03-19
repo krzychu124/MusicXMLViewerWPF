@@ -10,10 +10,12 @@ namespace MusicXMLScore.LayoutControl
     {
         private SegmentPanel segmentPanel;
         private int systemIndex =0;
-        public MeasureSegmentController(Model.ScorePartwisePartMeasureMusicXML measure, string partID, int stavesCount, int systemIndex)
+        private int pageIndex;
+        public MeasureSegmentController(Model.ScorePartwisePartMeasureMusicXML measure, string partID, int stavesCount, int systemIndex, int pageIndex)
         {
             this.systemIndex = systemIndex;
-            segmentPanel = new SegmentPanel(partID, measure.Number, systemIndex);
+            this.pageIndex = pageIndex;
+            segmentPanel = new SegmentPanel(partID, measure.Number, systemIndex, pageIndex);
             for (int i = 1; i <= stavesCount; i++)
             {
                 segmentPanel.AddAttributesContainer(new SegmentPanelContainers.MeasureAttributesContainer(measure.Items.OfType<Model.MeasureItems.AttributesMusicXML>().FirstOrDefault(), measure.Number, partID, i), i);

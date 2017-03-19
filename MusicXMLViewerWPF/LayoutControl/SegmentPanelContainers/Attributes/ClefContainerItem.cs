@@ -118,7 +118,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Attributes
             {
                 line = 3;
             }
-            staffLine = ViewModel.ViewModelLocator.Instance.Main.CurrentPageProperties.StaffLineCoords[line];
+            staffLine = ViewModel.ViewModelLocator.Instance.Main.CurrentPageProperties.AvaliableIndexLinePositions[10 - (line *2)];
         }
 
         private void GetSymbol()

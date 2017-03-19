@@ -149,7 +149,7 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
         {
             TimeMusicXML new_time = new TimeMusicXML()
             {
-                Items = new object[] { items },
+                Items = Items,
                 ItemsElementName = itemsElementName,
                 Number = number,
                 TimeSymbol = TimeSymbol,
@@ -160,6 +160,70 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
                 PrintObjectSpecified = PrintObjectSpecified
             };
             return new_time;
+        }
+        public int GetNumerator()
+        {
+            return GetTimeValueOfType(TimeChoiceTypeMusicXML.beats);
+        }
+        public int GetDenominator()
+        {
+            return GetTimeValueOfType(TimeChoiceTypeMusicXML.beattype);
+        }
+        public int GetTimeValueOfType(TimeChoiceTypeMusicXML type)
+        {
+            int value = 4;
+            if (TimeSymbolSpecified)
+            {
+                if (TimeSymbol == TimeSymbolMusicXML.common)
+                {
+                    value = 4;
+                }
+                if (TimeSymbol == TimeSymbolMusicXML.cut)
+                {
+                    value = 2;
+                }
+            }
+            else
+            {
+                string stringValue = (string)GetItemOfType(type);
+                if (type == TimeChoiceTypeMusicXML.beats)
+                {
+                    if (stringValue.Contains("+"))
+                    {
+                        var array = stringValue.Split('+');
+                        foreach (var item in array)
+                        {
+                            value += int.Parse(item);
+                        }
+                    }
+                    else
+                    {
+                        value = int.Parse(stringValue);
+                    }
+                }
+                else
+                {
+                    value = int.Parse(stringValue);
+                }
+            }
+            return value;
+        }
+        private object GetItemOfType(TimeChoiceTypeMusicXML type)
+        {
+            int index = -1;
+            for(int i =0; i< ItemsElementName.Length; i++)
+            {
+                if (ItemsElementName[i] == type)
+                {
+                    index = i;
+                    break;
+                }
+            }
+            if (index == -1)
+            {
+                throw new Exception($"TimeMusicXML ItemsElementName: missing selected type {type.ToString()} in array");
+            }
+            return Items[index];
         }
     }
 

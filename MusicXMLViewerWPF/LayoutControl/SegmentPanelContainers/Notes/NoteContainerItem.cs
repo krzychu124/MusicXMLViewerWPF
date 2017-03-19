@@ -14,6 +14,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
 {
     class NoteContainerItem : Canvas, INoteItemVisual
     {
+        private int itemDuration = 0;
         private double itemWidthMin = 0.0;
         private double itemWidthOpt = 0.0;
         private NoteMusicXML noteItem;
@@ -31,7 +32,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
         private int duration;
         private int pitchedPosition = 10;
         private double pitchedValue = 0.0;
-        private double itemWeight;
+        private double itemWeight = 0.0;
         private bool needLedgerLines = false;
         private List<double> ledgerLinesPositions;
         public NoteContainerItem(NoteMusicXML note, int index, string partId, string measureId, NoteChoiceTypeMusicXML noteType)
@@ -48,6 +49,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
         private void InitNoteProperties()
         {
             duration = noteItem.GetDuration();
+            itemDuration = duration;
             staffLine = ViewModel.ViewModelLocator.Instance.Main.CurrentPageProperties.AvaliableIndexLinePositions;
             GetSymbol();
             GetPitch();
@@ -124,6 +126,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
         {
             Tuple<NoteTypeValueMusicXML, bool> value = CalculationHelpers.GetBaseDurationValue(duration, partId, measureId);
             noteType = value.Item1;
+            
             hasDots = value.Item2;
             symbol = MusicSymbols.GetNoteHeadSymbolNoteType(noteType);
         }
@@ -180,6 +183,14 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
             get
             {
                 return itemWeight;
+            }
+        }
+
+        public int ItemDuration
+        {
+            get
+            {
+                return itemDuration;
             }
         }
     }
