@@ -144,6 +144,7 @@ namespace MusicXMLScore.ViewModel
             catch (Exception ex)
             {
                 Log.LoggIt.Log(ex.InnerException.Message.ToString(), Log.LogType.Exception);
+
                 return default(T);
             }
             finally
