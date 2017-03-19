@@ -30,20 +30,34 @@ namespace MusicXMLScore.DrawingHelpers
 
         private Size size;
         private int systemIndex;
-
+        private int pageIndex;
         #endregion Fields
 
         #region Constructors
 
-        public PartsSystemDrawing(int systemIndex, List<string> measuresToDraw, List<string> partsIdList, Dictionary<string, PartProperties> partsProperties)
+        public PartsSystemDrawing(int systemIndex, List<string> measuresToDraw, List<string> partsIdList, Dictionary<string, PartProperties> partsProperties, int pageIndex)
         {
             this.systemIndex = systemIndex;
             measuresList = measuresToDraw;
             this.partIDsList = partsIdList;
             partWidth = measuresList.CalculateWidth(partIDsList.ElementAt(0));
             this.partsPropertiesList = partsProperties;
+            this.pageIndex = pageIndex;
             GetSetSystemMargins();
             PartsSegmentsDraw();
+        }
+
+        public double LeftMargin
+        {
+            get
+            {
+                return leftMargin;
+            }
+
+            set
+            {
+                leftMargin = value;
+            }
         }
 
         #endregion Constructors
@@ -73,6 +87,19 @@ namespace MusicXMLScore.DrawingHelpers
             set
             {
                 size = value;
+            }
+        }
+
+        public int SystemIndex
+        {
+            get
+            {
+                return systemIndex;
+            }
+
+            set
+            {
+                systemIndex = value;
             }
         }
 
@@ -106,7 +133,7 @@ namespace MusicXMLScore.DrawingHelpers
                     distanceToTop += partSegment.Size.Height;
                 }
             }
-            this.size = new Size(partWidth + leftMargin, distanceToTop);
+            this.size = new Size(partWidth, distanceToTop);
         }
 
         private void ArrangeContent()
@@ -132,8 +159,8 @@ namespace MusicXMLScore.DrawingHelpers
         private void GetSetSystemMargins() //TODO_WIP do more tests... //
         {
             var currentPartProperties = partsPropertiesList.ElementAt(0).Value;
-            leftMargin = currentPartProperties.SystemLayout.ElementAt(systemIndex).SystemMargins.LeftMargin.TenthsToWPFUnit();
-            rightMargin = currentPartProperties.SystemLayout.ElementAt(systemIndex).SystemMargins.RightMargin.TenthsToWPFUnit();
+            leftMargin = 0;// currentPartProperties.SystemLayout.ElementAt(systemIndex).SystemMargins.LeftMargin.TenthsToWPFUnit();
+            rightMargin = 0;//currentPartProperties.SystemLayout.ElementAt(systemIndex).SystemMargins.RightMargin.TenthsToWPFUnit();
         }
 
         private void PartsSegmentsDraw()
@@ -142,7 +169,7 @@ namespace MusicXMLScore.DrawingHelpers
             partSystemCanvas = new Canvas();
             foreach (var partId in partIDsList)
             {
-                PartSegmentDrawing partSegment = new PartSegmentDrawing(measuresList, partId, partsPropertiesList[partId], systemIndex);
+                PartSegmentDrawing partSegment = new PartSegmentDrawing(measuresList, partId, partsPropertiesList[partId], systemIndex, pageIndex);
                 partsSegments.Add(partId, partSegment);
                 partSegment.GenerateContent();
                 PartSystemCanvas.Children.Add(partSegment.PartSegmentCanvas);

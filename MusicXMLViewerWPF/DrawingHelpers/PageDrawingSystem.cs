@@ -80,7 +80,7 @@ namespace MusicXMLScore.DrawingHelpers
             foreach (var measuresIDs in measuresIdRangePerSystem)
             {
                 int index = measuresIdRangePerSystem.IndexOf(measuresIDs);
-                PartsSystemDrawing partsSystem = new PartsSystemDrawing(index, measuresIDs, partIDsToDraw, partsProperties);
+                PartsSystemDrawing partsSystem = new PartsSystemDrawing(index, measuresIDs, partIDsToDraw, partsProperties, pageIndex);
                 partSystemsList.Add(partsSystem);
                 pageCanvas.Children.Add(partsSystem.PartSystemCanvas);
             }
@@ -90,12 +90,13 @@ namespace MusicXMLScore.DrawingHelpers
         {
             double systemDistanceToPrevious = 0.0;
             var firstSystemPartProperties = partsProperties.ElementAt(0).Value;
-            double lmargin = pageLayout.PageMargins.LeftMargin.TenthsToWPFUnit();
+            double lMarginScore = pageLayout.PageMargins.LeftMargin.TenthsToWPFUnit();
             systemDistanceToPrevious += pageLayout.PageMargins.TopMargin.TenthsToWPFUnit();
-
+            PartProperties currentPartProperties = ViewModelLocator.Instance.Main.CurrentPartsProperties.Values.FirstOrDefault();
             foreach (var system in partSystemsList)
             {
                 int systemIndex = partSystemsList.IndexOf(system);
+                double lMargin = lMarginScore + currentPartProperties.SystemLayoutPerPage[pageIndex].ElementAt(system.SystemIndex).SystemMargins.LeftMargin.TenthsToWPFUnit();
                 if (systemIndex == 0)
                 {
                     systemDistanceToPrevious += firstSystemPartProperties.SystemLayoutPerPage.ElementAt(pageIndex).ElementAt(0).TopSystemDistance.TenthsToWPFUnit();
@@ -105,7 +106,7 @@ namespace MusicXMLScore.DrawingHelpers
                     systemDistanceToPrevious += firstSystemPartProperties.SystemLayoutPerPage.ElementAt(pageIndex).ElementAt(systemIndex).SystemDistance.TenthsToWPFUnit();
                 }
                 Canvas.SetTop(system.PartSystemCanvas, systemDistanceToPrevious);
-                Canvas.SetLeft(system.PartSystemCanvas, lmargin);
+                Canvas.SetLeft(system.PartSystemCanvas, lMargin);
                 systemDistanceToPrevious += system.Size.Height;//.TenthsToWPFUnit();
             }
         }

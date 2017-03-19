@@ -18,7 +18,7 @@ namespace MusicXMLScore.DrawingHelpers
             GlyphTypeface glyphTypeface;
             if (!typeFace.TryGetGlyphTypeface(out glyphTypeface))
                 throw new InvalidOperationException("No glyphtypeface found");
-            double size = 40;
+            double size = ViewModel.ViewModelLocator.Instance.Main.CurrentPageProperties.StaffHeight.MMToWPFUnit();
 
             ushort[] glyphIndexes = new ushort[text.Length];
             double[] advanceWidths = new double[text.Length];
@@ -119,8 +119,8 @@ namespace MusicXMLScore.DrawingHelpers
         {
             DrawingVisual ledgerLine = new DrawingVisual();
             Pen pen = new Pen(Brushes.Black, (0.9).TenthsToWPFUnit());
-            double offset = (2.2).TenthsToWPFUnit();
-            Point p1 = new Point(position.X - offset, position.Y);
+            double offset = noteHeadWidth/4;
+            Point p1 = new Point(position.X -offset, position.Y);
             Point p2 = new Point(position.X + noteHeadWidth + offset, position.Y);
             using (DrawingContext dc = ledgerLine.RenderOpen())
             {

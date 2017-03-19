@@ -26,15 +26,17 @@ namespace MusicXMLScore.LayoutControl
         private Dictionary<int, double> staffDistances = new Dictionary<int, double>() { { 1, 0.0 } };
         private PartProperties partProperties;
         private int systemIndex = 0;
+        private int pageIndex;
         private string measureId;
-        public SegmentPanel(string partID, string measureId, int systemIndex)
+        public SegmentPanel(string partID, string measureId, int systemIndex, int pageIndex)
         {
             this.partID = partID;
             this.systemIndex = systemIndex;
+            this.pageIndex = pageIndex;
             this.measureId = measureId;
             partProperties = ViewModel.ViewModelLocator.Instance.Main.CurrentPartsProperties[this.partID];
             staves = partProperties.NumberOfStaves;
-            defaultStavesDistance = partProperties.StaffLayoutPerPage.ElementAt(0).ElementAt(systemIndex).StaffDistance;//? StavesDistance;
+            defaultStavesDistance = partProperties.StaffLayoutPerPage.ElementAt(this.pageIndex).ElementAt(systemIndex).StaffDistance;//? StavesDistance;
             SetHeight();
         }
         public void AddAttributesContainer(MeasureAttributesContainer measureAttributes, int numberOfStave = 1)

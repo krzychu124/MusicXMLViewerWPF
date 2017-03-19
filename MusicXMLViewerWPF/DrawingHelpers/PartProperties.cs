@@ -76,10 +76,10 @@ namespace MusicXMLScore.DrawingHelpers
                             }
                             else
                             {
-                                if (item.IndexOf(measureNumber) == 0)
-                                {
+                                //if (item.IndexOf(measureNumber) == 0)
+                                //{
                                     systemLayout.Add(new SystemLayoutMusicXML() { SystemDistance = defaultSystemDistance, TopSystemDistance = defaultTopSystemDistance });
-                                }
+                                //}
                             }
                             if (printLayouts.MeasureNumbering != null)
                             {
@@ -94,10 +94,8 @@ namespace MusicXMLScore.DrawingHelpers
                             }
                             else
                             {
-                                if (item.IndexOf(measureNumber) == 0)
-                                {
+                                
                                     staffLayout.Add(new StaffLayoutMusicXML() { Number = staves, StaffDistance = defaultStaffDistance });
-                                }
                             }
                         }
                         if (systemLayout.Count == 0)
@@ -129,7 +127,7 @@ namespace MusicXMLScore.DrawingHelpers
                     currPageListIndex = systemLayout.Count - previousPageListIndex;
                     systemLayoutPerPage.Add(systemLayout.GetRange(previousPageListIndex, currPageListIndex));
                     staffLayoutPerPage.Add(staffLayout.GetRange(previousPageListIndex, currPageListIndex));
-                    previousPageListIndex = currPageListIndex;
+                    previousPageListIndex += currPageListIndex;
                 }
             }
             stavesDistance = staffLayout.ElementAt(0).StaffDistance;

@@ -19,18 +19,20 @@ namespace MusicXMLScore.DrawingHelpers
         private double staffDistance = 0.0;
         private int stavesCount = 1;
         private int systemIndex;
+        private int pageIndex;
         #endregion Fields
 
         #region Constructors
 
-        public PartSegmentDrawing(List<string> measuresList, string partId, PartProperties partProperites, int systemIndex)
+        public PartSegmentDrawing(List<string> measuresList, string partId, PartProperties partProperites, int systemIndex, int pageIndex)
         {
             this.measuresList = measuresList;
             this.partId = partId;
             this.partProperties = partProperites;
             this.systemIndex = systemIndex;
+            this.pageIndex = pageIndex;
             stavesCount = partProperties.NumberOfStaves;
-            staffDistance = partProperites.StavesDistance;
+            staffDistance = partProperites.StaffLayoutPerPage[pageIndex].ElementAt(systemIndex).StaffDistance;
             CalculateDimensions();
         }
 
@@ -91,7 +93,7 @@ namespace MusicXMLScore.DrawingHelpers
                 MeasureDrawing measureCanvas = new MeasureDrawing(measureId, partId, staffDistance, stavesCount);
                 ScorePartwisePartMeasureMusicXML measureSerializable = ViewModel.ViewModelLocator.Instance.Main.CurrentSelectedScore.Part.ElementAt(partId.GetPartIdIndex()).MeasuresByNumber[measureId];
 
-                LayoutControl.MeasureSegmentController measureSegment = new LayoutControl.MeasureSegmentController(measureSerializable, partId, stavesCount, systemIndex);
+                LayoutControl.MeasureSegmentController measureSegment = new LayoutControl.MeasureSegmentController(measureSerializable, partId, stavesCount, systemIndex, pageIndex);
                 LayoutControl.SegmentPanel spanel = measureSegment.GetContentPanel();
                 //spanel.AddAttributesContainer(new LayoutControl.SegmentPanelContainers.MeasureAttributesContainer(measureSerializable.Items.OfType<Model.MeasureItems.AttributesMusicXML>().FirstOrDefault(), measureId, partId));
 
