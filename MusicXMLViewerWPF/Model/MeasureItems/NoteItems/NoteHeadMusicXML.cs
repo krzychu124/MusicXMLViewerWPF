@@ -200,7 +200,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems
         x,
         [XmlEnum("circle-x")]
         circlex,
-        [XmlEnum("inverted-triangle")]
+        [XmlEnum("inverted triangle")]
         invertedtriangle,
         [XmlEnum("arrow down")]
         arrowdown,
