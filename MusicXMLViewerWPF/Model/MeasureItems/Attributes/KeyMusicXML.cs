@@ -20,6 +20,12 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
         private static int[] defaultGSharphKeys = new int[] { 8, 5, 9, 6, 3, 7, 4, 0};
         private static int[] defaultGFlatKeys = new int[] { 4, 7, 3, 6, 2, 5, 1, 0};
 
+        public KeyMusicXML()
+        {
+            Items = new object[] { 0.ToString() };
+            ItemsElementName = new KeyChoiceTypes[] { KeyChoiceTypes.fifths };
+        }
+
         [XmlElement("cancel", typeof(CancelMusicXML))]
         [XmlElement("fifths", typeof(string), DataType = "integer")]
         [XmlElement("key-accidental", typeof(AccidentalValueMusicXML))]

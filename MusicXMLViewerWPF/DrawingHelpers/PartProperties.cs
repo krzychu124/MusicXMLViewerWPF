@@ -339,9 +339,9 @@ namespace MusicXMLScore.DrawingHelpers
             ClefMusicXML[] clefsArrayToClone = new ClefMusicXML[numberOfStaves];
             string fistMeasureId = currentPart.Measure.FirstOrDefault().Number;
             var firstMeasureClefs = currentPart.Measure.FirstOrDefault().Items.OfType<AttributesMusicXML>().FirstOrDefault()?.Clef.ToArray();
-            if (firstMeasureClefs == null)
+            if (firstMeasureClefs == null || firstMeasureClefs.Length == 0)
             {
-                throw new Exception("First measure in part does not contain Clef attribute"); //TODO_LATER Refactor to check before passing to this class.
+                firstMeasureClefs = new ClefMusicXML[] { new ClefMusicXML() { Sign = ClefSignMusicXML.G, Line = "2" } };  // throw new Exception("First measure in part does not contain Clef attribute"); //TODO_LATER Refactor to check before passing to this class.
             }
             List<ClefMusicXML> clefList = new List<ClefMusicXML>();
             for (int i = 0; i < clefsArray.Length; i++)
