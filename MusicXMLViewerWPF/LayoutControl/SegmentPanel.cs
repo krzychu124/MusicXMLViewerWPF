@@ -45,7 +45,7 @@ namespace MusicXMLScore.LayoutControl
             Canvas.SetLeft(measureAttributes, (3.0).TenthsToWPFUnit()); //adding left offset, refactor to %of staffline height, or add to each child element
             if (numberOfStave != 1)//works property if number of staves is 2, higher nuber will overlap with 2nd. stave, WiP
             {
-                double staffHeight = ViewModel.ViewModelLocator.Instance.Main.CurrentLayout.PageProperties.StaffHeight.MMToTenths();
+                double staffHeight = ViewModel.ViewModelLocator.Instance.Main.CurrentPageLayout.StaffHeight.MMToTenths();
                 Canvas.SetTop(measureAttributes, staffHeight + defaultStavesDistance.TenthsToWPFUnit());
             }
             Children.Add(measureAttributes);

@@ -33,19 +33,51 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
             this.partId = partId;
             staveNumber = numberOfStave;
             notesList = measure.Items.OfType<NoteMusicXML>().ToList();
-            
+            List<NoteMusicXML> chordListTemp = new List<NoteMusicXML>();
             for (int i = 0; i < notesList.Count; i++)
             {
-                var noteType = notesList[i].GetNoteType();
-                if (noteType.HasFlag(NoteChoiceTypeMusicXML.rest))
+                NoteChoiceTypeMusicXML noteType = notesList[i].GetNoteType();
+                NoteChoiceTypeMusicXML tempChoice = NoteChoiceTypeMusicXML.none;
+                string staff = "1";
+                if (notesList[i].ItemsElementName.Contains(NoteChoiceTypeMusicXML.rest))
                 {
+                    if (chordListTemp.Count != 0)
+                    {
+                        staff = chordListTemp.ElementAt(0).Staff;
+                        NoteContainerItem note = new NoteContainerItem(chordListTemp, i, partId, measure.Number, staff);
+                        AddNote(note);
+                        chordListTemp.Clear();
+                    }
                     RestContainterItem rest = new RestContainterItem(notesList[i], i, partId, measure.Number);
                     AddRest(rest);
+                    continue;
                 }
-                if (noteType.HasFlag(NoteChoiceTypeMusicXML.pitch) || noteType.HasFlag(NoteChoiceTypeMusicXML.unpitched))
+                if (notesList[i].ItemsElementName.Contains(NoteChoiceTypeMusicXML.chord))
                 {
-                    NoteContainerItem note = new NoteContainerItem(notesList[i], i, partId, measure.Number, noteType);
+                    chordListTemp.Add(notesList[i]);
+                }
+                else
+                {
+                    if (chordListTemp.Count != 0)
+                    {
+                        staff = chordListTemp.ElementAt(0).Staff;
+                        NoteContainerItem note = new NoteContainerItem(chordListTemp, i, partId, measure.Number, staff);
+                        AddNote(note);
+                        chordListTemp.Clear();
+                        chordListTemp.Add(notesList[i]);
+                    }
+                    else
+                    {
+                        chordListTemp.Add(notesList[i]);
+                    }
+                    tempChoice = noteType;
+                }
+                if (chordListTemp.Count != 0 && i+1 == notesList.Count)
+                {
+                    staff = chordListTemp.ElementAt(0).Staff;
+                    NoteContainerItem note = new NoteContainerItem(chordListTemp, i, partId, measure.Number, staff);
                     AddNote(note);
+                    chordListTemp.Clear();
                 }
             }
         }

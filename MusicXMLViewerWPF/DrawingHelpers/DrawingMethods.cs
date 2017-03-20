@@ -18,7 +18,7 @@ namespace MusicXMLScore.DrawingHelpers
             GlyphTypeface glyphTypeface;
             if (!typeFace.TryGetGlyphTypeface(out glyphTypeface))
                 throw new InvalidOperationException("No glyphtypeface found");
-            double size = ViewModel.ViewModelLocator.Instance.Main.CurrentPageProperties.StaffHeight.MMToWPFUnit();
+            double size = ViewModel.ViewModelLocator.Instance.Main.CurrentPageLayout.StaffHeight.MMToWPFUnit();
 
             ushort[] glyphIndexes = new ushort[text.Length];
             double[] advanceWidths = new double[text.Length];
@@ -39,7 +39,7 @@ namespace MusicXMLScore.DrawingHelpers
         }
         public static void DrawCharacterGlyph(DrawingVisual visual, Point position, ushort glyphIndex, bool isSmall = false)
         {
-            PageProperties pageProperties = (PageProperties)ViewModel.ViewModelLocator.Instance.Main.CurrentPageProperties;
+            PageProperties pageProperties = (PageProperties)ViewModel.ViewModelLocator.Instance.Main.CurrentPageLayout;
             double test = glyphIndex == 70? pageProperties.TenthToPx(3*pageProperties.StaffSpace) : pageProperties.TenthToPx(1*pageProperties.StaffSpace); //? temp
             //! ^^ measure lines - clef line property * staffspace(gets length from top line to choosen line) eg. clef line 4 == 5-4= 1*staffspace ==> 1staffspace from top
             GlyphTypeface gtf;
@@ -73,7 +73,7 @@ namespace MusicXMLScore.DrawingHelpers
         {
             DrawingVisual visual = new DrawingVisual();
             ushort glyphIndex = character.GetGlyphIndexOfCharacter();
-            PageProperties pageProperties = (PageProperties)ViewModel.ViewModelLocator.Instance.Main.CurrentPageProperties;
+            PageProperties pageProperties = (PageProperties)ViewModel.ViewModelLocator.Instance.Main.CurrentPageLayout;
             GlyphTypeface gtf;
             Typeface typeFace = TypeFaces.BravuraMusicFont;
             typeFace.TryGetGlyphTypeface(out gtf);

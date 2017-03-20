@@ -20,14 +20,14 @@ namespace MusicXMLScore.Converters
         }
         public static double TenthsToMM(this double tenths)
         {
-            double converterFactor = ViewModelLocator.Instance.Main.CurrentLayout.PageProperties.ConverterFactor;
+            double converterFactor = ViewModelLocator.Instance.Main.CurrentPageLayout.ConverterFactor;
             double result = tenths * converterFactor;
             return result;
         }
 
         public static double MMToTenths(this double MM)
         {
-            double converterFactor = ViewModelLocator.Instance.Main.CurrentLayout.PageProperties.ConverterFactor;
+            double converterFactor = ViewModelLocator.Instance.Main.CurrentPageLayout.ConverterFactor;
             if (converterFactor == 0)
             {
                 return 0.0;
@@ -37,7 +37,7 @@ namespace MusicXMLScore.Converters
 
         public static double TenthsToWPFUnit(this double tenths)
         {
-            double converterFactor = ViewModelLocator.Instance.Main.CurrentLayout.PageProperties.ConverterFactor;
+            double converterFactor = ViewModelLocator.Instance.Main.CurrentPageLayout.ConverterFactor;
             double result = tenths * converterFactor * PxPerMM();
             return result;
         }
@@ -48,7 +48,7 @@ namespace MusicXMLScore.Converters
             {
                 return 0.0;
             }
-            double converterFactor = ViewModelLocator.Instance.Main.CurrentLayout.PageProperties.ConverterFactor;
+            double converterFactor = ViewModelLocator.Instance.Main.CurrentPageLayout.ConverterFactor;
             return WPFUnit / (converterFactor * PxPerMM());
         }
         public static double WPFUnitToMM(this double WPFUnit)

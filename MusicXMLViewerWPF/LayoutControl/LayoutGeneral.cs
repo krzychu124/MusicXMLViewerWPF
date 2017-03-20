@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
+using MusicXMLScore.LayoutStyle;
 
 namespace MusicXMLScore.LayoutControl
 {
@@ -17,10 +18,11 @@ namespace MusicXMLScore.LayoutControl
     public class LayoutGeneral
     {
         private PageProperties pageProperties;
-        private LayoutStyle.Layout layoutStyle;
+        private Layout layoutStyle;
         public LayoutGeneral()
         {
             pageProperties = new PageProperties();
+            layoutStyle = new LayoutStyle.Layout();
         }
         internal LayoutGeneral(MusicScore musicScore)
         {
@@ -51,5 +53,6 @@ namespace MusicXMLScore.LayoutControl
         public PageMarginsMusicXML PageMarginsEven { get { return PageProperties.PageMarginEven; } }
         public PageMarginsMusicXML PageMarginsOdd { get { return PageProperties.PageMarginOdd; } }
         public PageMarginsMusicXML PageMargins { get { return PageProperties.PageMarginBoth; } }
+        public Layout LayoutStyle { get { return layoutStyle; }  set { layoutStyle = value; } }
     }
 }

@@ -491,7 +491,7 @@ namespace MusicXMLScore.DrawingHelpers
 
         private void SetPartHeight()
         {
-            double staffHeight = ViewModel.ViewModelLocator.Instance.Main.CurrentLayout.PageProperties.StaffHeight.MMToTenths();
+            double staffHeight = ViewModel.ViewModelLocator.Instance.Main.CurrentPageLayout.StaffHeight.MMToTenths();
             partHeight = staffHeight * numberOfStaves + (stavesDistance * (numberOfStaves - 1));
         }
 
