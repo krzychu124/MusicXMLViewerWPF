@@ -135,7 +135,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Attributes
 
         private void GetStaffLineCoords()
         {
-            staffLine = ViewModel.ViewModelLocator.Instance.Main.CurrentPageProperties.StaffLineCoords.Values.ToArray();
+            staffLine = ViewModel.ViewModelLocator.Instance.Main.CurrentPageLayout.StaffLineCoords.Values.ToArray();
         }
         public Rect ItemRectBounds
         {

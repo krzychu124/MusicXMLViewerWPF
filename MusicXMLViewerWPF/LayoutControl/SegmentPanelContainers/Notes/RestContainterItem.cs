@@ -111,7 +111,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
 
         private void Draw(bool measure)
         {
-            staffLines = ViewModel.ViewModelLocator.Instance.Main.CurrentPageProperties.AvaliableIndexLinePositions;
+            staffLines = ViewModel.ViewModelLocator.Instance.Main.CurrentPageLayout.AvaliableIndexLinePositions;
             CanvasList rest = new CanvasList(10, 10);
             if (measure)
             {

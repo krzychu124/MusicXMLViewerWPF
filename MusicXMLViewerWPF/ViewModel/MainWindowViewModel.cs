@@ -59,7 +59,7 @@ namespace MusicXMLScore.ViewModel
         public RelayCommand AddMeasureCommand { get; set; }
         public RelayCommand CloseFileCommand { get; set; }
         public LayoutControl.LayoutGeneral CurrentLayout { get { return ScoreProperties.CurrentLayoutProperties; } }
-        public PageProperties CurrentPageProperties { get { return ScoreProperties.CurrentLayoutProperties.PageProperties;} }
+        public PageProperties CurrentPageLayout { get { return ScoreProperties.CurrentLayoutProperties.PageProperties;} }
         public ScorePartwiseMusicXML CurrentSelectedScore { get { return ScoreProperties.CurrentScoreProperties.Score; } }
         public RelayCommand ExitCommand { get; set; }
         public bool IsBlank

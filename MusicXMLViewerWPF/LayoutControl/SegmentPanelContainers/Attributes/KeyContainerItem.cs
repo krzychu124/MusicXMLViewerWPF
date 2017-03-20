@@ -35,7 +35,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Attributes
 
         private void Draw()
         {
-            var staffLineCoords = ViewModel.ViewModelLocator.Instance.Main.CurrentPageProperties.AvaliableIndexLinePositions;
+            var staffLineCoords = ViewModel.ViewModelLocator.Instance.Main.CurrentPageLayout.AvaliableIndexLinePositions;
             CanvasList cl = new CanvasList(10, 10);
             if (fifts == 0)
             {

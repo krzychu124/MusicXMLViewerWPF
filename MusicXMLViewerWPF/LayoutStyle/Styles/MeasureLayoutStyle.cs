@@ -8,80 +8,42 @@ namespace MusicXMLScore.LayoutStyle
 {
     public class MeasureLayoutStyle
     {
-        private double staffSpaceLegth;
-        private double minMeasureWidth = 70;
-        private double maxMeasureWidth = 300;
+        #region Fields
         
-        private double stavesDistance = 70;
-        /// <summary>
-        /// If false - clef visible only on first staff system
-        /// </summary>
-        #region ClefStyle
+        private double attributesRightOffset = 1.5;
+
         private double clefLeftOffset = 0.8;
         private double clefRightOffset = 0.2;
-        /// <summary>
-        /// Percent size of NormalClefSize
-        /// </summary>
-        private double smallClefSize = 70;
-        #endregion
-        #region KeySigStyle
-        private double keySigLeftOffset= 0.2;
+
+        private double keySigLeftOffset = 0.2;
         private double keySigRightOffset = 0.8;
         private double keySigSpacingOffset = 0.2;
-        #endregion
-        #region TimeSigStyle
+
+        private double maxMeasureWidth = 300;
+        private double minMeasureWidth = 70;
+        
+        private double smallClefSize = 80;
+
+        private double staffSpaceLegth = 10;
+        private double stavesDistance = 70;
+
         private double timeSigLeftOffset = 0.2;
         private double timeSigRightOffset = 0.2;
 
-        public double StaffSpaceLegth
+        #endregion Fields
+
+        #region Properties
+
+        public double AttributesRightOffset
         {
             get
             {
-                return staffSpaceLegth;
+                return attributesRightOffset;
             }
 
             set
             {
-                staffSpaceLegth = value;
-            }
-        }
-
-        public double MinMeasureWidth
-        {
-            get
-            {
-                return minMeasureWidth;
-            }
-
-            set
-            {
-                minMeasureWidth = value;
-            }
-        }
-
-        public double MaxMeasureWidth
-        {
-            get
-            {
-                return maxMeasureWidth;
-            }
-
-            set
-            {
-                maxMeasureWidth = value;
-            }
-        }
-
-        public double StavesDistacne
-        {
-            get
-            {
-                return stavesDistance;
-            }
-
-            set
-            {
-                stavesDistance = value;
+                attributesRightOffset = value;
             }
         }
 
@@ -108,19 +70,6 @@ namespace MusicXMLScore.LayoutStyle
             set
             {
                 clefRightOffset = value;
-            }
-        }
-
-        public double SmallClefSize
-        {
-            get
-            {
-                return smallClefSize;
-            }
-
-            set
-            {
-                smallClefSize = value;
             }
         }
 
@@ -163,6 +112,72 @@ namespace MusicXMLScore.LayoutStyle
             }
         }
 
+        public double MaxMeasureWidth
+        {
+            get
+            {
+                return maxMeasureWidth;
+            }
+
+            set
+            {
+                maxMeasureWidth = value;
+            }
+        }
+
+        public double MinMeasureWidth
+        {
+            get
+            {
+                return minMeasureWidth;
+            }
+
+            set
+            {
+                minMeasureWidth = value;
+            }
+        }
+
+        /// <summary>
+        /// Percent size of NormalClefSize
+        /// </summary>
+        public double SmallClefSize
+        {
+            get
+            {
+                return smallClefSize;
+            }
+
+            set
+            {
+                smallClefSize = value;
+            }
+        }
+
+        public double StaffSpaceLegth
+        {
+            get
+            {
+                return staffSpaceLegth;
+            }
+
+            set
+            {
+                staffSpaceLegth = value;
+            }
+        }
+        public double StavesDistacne
+        {
+            get
+            {
+                return stavesDistance;
+            }
+
+            set
+            {
+                stavesDistance = value;
+            }
+        }
         public double TimeSigLeftOffset
         {
             get
@@ -188,6 +203,7 @@ namespace MusicXMLScore.LayoutStyle
                 timeSigRightOffset = value;
             }
         }
-        #endregion
+
+        #endregion Properties
     }
 }

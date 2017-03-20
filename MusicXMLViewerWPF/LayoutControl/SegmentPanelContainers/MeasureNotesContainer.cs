@@ -38,11 +38,13 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
             {
                 NoteChoiceTypeMusicXML noteType = notesList[i].GetNoteType();
                 NoteChoiceTypeMusicXML tempChoice = NoteChoiceTypeMusicXML.none;
+                string staff = "1";
                 if (notesList[i].ItemsElementName.Contains(NoteChoiceTypeMusicXML.rest))
                 {
                     if (chordListTemp.Count != 0)
                     {
-                        NoteContainerItem note = new NoteContainerItem(chordListTemp, i, partId, measure.Number, noteType);
+                        staff = chordListTemp.ElementAt(0).Staff;
+                        NoteContainerItem note = new NoteContainerItem(chordListTemp, i, partId, measure.Number, staff);
                         AddNote(note);
                         chordListTemp.Clear();
                     }
@@ -58,7 +60,8 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
                 {
                     if (chordListTemp.Count != 0)
                     {
-                        NoteContainerItem note = new NoteContainerItem(chordListTemp, i, partId, measure.Number, noteType);
+                        staff = chordListTemp.ElementAt(0).Staff;
+                        NoteContainerItem note = new NoteContainerItem(chordListTemp, i, partId, measure.Number, staff);
                         AddNote(note);
                         chordListTemp.Clear();
                         chordListTemp.Add(notesList[i]);
@@ -71,7 +74,8 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
                 }
                 if (chordListTemp.Count != 0 && i+1 == notesList.Count)
                 {
-                    NoteContainerItem note = new NoteContainerItem(chordListTemp, i, partId, measure.Number, noteType);
+                    staff = chordListTemp.ElementAt(0).Staff;
+                    NoteContainerItem note = new NoteContainerItem(chordListTemp, i, partId, measure.Number, staff);
                     AddNote(note);
                     chordListTemp.Clear();
                 }

@@ -70,7 +70,7 @@ namespace MusicXMLScore.DrawingHelpers
             partId = id;
             this.id = measure.Number;
             measureWidth = measure.CalculatedWidth;
-            measureHeight = ViewModelLocator.Instance.Main.CurrentPageProperties.StaffHeight.MMToWPFUnit();
+            measureHeight = ViewModelLocator.Instance.Main.CurrentPageLayout.StaffHeight.MMToWPFUnit();
             this.layout = layout;
             //PrimitiveRectangle();
             CreateVisualObjectChilds();

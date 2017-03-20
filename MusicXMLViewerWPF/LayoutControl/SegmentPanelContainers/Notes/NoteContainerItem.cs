@@ -36,7 +36,8 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
         private double itemWeight = 0.0;
         private bool needLedgerLines = false;
         private List<double> ledgerLinesPositions;
-        public NoteContainerItem(NoteMusicXML note, int index, string partId, string measureId, NoteChoiceTypeMusicXML noteChoiceType)
+        private string staffId;
+        public NoteContainerItem(NoteMusicXML note, int index, string partId, string measureId, string staffId)
         {
             noteItem = new List<NoteMusicXML>();
             noteItem.Add(note);
@@ -45,9 +46,10 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
             SetVisualType();
             this.measureId = measureId;
             this.partId = partId;
+            this.staffId = staffId;
             InitNoteProperties();
         }
-        public NoteContainerItem(List<NoteMusicXML> chordList, int index, string partId, string measureId, NoteChoiceTypeMusicXML noteChoiceType)
+        public NoteContainerItem(List<NoteMusicXML> chordList, int index, string partId, string measureId, string staffId)
         {
             noteItem = chordList;
             isChordNote = true;
@@ -55,6 +57,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
             SetVisualType();
             this.measureId = measureId;
             this.partId = partId;
+            this.staffId = staffId != null ? staffId : "1";
             InitNoteProperties();
         }
 
@@ -68,7 +71,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
         {
             duration = noteItem.ElementAt(0).GetDuration(); // always first because all notes in chord should have the same duration
             itemDuration = duration;
-            staffLine = ViewModel.ViewModelLocator.Instance.Main.CurrentPageProperties.AvaliableIndexLinePositions;
+            staffLine = ViewModel.ViewModelLocator.Instance.Main.CurrentPageLayout.AvaliableIndexLinePositions;
             GetSymbol();
             GetPitch();
             Draw();
@@ -166,7 +169,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
 
         private void GetPitch()
         {
-            var clef = ViewModel.ViewModelLocator.Instance.Main.CurrentScoreProperties.GetClef(measureId, partId);
+            var clef = ViewModel.ViewModelLocator.Instance.Main.CurrentScoreProperties.GetClef(measureId, partId, int.Parse(staffId));
             pitchObject = new List<object>();
             altered = new Dictionary<int, bool>();
             pitchedPosition = new Dictionary<int, int>();
