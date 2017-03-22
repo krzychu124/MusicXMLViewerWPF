@@ -37,6 +37,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
         private bool needLedgerLines = false;
         private List<double> ledgerLinesPositions;
         private string staffId;
+        private System.Windows.Media.Brush color;
         public NoteContainerItem(NoteMusicXML note, int index, string partId, string measureId, string staffId)
         {
             noteItem = new List<NoteMusicXML>();
@@ -69,6 +70,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
         }
         private void InitNoteProperties()
         {
+            
             duration = noteItem.ElementAt(0).GetDuration(); // always first because all notes in chord should have the same duration
             itemDuration = duration;
             staffLine = ViewModel.ViewModelLocator.Instance.Main.CurrentPageLayout.AvaliableIndexLinePositions;
@@ -84,7 +86,8 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
             int index = 0;
             foreach (var note in noteItem)
             {
-                noteCanvas.AddCharacterGlyph(new System.Windows.Point(0, pitchedValue[index]), symbol, small);
+                color = ViewModel.ViewModelLocator.Instance.Main.CurrentLayout.LayoutStyle.Colors[int.Parse(note.Voice)];
+                noteCanvas.AddCharacterGlyph(new Point(0, pitchedValue[index]), symbol, small, color);
                 
                 if (hasDots)
                 {

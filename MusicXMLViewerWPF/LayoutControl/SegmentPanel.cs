@@ -42,10 +42,10 @@ namespace MusicXMLScore.LayoutControl
         public void AddAttributesContainer(MeasureAttributesContainer measureAttributes, int numberOfStave = 1)
         {
             measureAttributes.Tag = numberOfStave.ToString();
-            Canvas.SetLeft(measureAttributes, (3.0).TenthsToWPFUnit()); //adding left offset, refactor to %of staffline height, or add to each child element
+            Canvas.SetLeft(measureAttributes, 0); //adding left offset, refactor to %of staffline height, or add to each child element
             if (numberOfStave != 1)//works property if number of staves is 2, higher nuber will overlap with 2nd. stave, WiP
             {
-                double staffHeight = ViewModel.ViewModelLocator.Instance.Main.CurrentPageLayout.StaffHeight.MMToTenths();
+                double staffHeight = ViewModel.ViewModelLocator.Instance.Main.CurrentPageLayout.StaffHeight.MMToWPFUnit();
                 Canvas.SetTop(measureAttributes, staffHeight + defaultStavesDistance.TenthsToWPFUnit());
             }
             Children.Add(measureAttributes);
@@ -55,9 +55,14 @@ namespace MusicXMLScore.LayoutControl
         public void AddNotesContainer(MeasureNotesContainer measureNotes, int numberOfStave = 1)
         {
             measureNotes.Tag = numberOfStave.ToString();
-            var t = attributesContainer.ElementAt(0).Value.ContainerWidth;
-            measureNotes.ArrangeNotes(panelWidth - t);
-            Canvas.SetLeft(measureNotes, t);
+            //var t = attributesContainer.ElementAt(0).Value.ContainerWidth;
+            //measureNotes.ArrangeNotes(panelWidth - t);
+            //Canvas.SetLeft(measureNotes, t);
+            if (numberOfStave != 1)
+            {
+                double staffHeight = ViewModel.ViewModelLocator.Instance.Main.CurrentPageLayout.StaffHeight.MMToWPFUnit();
+                Canvas.SetTop(measureNotes, staffHeight + defaultStavesDistance.TenthsToWPFUnit());
+            }
             Children.Add(measureNotes);
             InitNotesContainer();
             notesContainer.Add(numberOfStave, measureNotes);

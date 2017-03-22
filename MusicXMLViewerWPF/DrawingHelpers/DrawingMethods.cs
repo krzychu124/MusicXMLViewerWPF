@@ -69,8 +69,9 @@ namespace MusicXMLScore.DrawingHelpers
             }
         }
 
-        public static void AddCharacterGlyph(this CanvasList canvas, Point position, string character, bool isSmall = false)
+        public static void AddCharacterGlyph(this CanvasList canvas, Point position, string character, bool isSmall = false, Brush color = null)
         {
+            Brush characterColor = color ?? Brushes.Black;
             DrawingVisual visual = new DrawingVisual();
             ushort glyphIndex = character.GetGlyphIndexOfCharacter();
             PageProperties pageProperties = (PageProperties)ViewModel.ViewModelLocator.Instance.Main.CurrentPageLayout;
@@ -97,7 +98,7 @@ namespace MusicXMLScore.DrawingHelpers
                     null,    // clusterMap
                     null,    // caretStops
                     null);   // xmlLanguage
-                dc.DrawGlyphRun(Brushes.Black, gr);
+                dc.DrawGlyphRun(characterColor, gr);
             }
             canvas.AddVisual(visual);
         }

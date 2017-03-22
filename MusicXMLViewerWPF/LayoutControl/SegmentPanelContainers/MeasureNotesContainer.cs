@@ -16,7 +16,9 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
     {
         List<INoteItemVisual> notesVisuals;
         private List<NoteMusicXML> notesList;
+        private List<Tuple<int, INoteItemVisual>> notesWithPostition;
         private ScorePartwisePartMeasureMusicXML measure;
+        private string measureId = "";
         private string partId;
         private int staveNumber;
 
@@ -25,11 +27,21 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
         private int numerator;
         private int denominator;
         private TimeMusicXML timeSignature;
+        public MeasureNotesContainer(string measureId, string partId, int numberOfStave)
+        {
+            notesVisuals = new List<INoteItemVisual>();
+            notesList = new List<NoteMusicXML>();
+            notesWithPostition = new List<Tuple<int, INoteItemVisual>>();
+            this.measureId = measureId;
+            this.partId = partId;
+            staveNumber = numberOfStave;
+        }
         public MeasureNotesContainer(ScorePartwisePartMeasureMusicXML measure, string partId, int numberOfStave)
         {
             notesVisuals = new List<INoteItemVisual>();
             notesList = new List<NoteMusicXML>();
             this.measure = measure;
+            measureId = measure.Number;
             this.partId = partId;
             staveNumber = numberOfStave;
             notesList = measure.Items.OfType<NoteMusicXML>().ToList();
@@ -39,6 +51,10 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
                 NoteChoiceTypeMusicXML noteType = notesList[i].GetNoteType();
                 NoteChoiceTypeMusicXML tempChoice = NoteChoiceTypeMusicXML.none;
                 string staff = "1";
+                if (int.Parse(notesList[i].Staff) != staveNumber)
+                {
+                    continue;
+                }
                 if (notesList[i].ItemsElementName.Contains(NoteChoiceTypeMusicXML.rest))
                 {
                     if (chordListTemp.Count != 0)
@@ -48,7 +64,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
                         AddNote(note);
                         chordListTemp.Clear();
                     }
-                    RestContainterItem rest = new RestContainterItem(notesList[i], i, partId, measure.Number);
+                    RestContainterItem rest = new RestContainterItem(notesList[i], i, partId, measure.Number, staff);
                     AddRest(rest);
                     continue;
                 }
@@ -104,6 +120,22 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
             }
         }
 
+        public double ArrangeNotesByDuration(double availableWidth, int measureDuration)
+        {
+            double offset = (availableWidth -10.0.TenthsToWPFUnit()) / (double)measureDuration;
+            foreach (var item in notesWithPostition)
+            {
+                SetLeft(item.Item2 as Canvas, item.Item1 * offset + 10.0.TenthsToWPFUnit());
+                if (item.Item2 is RestContainterItem && notesWithPostition.Count == 1)
+                {
+                    double itemHalfWidth = item.Item2.ItemWidthMin / 2;
+                    SetLeft(item.Item2 as Canvas, (availableWidth) / 2 - itemHalfWidth);
+                    continue;
+                }
+            }
+            return 0.0;
+        }
+
         private double CalculatePositions(double availableWidth)
         {
             return availableWidth / availableDuration;
@@ -123,7 +155,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
         }
         private void GetTimeSignature()
         {
-            timeSignature = ViewModel.ViewModelLocator.Instance.Main.CurrentScoreProperties.TimeSignatures.TimeSignaturesDictionary[measure.Number];
+            timeSignature = ViewModel.ViewModelLocator.Instance.Main.CurrentScoreProperties.TimeSignatures.TimeSignaturesDictionary[measureId];
             numerator = timeSignature.GetNumerator();
             denominator = timeSignature.GetDenominator();
             availableDuration =(int) (((4 / (double)denominator)* divisions) * numerator);
@@ -131,7 +163,20 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
 
         private void GetDivisions()
         {
-            divisions = ViewModel.ViewModelLocator.Instance.Main.CurrentPartsProperties[partId].GetDivisionsMeasureId(measure.Number);
+            divisions = ViewModel.ViewModelLocator.Instance.Main.CurrentPartsProperties[partId].GetDivisionsMeasureId(measureId);
+        }
+        public void AppendNote(NoteContainerItem note, int cursorPosition, string voice = "1")
+        {
+            Tuple<int, INoteItemVisual> noteVisual = new Tuple<int, INoteItemVisual>(cursorPosition, note);
+            AddNote(note);
+            notesWithPostition.Add(noteVisual);
+        }
+
+        public void AppendRest(RestContainterItem rest, int cursorPosition, string voice = "1")
+        {
+            Tuple<int, INoteItemVisual> restVisual = new Tuple<int, INoteItemVisual>(cursorPosition, rest);
+            AddRest(rest);
+            notesWithPostition.Add(restVisual);
         }
 
         public void AddNote(NoteContainerItem noteVisual)
