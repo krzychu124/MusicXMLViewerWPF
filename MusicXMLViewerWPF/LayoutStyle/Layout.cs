@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media;
 
 namespace MusicXMLScore.LayoutStyle
 {
@@ -16,7 +17,7 @@ namespace MusicXMLScore.LayoutStyle
         private NotesLayoutStyle notesStyle;
         private PageLayoutStyle pageStyle;
         private SystemLayoutStyle systemStyle;
-
+        private Dictionary<int, Brush> colors;
         public Layout()
         {
             barlineStyle = new BarlineLayoutStyle();
@@ -25,6 +26,17 @@ namespace MusicXMLScore.LayoutStyle
             notesStyle = new NotesLayoutStyle();
             pageStyle = new PageLayoutStyle();
             systemStyle = new SystemLayoutStyle();
+            colors = new Dictionary<int, Brush>()
+            {
+                {1, Brushes.Black },
+                {2, Brushes.Navy },
+                {3, Brushes.DarkSlateGray},
+                {4, Brushes.DarkRed },
+                {5, Brushes.Indigo },
+                {6, Brushes.DodgerBlue },
+                {7, Brushes.Green },
+                {8, Brushes.OrangeRed },
+            };
         }
 
         public Layout(ScorePartwiseMusicXML score):this()
@@ -106,6 +118,19 @@ namespace MusicXMLScore.LayoutStyle
             set
             {
                 systemStyle = value;
+            }
+        }
+
+        public Dictionary<int, Brush> Colors
+        {
+            get
+            {
+                return colors;
+            }
+
+            set
+            {
+                colors = value;
             }
         }
     }

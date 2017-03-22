@@ -95,12 +95,12 @@ namespace MusicXMLScore.DrawingHelpers
 
                 LayoutControl.MeasureSegmentController measureSegment = new LayoutControl.MeasureSegmentController(measureSerializable, partId, stavesCount, systemIndex, pageIndex);
                 LayoutControl.SegmentPanel spanel = measureSegment.GetContentPanel();
-                //spanel.AddAttributesContainer(new LayoutControl.SegmentPanelContainers.MeasureAttributesContainer(measureSerializable.Items.OfType<Model.MeasureItems.AttributesMusicXML>().FirstOrDefault(), measureId, partId));
 
-                Canvas.SetTop(spanel, 0/*size.Height*/);
+                Canvas.SetTop(spanel, 0);
                 Canvas.SetLeft(spanel, partProperties.Coords[measureId].X);
                 PartSegmentCanvas.Children.Add(spanel);
-                Canvas.SetTop(measureCanvas.BaseObjectVisual, 0/*size.Height*/);
+
+                Canvas.SetTop(measureCanvas.BaseObjectVisual, 0);
                 Canvas.SetLeft(measureCanvas.BaseObjectVisual, partProperties.Coords[measureId].X);
                 PartSegmentCanvas.Children.Add(measureCanvas.BaseObjectVisual);
             }

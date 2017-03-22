@@ -38,7 +38,7 @@ namespace MusicXMLScore.DrawingHelpers
         private double stavesDistance = 0.0;
         private List<SystemLayoutMusicXML> systemLayout = new List<SystemLayoutMusicXML>();
         private List<List<SystemLayoutMusicXML>> systemLayoutPerPage = new List<List<SystemLayoutMusicXML>>();
-
+        private List<string> firstIdPerSystem;
         #endregion Fields
 
         #region Constructors
@@ -136,6 +136,7 @@ namespace MusicXMLScore.DrawingHelpers
             GenerateClefAttributes();
             GenerateKeyAttributes();
             GenerateDivisionChanges();
+            GenerateFirstMeasureIdPerSystem();
         }
 
         #endregion Constructors
@@ -330,6 +331,37 @@ namespace MusicXMLScore.DrawingHelpers
         #endregion Properties
 
         #region Methods
+        public bool IsSystemBeginningMeasure(string measureId)
+        {
+            if (firstIdPerSystem== null)
+            {
+                GenerateFirstMeasureIdPerSystem();
+            }
+            if (firstIdPerSystem.Contains(measureId))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        private void GenerateFirstMeasureIdPerSystem()
+        {
+            if (measuresPerSystem != null || measuresPerSystem.Count != 0)
+            {
+                if (firstIdPerSystem == null)
+                {
+                    firstIdPerSystem = new List<string>();
+                }
+                if (firstIdPerSystem.Count != 0)
+                {
+                    firstIdPerSystem.Clear();
+                }
+                firstIdPerSystem = measuresPerSystem.Select(t => t).ElementAt(0).ToList();
+            }
+        }
 
         private void GenerateClefAttributes()
         {

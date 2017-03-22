@@ -26,7 +26,7 @@ namespace MusicXMLScore.Model.MeasureItems
         private StemMusicXML stem;
         private NoteHeadMusicXML noteHead;
         private NoteHeadTextMusicXML noteHeadText;
-        private string staff;
+        private string staff ="1";
         private List<BeamMusicXML> beam;
         private List<NotationsMusicXML> notations;
         private List<LyricMusicXML> lyric;
@@ -590,6 +590,10 @@ namespace MusicXMLScore.Model.MeasureItems
         public int GetIndexOfType(NoteChoiceTypeMusicXML attributeType)
         {
             return Array.IndexOf(ItemsElementName, attributeType);
+        }
+        public bool IsRest()
+        {
+            return Items.OfType<RestMusicXML>().Any();
         }
     }
     [Serializable]

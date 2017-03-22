@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using MusicXMLScore.Converters;
-
+using System.Windows.Media;
 
 namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
 {
@@ -25,11 +25,15 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
         private string symbol;
         private string partId;
         private string measureId;
+        private string staffId;
         private int dotCount = 0;
         private Dictionary<int, double> staffLines = new Dictionary<int, double>();
         private NoteTypeValueMusicXML restType = NoteTypeValueMusicXML.whole;
         private double itemWeight = 0.0;
-
+        private bool customPitch = false;
+        private string customOctave = "4";
+        private StepMusicXML customStep = StepMusicXML.B;
+        
         public bool MeasureRest
         {
             get
@@ -89,15 +93,29 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
             }
         }
 
-        public RestContainterItem(NoteMusicXML note, int itemIndex, string partId, string measureId)
+        public RestContainterItem(NoteMusicXML note, int itemIndex, string partId, string measureId, string staffId)
         {
             noteItem = note;
             this.itemIndex = itemIndex;
             this.partId = partId;
             this.measureId = measureId;
+            this.staffId = staffId;
+            customPitch = CheckIfCustomPitchSet();
             Draw(CheckIfMeasure());
             CalculateMinWidth();
             CalculateOptWidth();
+        }
+
+        private bool CheckIfCustomPitchSet()
+        {
+            RestMusicXML restElement = noteItem.Items.OfType<RestMusicXML>().FirstOrDefault();
+            if (restElement != null && restElement.DisplayOctave != null)
+            {
+                customStep = restElement.DisplayStep;
+                customOctave = restElement.DisplayOctave;
+                return true;
+            }
+            return false;
         }
 
         private bool CheckIfMeasure()
@@ -113,23 +131,24 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
         {
             staffLines = ViewModel.ViewModelLocator.Instance.Main.CurrentPageLayout.AvaliableIndexLinePositions;
             CanvasList rest = new CanvasList(10, 10);
+            Brush color = ViewModel.ViewModelLocator.Instance.Main.CurrentLayout.LayoutStyle.Colors[int.Parse(noteItem.Voice)];
             if (measure)
             {
                 measureRest = true;
                 GetSymbol();
                 double positionY =SetPosition(CalculateRestPositionY());
-                rest.AddCharacterGlyph(new Point(0, positionY), symbol);
+                rest.AddCharacterGlyph(new Point(0, positionY), symbol, color: color);
             }
             else
             {
                 GetSymbol();
                 double positionY = SetPosition(CalculateRestPositionY());
-                rest.AddCharacterGlyph(new Point(0, positionY), symbol);
+                rest.AddCharacterGlyph(new Point(0, positionY), symbol, color: color);
             }
             if(dotCount!= 0)
             {
                 Point dotPosition = new Point(14, SetPosition(3));
-                rest.AddCharacterGlyph(dotPosition, MusicSymbols.Dot);
+                rest.AddCharacterGlyph(dotPosition, MusicSymbols.Dot, color: color);
             }
             Children.Add(rest);
         }
@@ -170,13 +189,21 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
         }
         private int CalculateRestPositionY()
         {
-            if (restType == NoteTypeValueMusicXML.whole)
+            if (customPitch)
             {
-                return 2;
+                var clef = ViewModel.ViewModelLocator.Instance.Main.CurrentScoreProperties.GetClef(measureId, partId, int.Parse(staffId));
+                return CalculationHelpers.GetPitchIndexStaffLine(new PitchMusicXML() { Step = customStep, Octave = customOctave }, clef);
             }
             else
             {
-                return 4;
+                if (restType == NoteTypeValueMusicXML.whole)
+                {
+                    return 2;
+                }
+                else
+                {
+                    return 4;
+                }
             }
         }
     }
