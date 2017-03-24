@@ -46,6 +46,7 @@ namespace MusicXMLScore.LayoutControl
             int durationCursor = 0;
             var measureItems = measure.Items;
             staffs = new Dictionary<string, SegmentPanelContainers.MeasureNotesContainer>();
+          //  attributesContainers = new Dictionary<int, Dictionary<>>
             for (int i = 0; i < stavesCount; i++)
             {
                 staffs.Add((i + 1).ToString(), new SegmentPanelContainers.MeasureNotesContainer(measure.Number, partID, i + 1));
@@ -56,6 +57,8 @@ namespace MusicXMLScore.LayoutControl
                 switch (typeName)
                 {
                     case nameof(AttributesMusicXML):
+                        AttributesMusicXML a = (AttributesMusicXML)measureItems[i];
+                        var attributesContainer = new SegmentPanelContainers.MeasureAttributesContainer(a, measure.Number, partID);
                         break;
                     case nameof(BackupMusicXML):
                         BackupMusicXML b = (BackupMusicXML)measureItems[i];
@@ -79,8 +82,6 @@ namespace MusicXMLScore.LayoutControl
                         }
                         durationCursor += n.GetDuration();
                         break;
-                    
-                        
                     default:
                         break;
                 }

@@ -8,7 +8,7 @@ using System.Windows.Controls;
 
 namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
 {
-    class MeasureAttributesContainer : Canvas
+    class MeasureAttributesContainer : Canvas, Notes.INoteItemVisual
     {
         private List<IAttributeItemVisual> attributes;
         private double clefWidth = 0.0;
@@ -71,6 +71,46 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
             set
             {
                 sharedTimeSignatureWidth = value;
+            }
+        }
+
+        public int ItemDuration
+        {
+            get
+            {
+                return 0;
+            }
+        }
+
+        public double ItemWidthMin
+        {
+            get
+            {
+                return 0;
+            }
+            set
+            {
+
+            }
+        }
+
+        public double ItemWidthOpt
+        {
+            get
+            {
+                return 0;
+            }
+            set
+            {
+
+            }
+        }
+
+        public double ItemWeight
+        {
+            get
+            {
+                return 0;
             }
         }
 

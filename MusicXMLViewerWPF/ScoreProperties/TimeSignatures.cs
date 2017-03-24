@@ -13,6 +13,9 @@ namespace MusicXMLScore.ScoreProperties
         Dictionary<string, TimeMusicXML> timeSignatures = new Dictionary<string, TimeMusicXML>();
         MusicXMLViewerWPF.ScorePartwiseMusicXML score;
 
+        /// <summary>
+        /// Dictionary of time signature changes measureNumber as Key
+        /// </summary>
         public Dictionary<string, TimeMusicXML> TimeSignaturesDictionary
         {
             get
@@ -34,7 +37,7 @@ namespace MusicXMLScore.ScoreProperties
                 GenerateTimeSignaturesPerMeasure();
             }
         }
-        private void GenerateTimeSignaturesPerMeasure()
+        private void GenerateTimeSignaturesPerMeasure() //TODO_Later refactor to no cloning, but finding first going back from measure.Number, which provide only clef changes in dictionary
         {
             var firstPart = score.Part.FirstOrDefault();
             TimeMusicXML currentTimeSignature = new TimeMusicXML();
