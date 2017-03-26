@@ -23,6 +23,11 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Attributes
         private string keySymbol;
         private ClefMusicXML currentClef;
         private string partId;
+
+        public KeyContainerItem(string staff, int fractionPosition, KeyMusicXML key)
+        {
+
+        }
         public KeyContainerItem(KeyMusicXML key, string measureId, string partId, int staffnumber=1)
         {
             this.partId = partId;

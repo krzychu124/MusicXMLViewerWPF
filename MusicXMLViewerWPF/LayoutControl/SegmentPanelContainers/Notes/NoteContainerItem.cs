@@ -172,7 +172,8 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
 
         private void GetPitch()
         {
-            var clef = ViewModel.ViewModelLocator.Instance.Main.CurrentScoreProperties.GetClef(measureId, partId, int.Parse(staffId));
+            //var clef = ViewModel.ViewModelLocator.Instance.Main.CurrentScoreProperties.GetClef(measureId, partId, int.Parse(staffId));
+            var clef = ViewModel.ViewModelLocator.Instance.Main.CurrentScoreProperties.GetClef(measureId, partId, int.Parse(staffId), noteIndex);
             pitchObject = new List<object>();
             altered = new Dictionary<int, bool>();
             pitchedPosition = new Dictionary<int, int>();

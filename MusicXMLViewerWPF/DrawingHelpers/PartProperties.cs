@@ -73,7 +73,7 @@ namespace MusicXMLScore.DrawingHelpers
             GenerateKeyAttributes();
             GenerateDivisionChanges();
             GenerateFirstMeasureIdPerSystem();
-            GenerateClefChanges();
+            //GenerateClefChanges();
             GenerateAttributes();
         }
 
@@ -351,6 +351,45 @@ namespace MusicXMLScore.DrawingHelpers
             set
             {
                 clefAlterations = value;
+            }
+        }
+
+        public ClefChangesDictionary ClefChanges
+        {
+            get
+            {
+                return clefChanges;
+            }
+
+            set
+            {
+                clefChanges = value;
+            }
+        }
+
+        public KeyChangesDictionary KeyChanges
+        {
+            get
+            {
+                return keyChanges;
+            }
+
+            set
+            {
+                keyChanges = value;
+            }
+        }
+
+        public TimeChangesDictionary TimeChanges
+        {
+            get
+            {
+                return timeChanges;
+            }
+
+            set
+            {
+                timeChanges = value;
             }
         }
 

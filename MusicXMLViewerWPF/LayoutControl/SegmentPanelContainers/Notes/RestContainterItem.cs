@@ -191,7 +191,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
         {
             if (customPitch)
             {
-                var clef = ViewModel.ViewModelLocator.Instance.Main.CurrentScoreProperties.GetClef(measureId, partId, int.Parse(staffId));
+                var clef = ViewModel.ViewModelLocator.Instance.Main.CurrentScoreProperties.GetClef(measureId, partId, int.Parse(staffId), itemIndex);
                 return CalculationHelpers.GetPitchIndexStaffLine(new PitchMusicXML() { Step = customStep, Octave = customOctave }, clef);
             }
             else

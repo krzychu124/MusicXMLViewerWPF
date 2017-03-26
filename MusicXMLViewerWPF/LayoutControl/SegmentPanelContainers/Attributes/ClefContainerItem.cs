@@ -8,6 +8,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using MusicXMLScore.Model.MeasureItems.Attributes;
 using MusicXMLScore.DrawingHelpers;
+using MusicXMLScore.ScoreProperties;
 
 namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Attributes
 {
@@ -28,6 +29,11 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Attributes
         {
             visual = clef.BaseObjectVisual;
             Children.Add(clef.BaseObjectVisual);
+        }
+
+        public ClefContainerItem(string staff, int fractionPosition, ClefMusicXML clef):this(clef)
+        {
+            
         }
         public ClefContainerItem(ClefSignMusicXML sign, int line, int octaveChange =0, bool additional = false)
         {

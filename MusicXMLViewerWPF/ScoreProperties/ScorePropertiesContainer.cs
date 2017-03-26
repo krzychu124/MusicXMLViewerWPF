@@ -138,6 +138,41 @@ namespace MusicXMLScore.ScoreProperties
             Model.MeasureItems.Attributes.ClefMusicXML clef = partProperties[partId].ClefAttributes[measureId].ElementAt(staffNumber - 1);
             return clef; //? new Model.MeasureItems.Attributes.ClefMusicXML();
         }
+        public Model.MeasureItems.Attributes.ClefMusicXML GetClef(string measureId, string partId, int staffNumber, int fractionPosition)
+        {
+            Model.MeasureItems.Attributes.ClefMusicXML clef = new Model.MeasureItems.Attributes.ClefMusicXML() { Line = "2" };
+            var clefs = PartProperties[partId].ClefChanges;
+            var measureKeys = clefs.Keys.Where(i => int.Parse(i) <= int.Parse(measureId)); // only previous or same as passed measureId
+            var zz = clefs.Where(x => measureKeys.Contains(x.Key)).Select((k, l) => new { key = k.Key, value = k.Value }).Select((x, v) => new { x = x.value.ClefsChanges.Select(b => b).Where(b => b.Item1 == staffNumber.ToString()).Where(b=>b!=null), v = x.key }).Where(x=>x != null).ToDictionary(item=>item.v, item=>item.x);
+            //var xx = zz.SelectMany(v => v.Value.ClefsChanges);
+            if (zz.Keys.LastOrDefault() == measureId )
+            {
+                var test2 = zz;
+                if (zz.LastOrDefault().Value.All(x => x.Item2 > fractionPosition))
+                {
+                    clef = test2.Reverse().Skip(1).LastOrDefault().Value.LastOrDefault().Item3;
+                }
+                else
+                {
+                    //test2 = test2.Select(z => z).Except(zz.Where(z => !z.Value.Any()));
+                    //var test =zz.Select(z => z).Except(zz.Where(z => z.Key == measureId).Where(z=>z.Value.Select(x=>x).All(x=>x.Item2>fractionPosition)));
+                    clef = test2.LastOrDefault().Value.Where(x => x.Item2 <= fractionPosition).LastOrDefault().Item3;
+                }
+            }
+            else
+            {
+                var test = zz.Select(z => z).Except(zz.Where(z => !z.Value.Any()));
+                clef = test.Select(x => x).LastOrDefault().Value.Where(x=>x!= null).LastOrDefault().Item3;
+            }
+            string m = measureId;
+             //(x=>x.ClefsChanges.Where(x=> x.Item1 == staffNumber.ToString()).Where(x => x.Item2 <= fractionPosition).LastOrDefault().Item3;
+            
+               // clef = zz.Value.ClefsChanges.Where(x => x.Item1 == staffNumber.ToString()).LastOrDefault().Item3;
+            
+            //var c = from cl in clefs from cla in cl.Value.ClefsChanges where cla.Item1 == staffNumber.ToString() where int.Parse(cl.Key) <= int.Parse(measureId) select cl ;
+            //var zz = measureKeys.SelectMany(x => clefs).Where(x => x.Value.ClefsChanges.Select(z => z.Item1).FirstOrDefault() == staffNumber.ToString());
+            return clef;
+        }
 
         /// <summary>
         /// Gets Key Signature from Measure.Where(measureId, partId)
