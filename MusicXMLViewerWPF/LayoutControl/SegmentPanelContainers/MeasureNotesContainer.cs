@@ -179,6 +179,12 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
             notesWithPostition.Add(restVisual);
         }
 
+        public void AppendAttributes(MeasureAttributesContainer attributes, int cursorPosition)//temp
+        {
+            Tuple<int, INoteItemVisual> attributesVisual = new Tuple<int, INoteItemVisual>(cursorPosition, attributes);
+            AddAttributes(attributes);
+            notesWithPostition.Add(attributesVisual);
+        }
         public void AddNote(NoteContainerItem noteVisual)
         {
             notesVisuals.Add(noteVisual);
@@ -188,6 +194,11 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
         {
             notesVisuals.Add(restVisual);
             Children.Add(restVisual);
+        }
+        public void AddAttributes(MeasureAttributesContainer attributesVisual)//temp
+        {
+            notesVisuals.Add(attributesVisual);
+            Children.Add(attributesVisual);
         }
     }
 }

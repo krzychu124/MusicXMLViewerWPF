@@ -27,6 +27,11 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Attributes
         private bool visible = true;
         private bool empty = false;
         private double[] staffLine;
+
+        public TimeSignatureContainerItem(string staff, int fractionPosition, TimeMusicXML timeSignature)
+        {
+
+        }
         public TimeSignatureContainerItem(double width)
         {
             this.Width = width;

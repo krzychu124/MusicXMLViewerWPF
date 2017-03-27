@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
 {
@@ -38,8 +39,13 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
         private List<double> ledgerLinesPositions;
         private string staffId;
         private System.Windows.Media.Brush color;
+        private ToolTip tt = new ToolTip();
         public NoteContainerItem(NoteMusicXML note, int index, string partId, string measureId, string staffId)
         {
+            //test
+            this.MouseMove += Canvas_MouseMove;
+            ToolTip = tt;
+            //
             noteItem = new List<NoteMusicXML>();
             noteItem.Add(note);
             isChordNote = false;
@@ -52,6 +58,10 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
         }
         public NoteContainerItem(List<NoteMusicXML> chordList, int index, string partId, string measureId, string staffId)
         {
+            //test
+            this.MouseMove += Canvas_MouseMove;
+            ToolTip = tt;
+            //
             noteItem = chordList;
             isChordNote = true;
             noteIndex = index;
@@ -172,7 +182,8 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
 
         private void GetPitch()
         {
-            var clef = ViewModel.ViewModelLocator.Instance.Main.CurrentScoreProperties.GetClef(measureId, partId, int.Parse(staffId));
+            //var clef = ViewModel.ViewModelLocator.Instance.Main.CurrentScoreProperties.GetClef(measureId, partId, int.Parse(staffId));
+            var clef = ViewModel.ViewModelLocator.Instance.Main.CurrentScoreProperties.GetClef(measureId, partId, int.Parse(staffId), noteIndex);
             pitchObject = new List<object>();
             altered = new Dictionary<int, bool>();
             pitchedPosition = new Dictionary<int, int>();
@@ -241,6 +252,14 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
             {
                 return itemDuration;
             }
+        }
+        //test only
+        private void Canvas_MouseMove(object sender, MouseEventArgs e)
+        {
+            tt.Placement = System.Windows.Controls.Primitives.PlacementMode.Relative;
+            tt.HorizontalOffset = e.GetPosition((IInputElement)sender).X + 10;
+            tt.VerticalOffset = e.GetPosition((IInputElement)sender).Y + 10;
+            tt.Content = "X-Coordinate: " + e.GetPosition((IInputElement)sender).X + "\n" + "Y-Coordinate: " + e.GetPosition((IInputElement)sender).Y;
         }
     }
 }

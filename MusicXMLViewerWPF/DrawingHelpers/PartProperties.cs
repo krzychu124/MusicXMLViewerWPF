@@ -2,6 +2,7 @@
 using MusicXMLScore.Model.Defaults;
 using MusicXMLScore.Model.MeasureItems;
 using MusicXMLScore.Model.MeasureItems.Attributes;
+using MusicXMLScore.ScoreProperties;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,7 +29,7 @@ namespace MusicXMLScore.DrawingHelpers
         private List<List<string>> measuresPerSystem = new List<List<string>>();
         private List<List<List<string>>> measuresPerSystemPerPage = new List<List<List<string>>>();
         private List<Tuple<string, string>> measuresRangeInPartSystem = new List<Tuple<string, string>>();
-        private int numberOfStaves = 1;
+        private int numberOfStaffs = 1;
         private double partHeight = 0;
         private string partId;
         private int partIndex = 0;
@@ -39,6 +40,11 @@ namespace MusicXMLScore.DrawingHelpers
         private List<SystemLayoutMusicXML> systemLayout = new List<SystemLayoutMusicXML>();
         private List<List<SystemLayoutMusicXML>> systemLayoutPerPage = new List<List<SystemLayoutMusicXML>>();
         private List<string> firstIdPerSystem;
+
+        private ClefChangesDictionary clefChanges = new ClefChangesDictionary();
+        private Dictionary<string, ClefChangesDictionary> clefPerStaff;
+        private KeyChangesDictionary keyChanges = new KeyChangesDictionary();
+        private TimeChangesDictionary timeChanges = new TimeChangesDictionary();
         #endregion Fields
 
         #region Constructors
@@ -54,89 +60,97 @@ namespace MusicXMLScore.DrawingHelpers
             var staves = part.ElementAt(0)?.Items?.OfType<AttributesMusicXML>()?.FirstOrDefault()?.Staves ?? "1";
             if (staves != null)
             {
-                numberOfStaves = int.Parse(staves);
+                numberOfStaffs = int.Parse(staves);
             }
             if (partIndex != null)
             {
-                int currPageListIndex = 0;
-                int previousPageListIndex = 0;
-                foreach (var item in partSysemsInPages)
-                {
-                    int currentSystemIndex = 0;
-                    List<SystemLayoutMusicXML> tempSysLayouts = new List<SystemLayoutMusicXML>();
-                    foreach (var measureNumber in item)
-                    {
-                        var measure = part.First(i => i.Number == measureNumber.Item1);
-                        var printLayouts = measure.Items.OfType<PrintMusicXML>().FirstOrDefault();
-                        if (printLayouts != null)
-                        {
-                            if (printLayouts.SystemLayout != null)
-                            {
-                                UpdateListWithObjectsOfType(printLayouts.SystemLayout, ref systemLayout, 0);
-                            }
-                            else
-                            {
-                                //if (item.IndexOf(measureNumber) == 0)
-                                //{
-                                    systemLayout.Add(new SystemLayoutMusicXML() { SystemDistance = defaultSystemDistance, TopSystemDistance = defaultTopSystemDistance });
-                                //}
-                            }
-                            if (printLayouts.MeasureNumbering != null)
-                            {
-                                UpdateListWithObjectsOfType(printLayouts.MeasureNumbering, ref measureNumbering, 0);
-                            }
-                            if (printLayouts.StaffLayout.Count != 0)
-                            {
-                                if (printLayouts.StaffLayout.Count != 0)
-                                {
-                                    UpdateListWithObjectsOfType(printLayouts.StaffLayout.ElementAtOrDefault(0), ref staffLayout, 0);
-                                }
-                            }
-                            else
-                            {
-                                
-                                    staffLayout.Add(new StaffLayoutMusicXML() { Number = staves, StaffDistance = defaultStaffDistance });
-                            }
-                        }
-                        if (systemLayout.Count == 0)
-                        {
-                            systemLayout.Add(new SystemLayoutMusicXML() { SystemDistance = defaultSystemDistance, TopSystemDistance = defaultTopSystemDistance });
-                        }
-                        if (systemLayout.Count < currentSystemIndex + 1)
-                        {
-                            systemLayout.Add(new SystemLayoutMusicXML() { SystemDistance = defaultSystemDistance, SystemMargins = systemLayout.LastOrDefault().SystemMargins });
-                        }
-                        if (staffLayout.Count == 0)
-                        {
-                            staffLayout.Add(new StaffLayoutMusicXML() { Number = staves, StaffDistance = defaultStaffDistance });
-                        }
-                        if (staffLayout.Count < currentSystemIndex + 1)
-                        {
-                            staffLayout.Add(staffLayout.LastOrDefault());
-                        }
-                        if (measureNumbering.Count == 0)
-                        {
-                            measureNumbering.Add(new MeasureNumberingMusicXML() { Value = MeasureNumberingValueMusicXML.system });
-                        }
-                        if (measureNumbering.Count != systemLayout.Count)
-                        {
-                            measureNumbering.Add(measureNumbering.LastOrDefault());
-                        }
-                        currentSystemIndex++;
-                    }
-                    currPageListIndex = systemLayout.Count - previousPageListIndex;
-                    systemLayoutPerPage.Add(systemLayout.GetRange(previousPageListIndex, currPageListIndex));
-                    staffLayoutPerPage.Add(staffLayout.GetRange(previousPageListIndex, currPageListIndex));
-                    previousPageListIndex += currPageListIndex;
-                }
+                GetLayoutInfo(part);
+                
             }
             stavesDistance = staffLayout.ElementAt(0).StaffDistance;
             SetSystemMeasureRanges(score);
             SetPartHeight();
-            GenerateClefAttributes();
+            //GenerateClefAttributes();
             GenerateKeyAttributes();
             GenerateDivisionChanges();
             GenerateFirstMeasureIdPerSystem();
+            //GenerateClefChanges();
+            //GenerateAttributes();
+        }
+
+        private void GetLayoutInfo(List<Model.ScorePartwisePartMeasureMusicXML> part)
+        {
+            int currPageListIndex = 0;
+            int previousPageListIndex = 0;
+            foreach (var item in partSysemsInPages)
+            {
+                int currentSystemIndex = 0;
+                List<SystemLayoutMusicXML> tempSysLayouts = new List<SystemLayoutMusicXML>();
+                foreach (var measureNumber in item)
+                {
+                    var measure = part.First(i => i.Number == measureNumber.Item1);
+                    var printLayouts = measure.Items.OfType<PrintMusicXML>().FirstOrDefault();
+                    if (printLayouts != null)
+                    {
+                        if (printLayouts.SystemLayout != null)
+                        {
+                            UpdateListWithObjectsOfType(printLayouts.SystemLayout, ref systemLayout, 0);
+                        }
+                        else
+                        {
+                            //if (item.IndexOf(measureNumber) == 0)
+                            //{
+                            systemLayout.Add(new SystemLayoutMusicXML() { SystemDistance = defaultSystemDistance, TopSystemDistance = defaultTopSystemDistance });
+                            //}
+                        }
+                        if (printLayouts.MeasureNumbering != null)
+                        {
+                            UpdateListWithObjectsOfType(printLayouts.MeasureNumbering, ref measureNumbering, 0);
+                        }
+                        if (printLayouts.StaffLayout.Count != 0)
+                        {
+                            if (printLayouts.StaffLayout.Count != 0)
+                            {
+                                UpdateListWithObjectsOfType(printLayouts.StaffLayout.ElementAtOrDefault(0), ref staffLayout, 0);
+                            }
+                        }
+                        else
+                        {
+
+                            staffLayout.Add(new StaffLayoutMusicXML() { Number = numberOfStaffs.ToString(), StaffDistance = defaultStaffDistance });
+                        }
+                    }
+                    if (systemLayout.Count == 0)
+                    {
+                        systemLayout.Add(new SystemLayoutMusicXML() { SystemDistance = defaultSystemDistance, TopSystemDistance = defaultTopSystemDistance });
+                    }
+                    if (systemLayout.Count < currentSystemIndex + 1)
+                    {
+                        systemLayout.Add(new SystemLayoutMusicXML() { SystemDistance = defaultSystemDistance, SystemMargins = systemLayout.LastOrDefault().SystemMargins });
+                    }
+                    if (staffLayout.Count == 0)
+                    {
+                        staffLayout.Add(new StaffLayoutMusicXML() { Number = numberOfStaffs.ToString(), StaffDistance = defaultStaffDistance });
+                    }
+                    if (staffLayout.Count < currentSystemIndex + 1)
+                    {
+                        staffLayout.Add(staffLayout.LastOrDefault());
+                    }
+                    if (measureNumbering.Count == 0)
+                    {
+                        measureNumbering.Add(new MeasureNumberingMusicXML() { Value = MeasureNumberingValueMusicXML.system });
+                    }
+                    if (measureNumbering.Count != systemLayout.Count)
+                    {
+                        measureNumbering.Add(measureNumbering.LastOrDefault());
+                    }
+                    currentSystemIndex++;
+                }
+                currPageListIndex = systemLayout.Count - previousPageListIndex;
+                systemLayoutPerPage.Add(systemLayout.GetRange(previousPageListIndex, currPageListIndex));
+                staffLayoutPerPage.Add(staffLayout.GetRange(previousPageListIndex, currPageListIndex));
+                previousPageListIndex += currPageListIndex;
+            }
         }
 
         #endregion Constructors
@@ -225,12 +239,12 @@ namespace MusicXMLScore.DrawingHelpers
         {
             get
             {
-                return numberOfStaves;
+                return numberOfStaffs;
             }
 
             set
             {
-                numberOfStaves = value;
+                numberOfStaffs = value;
             }
         }
 
@@ -328,6 +342,58 @@ namespace MusicXMLScore.DrawingHelpers
             }
         }
 
+        public ClefChangesDictionary ClefChanges
+        {
+            get
+            {
+                return clefChanges;
+            }
+
+            set
+            {
+                clefChanges = value;
+            }
+        }
+
+        public KeyChangesDictionary KeyChanges
+        {
+            get
+            {
+                return keyChanges;
+            }
+
+            set
+            {
+                keyChanges = value;
+            }
+        }
+
+        public TimeChangesDictionary TimeChanges
+        {
+            get
+            {
+                return timeChanges;
+            }
+
+            set
+            {
+                timeChanges = value;
+            }
+        }
+
+        public Dictionary<string, ClefChangesDictionary> ClefPerStaff
+        {
+            get
+            {
+                return clefPerStaff;
+            }
+
+            set
+            {
+                clefPerStaff = value;
+            }
+        }
+
         #endregion Properties
 
         #region Methods
@@ -363,17 +429,177 @@ namespace MusicXMLScore.DrawingHelpers
             }
         }
 
+        public void GenerateAttributes(TimeSignatures timeSignatures)
+        {
+            string firsMeasureId = currentPart.Measure.FirstOrDefault().Number;
+            foreach (var measure in currentPart.Measure)
+            {
+                var currentTimeSig = timeSignatures.GetTimeSignature(measure.Number);
+                int numerator = currentTimeSig.GetNumerator();
+                int denominator = currentTimeSig.GetDenominator();
+                int divisions = GetDivisionsMeasureId(measure.Number);
+                int maxDuration = (int)((4 / (double)denominator) * (divisions * numerator));
+                int fractionCursor = 0;
+                
+                for (int i = 0; i < measure.Items.Length; i++)
+                {
+                    string typeName = measure.Items[i].GetType().Name;
+
+                    switch (typeName)
+                    {
+                        case nameof(AttributesMusicXML):
+                            if (firsMeasureId == measure.Number && fractionCursor == 0)
+                            {
+                                AttributesChanged(measure.Items[i] as AttributesMusicXML, fractionCursor, measure.Number, true);
+                            }
+                            else
+                            {
+                                AttributesChanged(measure.Items[i] as AttributesMusicXML, fractionCursor, measure.Number);
+                            }
+                            break;
+                        case nameof(BackupMusicXML):
+                            BackupMusicXML b = (BackupMusicXML)measure.Items[i];
+                            fractionCursor -= (int)b.Duration;
+                            break;
+                        case nameof(ForwardMusicXML):
+                            ForwardMusicXML f = (ForwardMusicXML)measure.Items[i];
+                            fractionCursor += (int)f.Duration;
+                            break;
+                        case nameof(NoteMusicXML):
+                            NoteMusicXML n = (NoteMusicXML)measure.Items[i];
+                            fractionCursor += n.GetDuration();
+                            break;
+                    }
+                }
+            }
+            GenerateClefPerStaffDictionary();
+            
+        }
+
+        private void GenerateClefPerStaffDictionary()
+        {
+            if (clefPerStaff == null)
+            {
+                clefPerStaff = new Dictionary<string, ClefChangesDictionary>();
+            }
+            else
+            {
+                clefPerStaff.Clear();
+            }
+            for (int i = 1; i <= numberOfStaffs; i++)
+            {
+                var clefs = clefChanges.Select(
+                    (x, z) => new
+                    {
+                        x = x.Key,
+                        z = x.Value.ClefsChanges.Where(c => c.Item1 == i.ToString())
+                    })
+                    .Where(x => x.z.FirstOrDefault() != null);
+
+                ClefChangesDictionary ccdict = new ClefChangesDictionary();
+                foreach (var item in clefs)
+                {
+                    ClefChanges cc = new ClefChanges();
+                    foreach (var c in item.z)
+                    {
+                        cc.Add(c.Item1, c.Item2, c.Item3);
+                    }
+                    ccdict.Add(item.x, cc);
+                }
+                clefPerStaff.Add(i.ToString(), ccdict);
+            }
+        }
+
+        private void GenerateDivisionChanges2()
+        {
+            //TODO_Later refactor to duration fraction based
+        }
+        private void AttributesChanged(AttributesMusicXML attributes, int cursorPosition, string measureNumber, bool first = false)
+        {
+            ClefChanges clefs = new ClefChanges();
+            KeyChanges keys = new KeyChanges();
+            TimeChanges times = new TimeChanges();
+            //search for clefs
+            if (attributes.Clef.Count == 0 && first)
+            {
+                for (var i = 1; i <= numberOfStaffs; i++)
+                {
+                    clefs.Add(i.ToString(), cursorPosition, new ClefMusicXML() { Sign = ClefSignMusicXML.G, Line = 2.ToString() });
+                }
+            }
+            else
+            {
+                for (var i = 0; i < attributes.Clef.Count; i++)
+                {
+                    clefs.Add(attributes.Clef[i].Number, cursorPosition, attributes.Clef[i]);
+                }
+            }
+            //search for key signatures
+            if (attributes.Key.Count == 0 && first)
+            {
+                for (int i = 1; i <= numberOfStaffs; i++)
+                {
+                    keys.Add(i.ToString(), cursorPosition, new KeyMusicXML() { Items = new object[] { 0.ToString() }, ItemsElementName = new KeyChoiceTypes[] { KeyChoiceTypes.fifths } });
+                }
+            }
+            else
+            {
+                for (int i = 0; i < attributes.Key.Count; i++)
+                {
+                    keys.Add(attributes.Key[i].Number, cursorPosition, attributes.Key[i]);
+                }
+            }
+            //search for time signatures
+            if (attributes.Time.Count == 0 && first)
+            {
+                for (int i = 1; i <= numberOfStaffs; i++)
+                {
+                    times.Add(i.ToString(), cursorPosition, new TimeMusicXML() { Items = new object[] { "4", "4" }, ItemsElementName = new TimeChoiceTypeMusicXML[] { TimeChoiceTypeMusicXML.beats, TimeChoiceTypeMusicXML.beattype } });
+                }
+            }
+            else
+            {
+                for (int i = 0; i < attributes.Time.Count; i++)
+                {
+                    times.Add(attributes.Time[i].Number, cursorPosition, attributes.Time[i]);
+                }
+            }
+
+            if (clefs.ClefsChanges.Count != 0)
+            {
+                clefChanges.Add(measureNumber, clefs);
+            }
+
+            if (keys.KeysChanges.Count != 0)
+            {
+                keyChanges.Add(measureNumber, keys);
+            } 
+
+            if (times.TimesChanges.Count != 0)
+            {
+                timeChanges.Add(measureNumber, times);
+            }
+        }
+
+        public ClefChanges GetCurrentClef(string staffNumber, string measureNumber)
+        {
+            return new ClefChanges();// ClefAlterations.Select((i, j)=> i = clefAlterations.Keys, j = clefAlterations.Values).Where()
+        }
         private void GenerateClefAttributes()
         {
             var firsMeasureInSystem = from zz in measuresPerSystem select zz.Select(t => t).ElementAt(0);
             clefAttributes = new Dictionary<string, List<ClefMusicXML>>();
-            ClefMusicXML[] clefsArray = new ClefMusicXML[numberOfStaves];
-            ClefMusicXML[] clefsArrayToClone = new ClefMusicXML[numberOfStaves];
+            ClefMusicXML[] clefsArray = new ClefMusicXML[numberOfStaffs];
+            ClefMusicXML[] clefsArrayToClone = new ClefMusicXML[numberOfStaffs];
             string fistMeasureId = currentPart.Measure.FirstOrDefault().Number;
             var firstMeasureClefs = currentPart.Measure.FirstOrDefault().Items.OfType<AttributesMusicXML>().FirstOrDefault()?.Clef.ToArray();
             if (firstMeasureClefs == null || firstMeasureClefs.Length == 0)
             {
-                firstMeasureClefs = new ClefMusicXML[] { new ClefMusicXML() { Sign = ClefSignMusicXML.G, Line = "2" } };  // throw new Exception("First measure in part does not contain Clef attribute"); //TODO_LATER Refactor to check before passing to this class.
+                firstMeasureClefs= new ClefMusicXML[numberOfStaffs];
+                for (int i = 0; i < numberOfStaffs; i++)
+                {
+                    firstMeasureClefs[i] = new ClefMusicXML() { Sign = ClefSignMusicXML.G, Line = "2" };  // throw new Exception("First measure in part does not contain Clef attribute"); //TODO_LATER Refactor to check before passing to this class.
+                }
             }
             List<ClefMusicXML> clefList = new List<ClefMusicXML>();
             for (int i = 0; i < clefsArray.Length; i++)
@@ -474,7 +700,7 @@ namespace MusicXMLScore.DrawingHelpers
             }
             //var test = keyAttributes.Select(i => i).Where(i => i.Value.PrintObject == Model.Helpers.SimpleTypes.YesNoMusicXML.yes);
         }
-        private void GenerateDivisionChanges()
+        private void GenerateDivisionChanges() //TODO_Later refactor based on measure duration fraction
         {
             divisionsAttributes = new Dictionary<string, int>();
             var firstMeasure = currentPart.Measure.FirstOrDefault();
@@ -524,7 +750,7 @@ namespace MusicXMLScore.DrawingHelpers
         private void SetPartHeight()
         {
             double staffHeight = ViewModel.ViewModelLocator.Instance.Main.CurrentPageLayout.StaffHeight.MMToTenths();
-            partHeight = staffHeight * numberOfStaves + (stavesDistance * (numberOfStaves - 1));
+            partHeight = staffHeight * numberOfStaffs + (stavesDistance * (numberOfStaffs - 1));
         }
 
         public int GetDivisionsMeasureId(string measureId)
@@ -656,4 +882,9 @@ namespace MusicXMLScore.DrawingHelpers
         #endregion Methods
 
     }
+    public class AttributesChangesDictionary : Dictionary<string, int>
+    {
+
+    }
+
 }

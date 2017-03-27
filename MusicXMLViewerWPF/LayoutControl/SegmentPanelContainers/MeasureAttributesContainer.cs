@@ -8,7 +8,7 @@ using System.Windows.Controls;
 
 namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
 {
-    class MeasureAttributesContainer : Canvas
+    class MeasureAttributesContainer : Canvas, Notes.INoteItemVisual
     {
         private List<IAttributeItemVisual> attributes;
         private double clefWidth = 0.0;
@@ -19,9 +19,10 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
         private double sharedTimeSignatureWidth = 0.0;
         private double containerWidth = 0.0;
         private Model.MeasureItems.AttributesMusicXML currentAttributes;
-        private int staveNumber = 1;
+        private string staveNumber = "1";
         private string measureId;
         private string partId;
+        private int fractionCursorPosition;
         public double ContainerWidth
         {
             get
@@ -74,7 +75,56 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
             }
         }
 
-        public MeasureAttributesContainer(Model.MeasureItems.AttributesMusicXML attributesXML, string measureId, string partId, int stave = 1)
+        public int ItemDuration
+        {
+            get
+            {
+                return 0;
+            }
+        }
+
+        public double ItemWidthMin
+        {
+            get
+            {
+                return 0;
+            }
+            set
+            {
+
+            }
+        }
+
+        public double ItemWidthOpt
+        {
+            get
+            {
+                return 0;
+            }
+            set
+            {
+
+            }
+        }
+
+        public double ItemWeight
+        {
+            get
+            {
+                return 0;
+            }
+        }
+        public MeasureAttributesContainer(/*Model.MeasureItems.AttributesMusicXML attributesXML,*/ int fractionCursorPosition, string measureId, string partId, string staffId)
+        {
+            attributes = new List<IAttributeItemVisual>();
+            this.measureId = measureId;
+            this.partId = partId;
+            this.fractionCursorPosition = fractionCursorPosition;
+            this.staveNumber = staffId;
+            //currentAttributes = attributesXML;
+        }
+
+        public MeasureAttributesContainer(Model.MeasureItems.AttributesMusicXML attributesXML, string measureId, string partId, string stave = "1")
         {
             attributes = new List<IAttributeItemVisual>();
             this.measureId = measureId;

@@ -95,6 +95,7 @@ namespace MusicXMLScore.ScoreProperties
         private TimeSignatures timeSignatures;
         private bool autoLayoutSupportByScore = false;
         private string id;
+
         public ScoreProperties(ScorePartwiseMusicXML score)
         {
             this.score = score;
@@ -109,7 +110,19 @@ namespace MusicXMLScore.ScoreProperties
         {
             InitParts(this.score);
             InitTimeSignatures(this.score);
+            GenerateAttributes();
         }
+
+        private void GenerateAttributes()
+        {
+            if (partProperties == null) return;
+
+            foreach (var part in partProperties.Values)
+            {
+                part.GenerateAttributes(timeSignatures);
+            }
+        }
+
         private void InitParts(ScorePartwiseMusicXML score)
         {
             if (score.Part != null)
@@ -132,11 +145,39 @@ namespace MusicXMLScore.ScoreProperties
         /// <param name="measureId">MeasureId token, which is Measure.Number</param>
         /// <param name="partId">PartId token, which is Part.Id in list of Part inside ScorePartwiseMusicXML</param>
         /// <param name="staffNumber">Staff number (counted from 1 TopDown), if part contains more than one staff line. Default=1</param>
-        /// <returns>Clef attributes attached to measureId in selected Part.Id</returns>
-        public Model.MeasureItems.Attributes.ClefMusicXML GetClef(string measureId, string partId, int staffNumber = 1)
+        /// <param name="fractionPosition">Position inside measure (calculated sum of previous items durations</param>
+        /// <returns>Closest Clef attributes attached to measureId in selected Part.Id</returns>
+        public Model.MeasureItems.Attributes.ClefMusicXML GetClef(string measureId, string partId, int staffNumber, int fractionPosition)
         {
-            Model.MeasureItems.Attributes.ClefMusicXML clef = partProperties[partId].ClefAttributes[measureId].ElementAt(staffNumber - 1);
-            return clef; //? new Model.MeasureItems.Attributes.ClefMusicXML();
+            Model.MeasureItems.Attributes.ClefMusicXML clef = new Model.MeasureItems.Attributes.ClefMusicXML() { Line = "2" };
+            //gets all cleff changes of this staff
+            var clefsChanges = PartProperties[partId].ClefPerStaff[staffNumber.ToString()];
+            // select all previous or same as passed measureId
+            var measureKeysList = clefsChanges.Keys.Where(id => int.Parse(id.Replace("X","")) <= int.Parse(measureId.Replace("X", ""))).ToList(); 
+            if (measureKeysList.Contains(measureId))
+            {
+                // check if dictionary of clefchanges has any clef with measure beginning position (fractionPosition == 0)
+                var measureClefBeginning = clefsChanges[measureId].ClefsChanges.Where(x => x.Item2 == 0);
+                // check if this.[measureId] has clef with fraction position == 0 
+                // if not, check if passed Items.fractionPosition is higher than first clef inside clefChanges list of this measureId
+                if (measureClefBeginning.Count() == 0 && fractionPosition< clefsChanges[measureId].ClefsChanges.FirstOrDefault().Item2)
+                {
+                    int x =measureKeysList.Count -1; // 
+                    // get last clef change from previous measure
+                    clef = clefsChanges[measureKeysList.ElementAt(x-1)].ClefsChanges.LastOrDefault().Item3;
+                }
+                else
+                {
+                    //get last clef object with fractionPostion lower or equal than this Item.fracitonPosition
+                    clef = clefsChanges[measureId].ClefsChanges.Where(x => x.Item2 <= fractionPosition).LastOrDefault().Item3;
+                }
+            }
+            else
+            {
+                //get previous closest clef 
+                clef = clefsChanges[measureKeysList.LastOrDefault()].ClefsChanges.LastOrDefault().Item3;
+            }
+            return clef?? new Model.MeasureItems.Attributes.ClefMusicXML() { Line = "2" };
         }
 
         /// <summary>
