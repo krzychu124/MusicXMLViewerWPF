@@ -95,6 +95,7 @@ namespace MusicXMLScore.ScoreProperties
         private TimeSignatures timeSignatures;
         private bool autoLayoutSupportByScore = false;
         private string id;
+
         public ScoreProperties(ScorePartwiseMusicXML score)
         {
             this.score = score;
@@ -110,6 +111,7 @@ namespace MusicXMLScore.ScoreProperties
             InitParts(this.score);
             InitTimeSignatures(this.score);
         }
+        
         private void InitParts(ScorePartwiseMusicXML score)
         {
             if (score.Part != null)
@@ -132,46 +134,39 @@ namespace MusicXMLScore.ScoreProperties
         /// <param name="measureId">MeasureId token, which is Measure.Number</param>
         /// <param name="partId">PartId token, which is Part.Id in list of Part inside ScorePartwiseMusicXML</param>
         /// <param name="staffNumber">Staff number (counted from 1 TopDown), if part contains more than one staff line. Default=1</param>
-        /// <returns>Clef attributes attached to measureId in selected Part.Id</returns>
-        public Model.MeasureItems.Attributes.ClefMusicXML GetClef(string measureId, string partId, int staffNumber = 1)
-        {
-            Model.MeasureItems.Attributes.ClefMusicXML clef = partProperties[partId].ClefAttributes[measureId].ElementAt(staffNumber - 1);
-            return clef; //? new Model.MeasureItems.Attributes.ClefMusicXML();
-        }
+        /// <param name="fractionPosition">Position inside measure (calculated sum of previous items durations</param>
+        /// <returns>Closest Clef attributes attached to measureId in selected Part.Id</returns>
         public Model.MeasureItems.Attributes.ClefMusicXML GetClef(string measureId, string partId, int staffNumber, int fractionPosition)
         {
             Model.MeasureItems.Attributes.ClefMusicXML clef = new Model.MeasureItems.Attributes.ClefMusicXML() { Line = "2" };
-            var clefs = PartProperties[partId].ClefChanges;
-            var measureKeys = clefs.Keys.Where(i => int.Parse(i) <= int.Parse(measureId)); // only previous or same as passed measureId
-            var zz = clefs.Where(x => measureKeys.Contains(x.Key)).Select((k, l) => new { key = k.Key, value = k.Value }).Select((x, v) => new { x = x.value.ClefsChanges.Select(b => b).Where(b => b.Item1 == staffNumber.ToString()).Where(b=>b!=null), v = x.key }).Where(x=>x != null).ToDictionary(item=>item.v, item=>item.x);
-            //var xx = zz.SelectMany(v => v.Value.ClefsChanges);
-            if (zz.Keys.LastOrDefault() == measureId )
+            //gets all cleff changes of this staff
+            var clefsChanges = PartProperties[partId].ClefPerStaff[staffNumber.ToString()];
+            // select all previous or same as passed measureId
+            var measureKeysList = clefsChanges.Keys.Where(id => int.Parse(id.Replace("X","")) <= int.Parse(measureId.Replace("X", ""))).ToList(); 
+            if (measureKeysList.Contains(measureId))
             {
-                var test2 = zz;
-                if (zz.LastOrDefault().Value.All(x => x.Item2 > fractionPosition))
+                // check if dictionary of clefchanges has any clef with measure beginning position (fractionPosition == 0)
+                var measureClefBeginning = clefsChanges[measureId].ClefsChanges.Where(x => x.Item2 == 0);
+                // check if this.[measureId] has clef with fraction position == 0 
+                // if not, check if passed Items.fractionPosition is higher than first clef inside clefChanges list of this measureId
+                if (measureClefBeginning.Count() == 0 && fractionPosition< clefsChanges[measureId].ClefsChanges.FirstOrDefault().Item2)
                 {
-                    clef = test2.Reverse().Skip(1).LastOrDefault().Value.LastOrDefault().Item3;
+                    int x =measureKeysList.Count -1; // 
+                    // get last clef change from previous measure
+                    clef = clefsChanges[measureKeysList.ElementAt(x-1)].ClefsChanges.LastOrDefault().Item3;
                 }
                 else
                 {
-                    //test2 = test2.Select(z => z).Except(zz.Where(z => !z.Value.Any()));
-                    //var test =zz.Select(z => z).Except(zz.Where(z => z.Key == measureId).Where(z=>z.Value.Select(x=>x).All(x=>x.Item2>fractionPosition)));
-                    clef = test2.LastOrDefault().Value.Where(x => x.Item2 <= fractionPosition).LastOrDefault().Item3;
+                    //get last clef object with fractionPostion lower or equal than this Item.fracitonPosition
+                    clef = clefsChanges[measureId].ClefsChanges.Where(x => x.Item2 <= fractionPosition).LastOrDefault().Item3;
                 }
             }
             else
             {
-                var test = zz.Select(z => z).Except(zz.Where(z => !z.Value.Any()));
-                clef = test.Select(x => x).LastOrDefault().Value.Where(x=>x!= null).LastOrDefault().Item3;
+                //get previous closest clef 
+                clef = clefsChanges[measureKeysList.LastOrDefault()].ClefsChanges.LastOrDefault().Item3;
             }
-            string m = measureId;
-             //(x=>x.ClefsChanges.Where(x=> x.Item1 == staffNumber.ToString()).Where(x => x.Item2 <= fractionPosition).LastOrDefault().Item3;
-            
-               // clef = zz.Value.ClefsChanges.Where(x => x.Item1 == staffNumber.ToString()).LastOrDefault().Item3;
-            
-            //var c = from cl in clefs from cla in cl.Value.ClefsChanges where cla.Item1 == staffNumber.ToString() where int.Parse(cl.Key) <= int.Parse(measureId) select cl ;
-            //var zz = measureKeys.SelectMany(x => clefs).Where(x => x.Value.ClefsChanges.Select(z => z.Item1).FirstOrDefault() == staffNumber.ToString());
-            return clef;
+            return clef?? new Model.MeasureItems.Attributes.ClefMusicXML() { Line = "2" };
         }
 
         /// <summary>

@@ -26,16 +26,16 @@ namespace MusicXMLScore.LayoutControl
             this.pageIndex = pageIndex;
             this.stavesCount = stavesCount;
             partProperties = ViewModel.ViewModelLocator.Instance.Main.CurrentPartsProperties[partID];
-            var stopWatch = new Stopwatch();
-            stopWatch.Start();
+            Stopwatch stopWatch;// = new Stopwatch();
+            //stopWatch.Start();
             segmentPanel = new SegmentPanel(partID, measure.Number, systemIndex, pageIndex);
-            for (int i = 1; i <= stavesCount; i++)
-            {
-                //segmentPanel.AddAttributesContainer(new SegmentPanelContainers.MeasureAttributesContainer(measure.Items.OfType<AttributesMusicXML>().FirstOrDefault(), measure.Number, partID, i), i);
-                //segmentPanel.AddNotesContainer(new SegmentPanelContainers.MeasureNotesContainer(measure, partID, i), i);
-            }
-            stopWatch.Stop();
-            Log.LoggIt.Log($"Measure content (SegmentPanel){measure.Number} processig done in: {stopWatch.ElapsedMilliseconds}", Log.LogType.Warning);
+            //for (int i = 1; i <= stavesCount; i++)
+            //{
+            //    //segmentPanel.AddAttributesContainer(new SegmentPanelContainers.MeasureAttributesContainer(measure.Items.OfType<AttributesMusicXML>().FirstOrDefault(), measure.Number, partID, i), i);
+            //    //segmentPanel.AddNotesContainer(new SegmentPanelContainers.MeasureNotesContainer(measure, partID, i), i);
+            //}
+            //stopWatch.Stop();
+            //Log.LoggIt.Log($"Measure content (SegmentPanel){measure.Number} processig done in: {stopWatch.ElapsedMilliseconds}", Log.LogType.Warning);
             stopWatch = new Stopwatch();
             //if (!measure.Items.OfType<AttributesMusicXML>().Any())
             //{
@@ -44,9 +44,9 @@ namespace MusicXMLScore.LayoutControl
             stopWatch.Start();
             var currentDivisions = partProperties.GetDivisionsMeasureId(measure.Number);
             var currentTime = ViewModel.ViewModelLocator.Instance.Main.CurrentScoreProperties.GetTimeSignature(measure.Number);
-            double denominator = currentTime.GetDenominator();
-            double numerator = currentTime.GetNumerator();
-            int maxDuration = (int)((4 / (double)currentTime.GetDenominator()) * ( currentDivisions * currentTime.GetNumerator()));
+            double denominator = currentDivisions ==1 ? 1 : currentTime.GetDenominator();
+            double numerator = currentDivisions == 1 ? 1 : currentTime.GetNumerator();
+            int maxDuration = (int)((4 / (double)denominator/*currentTime.GetDenominator()*/) * ( currentDivisions * numerator/*currentTime.GetNumerator()*/));
             int durationCursor = 0;
             var measureItems = measure.Items;
             staffs = new Dictionary<string, SegmentPanelContainers.MeasureNotesContainer>();
@@ -97,7 +97,7 @@ namespace MusicXMLScore.LayoutControl
             AppendContainersToSegment();
 
             stopWatch.Stop();
-            Log.LoggIt.Log($"Measure content (Switch) processig done in: {stopWatch.ElapsedMilliseconds}", Log.LogType.Warning);
+            Log.LoggIt.Log($"Measure content {measure.Number} (Switch) processig done in: {stopWatch.ElapsedMilliseconds}", Log.LogType.Warning);
 
         }
 

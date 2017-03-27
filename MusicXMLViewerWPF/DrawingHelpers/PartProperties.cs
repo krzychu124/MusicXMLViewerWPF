@@ -42,6 +42,7 @@ namespace MusicXMLScore.DrawingHelpers
         private List<string> firstIdPerSystem;
         private Dictionary<string, Dictionary<string, ClefChanges>> clefAlterations;
         private ClefChangesDictionary clefChanges = new ClefChangesDictionary();
+        private Dictionary<string, ClefChangesDictionary> clefPerStaff;
         private KeyChangesDictionary keyChanges = new KeyChangesDictionary();
         private TimeChangesDictionary timeChanges = new TimeChangesDictionary();
         #endregion Fields
@@ -393,6 +394,19 @@ namespace MusicXMLScore.DrawingHelpers
             }
         }
 
+        public Dictionary<string, ClefChangesDictionary> ClefPerStaff
+        {
+            get
+            {
+                return clefPerStaff;
+            }
+
+            set
+            {
+                clefPerStaff = value;
+            }
+        }
+
         #endregion Properties
 
         #region Methods
@@ -472,6 +486,22 @@ namespace MusicXMLScore.DrawingHelpers
                             break;
                     }
                 }
+            }
+            clefPerStaff = new Dictionary<string, ClefChangesDictionary>();
+            for (int i = 1; i <= numberOfStaffs; i++)
+            {
+                var clefs = clefChanges.Select((x, z) => new { x = x.Key, z = x.Value.ClefsChanges.Where(c => c.Item1 == i.ToString()) }).Where(x => x.z.FirstOrDefault() != null);//.ToDictionary(item => item.x, item => item.z);
+                ClefChangesDictionary ccdict = new ClefChangesDictionary();
+                foreach (var item in clefs)
+                {
+                    ClefChanges cc = new ScoreProperties.ClefChanges();
+                    foreach (var c in item.z)
+                    {
+                        cc.Add(c.Item1, c.Item2, c.Item3);
+                    }
+                    ccdict.Add(item.x, cc);
+                }
+                clefPerStaff.Add(i.ToString(), ccdict);
             }
         }
 

@@ -131,6 +131,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
         {
             staffLines = ViewModel.ViewModelLocator.Instance.Main.CurrentPageLayout.AvaliableIndexLinePositions;
             CanvasList rest = new CanvasList(10, 10);
+            
             Brush color = ViewModel.ViewModelLocator.Instance.Main.CurrentLayout.LayoutStyle.Colors[int.Parse(noteItem.Voice)];
             if (measure)
             {

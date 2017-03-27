@@ -28,8 +28,9 @@ namespace MusicXMLScore.Helpers
         {
             this.Width = width;
             this.Height = height;
-           // this.MouseEnter += new MouseEventHandler(MyVisualHost_MouseEnter);
-           // this.MouseLeave += new MouseEventHandler(MyVisualHost_MouseLeave);
+            this.Background = Brushes.Transparent;
+            this.MouseEnter += new MouseEventHandler(MyVisualHost_MouseEnter);
+            this.MouseLeave += new MouseEventHandler(MyVisualHost_MouseLeave);
         }
 
         private void MyVisualHost_MouseLeave(object sender, MouseEventArgs e)
