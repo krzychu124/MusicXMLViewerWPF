@@ -133,22 +133,23 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
             CanvasList rest = new CanvasList(10, 10);
             
             Brush color = ViewModel.ViewModelLocator.Instance.Main.CurrentLayout.LayoutStyle.Colors[int.Parse(noteItem.Voice)];
+            double positionY = 0.0;
             if (measure)
             {
                 measureRest = true;
                 GetSymbol();
-                double positionY =SetPosition(CalculateRestPositionY());
+                positionY =SetPosition(CalculateRestPositionY());
                 rest.AddCharacterGlyph(new Point(0, positionY), symbol, color: color);
             }
             else
             {
                 GetSymbol();
-                double positionY = SetPosition(CalculateRestPositionY());
+                positionY = SetPosition(CalculateRestPositionY());
                 rest.AddCharacterGlyph(new Point(0, positionY), symbol, color: color);
             }
             if(dotCount!= 0)
             {
-                Point dotPosition = new Point(14, SetPosition(3));
+                Point dotPosition = new Point(14, positionY -SetPosition(1));
                 rest.AddCharacterGlyph(dotPosition, MusicSymbols.Dot, color: color);
             }
             Children.Add(rest);

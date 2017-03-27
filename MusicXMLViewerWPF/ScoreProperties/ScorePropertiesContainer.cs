@@ -110,8 +110,19 @@ namespace MusicXMLScore.ScoreProperties
         {
             InitParts(this.score);
             InitTimeSignatures(this.score);
+            GenerateAttributes();
         }
-        
+
+        private void GenerateAttributes()
+        {
+            if (partProperties == null) return;
+
+            foreach (var part in partProperties.Values)
+            {
+                part.GenerateAttributes(timeSignatures);
+            }
+        }
+
         private void InitParts(ScorePartwiseMusicXML score)
         {
             if (score.Part != null)

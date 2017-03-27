@@ -40,7 +40,7 @@ namespace MusicXMLScore.DrawingHelpers
         private List<SystemLayoutMusicXML> systemLayout = new List<SystemLayoutMusicXML>();
         private List<List<SystemLayoutMusicXML>> systemLayoutPerPage = new List<List<SystemLayoutMusicXML>>();
         private List<string> firstIdPerSystem;
-        private Dictionary<string, Dictionary<string, ClefChanges>> clefAlterations;
+
         private ClefChangesDictionary clefChanges = new ClefChangesDictionary();
         private Dictionary<string, ClefChangesDictionary> clefPerStaff;
         private KeyChangesDictionary keyChanges = new KeyChangesDictionary();
@@ -75,7 +75,7 @@ namespace MusicXMLScore.DrawingHelpers
             GenerateDivisionChanges();
             GenerateFirstMeasureIdPerSystem();
             //GenerateClefChanges();
-            GenerateAttributes();
+            //GenerateAttributes();
         }
 
         private void GetLayoutInfo(List<Model.ScorePartwisePartMeasureMusicXML> part)
@@ -342,19 +342,6 @@ namespace MusicXMLScore.DrawingHelpers
             }
         }
 
-        public Dictionary<string, Dictionary<string, ClefChanges>> ClefAlterations
-        {
-            get
-            {
-                return clefAlterations;
-            }
-
-            set
-            {
-                clefAlterations = value;
-            }
-        }
-
         public ClefChangesDictionary ClefChanges
         {
             get
@@ -442,16 +429,14 @@ namespace MusicXMLScore.DrawingHelpers
             }
         }
 
-        private void GenerateAttributes()
+        public void GenerateAttributes(TimeSignatures timeSignatures)
         {
-            //GenerateDurationChanges2();
-            var scoreProperties = ViewModel.ViewModelLocator.Instance.Main.ScoreProperties.CurrentScoreProperties;
             string firsMeasureId = currentPart.Measure.FirstOrDefault().Number;
             foreach (var measure in currentPart.Measure)
             {
-                //var currentTimeSig = scoreProperties.GetTimeSignature(measure.Number);
-                int numerator = 4;// currentTimeSig.GetNumerator();
-                int denominator = 4;//currentTimeSig.GetDenominator();
+                var currentTimeSig = timeSignatures.GetTimeSignature(measure.Number);
+                int numerator = currentTimeSig.GetNumerator();
+                int denominator = currentTimeSig.GetDenominator();
                 int divisions = GetDivisionsMeasureId(measure.Number);
                 int maxDuration = (int)((4 / (double)denominator) * (divisions * numerator));
                 int fractionCursor = 0;
@@ -487,14 +472,34 @@ namespace MusicXMLScore.DrawingHelpers
                     }
                 }
             }
-            clefPerStaff = new Dictionary<string, ClefChangesDictionary>();
+            GenerateClefPerStaffDictionary();
+            
+        }
+
+        private void GenerateClefPerStaffDictionary()
+        {
+            if (clefPerStaff == null)
+            {
+                clefPerStaff = new Dictionary<string, ClefChangesDictionary>();
+            }
+            else
+            {
+                clefPerStaff.Clear();
+            }
             for (int i = 1; i <= numberOfStaffs; i++)
             {
-                var clefs = clefChanges.Select((x, z) => new { x = x.Key, z = x.Value.ClefsChanges.Where(c => c.Item1 == i.ToString()) }).Where(x => x.z.FirstOrDefault() != null);//.ToDictionary(item => item.x, item => item.z);
+                var clefs = clefChanges.Select(
+                    (x, z) => new
+                    {
+                        x = x.Key,
+                        z = x.Value.ClefsChanges.Where(c => c.Item1 == i.ToString())
+                    })
+                    .Where(x => x.z.FirstOrDefault() != null);
+
                 ClefChangesDictionary ccdict = new ClefChangesDictionary();
                 foreach (var item in clefs)
                 {
-                    ClefChanges cc = new ScoreProperties.ClefChanges();
+                    ClefChanges cc = new ClefChanges();
                     foreach (var c in item.z)
                     {
                         cc.Add(c.Item1, c.Item2, c.Item3);
@@ -514,98 +519,66 @@ namespace MusicXMLScore.DrawingHelpers
             ClefChanges clefs = new ClefChanges();
             KeyChanges keys = new KeyChanges();
             TimeChanges times = new TimeChanges();
-            
-            //if (first) //get attributes for first measure if missing, set default
-            //{
-
-                if (attributes.Clef.Count == 0 && first)
-                {
-                    for (var i = 1; i <= numberOfStaffs; i++)
-                    {
-                        clefs.Add(i.ToString(), cursorPosition,  new ClefMusicXML() { Sign = ClefSignMusicXML.G, Line = 2.ToString() });
-                    }
-                }
-                else
-                {
-                    for (var i = 0; i < attributes.Clef.Count; i++)
-                    {
-                        clefs.Add(attributes.Clef[i].Number, cursorPosition, attributes.Clef[i]);
-                    }
-                }
-                if (attributes.Key.Count == 0 && first)
-                {
-                    for (int i = 1; i <= numberOfStaffs; i++)
-                    {
-                        keys.Add(i.ToString(), cursorPosition, new KeyMusicXML() { Items = new object[] { 0.ToString() }, ItemsElementName = new KeyChoiceTypes[] { KeyChoiceTypes.fifths } });
-                    }
-                }
-                else
-                {
-                    for (int i = 0; i < attributes.Key.Count; i++)
-                    {
-                        keys.Add(attributes.Key[i].Number, cursorPosition, attributes.Key[i]);
-                    }
-                }
-                if (attributes.Time.Count == 0 && first)
-                {
-                    for (int i = 1; i <= numberOfStaffs; i++)
-                    {
-                        times.Add(i.ToString(), cursorPosition, new TimeMusicXML() { Items = new object[] { "4", "4" }, ItemsElementName = new TimeChoiceTypeMusicXML[] { TimeChoiceTypeMusicXML.beats, TimeChoiceTypeMusicXML.beattype } });
-                    }
-                }
-                else
-                {
-                    for (int i = 0; i < attributes.Time.Count; i++)
-                    {
-                        times.Add(attributes.Time[i].Number, cursorPosition, attributes.Time[i]);
-                    }
-                }
-            //}
-            //else
-            //{
-            //    if (attributes.Clef.Count != 0)
-            //    {
-            //        foreach (var clef in attributes.Clef)
-            //        {
-            //            clefs.Add(clef.Number, cursorPosition, clef);
-            //        }
-            //    }
-            //}
-            if (clefs.ClefsChanges.Count != 0)
+            //search for clefs
+            if (attributes.Clef.Count == 0 && first)
             {
-                clefChanges.Add(measureNumber, clefs);
-            }
-            if (keys.KeysChanges.Count != 0)
-            {
-                keyChanges.Add(measureNumber, keys);
-            }
-            if (times.TimesChanges.Count != 0)
-            {
-                timeChanges.Add(measureNumber, times);
-            }
-        }
-
-        private void GenerateClefChanges()
-        {
-            clefAlterations = new Dictionary<string, Dictionary<string, ClefChanges>>();
-            var measure = currentPart.Measure.FirstOrDefault();
-            var clefs = measure.Items.OfType<AttributesMusicXML>().FirstOrDefault()?.Clef.ToArray();
-            Dictionary<string, ClefChanges> clefsByStaf = new Dictionary<string, ClefChanges>();
-            if (clefs == null || clefs.Length == 0) // no clefs in fist measure, generate default;
-            {
-                for (int i = 0; i < numberOfStaffs; i++) //default G clef
+                for (var i = 1; i <= numberOfStaffs; i++)
                 {
-                   // clefsByStaf.Add((i + 1).ToString(), new ClefChanges(new ClefMusicXML() { Sign = ClefSignMusicXML.G, Line = 2.ToString(), Number = (i+1).ToString() }, 0));
+                    clefs.Add(i.ToString(), cursorPosition, new ClefMusicXML() { Sign = ClefSignMusicXML.G, Line = 2.ToString() });
                 }
             }
             else
             {
-                foreach (var clef in clefs)
+                for (var i = 0; i < attributes.Clef.Count; i++)
                 {
-                    //clefsByStaf.Add(clef.Number, new ClefChanges(clef, 0));
+                    clefs.Add(attributes.Clef[i].Number, cursorPosition, attributes.Clef[i]);
                 }
             }
-            clefAlterations.Add(measure.Number, clefsByStaf);
+            //search for key signatures
+            if (attributes.Key.Count == 0 && first)
+            {
+                for (int i = 1; i <= numberOfStaffs; i++)
+                {
+                    keys.Add(i.ToString(), cursorPosition, new KeyMusicXML() { Items = new object[] { 0.ToString() }, ItemsElementName = new KeyChoiceTypes[] { KeyChoiceTypes.fifths } });
+                }
+            }
+            else
+            {
+                for (int i = 0; i < attributes.Key.Count; i++)
+                {
+                    keys.Add(attributes.Key[i].Number, cursorPosition, attributes.Key[i]);
+                }
+            }
+            //search for time signatures
+            if (attributes.Time.Count == 0 && first)
+            {
+                for (int i = 1; i <= numberOfStaffs; i++)
+                {
+                    times.Add(i.ToString(), cursorPosition, new TimeMusicXML() { Items = new object[] { "4", "4" }, ItemsElementName = new TimeChoiceTypeMusicXML[] { TimeChoiceTypeMusicXML.beats, TimeChoiceTypeMusicXML.beattype } });
+                }
+            }
+            else
+            {
+                for (int i = 0; i < attributes.Time.Count; i++)
+                {
+                    times.Add(attributes.Time[i].Number, cursorPosition, attributes.Time[i]);
+                }
+            }
+
+            if (clefs.ClefsChanges.Count != 0)
+            {
+                clefChanges.Add(measureNumber, clefs);
+            }
+
+            if (keys.KeysChanges.Count != 0)
+            {
+                keyChanges.Add(measureNumber, keys);
+            } 
+
+            if (times.TimesChanges.Count != 0)
+            {
+                timeChanges.Add(measureNumber, times);
+            }
         }
 
         public ClefChanges GetCurrentClef(string staffNumber, string measureNumber)

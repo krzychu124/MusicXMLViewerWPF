@@ -71,5 +71,15 @@ namespace MusicXMLScore.ScoreProperties
             //var test = timeSignatures.Select(i => i).Where(i => i.Value.PrintObject == Model.Helpers.SimpleTypes.YesNoMusicXML.yes);
         }
         
+        /// <summary>
+        /// Gets Time Signature of selected measureId
+        /// </summary>
+        /// <param name="measureId">MeasureId token, which is Measure.Number</param>
+        /// <returns>Time attributes attached to measureId, PartId is not necessary due to all parts shares the same time signature</returns>
+        public TimeMusicXML GetTimeSignature(string measureId)
+        {
+            TimeMusicXML time = timeSignatures[measureId];
+            return time; //? new Model.MeasureItems.Attributes.TimeMusicXML();
+        }
     }
 }
