@@ -8,6 +8,7 @@ using MusicXMLScore.DrawingHelpers;
 using MusicXMLScore.Model.MeasureItems;
 using System.Diagnostics;
 using MusicXMLScore.LayoutControl.SegmentPanelContainers.Attributes;
+using MusicXMLScore.Model.MeasureItems.Attributes;
 
 namespace MusicXMLScore.LayoutControl
 {
@@ -18,7 +19,7 @@ namespace MusicXMLScore.LayoutControl
         private int pageIndex;
         private int stavesCount = 1;
         private PartProperties partProperties;
-        Dictionary<string, SegmentPanelContainers.MeasureNotesContainer> staffs;
+        Dictionary<string, SegmentPanelContainers.MeasureItemsContainer> staffs;
         Dictionary<string, SegmentPanelContainers.MeasureAttributesContainer> attributesContainer;
         public MeasureSegmentController(Model.ScorePartwisePartMeasureMusicXML measure, string partID, int stavesCount, int systemIndex, int pageIndex)
         {
@@ -49,10 +50,10 @@ namespace MusicXMLScore.LayoutControl
             int maxDuration = (int)((4 / (double)denominator/*currentTime.GetDenominator()*/) * ( currentDivisions * numerator/*currentTime.GetNumerator()*/));
             int durationCursor = 0;
             var measureItems = measure.Items;
-            staffs = new Dictionary<string, SegmentPanelContainers.MeasureNotesContainer>();
+            staffs = new Dictionary<string, SegmentPanelContainers.MeasureItemsContainer>();
             for (int i = 0; i < stavesCount; i++)
             {
-                staffs.Add((i + 1).ToString(), new SegmentPanelContainers.MeasureNotesContainer(measure.Number, partID, i + 1));
+                staffs.Add((i + 1).ToString(), new SegmentPanelContainers.MeasureItemsContainer(measure.Number, partID, i + 1));
             }
             for (int i = 0; i < measure.Items.Length; i++)
             {
@@ -84,9 +85,10 @@ namespace MusicXMLScore.LayoutControl
                         }
                         else
                         {
+                            //int tempDuration = n.IsChord() ? durationCursor : durationCursor - n.GetDuration();
                             staffs[staffNumber].AppendNote(new SegmentPanelContainers.Notes.NoteContainerItem(n, durationCursor, partID, measure.Number, staffNumber), durationCursor, voice);
                         }
-                        durationCursor += n.GetDuration();
+                        durationCursor += !n.IsChord() ? n.GetDuration() : 0;
                         break;
                     default:
                         break;
@@ -128,41 +130,45 @@ namespace MusicXMLScore.LayoutControl
 
         private void GenerateAndAddAttributesContainers(string measureNumber, string partID)
         {
-            attributesContainer = new Dictionary<string, SegmentPanelContainers.MeasureAttributesContainer>();
-            SegmentPanelContainers.MeasureAttributesContainer ma;
-            for (int i = 1; i <= stavesCount; i++) // add remainders for each systemSegment beginning measure
+            for (int i = 1; i <= stavesCount; i++) // missing - remainders for each systemSegment beginning measure
             {
                 if (partProperties.ClefChanges.ContainsKey(measureNumber))
                 {
-                    foreach (var clef in partProperties.ClefChanges[measureNumber].ClefsChanges)
+                    var clefList = partProperties.ClefChanges[measureNumber].ClefsChanges.Where(x => x.Item1 == i.ToString()).ToList();
+                    if (clefList.Count != 0)
                     {
-                        ClefContainerItem clefContainer = new ClefContainerItem(clef.Item1, clef.Item2, clef.Item3);
-                        //ma = new SegmentPanelContainers.MeasureAttributesContainer( clef.Item2, measureNumber, partID, clef.Item1);
-                        //ma.AddClef(clefContainer);
-                        //ma.ArrangeWithSharedPositions(true);
-                        //attributesContainer.Add(clef.Item1, ma);
+                        foreach (var clef in clefList)
+                        {
+                            ClefContainerItem clefContainer = new ClefContainerItem(clef.Item1, clef.Item2, clef.Item3);
+                            staffs[clef.Item1].AppendAttribute(clefContainer, clef.Item2);
+                        }
                     }
                 }
                 if (partProperties.KeyChanges.ContainsKey(measureNumber))
                 {
-                    foreach (var key in partProperties.KeyChanges[measureNumber].KeysChanges)
+                    var keyList = partProperties.KeyChanges[measureNumber].KeysChanges.Where(x => x.Item1 == i.ToString() || x.Item1 == null).ToList();
+                    if (keyList.Count != 0)
                     {
-                        KeyContainerItem keyContainer = new KeyContainerItem(key.Item1, key.Item2, key.Item3);
+                        foreach (var key in keyList)
+                        {
+                            string staffNumber = key.Item1 != null ? key.Item1 : i.ToString();
+                            KeyContainerItem keyContainer = new KeyContainerItem(key.Item3, key.Item2, measureNumber, partID, staffNumber);
+                            staffs[staffNumber].AppendAttribute(keyContainer, key.Item2);
+                        }
                     }
                 }
                 if (partProperties.TimeChanges.ContainsKey(measureNumber))
                 {
-                    foreach (var time in partProperties.TimeChanges[measureNumber].TimesChanges)
+                    var timeList = partProperties.TimeChanges[measureNumber].TimesChanges.Where(x => x.Item1 == i.ToString() || x.Item1 == null).ToList();
+                    if (timeList.Count != 0)
                     {
-                        TimeSignatureContainerItem timeContainer = new TimeSignatureContainerItem(time.Item1, time.Item2, time.Item3);
+                        foreach (var time in timeList)
+                        {
+                            string staffNumber = time.Item1 != null ? time.Item1 : i.ToString();
+                            TimeSignatureContainerItem timeContainer = new TimeSignatureContainerItem(time.Item1, time.Item2, time.Item3);
+                            staffs[staffNumber].AppendAttribute(timeContainer, time.Item2);
+                        }
                     }
-                }
-            }
-            if (attributesContainer.Count != 0)
-            {
-                foreach (var item in attributesContainer)
-                {
-                    segmentPanel.AddAttributesContainer(item.Value, int.Parse(item.Key));
                 }
             }
         }
@@ -171,7 +177,7 @@ namespace MusicXMLScore.LayoutControl
         {
             foreach (var item in staffs)
             {
-                item.Value.ArrangeNotesByDuration(availableWidth, maxDuration);
+                item.Value.ArrangeItemsByDuration(availableWidth, maxDuration);
             }
         }
 

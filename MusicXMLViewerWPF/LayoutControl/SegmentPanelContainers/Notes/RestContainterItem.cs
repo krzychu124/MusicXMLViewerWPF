@@ -19,6 +19,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
         private NoteMusicXML noteItem;
         private int itemIndex;
         private int itemDuration =0;
+        private double itemWidth = 0.0;
         private double itemWidthMin = 0.0;
         private double itemWidthOpt = 0.0; // optimal
         private bool measureRest = false;
@@ -93,6 +94,19 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
             }
         }
 
+        public double ItemWidth
+        {
+            get
+            {
+                return itemWidth;
+            }
+
+            set
+            {
+                itemWidth = value;
+            }
+        }
+
         public RestContainterItem(NoteMusicXML note, int itemIndex, string partId, string measureId, string staffId)
         {
             noteItem = note;
@@ -149,7 +163,10 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
             }
             if(dotCount!= 0)
             {
-                Point dotPosition = new Point(14, positionY -SetPosition(1));
+                double shiftUp = (int)restType >= 6 ? SetPosition(1) :
+                    restType == NoteTypeValueMusicXML.Item32nd ? SetPosition(3) :
+                    restType == NoteTypeValueMusicXML.Item64th ? SetPosition(5) : SetPosition(5);
+                Point dotPosition = new Point(DrawingMethods.GetTextWidth(symbol,TypeFaces.GetMusicFont()) +4.0.TenthsToWPFUnit(), positionY -shiftUp);
                 rest.AddCharacterGlyph(dotPosition, MusicSymbols.Dot, color: color);
             }
             Children.Add(rest);

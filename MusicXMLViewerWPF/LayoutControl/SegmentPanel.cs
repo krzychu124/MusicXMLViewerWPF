@@ -15,7 +15,7 @@ namespace MusicXMLScore.LayoutControl
     class SegmentPanel : Panel
     {
         private Dictionary<int, MeasureAttributesContainer> attributesContainer;
-        private Dictionary<int, MeasureNotesContainer> notesContainer;
+        private Dictionary<int, MeasureItemsContainer> notesContainer;
         private double panelWidth = 0.0;
         private double panelHeight = 0.0;
         private Dictionary<int, double> stavesLines;
@@ -52,7 +52,7 @@ namespace MusicXMLScore.LayoutControl
             InitAttributesContainer();// attributesContainer = new Dictionary<int, MeasureAttributesContainer>();
             attributesContainer.Add(numberOfStave, measureAttributes);
         }
-        public void AddNotesContainer(MeasureNotesContainer measureNotes, int numberOfStave = 1)
+        public void AddNotesContainer(MeasureItemsContainer measureNotes, int numberOfStave = 1)
         {
             measureNotes.Tag = numberOfStave.ToString();
             //var t = attributesContainer.ElementAt(0).Value.ContainerWidth;
@@ -78,7 +78,7 @@ namespace MusicXMLScore.LayoutControl
         {
             if (notesContainer == null)
             {
-                notesContainer = new Dictionary<int, MeasureNotesContainer>();
+                notesContainer = new Dictionary<int, MeasureItemsContainer>();
             }
         }
         private void SetHeight()

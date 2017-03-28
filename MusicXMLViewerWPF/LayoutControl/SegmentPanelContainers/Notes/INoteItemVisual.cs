@@ -6,11 +6,10 @@ using System.Threading.Tasks;
 
 namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
 {
-    interface INoteItemVisual
+    interface INoteItemVisual : IMeasureItemVisual
     {
         int ItemDuration { get; }
-        double ItemWidthMin { get; set; }
-        double ItemWidthOpt { get; set; }
+        
         double ItemWeight { get; }
     }
 }

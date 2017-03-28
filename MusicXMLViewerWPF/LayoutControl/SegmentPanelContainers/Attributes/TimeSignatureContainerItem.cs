@@ -15,6 +15,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Attributes
 {
     class TimeSignatureContainerItem : Canvas, IAttributeItemVisual
     {
+        private readonly int attributeIndex = 2;
         private double itemWidth;
         private Rect itemRectBounds;
         private string beatSymbol;
@@ -28,7 +29,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Attributes
         private bool empty = false;
         private double[] staffLine;
 
-        public TimeSignatureContainerItem(string staff, int fractionPosition, TimeMusicXML timeSignature)
+        public TimeSignatureContainerItem(string staff, int fractionPosition, TimeMusicXML timeSignature):this(timeSignature)
         {
 
         }
@@ -185,6 +186,27 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Attributes
             set
             {
                 empty = value;
+            }
+        }
+
+        public double ItemWidthMin
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public int AttributeIndex
+        {
+            get
+            {
+                return attributeIndex;
             }
         }
     }

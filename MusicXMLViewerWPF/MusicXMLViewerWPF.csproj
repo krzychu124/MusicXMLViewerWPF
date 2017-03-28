@@ -130,8 +130,9 @@
     <Compile Include="LayoutControl\SegmentPanelContainers\Attributes\IAttributeItemVisual.cs" />
     <Compile Include="LayoutControl\SegmentPanelContainers\Attributes\KeyContainerItem.cs" />
     <Compile Include="LayoutControl\SegmentPanelContainers\Attributes\TimeSignatureContainerItem.cs" />
+    <Compile Include="LayoutControl\SegmentPanelContainers\IMeasureItemVisual.cs" />
     <Compile Include="LayoutControl\SegmentPanelContainers\MeasureAttributesContainer.cs" />
-    <Compile Include="LayoutControl\SegmentPanelContainers\MeasureNotesContainer.cs" />
+    <Compile Include="LayoutControl\SegmentPanelContainers\MeasureItemsContainer.cs" />
     <Compile Include="LayoutControl\SegmentPanelContainers\Notes\CalculationHelpers.cs" />
     <Compile Include="LayoutControl\SegmentPanelContainers\Notes\INoteItemVisual.cs" />
     <Compile Include="LayoutControl\SegmentPanelContainers\Notes\NoteContainerItem.cs" />

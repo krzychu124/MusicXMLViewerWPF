@@ -9,14 +9,15 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using MusicXMLScore.Converters;
+using MusicXMLScore.LayoutControl.SegmentPanelContainers.Attributes;
 
 namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
 {
-    class MeasureNotesContainer : Canvas
+    class MeasureItemsContainer : Canvas
     {
-        List<INoteItemVisual> notesVisuals;
+        List<IMeasureItemVisual> measureItemsVisuals;
         private List<NoteMusicXML> notesList;
-        private List<Tuple<int, INoteItemVisual>> notesWithPostition;
+        private List<Tuple<int, IMeasureItemVisual>> itemsWithPostition;
         private ScorePartwisePartMeasureMusicXML measure;
         private string measureId = "";
         private string partId;
@@ -27,18 +28,18 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
         private int numerator;
         private int denominator;
         private TimeMusicXML timeSignature;
-        public MeasureNotesContainer(string measureId, string partId, int numberOfStave)
+        public MeasureItemsContainer(string measureId, string partId, int numberOfStave)
         {
-            notesVisuals = new List<INoteItemVisual>();
+            measureItemsVisuals = new List<IMeasureItemVisual>();
             notesList = new List<NoteMusicXML>();
-            notesWithPostition = new List<Tuple<int, INoteItemVisual>>();
+            itemsWithPostition = new List<Tuple<int, IMeasureItemVisual>>();
             this.measureId = measureId;
             this.partId = partId;
             staveNumber = numberOfStave;
         }
-        public MeasureNotesContainer(ScorePartwisePartMeasureMusicXML measure, string partId, int numberOfStave)
+        public MeasureItemsContainer(ScorePartwisePartMeasureMusicXML measure, string partId, int numberOfStave)
         {
-            notesVisuals = new List<INoteItemVisual>();
+            measureItemsVisuals = new List<IMeasureItemVisual>();
             notesList = new List<NoteMusicXML>();
             this.measure = measure;
             measureId = measure.Number;
@@ -104,36 +105,90 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
             GetDivisions();
             GetTimeSignature();
             double offset = CalculatePositions(availableWidth - leftOffset.TenthsToWPFUnit());
-            int count = notesVisuals.Count;
+            int count = measureItemsVisuals.Count;
             double accOffset = leftOffset.TenthsToWPFUnit() *0.8;
 
-            foreach (var item in notesVisuals)
+            foreach (var item in measureItemsVisuals)
             {
-                if (item is RestContainterItem && notesVisuals.Count == 1)
+                if (item is RestContainterItem && measureItemsVisuals.Count == 1)
                 {
                     double itemHalfWidth = item.ItemWidthMin/2;
                     Canvas.SetLeft(item as Canvas, (availableWidth)/2 - itemHalfWidth);
                     continue;
                 }
                 Canvas.SetLeft(item as Canvas, accOffset);
-                accOffset += item.ItemDuration *offset;
+                accOffset += (item as INoteItemVisual).ItemDuration *offset;
             }
         }
 
-        public double ArrangeNotesByDuration(double availableWidth, int measureDuration)
+        public double ArrangeItemsByDuration(double availableWidth, int measureDuration)
         {
-            double offset = (availableWidth -10.0.TenthsToWPFUnit()) / (double)measureDuration;
-            foreach (var item in notesWithPostition)
+            //double offset = (availableWidth -10.0.TenthsToWPFUnit()) / (double)measureDuration;
+            var measureBeginningAttributes = itemsWithPostition.Where(x => x.Item1 == 0 && x.Item2 is IAttributeItemVisual).Select(x=>x.Item2).ToList();
+            itemsWithPostition.Sort((a,b)=> a.Item1.CompareTo(b.Item1));
+            double beginningAttributesWidth = 0.0;
+            if (measureBeginningAttributes.Count != 0)
             {
-                SetLeft(item.Item2 as Canvas, item.Item1 * offset + 10.0.TenthsToWPFUnit());
-                if (item.Item2 is RestContainterItem && notesWithPostition.Count == 1)
+                double attributesWidth = 0.0;
+                foreach (IAttributeItemVisual measureAttribute in measureBeginningAttributes)
                 {
-                    double itemHalfWidth = item.Item2.ItemWidthMin / 2;
+                    attributesWidth = ArrangeAttributes(measureAttribute , attributesWidth);
+                }
+                beginningAttributesWidth = attributesWidth;
+            }
+            double widthAvaliableForNotes = availableWidth - beginningAttributesWidth;
+            double offset = (widthAvaliableForNotes - 1.0.TenthsToWPFUnit()) / (double)measureDuration;
+            foreach (var item in itemsWithPostition)
+            {
+                if (item.Item2 is IAttributeItemVisual)
+                {
+                    if (item.Item1 != 0)
+                    {
+
+                    }
+                }
+                else
+                {
+                    SetLeft(item.Item2 as Canvas, item.Item1 * offset + beginningAttributesWidth);
+                }
+                if (item.Item2 is RestContainterItem && itemsWithPostition.Count == 1)
+                {
+                    double itemHalfWidth = item.Item2.ItemWidth / 2;
                     SetLeft(item.Item2 as Canvas, (availableWidth) / 2 - itemHalfWidth);
                     continue;
                 }
             }
             return 0.0;
+        }
+
+        private double ArrangeAttributes(IAttributeItemVisual attributeVisual, double currentPosition = 0.0)
+        {
+            double width = currentPosition;
+            LayoutStyle.MeasureLayoutStyle attributesLayout = ViewModel.ViewModelLocator.Instance.Main.CurrentLayout.LayoutStyle.MeasureStyle;
+
+            switch (attributeVisual.AttributeIndex)
+            {
+                case 0:
+                    ClefContainerItem clef = attributeVisual as ClefContainerItem;
+                    width += attributesLayout.ClefLeftOffset.TenthsToWPFUnit();
+                    SetLeft(clef, width);
+                    width += clef.ItemWidth + attributesLayout.ClefRightOffset.TenthsToWPFUnit();
+                    break;
+                case 1:
+                    KeyContainerItem key = attributeVisual as KeyContainerItem;
+                    width += attributesLayout.KeySigLeftOffset;
+                    SetLeft(key, width);
+                    width += key.ItemWidth + (key.ItemWidth != 0 ? attributesLayout.KeySigRightOffset.TenthsToWPFUnit() : 0);
+                    break;
+                case 2:
+                    TimeSignatureContainerItem timeSig = attributeVisual as TimeSignatureContainerItem;
+                    width += attributesLayout.TimeSigLeftOffset.TenthsToWPFUnit();
+                    SetLeft(timeSig, width);
+                    width += timeSig.ItemWidth + attributesLayout.TimeSigRightOffset.TenthsToWPFUnit();
+                    break;
+            }
+
+            return width;
         }
 
         private double CalculatePositions(double availableWidth)
@@ -144,7 +199,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
         private int GetShortestDuration()
         {
             int shortest = int.MaxValue;
-            foreach (INoteItemVisual durations in notesVisuals)
+            foreach (INoteItemVisual durations in measureItemsVisuals)
             {
                 if (durations.ItemDuration < shortest)
                 {
@@ -167,38 +222,38 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
         }
         public void AppendNote(NoteContainerItem note, int cursorPosition, string voice = "1")
         {
-            Tuple<int, INoteItemVisual> noteVisual = new Tuple<int, INoteItemVisual>(cursorPosition, note);
+            Tuple<int, IMeasureItemVisual> noteVisual = new Tuple<int, IMeasureItemVisual>(cursorPosition, note);
             AddNote(note);
-            notesWithPostition.Add(noteVisual);
+            itemsWithPostition.Add(noteVisual);
         }
 
         public void AppendRest(RestContainterItem rest, int cursorPosition, string voice = "1")
         {
-            Tuple<int, INoteItemVisual> restVisual = new Tuple<int, INoteItemVisual>(cursorPosition, rest);
+            Tuple<int, IMeasureItemVisual> restVisual = new Tuple<int, IMeasureItemVisual>(cursorPosition, rest);
             AddRest(rest);
-            notesWithPostition.Add(restVisual);
+            itemsWithPostition.Add(restVisual);
         }
 
-        public void AppendAttributes(MeasureAttributesContainer attributes, int cursorPosition)//temp
+        public void AppendAttribute(IAttributeItemVisual attributeItem, int cursorPosition)//temp
         {
-            Tuple<int, INoteItemVisual> attributesVisual = new Tuple<int, INoteItemVisual>(cursorPosition, attributes);
-            AddAttributes(attributes);
-            notesWithPostition.Add(attributesVisual);
+            Tuple<int, IMeasureItemVisual> attributesVisual = new Tuple<int, IMeasureItemVisual>(cursorPosition, attributeItem);
+            AddAttribute(attributeItem);
+            itemsWithPostition.Add(attributesVisual);
         }
         public void AddNote(NoteContainerItem noteVisual)
         {
-            notesVisuals.Add(noteVisual);
+            measureItemsVisuals.Add(noteVisual);
             Children.Add(noteVisual);
         }
         public void AddRest(RestContainterItem restVisual)
         {
-            notesVisuals.Add(restVisual);
+            measureItemsVisuals.Add(restVisual);
             Children.Add(restVisual);
         }
-        public void AddAttributes(MeasureAttributesContainer attributesVisual)//temp
+        public void AddAttribute(IAttributeItemVisual attributeVisual)//temp
         {
-            notesVisuals.Add(attributesVisual);
-            Children.Add(attributesVisual);
+            measureItemsVisuals.Add(attributeVisual);
+            Children.Add(attributeVisual as Canvas); //TODO_WiP TEST
         }
     }
 }
