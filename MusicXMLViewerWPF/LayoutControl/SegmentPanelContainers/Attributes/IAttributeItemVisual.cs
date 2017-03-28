@@ -7,13 +7,12 @@ using System.Windows;
 
 namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Attributes
 {
-    interface IAttributeItemVisual
+    interface IAttributeItemVisual : IMeasureItemVisual
     {
         #region Properties
-
+        int AttributeIndex { get; }
         bool Empty { get; set; }
         Rect ItemRectBounds { get; set; }
-        double ItemWidth { get; }
         bool Visible { get; set; }
 
         #endregion Properties

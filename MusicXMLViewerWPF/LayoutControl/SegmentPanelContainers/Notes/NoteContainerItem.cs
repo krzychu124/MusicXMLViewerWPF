@@ -16,11 +16,12 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
     class NoteContainerItem : Canvas, INoteItemVisual
     {
         private int itemDuration = 0;
+        private double itemWidth = 0.0;
         private double itemWidthMin = 0.0;
         private double itemWidthOpt = 0.0;
         private List<NoteMusicXML> noteItem;
         private bool isChordNote;
-        private int noteIndex;
+        private int fractionPosition;
         private string symbol;
         private string measureId;
         private string partId;
@@ -37,10 +38,10 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
         private double itemWeight = 0.0;
         private bool needLedgerLines = false;
         private List<double> ledgerLinesPositions;
-        private string staffId;
+        private string staffNumber;
         private System.Windows.Media.Brush color;
         private ToolTip tt = new ToolTip();
-        public NoteContainerItem(NoteMusicXML note, int index, string partId, string measureId, string staffId)
+        public NoteContainerItem(NoteMusicXML note, int fractionPosition, string partId, string measureId, string staffId)
         {
             //test
             this.MouseMove += Canvas_MouseMove;
@@ -49,14 +50,14 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
             noteItem = new List<NoteMusicXML>();
             noteItem.Add(note);
             isChordNote = false;
-            noteIndex = index;
+            this.fractionPosition = fractionPosition;
             SetVisualType();
             this.measureId = measureId;
             this.partId = partId;
-            this.staffId = staffId;
+            this.staffNumber = staffId;
             InitNoteProperties();
         }
-        public NoteContainerItem(List<NoteMusicXML> chordList, int index, string partId, string measureId, string staffId)
+        public NoteContainerItem(List<NoteMusicXML> chordList, int fractionPosition, string partId, string measureId, string staffId)
         {
             //test
             this.MouseMove += Canvas_MouseMove;
@@ -64,11 +65,11 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
             //
             noteItem = chordList;
             isChordNote = true;
-            noteIndex = index;
+            this.fractionPosition = fractionPosition;
             SetVisualType();
             this.measureId = measureId;
             this.partId = partId;
-            this.staffId = staffId != null ? staffId : "1";
+            this.staffNumber = staffId != null ? staffId : "1";
             InitNoteProperties();
         }
 
@@ -183,7 +184,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
         private void GetPitch()
         {
             //var clef = ViewModel.ViewModelLocator.Instance.Main.CurrentScoreProperties.GetClef(measureId, partId, int.Parse(staffId));
-            var clef = ViewModel.ViewModelLocator.Instance.Main.CurrentScoreProperties.GetClef(measureId, partId, int.Parse(staffId), noteIndex);
+            var clef = ViewModel.ViewModelLocator.Instance.Main.CurrentScoreProperties.GetClef(measureId, partId, int.Parse(staffNumber), fractionPosition);
             pitchObject = new List<object>();
             altered = new Dictionary<int, bool>();
             pitchedPosition = new Dictionary<int, int>();
@@ -253,6 +254,20 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
                 return itemDuration;
             }
         }
+
+        public double ItemWidth
+        {
+            get
+            {
+                return itemWidth;
+            }
+
+            set
+            {
+                itemWidth = value;
+            }
+        }
+
         //test only
         private void Canvas_MouseMove(object sender, MouseEventArgs e)
         {

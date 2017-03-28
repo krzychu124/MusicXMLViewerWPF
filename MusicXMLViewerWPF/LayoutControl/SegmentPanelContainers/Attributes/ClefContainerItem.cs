@@ -14,6 +14,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Attributes
 {
     class ClefContainerItem : Canvas, IAttributeItemVisual
     {
+        private readonly int attributeIndex = 0;
         private double itemWidth;
         private Rect itemRectBounds;
         private Visual visual;
@@ -238,6 +239,27 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Attributes
             set
             {
                 visible = value;
+            }
+        }
+
+        public double ItemWidthMin
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public int AttributeIndex
+        {
+            get
+            {
+                return attributeIndex;
             }
         }
     }

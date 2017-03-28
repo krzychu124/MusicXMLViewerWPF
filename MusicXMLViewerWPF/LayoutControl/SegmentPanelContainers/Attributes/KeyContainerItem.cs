@@ -14,6 +14,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Attributes
 {
     class KeyContainerItem : Canvas, IAttributeItemVisual
     {
+        private readonly int attributeIndex = 1;
         private bool empty = false;
         private bool visible = true;
         private double itemWidth;
@@ -23,15 +24,11 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Attributes
         private string keySymbol;
         private ClefMusicXML currentClef;
         private string partId;
-
-        public KeyContainerItem(string staff, int fractionPosition, KeyMusicXML key)
-        {
-
-        }
-        public KeyContainerItem(KeyMusicXML key, string measureId, string partId, int staffnumber=1)
+        
+        public KeyContainerItem(KeyMusicXML key, int fractionPosition, string measureId, string partId, string staffNumber)
         {
             this.partId = partId;
-            currentClef = ViewModel.ViewModelLocator.Instance.Main.CurrentScoreProperties.PartProperties[partId].ClefAttributes[measureId].ElementAt(staffnumber-1); 
+            currentClef = ViewModel.ViewModelLocator.Instance.Main.CurrentScoreProperties.GetClef(measureId, partId, int.Parse(staffNumber), fractionPosition);
             fifts = int.Parse(key.Items[key.ItemsElementName.GetValueIndexFromObjectArray(KeyChoiceTypes.fifths)].ToString());
             GenerateKeyIndexes();
             GetSymbol();
@@ -144,6 +141,27 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Attributes
             set
             {
                 visible = value;
+            }
+        }
+
+        public double ItemWidthMin
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public int AttributeIndex
+        {
+            get
+            {
+                return attributeIndex;
             }
         }
     }

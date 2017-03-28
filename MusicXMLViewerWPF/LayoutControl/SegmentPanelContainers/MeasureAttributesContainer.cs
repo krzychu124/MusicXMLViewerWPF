@@ -19,11 +19,11 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
         private double sharedTimeSignatureWidth = 0.0;
         private double containerWidth = 0.0;
         private Model.MeasureItems.AttributesMusicXML currentAttributes;
-        private string staveNumber = "1";
+        private string staffNumber = "1";
         private string measureId;
         private string partId;
         private int fractionCursorPosition;
-        public double ContainerWidth
+        public double ItemWidth
         {
             get
             {
@@ -120,7 +120,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
             this.measureId = measureId;
             this.partId = partId;
             this.fractionCursorPosition = fractionCursorPosition;
-            this.staveNumber = staffId;
+            this.staffNumber = staffId;
             //currentAttributes = attributesXML;
         }
 
@@ -130,7 +130,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
             this.measureId = measureId;
             this.partId = partId;
             currentAttributes = attributesXML;
-            staveNumber = stave;
+            staffNumber = stave;
             InitAtributes();
             if (currentAttributes != null)
             {
@@ -152,7 +152,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
             List<double> tempClefsWidth = new List<double>();
             foreach (var clef in partProperties.ClefAttributes[measureId])
             {
-                if (clef.Number == staveNumber.ToString())
+                if (clef.Number == staffNumber.ToString())
                 {
                     if(clef.PrintObject == Model.Helpers.SimpleTypes.YesNoMusicXML.yes)
                     {
@@ -168,7 +168,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
             Model.MeasureItems.Attributes.KeyMusicXML key = partProperties.KeyAttributes[measureId];
             if (key.PrintObject == Model.Helpers.SimpleTypes.YesNoMusicXML.yes)
             {
-                KeyContainerItem keyItem = new KeyContainerItem(key, measureId, partId);
+                KeyContainerItem keyItem = new KeyContainerItem(key, 0, measureId, partId, staffNumber);
                 keySignatureWidth =keyItem.ItemWidth;
                 AddKeySignature(keyItem);
             }
@@ -224,7 +224,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
 
         private void CalculateContainerWidth()
         {
-            ContainerWidth = clefWidth + keySignatureWidth + timeSignatureWidth;
+            ItemWidth = clefWidth + keySignatureWidth + timeSignatureWidth;
         }
 
         public void AddClef(ClefContainerItem clefVisualItem)

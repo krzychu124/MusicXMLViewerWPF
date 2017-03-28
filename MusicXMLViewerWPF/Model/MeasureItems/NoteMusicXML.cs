@@ -595,6 +595,10 @@ namespace MusicXMLScore.Model.MeasureItems
         {
             return Items.OfType<RestMusicXML>().Any();
         }
+        public bool IsChord()
+        {
+            return ItemsElementName.Contains(NoteChoiceTypeMusicXML.chord);
+        }
     }
     [Serializable]
     public class UnpitchedMusicXML

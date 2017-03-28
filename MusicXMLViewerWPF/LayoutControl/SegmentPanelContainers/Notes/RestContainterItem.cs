@@ -19,6 +19,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
         private NoteMusicXML noteItem;
         private int itemIndex;
         private int itemDuration =0;
+        private double itemWidth = 0.0;
         private double itemWidthMin = 0.0;
         private double itemWidthOpt = 0.0; // optimal
         private bool measureRest = false;
@@ -90,6 +91,19 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
             get
             {
                 return itemDuration;
+            }
+        }
+
+        public double ItemWidth
+        {
+            get
+            {
+                return itemWidth;
+            }
+
+            set
+            {
+                itemWidth = value;
             }
         }
 
