@@ -137,6 +137,8 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
                 beginningAttributesWidth = attributesWidth;
             }
             double widthAvaliableForNotes = availableWidth - beginningAttributesWidth;
+
+
             double offset = (widthAvaliableForNotes - 1.0.TenthsToWPFUnit()) / (double)measureDuration;
             foreach (var item in itemsWithPostition)
             {
@@ -144,7 +146,8 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
                 {
                     if (item.Item1 != 0)
                     {
-
+                        //if midmeasure attribute (clef, key or timeSignature
+                        SetLeft(item.Item2 as Canvas, item.Item1 * offset + beginningAttributesWidth);
                     }
                 }
                 else
