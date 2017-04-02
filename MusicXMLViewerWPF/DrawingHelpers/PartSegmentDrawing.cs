@@ -103,8 +103,6 @@ namespace MusicXMLScore.DrawingHelpers
                 Canvas.SetTop(spanel, 0);
                 Canvas.SetLeft(spanel, partProperties.Coords[measureId].X);
                 PartSegmentCanvas.Children.Add(spanel);
-
-                
             }
             return size;
         }
