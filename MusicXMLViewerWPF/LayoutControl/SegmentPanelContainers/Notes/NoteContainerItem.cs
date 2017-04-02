@@ -10,13 +10,17 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Shapes;
 
 namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
 {
     class NoteContainerItem : Canvas, INoteItemVisual
     {
+        private static Random r= new Random();
         private int itemDuration = 0;
         private double itemWidth = 0.0;
+        private double itemRightMargin = 0.0;
         private double itemWidthMin = 0.0;
         private double itemWidthOpt = 0.0;
         private List<NoteMusicXML> noteItem;
@@ -122,6 +126,29 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
             Children.Add(noteCanvas);
         }
 
+        public void DrawSpace(double length, bool red = false)
+        {
+            Brush color;
+            int shiftY = 50;
+            CanvasList spaceCanvas = new CanvasList(10, 10);
+            if (red)
+            {
+                color = Brushes.Red;
+                shiftY = 70;
+            }
+            else
+            {
+                color = Brushes.Green;
+            }
+            double y = r.Next(0, 15) + shiftY;
+            DrawingVisual dv = new DrawingVisual();
+            using (DrawingContext dc = dv.RenderOpen())
+            {
+                dc.DrawLine(new Pen(color, 3.0), new Point(0, y), new Point(length -0.05, y));
+            }
+            spaceCanvas.AddVisual(dv);
+            Children.Add(spaceCanvas);
+        }
         private void CheckForLedgerLines()
         {
             if (GetLowestPitchPosition() < -1)
