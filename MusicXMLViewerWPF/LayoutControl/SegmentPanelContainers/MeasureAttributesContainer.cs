@@ -245,5 +245,9 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
             attributes.Add(timeSignatureVisualItem);
             Children.Add(timeSignatureVisualItem);
         }
+
+        public void DrawSpace(double length, bool red)
+        {
+        }
     }
 }

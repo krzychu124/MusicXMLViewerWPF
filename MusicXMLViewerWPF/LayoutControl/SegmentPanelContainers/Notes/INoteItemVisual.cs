@@ -9,7 +9,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
     interface INoteItemVisual : IMeasureItemVisual
     {
         int ItemDuration { get; }
-        
+        void DrawSpace(double length, bool red=false);
         double ItemWeight { get; }
     }
 }

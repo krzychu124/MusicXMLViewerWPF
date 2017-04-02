@@ -18,6 +18,7 @@ namespace MusicXMLScore.LayoutControl
         private int systemIndex =0;
         private int pageIndex;
         private int stavesCount = 1;
+        private int maxDuration = 1;
         private PartProperties partProperties;
         Dictionary<string, SegmentPanelContainers.MeasureItemsContainer> staffs;
         Dictionary<string, SegmentPanelContainers.MeasureAttributesContainer> attributesContainer;
@@ -27,34 +28,26 @@ namespace MusicXMLScore.LayoutControl
             this.pageIndex = pageIndex;
             this.stavesCount = stavesCount;
             partProperties = ViewModel.ViewModelLocator.Instance.Main.CurrentPartsProperties[partID];
-            Stopwatch stopWatch;// = new Stopwatch();
-            //stopWatch.Start();
+            Stopwatch stopWatch;
+
             segmentPanel = new SegmentPanel(partID, measure.Number, systemIndex, pageIndex);
-            //for (int i = 1; i <= stavesCount; i++)
-            //{
-            //    //segmentPanel.AddAttributesContainer(new SegmentPanelContainers.MeasureAttributesContainer(measure.Items.OfType<AttributesMusicXML>().FirstOrDefault(), measure.Number, partID, i), i);
-            //    //segmentPanel.AddNotesContainer(new SegmentPanelContainers.MeasureNotesContainer(measure, partID, i), i);
-            //}
-            //stopWatch.Stop();
-            //Log.LoggIt.Log($"Measure content (SegmentPanel){measure.Number} processig done in: {stopWatch.ElapsedMilliseconds}", Log.LogType.Warning);
             stopWatch = new Stopwatch();
-            //if (!measure.Items.OfType<AttributesMusicXML>().Any())
-            //{
-            //    int test = 0;
-            //}
+
             stopWatch.Start();
             var currentDivisions = partProperties.GetDivisionsMeasureId(measure.Number);
             var currentTime = ViewModel.ViewModelLocator.Instance.Main.CurrentScoreProperties.GetTimeSignature(measure.Number);
             double denominator = currentDivisions ==1 ? 1 : currentTime.GetDenominator();
             double numerator = currentDivisions == 1 ? 1 : currentTime.GetNumerator();
-            int maxDuration = (int)((4 / (double)denominator/*currentTime.GetDenominator()*/) * ( currentDivisions * numerator/*currentTime.GetNumerator()*/));
+            maxDuration = (int)((4 / (double)denominator/*currentTime.GetDenominator()*/) * ( currentDivisions * numerator/*currentTime.GetNumerator()*/));
             int durationCursor = 0;
             var measureItems = measure.Items;
             staffs = new Dictionary<string, SegmentPanelContainers.MeasureItemsContainer>();
+
             for (int i = 0; i < stavesCount; i++)
             {
                 staffs.Add((i + 1).ToString(), new SegmentPanelContainers.MeasureItemsContainer(measure.Number, partID, i + 1));
             }
+
             for (int i = 0; i < measure.Items.Length; i++)
             {
                 string typeName = measure.Items[i].GetType().Name;

@@ -16,6 +16,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
 {
     class RestContainterItem : Canvas, INoteItemVisual
     {
+        private static Random r = new Random();
         private NoteMusicXML noteItem;
         private int itemIndex;
         private int itemDuration =0;
@@ -172,6 +173,29 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
             Children.Add(rest);
         }
 
+        public void DrawSpace(double length, bool red = false)
+        {
+            Brush color;
+            int shiftY = 50;
+            CanvasList spaceCanvas = new CanvasList(10, 10);
+            if (red)
+            {
+                color = Brushes.Red;
+                shiftY = 70;
+            }
+            else
+            {
+                color = Brushes.Green;
+            }
+            double y = r.Next(0, 15) + shiftY;
+            DrawingVisual dv = new DrawingVisual();
+            using (DrawingContext dc = dv.RenderOpen())
+            {
+                dc.DrawLine(new Pen(color, 3.0), new Point(0, shiftY), new Point(length - 0.05, shiftY));
+            }
+            spaceCanvas.AddVisual(dv);
+            Children.Add(spaceCanvas);
+        }
         private double SetPosition(int customPosition)
         {
             return staffLines[customPosition];
