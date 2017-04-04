@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
+using System.Windows.Threading;
 using System.Xml.Serialization;
 
 namespace MusicXMLScore.DrawingHelpers
@@ -16,6 +17,7 @@ namespace MusicXMLScore.DrawingHelpers
 
         #region Fields
 
+        private bool systemAttributes = true;
         private Dictionary<string, List<ClefMusicXML>> clefAttributes;
         private Dictionary<string, Point> coords;
         private MusicXMLScore.Model.ScorePartwisePartMusicXML currentPart;
@@ -76,6 +78,43 @@ namespace MusicXMLScore.DrawingHelpers
             GenerateFirstMeasureIdPerSystem();
             //GenerateClefChanges();
             //GenerateAttributes();
+            
+        }
+
+        /// <summary>
+        /// Adds clef to each new System if not specified inside score
+        /// </summary>
+        public void AddAttributesToEachSystem()
+        {
+            if (systemAttributes)
+            {
+                List<string> systems = measuresPerSystem.Select(x => x.ElementAt(0)).ToList();
+                foreach (var item in systems)
+                {
+                    if (!ClefChanges.ContainsKey(item))
+                    {
+                        ClefChanges clefs = new ScoreProperties.ClefChanges();
+                        for (int i = 1; i <= numberOfStaffs; i++)
+                        {
+                            var clef = ViewModel.ViewModelLocator.Instance.Main.CurrentScoreProperties.GetClef(item, partId, i, 0);
+                            clefs.Add(i.ToString(), 0, clef);
+                        }
+                        ClefChanges.Add(item, clefs);
+                    }
+                    if (ClefChanges.ContainsKey(item))
+                    {
+                        ClefChanges clefs = ClefChanges[item];
+                        if (clefs.ClefsChanges.All(x=>x.Item2 != 0))
+                        {
+                            for (int i = 1; i <= numberOfStaffs; i++)
+                            {
+                                var clef = ViewModel.ViewModelLocator.Instance.Main.CurrentScoreProperties.GetClef(item, partId, i, 0);
+                                clefs.Add(i.ToString(), 0, clef);
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         private void GetLayoutInfo(List<Model.ScorePartwisePartMeasureMusicXML> part)
