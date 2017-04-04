@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using MusicXMLScore.LayoutControl;
 
 namespace MusicXMLScore.DrawingHelpers
 {
@@ -37,6 +38,7 @@ namespace MusicXMLScore.DrawingHelpers
 
         public PartsSystemDrawing(int systemIndex, List<string> measuresToDraw, List<string> partsIdList, Dictionary<string, PartProperties> partsProperties, int pageIndex)
         {
+            //if (partIDsList == null || partIDsList.Count == 0) { return; }
             this.systemIndex = systemIndex;
             measuresList = measuresToDraw;
             this.partIDsList = partsIdList;
@@ -140,14 +142,145 @@ namespace MusicXMLScore.DrawingHelpers
         {
             partSystemCanvas.Width = size.Width;
             partSystemCanvas.Height = size.Height;
+            LayoutStyle.MeasureLayoutStyle attributesLayout = ViewModel.ViewModelLocator.Instance.Main.CurrentLayout.LayoutStyle.MeasureStyle;
+            double staffSpace = ViewModel.ViewModelLocator.Instance.Main.CurrentPageLayout.StaffSpace.MMToWPFUnit();
             foreach (var partSegment in partsSegments.Values)
             {
                 string partSegmentId = partSegment.PartId;
                 Canvas.SetTop(partSegment.PartSegmentCanvas, partsPositions[partSegmentId].Item3); //TODO_H layout-problem with first part...
                 Canvas.SetLeft(partSegment.PartSegmentCanvas, partsPositions[partSegmentId].Item1);
             }
+            int measuresCount = partsSegments.ElementAt(0).Value.PartMeasures.Count;
+            List<List<MeasureSegmentController>> measuresList = new List<List<MeasureSegmentController>>();
+            for (int i = 0; i < measuresCount; i++)
+            {
+                List<MeasureSegmentController> measures = new List<MeasureSegmentController>();
+                foreach (var partSegment in partsSegments.Values)
+                {
+                    measures.Add(partSegment.PartMeasures.ElementAt(i));
+                }
+                measuresList.Add(measures);
+            }
+            foreach (var m in measuresList)
+            {
+                List<Tuple<double, double, double>> attributesWidths = new List<Tuple<double, double, double>>();
+                Dictionary<int, double> durationTable = new Dictionary<int, double>();
+                List<List<int>> indexes = new List<List<int>>();
+                double measureWidth = m.Select(x => x.Width).Max();
+                foreach (var partMeasure in m)
+                {
+                    attributesWidths.Add(partMeasure.GetAttributesWidths());
+                    indexes.Add(partMeasure.GetIndexes());
+                }
+                double maxClef = attributesWidths.Select(x => x.Item1).Max();
+                if (maxClef != 0)
+                {
+                    maxClef += attributesLayout.ClefLeftOffset.TenthsToWPFUnit() + attributesLayout.ClefRightOffset.TenthsToWPFUnit();
+                }
+                double maxKey = attributesWidths.Select(x => x.Item2).Max();
+                if (maxKey != 0)
+                {
+                    maxKey += attributesLayout.KeySigLeftOffset.TenthsToWPFUnit() + attributesLayout.KeySigRightOffset.TenthsToWPFUnit();
+                }
+                double maxTime = attributesWidths.Select(x => x.Item3).Max();
+                if (maxTime != 0)
+                {
+                    maxTime += attributesLayout.TimeSigLeftOffset.TenthsToWPFUnit() + attributesLayout.TimeSigRightOffset.TenthsToWPFUnit();
+                }
+                durationTable.Add(-3, 0);
+                durationTable.Add(-2, maxClef);
+                durationTable.Add(-1, maxKey + maxClef);
+                durationTable.Add(0, maxClef + maxKey + maxTime);
+                double availableWidth = measureWidth - durationTable[0];
+                List<int> possibleIndexes = indexes.SelectMany(x => x).Distinct().ToList();
+                possibleIndexes.Sort();
+                Dictionary<int, int> durationOfPosition = new Dictionary<int, int>();
+                int measureDuration = m.Select(x => x.MaxDuration).Max();
+                for (int i = 0; i < possibleIndexes.Count; i++)
+                {
+                    if (i < possibleIndexes.Count - 1)
+                    {
+                        durationOfPosition.Add(possibleIndexes[i], possibleIndexes[i + 1] - possibleIndexes[i]);
+                    }
+                    else
+                    {
+                        durationOfPosition.Add(possibleIndexes[possibleIndexes.Count - 1], measureDuration - possibleIndexes[possibleIndexes.Count - 1]);
+                    }
+                }
+                int shortestDuration = durationOfPosition.Values.Where(x=>x > 0).Min();
+                Dictionary<int, Tuple<double, double>> positions = new Dictionary<int, Tuple<double, double>>();
+                double startingPosition = durationTable[0] + attributesLayout.AttributesRightOffset.TenthsToWPFUnit();
+                for (int i = 0; i < durationOfPosition.Count; i++)
+                {
+                    if (i == 0)
+                    {
+                        //positionCoords.Add(possibleIndexes[i], startingPosition);
+                        int currentDuration = durationOfPosition[possibleIndexes[i]];
+                        double previewSpacing = staffSpace * SpacingValue(currentDuration, shortestDuration, 0.6);
+                        positions.Add(possibleIndexes[i], Tuple.Create(startingPosition, previewSpacing));
+                    }
+                    else
+                    {
+                        int currentDuration = durationOfPosition[possibleIndexes[i]];
+                        double previewSpacing = staffSpace * SpacingValue(currentDuration, shortestDuration, 0.6);
+                        startingPosition += previewSpacing;
+                        //positionCoords.Add(possibleIndexes[i], startingPosition);
+                        positions.Add(possibleIndexes[i], Tuple.Create(startingPosition, previewSpacing));
+                    }
+                }
+                CorrectStretch(availableWidth, positions, possibleIndexes);
+                for (int i = 0; i < positions.Count; i++)
+                {
+                    if (i== 0)
+                    {
+                        durationTable[0]  = positions[possibleIndexes[i]].Item1;
+                    }
+                    if (i > 0)
+                    {
+                        //var pos = positions[possibleIndexes[i]].Item1;
+                        durationTable.Add(possibleIndexes[i], positions[possibleIndexes[i]].Item1);
+                    }
+                }
+                foreach (MeasureSegmentController measure in m)
+                {
+                    measure.ArrangeUsingDurationTable(durationTable);
+                }
+            }
             //TODO_WIP arrange MeasureAttributesContainer items; If more than one part, rearange measureattributes placement of each part measure using largest width offset of every type 
 
+        }
+
+        private double SpacingValue(double duration, double shortest, double alpha = 0.6)
+        {
+            double result = 1;
+            result = 1 + (alpha * (Math.Log(duration / shortest, 2.0)));
+            return result;
+        }
+
+        private void CorrectStretch(double maxWidth, Dictionary<int, Tuple<double, double>> positions, List<int> indexes)
+        {
+            LayoutStyle.MeasureLayoutStyle attributesLayout = ViewModel.ViewModelLocator.Instance.Main.CurrentLayout.LayoutStyle.MeasureStyle;
+            //double maxWidth = availableWidth - startingPositionAfterAttributes;
+            double currentFullWidth = positions.Sum(x => x.Value.Item2);
+            double difference = (maxWidth - attributesLayout.AttributesRightOffset.TenthsToWPFUnit()) - currentFullWidth;
+            for (int i = 0; i < indexes.Count; i++)
+            {
+                Tuple<double, double> currentTuple = positions[indexes[i]];
+                double currentPosition = currentTuple.Item1 ;
+                double correctedSpacing = (currentTuple.Item2 / currentFullWidth) * difference;
+
+                if (i == 0)
+                {
+                    Tuple<double, double> t = Tuple.Create(currentPosition, correctedSpacing + currentTuple.Item2);
+                    positions[indexes[i]] = t;
+                }
+                else
+                {
+                    currentPosition = positions[indexes[i - 1]].Item1 + positions[indexes[i - 1]].Item2;
+                    Tuple<double, double> t = Tuple.Create(currentPosition, correctedSpacing + currentTuple.Item2);
+                    positions[indexes[i]] = t;
+                }
+            }
         }
 
         private void CalculateSize()

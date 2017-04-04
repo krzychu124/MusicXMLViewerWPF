@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Threading;
 
 namespace MusicXMLScore.ScoreProperties
 {
@@ -62,6 +63,7 @@ namespace MusicXMLScore.ScoreProperties
             ScoreProperties scoreProperties = new ScoreProperties(score);
             scorePropertiesContainer.Add(score.ID, scoreProperties);
             SelectScore(score.ID);
+            CurrentScoreProperties.AddAttributes();
             //scoreProperties.Init();
         }
         public void RemoveScore(string scoreID)
@@ -120,9 +122,17 @@ namespace MusicXMLScore.ScoreProperties
             foreach (var part in partProperties.Values)
             {
                 part.GenerateAttributes(timeSignatures);
+                //part.AddAttributesToEachSystem()));
             }
         }
 
+        public void AddAttributes()
+        {
+            foreach (var item in partProperties.Values)
+            {
+                item.AddAttributesToEachSystem();
+            }
+        }
         private void InitParts(ScorePartwiseMusicXML score)
         {
             if (score.Part != null)

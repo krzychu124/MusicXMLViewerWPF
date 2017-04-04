@@ -9,6 +9,7 @@ using MusicXMLScore.Model.MeasureItems;
 using System.Diagnostics;
 using MusicXMLScore.LayoutControl.SegmentPanelContainers.Attributes;
 using MusicXMLScore.Model.MeasureItems.Attributes;
+using MusicXMLScore.LayoutControl.SegmentPanelContainers;
 
 namespace MusicXMLScore.LayoutControl
 {
@@ -19,9 +20,38 @@ namespace MusicXMLScore.LayoutControl
         private int pageIndex;
         private int stavesCount = 1;
         private int maxDuration = 1;
+        private double width = 0;
         private PartProperties partProperties;
         Dictionary<string, SegmentPanelContainers.MeasureItemsContainer> staffs;
         Dictionary<string, SegmentPanelContainers.MeasureAttributesContainer> attributesContainer;
+        private Tuple<double, double, double> attributesWidths;
+
+        public int MaxDuration
+        {
+            get
+            {
+                return maxDuration;
+            }
+
+            set
+            {
+                maxDuration = value;
+            }
+        }
+
+        public double Width
+        {
+            get
+            {
+                return width;
+            }
+
+            set
+            {
+                width = value;
+            }
+        }
+
         public MeasureSegmentController(Model.ScorePartwisePartMeasureMusicXML measure, string partID, int stavesCount, int systemIndex, int pageIndex)
         {
             this.systemIndex = systemIndex;
@@ -88,6 +118,7 @@ namespace MusicXMLScore.LayoutControl
                 }
             }
             GenerateAndAddAttributesContainers(measure.Number, partID);
+            width = measure.CalculatedWidth.TenthsToWPFUnit();
             ArrangeContainers(measure.CalculatedWidth.TenthsToWPFUnit(), maxDuration);
             AppendContainersToSegment();
 
@@ -165,15 +196,101 @@ namespace MusicXMLScore.LayoutControl
                 }
             }
         }
-
-        private void ArrangeContainers(double availableWidth, int maxDuration)
+        public void ArrangeUsingDurationTable(Dictionary<int, double> durationTable)
         {
-            foreach (var item in staffs)
+            foreach (var staff in staffs)
             {
-                item.Value.ArrangeItemsByDuration(availableWidth, maxDuration);
+                staff.Value.ArrangeUsingDurationTable(durationTable);
             }
         }
 
+        private void ArrangeContainers(double availableWidth, int maxDuration)
+        {
+            Dictionary<string, List<Tuple<int, IMeasureItemVisual>>> itemsPerStaff = new Dictionary<string, List<Tuple<int, IMeasureItemVisual>>>();
+            foreach (var item in staffs)
+            {
+                itemsPerStaff.Add(item.Key, item.Value.ItemsWithPostition);
+            }
+            Dictionary<string, List<IMeasureItemVisual>> attributesList = new Dictionary<string, List<IMeasureItemVisual>>();
+            foreach (var item in itemsPerStaff)
+            {
+                var attributes = item.Value.Where(x => x.Item1 == 0 && x.Item2 is IAttributeItemVisual).Select(x => x.Item2).ToList();
+                attributesList.Add(item.Key, attributes);
+            }
+            CalculateBeginningAttributes(attributesList);
+            //double attributesWidth = 0.0;// CalculateBeginningAttributes(attributesList);
+            //foreach (var item in staffs)
+            //{
+            //    //item.Value.ArrangeItemsByDuration(availableWidth, attributesWidth,  maxDuration);
+            //}
+        }
+        private double CalculateBeginningAttributes(Dictionary<string, List<IMeasureItemVisual>> attributesList)
+        {
+            Dictionary<string, ClefContainerItem> clefs = new Dictionary<string, ClefContainerItem>();
+            Dictionary<string, KeyContainerItem> keys = new Dictionary<string, KeyContainerItem>();
+            Dictionary<string, TimeSignatureContainerItem> times = new Dictionary<string, TimeSignatureContainerItem>();
+            foreach (var item in attributesList)
+            {
+                foreach (var attribute in item.Value)
+                {
+                    if (attribute is ClefContainerItem)
+                    {
+                        clefs.Add(item.Key, attribute as ClefContainerItem);
+                    }
+                    if (attribute is KeyContainerItem)
+                    {
+                        keys.Add(item.Key, attribute as KeyContainerItem);
+                    }
+                    if (attribute is TimeSignatureContainerItem)
+                    {
+                        times.Add(item.Key, attribute as TimeSignatureContainerItem);
+                    }
+                }
+            }
+            double maxClefWidth = 0.0;
+            double maxKeyWidth = 0.0;
+            double maxTimeWidth = 0.0;
+            if (clefs.Count != 0)
+            {
+                List<double> clefWidths = new List<double>();
+                foreach (var item in clefs)
+                {
+
+                    clefWidths.Add(staffs[item.Key].ArrangeAttributes(item.Value as IAttributeItemVisual));
+                }
+                maxClefWidth = clefWidths.Max();
+            }
+            if (keys.Count != 0)
+            {
+                List<double> keysWidths = new List<double>();
+                foreach (var item in keys)
+                {
+
+                    keysWidths.Add(staffs[item.Key].ArrangeAttributes(item.Value as IAttributeItemVisual /*maxClefWidth*/));
+                }
+                maxKeyWidth = keysWidths.Max();
+                //if(maxKeyWidth == 0)
+                //{
+                //    maxKeyWidth = maxClefWidth;
+                //}
+            }
+            if (times.Count != 0)
+            {
+                List<double> timesWidths = new List<double>();
+                foreach (var item in times)
+                {
+
+                    timesWidths.Add(staffs[item.Key].ArrangeAttributes(item.Value as IAttributeItemVisual /*maxKeyWidth*/));
+                }
+                maxTimeWidth = timesWidths.Max();
+                //if (maxTimeWidth ==0)
+                //{
+                //    maxTimeWidth = maxKeyWidth;
+                //}
+            }
+            attributesWidths = Tuple.Create(maxClefWidth, maxKeyWidth, maxTimeWidth);
+            return 0.0;
+        }
         private void AppendContainersToSegment()
         {
             foreach (var item in staffs)
@@ -181,7 +298,24 @@ namespace MusicXMLScore.LayoutControl
                 segmentPanel.AddNotesContainer(item.Value, int.Parse(item.Key));
             }
         }
+        public List<int> GetIndexes()
+        {
+            List<List<int>> indexes = new List<List<int>>();
+            foreach (var item in staffs)
+            {
+                indexes.Add(item.Value.GetDurationIndexes());
+            }
+            return indexes.SelectMany(x => x).Distinct().ToList();
+        }
 
+        /// <summary>
+        /// Returns Tuple of attributes widths {clefWidth, keyWidth, timeWidth}
+        /// </summary>
+        /// <returns></returns>
+        public Tuple<double, double, double> GetAttributesWidths()
+        {
+            return attributesWidths;
+        }
         public SegmentPanel GetContentPanel()
         {
             return segmentPanel;

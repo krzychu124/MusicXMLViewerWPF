@@ -82,7 +82,10 @@ namespace MusicXMLScore.DrawingHelpers
                 int index = measuresIdRangePerSystem.IndexOf(measuresIDs);
                 PartsSystemDrawing partsSystem = new PartsSystemDrawing(index, measuresIDs, partIDsToDraw, partsProperties, pageIndex);
                 partSystemsList.Add(partsSystem);
-                pageCanvas.Children.Add(partsSystem.PartSystemCanvas);
+                if (partsSystem.PartSystemCanvas != null)
+                {
+                    pageCanvas.Children.Add(partsSystem.PartSystemCanvas);
+                }
             }
         }
 

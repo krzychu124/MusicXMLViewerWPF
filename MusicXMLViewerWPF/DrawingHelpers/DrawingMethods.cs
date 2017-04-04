@@ -13,12 +13,17 @@ namespace MusicXMLScore.DrawingHelpers
 {
     static class DrawingMethods
     {
-        public static double GetTextWidth(string text, Typeface typeFace)
+        public static double GetTextWidth(string text, Typeface typeFace, bool isAdditional = false)
         {
+            double sizeFactor = 1.0;
             GlyphTypeface glyphTypeface;
             if (!typeFace.TryGetGlyphTypeface(out glyphTypeface))
                 throw new InvalidOperationException("No glyphtypeface found");
-            double size = ViewModel.ViewModelLocator.Instance.Main.CurrentPageLayout.StaffHeight.MMToWPFUnit();
+            if (isAdditional)
+            {
+                sizeFactor = 0.8;
+            }
+            double size = ViewModel.ViewModelLocator.Instance.Main.CurrentPageLayout.StaffHeight.MMToWPFUnit() * sizeFactor;
 
             ushort[] glyphIndexes = new ushort[text.Length];
             double[] advanceWidths = new double[text.Length];
