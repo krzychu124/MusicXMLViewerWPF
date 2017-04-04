@@ -218,11 +218,11 @@ namespace MusicXMLScore.LayoutControl
                 attributesList.Add(item.Key, attributes);
             }
             CalculateBeginningAttributes(attributesList);
-            double attributesWidth = 0.0;// CalculateBeginningAttributes(attributesList);
-            foreach (var item in staffs)
-            {
-                //item.Value.ArrangeItemsByDuration(availableWidth, attributesWidth,  maxDuration);
-            }
+            //double attributesWidth = 0.0;// CalculateBeginningAttributes(attributesList);
+            //foreach (var item in staffs)
+            //{
+            //    //item.Value.ArrangeItemsByDuration(availableWidth, attributesWidth,  maxDuration);
+            //}
         }
         private double CalculateBeginningAttributes(Dictionary<string, List<IMeasureItemVisual>> attributesList)
         {

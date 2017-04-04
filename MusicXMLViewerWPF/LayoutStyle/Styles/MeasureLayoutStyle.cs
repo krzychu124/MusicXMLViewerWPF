@@ -10,7 +10,7 @@ namespace MusicXMLScore.LayoutStyle
     {
         #region Fields
         
-        private double attributesRightOffset = 1.5;
+        private double attributesRightOffset = 12;
         private double notesGap = 2;
 
         private double clefLeftOffset = 6;
