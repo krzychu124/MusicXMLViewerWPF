@@ -209,7 +209,7 @@ namespace MusicXMLScore.DrawingHelpers
                 }
                 int shortestDuration = durationOfPosition.Values.Where(x=>x > 0).Min();
                 Dictionary<int, Tuple<double, double>> positions = new Dictionary<int, Tuple<double, double>>();
-                double startingPosition = durationTable[0] + 10.0.TenthsToWPFUnit();
+                double startingPosition = durationTable[0] + attributesLayout.AttributesRightOffset.TenthsToWPFUnit();
                 for (int i = 0; i < durationOfPosition.Count; i++)
                 {
                     if (i == 0)
@@ -259,9 +259,10 @@ namespace MusicXMLScore.DrawingHelpers
 
         private void CorrectStretch(double maxWidth, Dictionary<int, Tuple<double, double>> positions, List<int> indexes)
         {
+            LayoutStyle.MeasureLayoutStyle attributesLayout = ViewModel.ViewModelLocator.Instance.Main.CurrentLayout.LayoutStyle.MeasureStyle;
             //double maxWidth = availableWidth - startingPositionAfterAttributes;
             double currentFullWidth = positions.Sum(x => x.Value.Item2);
-            double difference = (maxWidth - 10.0.TenthsToWPFUnit()) - currentFullWidth;
+            double difference = (maxWidth - attributesLayout.AttributesRightOffset.TenthsToWPFUnit()) - currentFullWidth;
             for (int i = 0; i < indexes.Count; i++)
             {
                 Tuple<double, double> currentTuple = positions[indexes[i]];

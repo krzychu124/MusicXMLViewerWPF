@@ -26,15 +26,34 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Attributes
         private double staffLine;
         private bool isEmpty = false;
         private bool visible = true;
+        private int fractionPosition = 0;
         public ClefContainerItem(DrawingHelpers.MeasureVisual.ClefVisualObject clef)
         {
             visual = clef.BaseObjectVisual;
             Children.Add(clef.BaseObjectVisual);
         }
 
-        public ClefContainerItem(string staff, int fractionPosition, ClefMusicXML clef):this(clef)
+        public ClefContainerItem(string staff, int fractionPosition, ClefMusicXML clef)
         {
-            
+            this.fractionPosition = fractionPosition;
+            this.sign = clef.Sign;
+            this.line = clef.Line != null ? int.Parse(clef.Line) : 0;
+            this.octaveChange = clef.ClefOctaveChange != null ? int.Parse(clef.ClefOctaveChange) : 0;
+            if (clef.AdditionalSpecified)
+            {
+                isAdditional = clef.Additional == Model.Helpers.SimpleTypes.YesNoMusicXML.yes ? true : false;
+            }
+            else
+            {
+                isAdditional = false;
+            }
+            if (fractionPosition != 0)
+            {
+                isAdditional = true;
+            }
+            GetSymbol();
+            GetLine();
+            Draw();
         }
         public ClefContainerItem(ClefSignMusicXML sign, int line, int octaveChange =0, bool additional = false)
         {
@@ -61,7 +80,10 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Attributes
             {
                 isAdditional = false;
             }
-
+            if (fractionPosition != 0)
+            {
+                isAdditional = true;
+            }
             GetSymbol();
             GetLine();
             Draw();
@@ -75,13 +97,13 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Attributes
                 string tempSymbol = symbol;
                 if (empty) // used for proper layout spacing, invisible but taking space; //TODO_LATER more test/refactor
                 {
-                    itemWidth = DrawingMethods.GetTextWidth(MusicSymbols.GClef, Helpers.TypeFaces.GetMusicFont());
+                    itemWidth = DrawingMethods.GetTextWidth(MusicSymbols.GClef, Helpers.TypeFaces.GetMusicFont(), isAdditional);
                     tempSymbol = "";
                     tempLine = 0.0;
                 }
                 else
                 {
-                    itemWidth = DrawingMethods.GetTextWidth(symbol, Helpers.TypeFaces.GetMusicFont());
+                    itemWidth = DrawingMethods.GetTextWidth(symbol, Helpers.TypeFaces.GetMusicFont(), isAdditional);
                 }
                 Helpers.CanvasList cc = new Helpers.CanvasList();
                 cc.Width = 10;
