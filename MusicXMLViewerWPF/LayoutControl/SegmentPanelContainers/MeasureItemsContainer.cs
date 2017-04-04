@@ -28,6 +28,20 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
         private int numerator;
         private int denominator;
         private TimeMusicXML timeSignature;
+
+        internal List<Tuple<int, IMeasureItemVisual>> ItemsWithPostition
+        {
+            get
+            {
+                return itemsWithPostition;
+            }
+
+            set
+            {
+                itemsWithPostition = value;
+            }
+        }
+
         public MeasureItemsContainer(string measureId, string partId, int numberOfStave)
         {
             measureItemsVisuals = new List<IMeasureItemVisual>();
@@ -121,7 +135,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
             }
         }
 
-        public double ArrangeItemsByDuration(double availableWidth, int measureDuration)
+        public double ArrangeItemsByDuration(double availableWidth, double attributeWidth, int measureDuration)
         {
             //length between lines of staffline
             double staffSpace = ViewModel.ViewModelLocator.Instance.Main.CurrentPageLayout.StaffSpace.MMToWPFUnit();
@@ -133,11 +147,11 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
             double beginningAttributesWidth = 0.0;
             if (measureBeginningAttributes.Count != 0)
             {
-                double attributesWidth = 0.0;
-                foreach (IAttributeItemVisual measureAttribute in measureBeginningAttributes)
-                {
-                    attributesWidth = ArrangeAttributes(measureAttribute, attributesWidth);
-                }
+                double attributesWidth = attributeWidth;
+                //foreach (IAttributeItemVisual measureAttribute in measureBeginningAttributes)
+                //{
+                //    attributesWidth = ArrangeAttributes(measureAttribute, attributesWidth);
+                //}
                 beginningAttributesWidth = attributesWidth;
             }
             double firstNoteMargin = 20.0.TenthsToWPFUnit();
@@ -211,9 +225,11 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
             }
             if (positionCoords.LastOrDefault().Value > availableWidth)
             {
+                //------------------------------------------
                 //Spacing factor shrink method when items with calculated spacings can't fit inside measure length
                 //Currently using small spacing factors to prevent this situation
                 //ToDo
+                //------------------------------------------
             }
             if (positionsCoordsBeforeStretch.LastOrDefault().Value.Item1 + positionsCoordsBeforeStretch.LastOrDefault().Value.Item2 < availableWidth)
             {
@@ -260,6 +276,49 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
             return 0.0; // unusable for now, could be refactored to help finding optimal width of measure
         }
 
+        public void ArrangeUsingDurationTable(Dictionary<int, double> durationTable)
+        {
+            //-----------------
+            // Keys: -3, -2, -1 used for attributes: clef, key and time
+            //-----------------
+            var measureBeginningAttributes = itemsWithPostition.Where(x => x.Item1 == 0 && x.Item2 is IAttributeItemVisual).Select(x => x.Item2).ToList();
+            if (measureBeginningAttributes.Count != 0)
+            {
+                ClefContainerItem clef = measureBeginningAttributes.Where(x => x is ClefContainerItem).FirstOrDefault() as ClefContainerItem;
+                if (clef != null)
+                {
+                    ArrangeAttributes(clef, durationTable[-3]);
+                }
+                KeyContainerItem key = measureBeginningAttributes.Where(x => x is KeyContainerItem).FirstOrDefault() as KeyContainerItem;
+                if (key != null)
+                {
+                    ArrangeAttributes(key, durationTable[-2]);
+                }
+                TimeSignatureContainerItem time = measureBeginningAttributes.Where(x => x is TimeSignatureContainerItem).FirstOrDefault() as TimeSignatureContainerItem;
+                if (time != null)
+                {
+                    ArrangeAttributes(time, durationTable[-1]);
+                }
+            }
+            foreach (var item in itemsWithPostition)
+            {
+                if (item.Item2 is INoteItemVisual)
+                {
+                    INoteItemVisual note = item.Item2 as INoteItemVisual;
+                    if (note.ItemDuration == 0)
+                    {
+                        continue;
+                    }
+                    SetLeft(item.Item2 as Canvas, durationTable[item.Item1]);
+                }
+            }
+        }
+
+        public List<int> GetDurationIndexes()
+        {
+            return itemsWithPostition.Select(x => x.Item1).Distinct().ToList();
+        }
+
         /// <summary>
         /// Claculates base spacing factor for further proportional stretching of items inside measure
         /// </summary>
@@ -274,7 +333,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
             return result;
         }
 
-        private double ArrangeAttributes(IAttributeItemVisual attributeVisual, double currentPosition = 0.0)
+        public double ArrangeAttributes(IAttributeItemVisual attributeVisual, double currentPosition = 0.0)
         {
             double width = currentPosition;
             LayoutStyle.MeasureLayoutStyle attributesLayout = ViewModel.ViewModelLocator.Instance.Main.CurrentLayout.LayoutStyle.MeasureStyle;

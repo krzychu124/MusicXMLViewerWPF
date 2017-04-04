@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using MusicXMLScore.LayoutControl;
 
 namespace MusicXMLScore.DrawingHelpers
 {
@@ -14,6 +15,7 @@ namespace MusicXMLScore.DrawingHelpers
         private List<string> measuresList;
         private string partId;
         private PartProperties partProperties;
+        private List<MeasureSegmentController> partMeasures = new List<MeasureSegmentController>();
         private Canvas partSegmentCanvas;
         private Size size;
         private double staffDistance = 0.0;
@@ -82,6 +84,19 @@ namespace MusicXMLScore.DrawingHelpers
             }
         }
 
+        internal List<MeasureSegmentController> PartMeasures
+        {
+            get
+            {
+                return partMeasures;
+            }
+
+            set
+            {
+                partMeasures = value;
+            }
+        }
+
         #endregion Properties
 
         #region Methods
@@ -93,8 +108,9 @@ namespace MusicXMLScore.DrawingHelpers
                 MeasureDrawing measureCanvas = new MeasureDrawing(measureId, partId, staffDistance, stavesCount);
                 ScorePartwisePartMeasureMusicXML measureSerializable = ViewModel.ViewModelLocator.Instance.Main.CurrentSelectedScore.Part.ElementAt(partId.GetPartIdIndex()).MeasuresByNumber[measureId];
 
-                LayoutControl.MeasureSegmentController measureSegment = new LayoutControl.MeasureSegmentController(measureSerializable, partId, stavesCount, systemIndex, pageIndex);
-                LayoutControl.SegmentPanel spanel = measureSegment.GetContentPanel();
+                MeasureSegmentController measureSegment = new LayoutControl.MeasureSegmentController(measureSerializable, partId, stavesCount, systemIndex, pageIndex);
+                partMeasures.Add(measureSegment);
+                SegmentPanel spanel = measureSegment.GetContentPanel();
 
                 Canvas.SetTop(measureCanvas.BaseObjectVisual, 0);
                 Canvas.SetLeft(measureCanvas.BaseObjectVisual, partProperties.Coords[measureId].X);

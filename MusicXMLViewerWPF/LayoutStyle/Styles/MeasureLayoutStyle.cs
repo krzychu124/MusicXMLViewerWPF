@@ -13,11 +13,11 @@ namespace MusicXMLScore.LayoutStyle
         private double attributesRightOffset = 1.5;
         private double notesGap = 2;
 
-        private double clefLeftOffset = 8;
+        private double clefLeftOffset = 6;
         private double clefRightOffset = 2;
 
-        private double keySigLeftOffset = 2;
-        private double keySigRightOffset = 8;
+        private double keySigLeftOffset = 1;
+        private double keySigRightOffset = 2;
         private double keySigSpacingOffset = 2;
 
         private double maxMeasureWidth = 300;
@@ -28,8 +28,8 @@ namespace MusicXMLScore.LayoutStyle
         private double staffSpaceLegth = 10;
         private double stavesDistance = 70;
 
-        private double timeSigLeftOffset = 2;
-        private double timeSigRightOffset = 10;
+        private double timeSigLeftOffset = 1;
+        private double timeSigRightOffset = 3;
 
         #endregion Fields
 
