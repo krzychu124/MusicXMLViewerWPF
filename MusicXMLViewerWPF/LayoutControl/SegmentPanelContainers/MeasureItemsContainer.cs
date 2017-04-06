@@ -309,11 +309,11 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
                     {
                         continue;
                     }
-                    SetLeft(item.Item2 as Canvas, durationTable[item.Item1]);
+                    SetLeft(item.Item2.ItemCanvas as Canvas, durationTable[item.Item1]);
                 }
                 if (item.Item2 is IAttributeItemVisual && item.Item1 >0)
                 {
-                    SetLeft(item.Item2 as Canvas, durationTable[item.Item1] - item.Item2.ItemWidth);
+                    SetLeft(item.Item2.ItemCanvas as Canvas, durationTable[item.Item1] - item.Item2.ItemWidth);
                 }
             }
         }
@@ -322,21 +322,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
         {
             return itemsWithPostition.Select(x => x.Item1).Distinct().ToList();
         }
-
-        ///// <summary>
-        ///// Claculates base spacing factor for further proportional stretching of items inside measure
-        ///// </summary>
-        ///// <param name="duration">Duration of note/rest</param>
-        ///// <param name="shortest">Shortest duration in measure or shortest in ie. whole line of measures</param>
-        ///// <param name="alpha">Spacing parameter usually between {0.4 ; 0.6}</param>
-        ///// <returns></returns>
-        //private double SpacingValue(double duration, double shortest, double alpha)
-        //{
-        //    double result = 1;
-        //    result = 1 + (alpha * (Math.Log(duration / shortest, 2.0)));
-        //    return result;
-        //}
-
+        
         public double ArrangeAttributes(IAttributeItemVisual attributeVisual, double currentPosition = 0.0)
         {
             double width = currentPosition;
@@ -347,19 +333,19 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
                 case 0:
                     ClefContainerItem clef = attributeVisual as ClefContainerItem;
                     width += attributesLayout.ClefLeftOffset.TenthsToWPFUnit();
-                    SetLeft(clef, width);
+                    SetLeft(clef.ItemCanvas, width);
                     width += clef.ItemWidth + attributesLayout.ClefRightOffset.TenthsToWPFUnit();
                     break;
                 case 1:
                     KeyContainerItem key = attributeVisual as KeyContainerItem;
                     width += attributesLayout.KeySigLeftOffset;
-                    SetLeft(key, width);
+                    SetLeft(key.ItemCanvas, width);
                     width += key.ItemWidth + (key.ItemWidth != 0 ? attributesLayout.KeySigRightOffset.TenthsToWPFUnit() : 0);
                     break;
                 case 2:
                     TimeSignatureContainerItem timeSig = attributeVisual as TimeSignatureContainerItem;
                     width += attributesLayout.TimeSigLeftOffset.TenthsToWPFUnit();
-                    SetLeft(timeSig, width);
+                    SetLeft(timeSig.ItemCanvas, width);
                     width += timeSig.ItemWidth + attributesLayout.TimeSigRightOffset.TenthsToWPFUnit();
                     break;
             }
@@ -419,17 +405,17 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
         public void AddNote(NoteContainerItem noteVisual)
         {
             measureItemsVisuals.Add(noteVisual);
-            Children.Add(noteVisual);
+            Children.Add(noteVisual.ItemCanvas);
         }
         public void AddRest(RestContainterItem restVisual)
         {
             measureItemsVisuals.Add(restVisual);
-            Children.Add(restVisual);
+            Children.Add(restVisual.ItemCanvas);
         }
         public void AddAttribute(IAttributeItemVisual attributeVisual)//temp
         {
             measureItemsVisuals.Add(attributeVisual);
-            Children.Add(attributeVisual as Canvas); //TODO_WiP TEST
+            Children.Add(attributeVisual.ItemCanvas as Canvas); //TODO_WiP TEST
         }
     }
 }

@@ -78,27 +78,11 @@
                 </MenuItem>
             </Menu>
         </DockPanel>
+        
         <TabControl x:Name="tabcontrol" Margin="0,5,0,0" Grid.Row="2" ItemsSource="{Binding TabsCreated}" SelectedItem="{Binding SelectedTabItem}" />
-        <!--<Slider Grid.Row="1" Maximum="1900" Minimum="500" Value="{Binding Width, ElementName=tabcontrol}"/>-->
-        <!--<ScrollViewer Grid.Row="3" CanContentScroll="True" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-            <Border>   ClipToBounds="False" SnapsToDevicePixels="True" UseLayoutRounding="True"
-                <Border.Effect>
-                    <DropShadowEffect BlurRadius="10" ShadowDepth="2"/>
-                </Border.Effect>
-                <ItemsControl ItemsSource="{Binding Pages2}" Background="Beige" HorizontalAlignment="Left">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <WrapPanel x:Name="ItemsPanelContainer" />
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                </ItemsControl>
-            </Border>
-        </ScrollViewer>-->
-
+        
         <GridSplitter Grid.Row="3" Height="5" HorizontalAlignment="Stretch"></GridSplitter>
-        <!--<Line Grid.Row="1" X1="0" Y1="5" X2="10cm" Y2="5" StrokeThickness="5" Stroke="Black" Panel.ZIndex="0" Margin="1" Width="243" Height="100"/>-->
-        <Log:LogView Grid.Row="4" MinHeight="105" MaxHeight="250"/>
-
+        <Log:LogView Grid.Row="4" MinHeight="105" MaxHeight="250" Visibility="Collapsed"/>
         <StatusBar Grid.Row="5" Height="20">Status Bar...</StatusBar>
     </Grid>
 </Window>

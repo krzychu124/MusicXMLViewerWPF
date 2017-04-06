@@ -20,13 +20,13 @@ namespace MusicXMLScore.Helpers
         public DrawingVisualHost()
         {
             visuals = new List<Visual>();
-            IsHitTestVisible = false;
+           // IsHitTestVisible = false;
         }
 
         public DrawingVisualHost(double width, double height)
         {
             visuals= new List<Visual>();
-            IsHitTestVisible = false;
+            //IsHitTestVisible = false;
             //this.MouseEnter += new MouseEventHandler(MyVisualHost_MouseEnter);
             //this.MouseLeave += new MouseEventHandler(MyVisualHost_MouseLeave);
         }
@@ -76,7 +76,7 @@ namespace MusicXMLScore.Helpers
                         return false;
                     }
                     t.IsOpen = true;
-                    t.PlacementTarget = this;
+                    //t.PlacementTarget = this;
                 }
 
             }

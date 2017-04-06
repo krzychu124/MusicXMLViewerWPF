@@ -13,8 +13,9 @@ using System.Windows.Media;
 
 namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Attributes
 {
-    class TimeSignatureContainerItem : Canvas, IAttributeItemVisual
+    class TimeSignatureContainerItem : IAttributeItemVisual
     {
+        private Canvas itemCanvas;
         private readonly int attributeIndex = 2;
         private double itemWidth;
         private Rect itemRectBounds;
@@ -35,12 +36,13 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Attributes
         }
         public TimeSignatureContainerItem(double width)
         {
-            this.Width = width;
+            ItemCanvas.Width = width;
             itemWidth = width;
         }
 
         public TimeSignatureContainerItem(TimeMusicXML timeSignature)
         {
+            itemCanvas = new Canvas();
             isSymbol = timeSignature.TimeSymbolSpecified;
             GetTime(timeSignature);
             GetStaffLineCoords();
@@ -55,7 +57,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Attributes
                 itemWidth = DrawingMethods.GetTextWidth(symbol, TypeFaces.GetMusicFont());
                 DrawingVisualHost canvas = new DrawingVisualHost(ItemWidth, 10);
                 canvas.AddCharacterGlyph(new Point(0, staffLine[3]), symbol);
-                Children.Add(canvas);
+                ItemCanvas.Children.Add(canvas);
             }
             if(!isSymbol || symbolValue == TimeSymbolMusicXML.normal)
             {
@@ -82,23 +84,23 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Attributes
                 }
                 //measure legth + align
                 itemWidth = beatWidth > beatTimeWidth ? beatWidth : beatTimeWidth;
-                Width = itemWidth;
+                ItemCanvas.Width = itemWidth;
                 if (beatWidth > beatTimeWidth)
                 {
-                    SetLeft(canvasBeat, 0);
+                    Canvas.SetLeft(canvasBeat, 0);
                     double shift = (beatWidth - beatTimeWidth) / 2;
-                    SetLeft(canvasBeatTime, shift);
+                    Canvas.SetLeft(canvasBeatTime, shift);
                 }
                 else
                 {
-                    SetLeft(canvasBeatTime, 0);
+                    Canvas.SetLeft(canvasBeatTime, 0);
                     double shift = (beatTimeWidth - beatWidth) / 2;
-                    SetLeft(canvasBeat, shift);
+                    Canvas.SetLeft(canvasBeat, shift);
                 }
-                SetTop(canvasBeat, staffLine[4]);
-                SetTop(canvasBeatTime, staffLine[2]);
-                Children.Add(canvasBeat);
-                Children.Add(canvasBeatTime);
+                Canvas.SetTop(canvasBeat, staffLine[4]);
+                Canvas.SetTop(canvasBeatTime, staffLine[2]);
+                ItemCanvas.Children.Add(canvasBeat);
+                ItemCanvas.Children.Add(canvasBeatTime);
             }
         }
 
@@ -207,6 +209,19 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Attributes
             get
             {
                 return attributeIndex;
+            }
+        }
+
+        public Canvas ItemCanvas
+        {
+            get
+            {
+                return itemCanvas;
+            }
+
+            set
+            {
+                itemCanvas = value;
             }
         }
     }

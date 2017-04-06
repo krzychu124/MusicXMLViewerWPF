@@ -8,8 +8,9 @@ using System.Windows.Controls;
 
 namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
 {
-    class MeasureAttributesContainer : Canvas, Notes.INoteItemVisual
+    class MeasureAttributesContainer : Notes.INoteItemVisual
     {
+        private Canvas itemCanvas;
         private List<IAttributeItemVisual> attributes;
         private double clefWidth = 0.0;
         private double keySignatureWidth = 0.0;
@@ -114,19 +115,34 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
                 return 0;
             }
         }
-        public MeasureAttributesContainer(/*Model.MeasureItems.AttributesMusicXML attributesXML,*/ int fractionCursorPosition, string measureId, string partId, string staffId)
+
+        public Canvas ItemCanvas
+        {
+            get
+            {
+                return itemCanvas;
+            }
+
+            set
+            {
+                itemCanvas = value;
+            }
+        }
+
+        public MeasureAttributesContainer(int fractionCursorPosition, string measureId, string partId, string staffId)
         {
             attributes = new List<IAttributeItemVisual>();
+            itemCanvas = new Canvas();
             this.measureId = measureId;
             this.partId = partId;
             this.fractionCursorPosition = fractionCursorPosition;
             this.staffNumber = staffId;
-            //currentAttributes = attributesXML;
         }
 
         public MeasureAttributesContainer(Model.MeasureItems.AttributesMusicXML attributesXML, string measureId, string partId, string stave = "1")
         {
             attributes = new List<IAttributeItemVisual>();
+            itemCanvas = new Canvas();
             this.measureId = measureId;
             this.partId = partId;
             currentAttributes = attributesXML;
@@ -192,12 +208,12 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
             }
             if (keySignatureWidth != 0)
             {
-                SetLeft(attributes.OfType<KeyContainerItem>().FirstOrDefault(), offset);
+                Canvas.SetLeft(attributes.OfType<KeyContainerItem>().FirstOrDefault().ItemCanvas, offset);
                 offset += attributes.OfType<KeyContainerItem>().FirstOrDefault().ItemWidth;
             }
             if (timeSignatureWidth != 0)
             {
-                SetLeft(attributes.OfType<TimeSignatureContainerItem>().FirstOrDefault(), offset);
+                Canvas.SetLeft(attributes.OfType<TimeSignatureContainerItem>().FirstOrDefault().ItemCanvas, offset);
             }
         }
         public Tuple<double, double> GetKeyTimeSigWidths()
@@ -213,8 +229,8 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
         {
             if (!useDefaultPosition)
             {
-                SetLeft(attributes.OfType<KeyContainerItem>().FirstOrDefault(), sharedKeySignatureWidth);
-                SetLeft(attributes.OfType<TimeSignatureContainerItem>().FirstOrDefault(), sharedTimeSignatureWidth);
+                Canvas.SetLeft(attributes.OfType<KeyContainerItem>().FirstOrDefault().ItemCanvas, sharedKeySignatureWidth);
+                Canvas.SetLeft(attributes.OfType<TimeSignatureContainerItem>().FirstOrDefault().ItemCanvas, sharedTimeSignatureWidth);
             }
             else
             {
@@ -231,19 +247,19 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
         {
             clefWidth = clefVisualItem.ItemWidth;
             attributes.Add(clefVisualItem);
-            Children.Add(clefVisualItem);
+            ItemCanvas.Children.Add(clefVisualItem.ItemCanvas);
         }
         public void AddKeySignature(KeyContainerItem keyVisualItem)
         {
             keySignatureWidth = keyVisualItem.ItemWidth;
             attributes.Add(keyVisualItem);
-            Children.Add(keyVisualItem);
+            ItemCanvas.Children.Add(keyVisualItem.ItemCanvas);
         }
         public void AddTimeSignature(TimeSignatureContainerItem timeSignatureVisualItem)
         {
             timeSignatureWidth = timeSignatureVisualItem.ItemWidth;
             attributes.Add(timeSignatureVisualItem);
-            Children.Add(timeSignatureVisualItem);
+            ItemCanvas.Children.Add(timeSignatureVisualItem.ItemCanvas);
         }
 
         public void DrawSpace(double length, bool red)

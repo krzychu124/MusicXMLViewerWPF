@@ -14,8 +14,9 @@ using System.Windows.Media;
 
 namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
 {
-    class RestContainterItem : Canvas, INoteItemVisual
+    class RestContainterItem : INoteItemVisual
     {
+        private Canvas itemCanvas;
         private static Random r = new Random();
         private NoteMusicXML noteItem;
         private int itemIndex;
@@ -108,8 +109,22 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
             }
         }
 
+        public Canvas ItemCanvas
+        {
+            get
+            {
+                return itemCanvas;
+            }
+
+            set
+            {
+                itemCanvas = value;
+            }
+        }
+
         public RestContainterItem(NoteMusicXML note, int itemIndex, string partId, string measureId, string staffId)
         {
+            itemCanvas = new Canvas();
             noteItem = note;
             this.itemIndex = itemIndex;
             this.partId = partId;
@@ -170,7 +185,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
                 Point dotPosition = new Point(DrawingMethods.GetTextWidth(symbol,TypeFaces.GetMusicFont()) +4.0.TenthsToWPFUnit(), positionY -shiftUp);
                 rest.AddCharacterGlyph(dotPosition, MusicSymbols.Dot, color: color);
             }
-            Children.Add(rest);
+            ItemCanvas.Children.Add(rest);
         }
 
         public void DrawSpace(double length, bool red = false)
@@ -194,7 +209,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
                 dc.DrawLine(new Pen(color, 3.0), new Point(0, shiftY), new Point(length - 0.05, shiftY));
             }
             spaceCanvas.AddVisual(dv);
-            Children.Add(spaceCanvas);
+            ItemCanvas.Children.Add(spaceCanvas);
         }
         private double SetPosition(int customPosition)
         {
