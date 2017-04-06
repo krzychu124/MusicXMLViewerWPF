@@ -74,7 +74,7 @@ namespace MusicXMLScore.DrawingHelpers
             }
         }
 
-        public static void AddCharacterGlyph(this CanvasList canvas, Point position, string character, bool isSmall = false, Brush color = null)
+        public static void AddCharacterGlyph(this DrawingVisualHost canvas, Point position, string character, bool isSmall = false, Brush color = null)
         {
             Brush characterColor = color ?? Brushes.Black;
             DrawingVisual visual = new DrawingVisual();
@@ -121,7 +121,7 @@ namespace MusicXMLScore.DrawingHelpers
             return new Size(txtblck.ActualWidth, txtblck.ActualHeight);
         }
 
-        public static void AddLedgerLine(this CanvasList canvas, Point position, double noteHeadWidth)
+        public static void AddLedgerLine(this DrawingVisualHost canvas, Point position, double noteHeadWidth)
         {
             DrawingVisual ledgerLine = new DrawingVisual();
             Pen pen = new Pen(Brushes.Black, (0.9).TenthsToWPFUnit());

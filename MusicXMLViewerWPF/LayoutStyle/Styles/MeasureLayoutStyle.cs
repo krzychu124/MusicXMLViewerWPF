@@ -14,10 +14,10 @@ namespace MusicXMLScore.LayoutStyle
         private double notesGap = 2;
 
         private double clefLeftOffset = 6;
-        private double clefRightOffset = 2;
+        private double clefRightOffset = 1;
 
         private double keySigLeftOffset = 1;
-        private double keySigRightOffset = 2;
+        private double keySigRightOffset = 1;
         private double keySigSpacingOffset = 2;
 
         private double maxMeasureWidth = 300;

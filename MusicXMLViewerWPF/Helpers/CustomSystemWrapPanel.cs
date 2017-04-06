@@ -278,7 +278,12 @@ namespace MusicXMLScore.Helpers
                 panelsize.Height += linesize.Height;
             }
             panelsize.Height += linesize.Height;
-            return panelsize;
+            Size calculatedSize = new Size(panelsize.Width, panelsize.Height);
+            if (panelsize.Height == double.PositiveInfinity || panelsize.Width == double.PositiveInfinity) //! null return protection, temp solution
+            {
+                calculatedSize = new Size(0, 0);
+            }
+            return calculatedSize;// panelsize;
             //return MO(constraint);
 
             //Orientation o = Orientation;

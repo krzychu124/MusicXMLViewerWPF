@@ -28,7 +28,7 @@ namespace MusicXMLViewerWPF
         private Point pos;
         private DrawingVisual visual;
         private string measureid;
-        private CanvasList drawableMusicalObject;
+        private DrawingVisualHost drawableMusicalObject;
         private DrawableMusicalObjectStatus drawableObjectStatus = DrawableMusicalObjectStatus.notready;
         private bool loaded;
         #endregion
@@ -44,7 +44,7 @@ namespace MusicXMLViewerWPF
         public DrawingVisual Visual { get { return visual; } set { if (value != null) { visual = value; } } }
         public string MeasureID { get { return measureid; } set { if (value != null) { measureid = value; } } }
 
-        public CanvasList DrawableMusicalObject
+        public DrawingVisualHost DrawableMusicalObject
         {
             get
             {
@@ -246,7 +246,7 @@ namespace MusicXMLViewerWPF
 
         public void InitDrawableObject()
         {
-            DrawableMusicalObject = new CanvasList(this.Width, this.Height);
+            DrawableMusicalObject = new DrawingVisualHost(this.Width, this.Height);
             DrawingVisual barline = new DrawingVisual();
             DrawBarline(barline, new Point(),10);
             DrawableMusicalObject.AddVisual(barline);

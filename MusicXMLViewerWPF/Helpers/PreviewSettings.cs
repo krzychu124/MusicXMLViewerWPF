@@ -11,15 +11,14 @@ using MusicXMLViewerWPF.ScoreParts.MeasureContent;
 
 namespace MusicXMLScore.Helpers
 {
-    class PreviewSettings : CanvasList
+    class PreviewSettings : DrawingVisualHost
     {
         public PreviewSettings()
         {
             Measure m = new Measure(100);
             m.AddClef(new ClefType(ClefType.Clef.GClef));
             AddVisual(m.Attributes.Clef.DrawableMusicalObject);
-            this.Width = 30;
-            this.SetValue(CustomMeasurePanel.StaticPositionProperty, true);
+            //this.Width = 30;
         }
     }
 }

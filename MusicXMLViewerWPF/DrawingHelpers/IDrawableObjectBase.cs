@@ -9,7 +9,7 @@ namespace MusicXMLScore.DrawingHelpers
 {
     interface IDrawableObjectBase
     {
-        CanvasList BaseObjectVisual { get; }
+        DrawingVisualHost BaseObjectVisual { get; }
         void InvalidateVisualObject();
     }
 }

@@ -24,7 +24,7 @@ namespace MusicXMLViewerWPF
         private static Clef cl;
         private int number = 1;
         private static int clef_alter_note;
-        private CanvasList drawablemusicalobject;
+        private DrawingVisualHost drawablemusicalobject;
         private DrawableMusicalObjectStatus dmusicalobjectstatus;
         private bool loadstatus;
         #endregion
@@ -42,7 +42,7 @@ namespace MusicXMLViewerWPF
         public static int ClefAlterNote { get { return clef_alter_note; } }
         public new PropertyChangedEventHandler PropertyChanged = delegate { };
 
-        public CanvasList DrawableMusicalObject { get { return drawablemusicalobject;  }  set { drawablemusicalobject = value; } }
+        public DrawingVisualHost DrawableMusicalObject { get { return drawablemusicalobject;  }  set { drawablemusicalobject = value; } }
         public DrawableMusicalObjectStatus DrawableObjectStatus { get { return dmusicalobjectstatus; } private set { if (dmusicalobjectstatus != value) dmusicalobjectstatus = value; PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(DrawableObjectStatus))); } }
         public bool Loaded { get { return loadstatus; } private set { if (loadstatus != value) loadstatus = value; PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(Loaded))); } }
         #endregion
@@ -162,11 +162,10 @@ namespace MusicXMLViewerWPF
 
             if (Loaded)
             {
-                DrawableMusicalObject = new MusicXMLScore.Helpers.CanvasList(this.Width, this.Height);
+                DrawableMusicalObject = new MusicXMLScore.Helpers.DrawingVisualHost(this.Width, this.Height);
                 DrawingVisual clef = new DrawingVisual();
                 Draw(clef);
                 DrawableMusicalObject.AddVisual(clef);
-                DrawableMusicalObject.SetValue(CustomMeasurePanel.StaticPositionProperty, true);
                 DrawableObjectStatus = DrawableMusicalObjectStatus.ready;
             }
         }

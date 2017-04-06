@@ -454,7 +454,7 @@ namespace MusicXMLViewerWPF
 
         #region Private Fields
 
-        private CanvasList drawablemusicalobject;
+        private DrawingVisualHost drawablemusicalobject;
 
         private DrawableMusicalObjectStatus drawableobjectstatus;
 
@@ -607,7 +607,7 @@ namespace MusicXMLViewerWPF
         public Brush Color { get { return Brushes.Black; } }
         public float DefaultStem { get { return defaultStem; } protected set { defaultStem = value; } }
         public int Dot { get { return dot; } protected set { dot = value; NotePropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Dot))); } }
-        public virtual CanvasList DrawableMusicalObject { get { return drawablemusicalobject; } set { drawablemusicalobject = value; } }
+        public virtual DrawingVisualHost DrawableMusicalObject { get { return drawablemusicalobject; } set { drawablemusicalobject = value; } }
         public virtual DrawableMusicalObjectStatus DrawableObjectStatus { get { return drawableobjectstatus; } set { if (drawableobjectstatus != value) drawableobjectstatus = value; NotePropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(DrawableObjectStatus))); } }
         public int Duration { get { return duration; } protected set { duration = value; } }
         public bool HasBeams { get { return hasBeams; } protected set { hasBeams = value; } }
@@ -721,7 +721,7 @@ namespace MusicXMLViewerWPF
         {
             if (Loaded)
             {
-                DrawableMusicalObject = new CanvasList(this.Width, this.Height);
+                DrawableMusicalObject = new DrawingVisualHost(this.Width, this.Height);
                 DrawingVisual note = new DrawingVisual();
                 Draw(note);
                 DrawableMusicalObject.AddVisual(note);

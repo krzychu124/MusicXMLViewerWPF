@@ -27,12 +27,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Attributes
         private bool isEmpty = false;
         private bool visible = true;
         private int fractionPosition = 0;
-        public ClefContainerItem(DrawingHelpers.MeasureVisual.ClefVisualObject clef)
-        {
-            visual = clef.BaseObjectVisual;
-            Children.Add(clef.BaseObjectVisual);
-        }
-
+        
         public ClefContainerItem(string staff, int fractionPosition, ClefMusicXML clef)
         {
             this.fractionPosition = fractionPosition;
@@ -105,9 +100,9 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Attributes
                 {
                     itemWidth = DrawingMethods.GetTextWidth(symbol, Helpers.TypeFaces.GetMusicFont(), isAdditional);
                 }
-                Helpers.CanvasList cc = new Helpers.CanvasList();
-                cc.Width = 10;
-                cc.Height = 10;
+                Helpers.DrawingVisualHost cc = new Helpers.DrawingVisualHost();
+                //cc.Width = 10;
+                //cc.Height = 10;
                 cc.AddCharacterGlyph(new Point(0, tempLine), tempSymbol, isAdditional);
                 Children.Add(cc);
             }
@@ -268,12 +263,12 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Attributes
         {
             get
             {
-                throw new NotImplementedException();
+                return 0;
             }
 
             set
             {
-                throw new NotImplementedException();
+                
             }
         }
 

@@ -38,7 +38,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Attributes
         private void Draw()
         {
             var staffLineCoords = ViewModel.ViewModelLocator.Instance.Main.CurrentPageLayout.AvaliableIndexLinePositions;
-            CanvasList cl = new CanvasList(10, 10);
+            DrawingVisualHost cl = new DrawingVisualHost(10, 10);
             if (fifts == 0)
             {
                 itemWidth = 0;
@@ -148,12 +148,12 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Attributes
         {
             get
             {
-                throw new NotImplementedException();
+                return 0;
             }
 
             set
             {
-                throw new NotImplementedException();
+
             }
         }
 
