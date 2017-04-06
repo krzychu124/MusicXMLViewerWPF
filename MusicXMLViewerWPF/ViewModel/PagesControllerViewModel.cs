@@ -63,22 +63,7 @@ namespace MusicXMLScore.ViewModel
             PropertyChanged += PagesControllerViewModel_PropertyChanged;
             MessengerInstance.Register<GenericMessage<List<Part>>>(this, "toNextPage", false, RelocatePartsNextPage);
         }
-
-        /// <summary>
-        /// Obsolete! Load Generated MusicScore object
-        /// </summary>
-        /// <param name="musicScore"></param>
-        [Obsolete("Use one with(int numberOfPages) or default()", true)]
-        public PagesControllerViewModel(MusicScore musicScore)
-        {
-            PropertyChanged += PagesControllerViewModel_PropertyChanged;
-            MessengerInstance.Register<GenericMessage<List<Part>>>(this, "toNextPage", false, RelocatePartsNextPage);
-            MessengerInstance.Register<GenericMessage<List<Part>>>(this, "toPreviousPage", false, RelocatePartsPreviousPage);
-            MusicScore = musicScore; ArrangePages();
-            PagesCollection = new ObservableCollection<UIElement>();
-            GeneratePages();
-        }
-
+        
         public PagesControllerViewModel(int numberOfPages)
         {
             PropertyChanged += PagesControllerViewModel_PropertyChanged;
@@ -120,17 +105,7 @@ namespace MusicXMLScore.ViewModel
         #endregion Properties
 
         #region Methods
-
-        [Obsolete("Use AddScorePartwise()", true)]
-        public void AddMusicScore(MusicScore musicScore)
-        {
-            this.MusicScore = musicScore;
-            MessengerInstance.Register<GenericMessage<List<Part>>>(this, "toNextPage", false, RelocatePartsNextPage);
-            MessengerInstance.Register<GenericMessage<List<Part>>>(this, "toPreviousPage", false, RelocatePartsPreviousPage);
-            ArrangePages();
-            PagesCollection = new ObservableCollection<UIElement>();
-            GeneratePages();
-        }
+        
 
         public void AddScorePartwise(ScorePartwiseMusicXML spmXML)
         {
@@ -138,6 +113,7 @@ namespace MusicXMLScore.ViewModel
             partwise = spmXML;
             PagesCollection = new ObservableCollection<UIElement>();
             DrawingHelpers.PartProperties pp = ViewModelLocator.Instance.Main.CurrentPartsProperties[spmXML.Part.ElementAt(0).Id];
+            //AddPageToCollection(spmXML);
             foreach (var pages in pp.PartSysemsInPages)
             {
                 AddPageToCollection(spmXML);
@@ -149,12 +125,7 @@ namespace MusicXMLScore.ViewModel
             PageViewModel pvm = new PageViewModel();
             PagesCollection.Add(new PageView() { DataContext = pvm });
         }
-
-        private void AddPageToCollection(List<Part> partList, PageProperties pp) // page with given parts
-        {
-            PageViewModel pvm = new PageViewModel(partList) { PageWidth = pp.PageDimensions.GetPageDimensionsInPx().X, PageHeight = pp.PageDimensions.GetPageDimensionsInPx().Y };
-            PagesCollection.Add(new PageView() { DataContext = pvm });
-        }
+        
 
         private void AddPageToCollection(ScorePartwiseMusicXML sp) //default page
         {
@@ -193,19 +164,7 @@ namespace MusicXMLScore.ViewModel
         {
             PagesList = MusicScore.PagesList;// throw new NotImplementedException();
         }
-
-        private void GeneratePages()
-        {
-            PageProperties pp = ViewModelLocator.Instance.Main.CurrentPageLayout;
-            if (PagesList.Count != 0)
-            {
-                foreach (var item in PagesList)
-                {
-                    AddPageToCollection(item, pp);
-                }
-            }
-        }
-
+        
         private void PagesControllerViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(MusicScore))

@@ -23,7 +23,7 @@ namespace MusicXMLViewerWPF
         private string beats_str;
         private string beats_type_str;
         private bool loadstatus;
-        private CanvasList drawablemusicalobject;
+        private DrawingVisualHost drawablemusicalobject;
         private DrawableMusicalObjectStatus dmusicalobjstatus;
         
 
@@ -35,7 +35,7 @@ namespace MusicXMLViewerWPF
         public string BeatTypeStr { get { return beats_type_str; } }
         public SegmentType CharacterType { get { return SegmentType.TimeSig; } }
 
-        public CanvasList DrawableMusicalObject { get { return drawablemusicalobject; }  set { drawablemusicalobject = value; } }
+        public DrawingVisualHost DrawableMusicalObject { get { return drawablemusicalobject; }  set { drawablemusicalobject = value; } }
         public DrawableMusicalObjectStatus DrawableObjectStatus { get { return dmusicalobjstatus; } private set { if (dmusicalobjstatus != value) dmusicalobjstatus = value; } } 
         public bool Loaded { get { return loadstatus; } private set { if (loadstatus != value) loadstatus = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Loaded))); } }
         public new PropertyChangedEventHandler PropertyChanged = delegate { };
@@ -219,11 +219,10 @@ namespace MusicXMLViewerWPF
         {
             if (Loaded)
             {
-                DrawableMusicalObject = new CanvasList(this.Width, this.Height);
+                DrawableMusicalObject = new DrawingVisualHost(this.Width, this.Height);
                 DrawingVisual visual = new DrawingVisual();
                 Draw(visual);
                 DrawableMusicalObject.AddVisual(visual);
-                DrawableMusicalObject.SetValue(CustomMeasurePanel.StaticPositionProperty, true);
                 DrawableObjectStatus = DrawableMusicalObjectStatus.ready;
             }
         }

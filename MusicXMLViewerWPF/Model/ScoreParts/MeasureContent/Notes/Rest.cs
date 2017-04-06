@@ -24,7 +24,7 @@ namespace MusicXMLViewerWPF
         private bool loadstatus;
         public static List<Rest> RestList = new List<Rest>();
 
-        private MusicXMLScore.Helpers.CanvasList drawablemusicalobject;
+        private MusicXMLScore.Helpers.DrawingVisualHost drawablemusicalobject;
         private DrawableMusicalObjectStatus dobjectstatus;
         //public bool HasDot { get { return hasDot; } } inherited
         //public int Duration { get { return duration; } } inherited
@@ -35,7 +35,7 @@ namespace MusicXMLViewerWPF
         public float X { get { return posX; } }
         public int CharId { get { return id; } }
         public event PropertyChangedEventHandler RestPropertyChanged = delegate { };
-        public override MusicXMLScore.Helpers.CanvasList DrawableMusicalObject { get { return drawablemusicalobject; } set { if (value != null) drawablemusicalobject = value; } }
+        public override MusicXMLScore.Helpers.DrawingVisualHost DrawableMusicalObject { get { return drawablemusicalobject; } set { if (value != null) drawablemusicalobject = value; } }
         public override DrawableMusicalObjectStatus DrawableObjectStatus { get { return dobjectstatus; } set { if (dobjectstatus != value) dobjectstatus = value; RestPropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(DrawableObjectStatus))); } } 
         public new bool Loaded { get { return loadstatus; } private set { loadstatus = value; RestPropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Loaded))); } }
         public Rest(XElement x)
@@ -146,7 +146,7 @@ namespace MusicXMLViewerWPF
             
             if (Loaded)
             {
-                DrawableMusicalObject = new MusicXMLScore.Helpers.CanvasList(this.Width, this.Height) { Tag = ID };
+                DrawableMusicalObject = new MusicXMLScore.Helpers.DrawingVisualHost(this.Width, this.Height);// { Tag = ID };
                 DrawingVisual dv = new DrawingVisual();
                 Draw(dv);
                 DrawableMusicalObject.AddVisual(dv);

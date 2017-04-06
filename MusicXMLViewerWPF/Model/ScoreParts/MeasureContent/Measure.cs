@@ -30,7 +30,6 @@ namespace MusicXMLViewerWPF.ScoreParts.MeasureContent
         private bool firstinrow = false;
         private XElement xelementsource;
         private Segment segment;
-        private DrawableMeasure drawableMeasure;
         private bool loaded;
         #endregion
 
@@ -69,7 +68,6 @@ namespace MusicXMLViewerWPF.ScoreParts.MeasureContent
         public new Point Relative { get { return base.Relative; } set { base.Relative = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Relative))); } }
         public XElement XElementSource { get { return xelementsource; } set { if (value != null) xelementsource = value; } }
         public Segment Segment { get { return segment; } set { if (value != null) segment = value; } }
-        public DrawableMeasure DrawableMeasure { get { return drawableMeasure; } private set { drawableMeasure = value; } }
         public bool Loaded { get { return loaded; } private set { if (loaded != value) { loaded = value; PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(Loaded))); } } }
         #endregion
 
@@ -176,7 +174,6 @@ namespace MusicXMLViewerWPF.ScoreParts.MeasureContent
                     }
                     break;
                 case "Loaded":
-                    DrawableMeasure = new DrawableMeasure(this);
                     break;
                 default:
                     break;

@@ -23,7 +23,7 @@ namespace MusicXMLViewerWPF
         private Mode mode;
         private ClefType clef_type;
         private bool loadstatus;
-        private CanvasList drawablemusicalobject;
+        private DrawingVisualHost drawablemusicalobject;
         private DrawableMusicalObjectStatus drawableobjectstatus;
         #endregion
         #region Properties
@@ -36,7 +36,7 @@ namespace MusicXMLViewerWPF
         public SegmentType CharacterType { get { return SegmentType.KeySig; } }
         public new PropertyChangedEventHandler PropertyChanged = delegate { };
 
-        public CanvasList DrawableMusicalObject { get { return drawablemusicalobject; }  set { drawablemusicalobject = value; } }
+        public DrawingVisualHost DrawableMusicalObject { get { return drawablemusicalobject; }  set { drawablemusicalobject = value; } }
         public DrawableMusicalObjectStatus DrawableObjectStatus { get { return drawableobjectstatus; } private set { if (drawableobjectstatus != value) drawableobjectstatus = value; PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(DrawableObjectStatus))); } }
         public bool Loaded { get { return loadstatus; } private set { if (loadstatus != value) loadstatus = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Loaded))); } }
         #endregion
@@ -203,11 +203,10 @@ namespace MusicXMLViewerWPF
         {
             if (Loaded)
             {
-                DrawableMusicalObject = new CanvasList(this.Width, this.Height);
+                DrawableMusicalObject = new DrawingVisualHost(this.Width, this.Height);
                 DrawingVisual key = new DrawingVisual();
                 Draw(key);
                 DrawableMusicalObject.AddVisual(key);
-                DrawableMusicalObject.SetValue(CustomMeasurePanel.StaticPositionProperty, true);
                 DrawableObjectStatus = DrawableMusicalObjectStatus.ready;
             }
         }

@@ -25,7 +25,7 @@ namespace MusicXMLScore.Helpers
         /// Returns random Brush color
         /// </summary>
         /// <returns></returns>
-        public static Brush PickBrush()
+        public static Brush PickRandomBrush()
         {
             Brush result = Brushes.Transparent;
 

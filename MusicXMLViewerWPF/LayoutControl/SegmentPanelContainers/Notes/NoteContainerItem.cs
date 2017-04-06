@@ -48,8 +48,8 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
         public NoteContainerItem(NoteMusicXML note, int fractionPosition, string partId, string measureId, string staffId)
         {
             //test
-            this.MouseMove += Canvas_MouseMove;
-            ToolTip = tt;
+            //this.MouseMove += Canvas_MouseMove;
+            //ToolTip = tt;
             //
             noteItem = new List<NoteMusicXML>();
             noteItem.Add(note);
@@ -64,8 +64,8 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
         public NoteContainerItem(List<NoteMusicXML> chordList, int fractionPosition, string partId, string measureId, string staffId)
         {
             //test
-            this.MouseMove += Canvas_MouseMove;
-            ToolTip = tt;
+            //this.MouseMove += Canvas_MouseMove;
+            //ToolTip = tt;
             //
             noteItem = chordList;
             isChordNote = true;
@@ -97,7 +97,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
         private void Draw()
         {
             bool small = noteVisualType == NoteChoiceTypeMusicXML.cue || noteVisualType == NoteChoiceTypeMusicXML.grace ? true : false;
-            CanvasList noteCanvas = new CanvasList(10, 10);
+            DrawingVisualHost noteCanvas = new DrawingVisualHost(10, 10);
             int index = 0;
             foreach (var note in noteItem)
             {
@@ -130,7 +130,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
         {
             Brush color;
             int shiftY = 50;
-            CanvasList spaceCanvas = new CanvasList(10, 10);
+            DrawingVisualHost spaceCanvas = new DrawingVisualHost(10, 10);
             if (red)
             {
                 color = Brushes.Red;

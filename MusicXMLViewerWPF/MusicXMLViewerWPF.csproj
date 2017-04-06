@@ -97,32 +97,19 @@
     <Compile Include="Converters\ExtensionMethods.cs" />
     <Compile Include="DrawingHelpers\MeasureDrawing.cs" />
     <Compile Include="DrawingHelpers\DrawableStaffLine.cs" />
-    <Compile Include="DrawingHelpers\DrawableSymbol.cs" />
     <Compile Include="DrawingHelpers\DrawingMethods.cs" />
-    <Compile Include="DrawingHelpers\IDrawable.cs" />
     <Compile Include="DrawingHelpers\IDrawableObjectBase.cs" />
     <Compile Include="DrawingHelpers\IDrawableObjectPart.cs" />
-    <Compile Include="DrawingHelpers\MeasureVisual\BarlineVisualObject.cs" />
-    <Compile Include="DrawingHelpers\MeasureVisual\ClefVisualObject.cs" />
-    <Compile Include="DrawingHelpers\MeasureVisual\DirectionVisualObject.cs" />
-    <Compile Include="DrawingHelpers\MeasureVisual\KeySignatureVisualObject.cs" />
-    <Compile Include="DrawingHelpers\MeasureVisual\NoteVisualObject.cs" />
-    <Compile Include="DrawingHelpers\MeasureVisual\NoteVisualPart\AccidentalPartObject.cs" />
-    <Compile Include="DrawingHelpers\MeasureVisual\NoteVisualPart\DotPartObject.cs" />
-    <Compile Include="DrawingHelpers\MeasureVisual\NoteVisualPart\NoteHeadPartObject.cs" />
-    <Compile Include="DrawingHelpers\MeasureVisual\NoteVisualPart\StemPartObject.cs" />
-    <Compile Include="DrawingHelpers\MeasureVisual\TimeSignatureVisualObject.cs" />
     <Compile Include="DrawingHelpers\PageDrawingSystem.cs" />
     <Compile Include="DrawingHelpers\PartProperties.cs" />
     <Compile Include="DrawingHelpers\PartPropertiesContainer.cs" />
     <Compile Include="DrawingHelpers\PartSegmentDrawing.cs" />
     <Compile Include="DrawingHelpers\PartsSystemDrawing.cs" />
     <Compile Include="Helpers\ComparisonHelpers.cs" />
-    <Compile Include="Helpers\CustomMeasurePanel.cs" />
     <Compile Include="Helpers\CustomPartsSegmentPanel.cs" />
     <Compile Include="Helpers\MusicSymbols.cs" />
     <Compile Include="Helpers\PageProperties.cs" />
-    <Compile Include="Helpers\PrimitivePageGenerator.cs" />
+    <Compile Include="Helpers\SimpleWrapPanel.cs" />
     <Compile Include="LayoutControl\LayoutGeneral.cs" />
     <Compile Include="LayoutControl\MeasureSegmentController.cs" />
     <Compile Include="LayoutControl\SegmentPanel.cs" />
@@ -230,16 +217,10 @@
     <Compile Include="ScoreProperties\ScorePropertiesContainer.cs" />
     <Compile Include="ScoreProperties\TimeChanges.cs" />
     <Compile Include="ScoreProperties\TimeSignatures.cs" />
-    <Compile Include="ViewModel\MeasureViewModel.cs" />
-    <Compile Include="ViewModel\PartsSegmentViewModel.cs" />
-    <Compile Include="ViewModel\PartViewModel.cs" />
     <Compile Include="View\ConfigurationView.xaml.cs">
       <DependentUpon>ConfigurationView.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModel\ConfigurationViewModel.cs" />
-    <Compile Include="View\MeasureView.xaml.cs">
-      <DependentUpon>MeasureView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="View\NewScoreCreatorView.xaml.cs">
       <DependentUpon>NewScoreCreatorView.xaml</DependentUpon>
     </Compile>
@@ -252,17 +233,12 @@
     <Compile Include="Converters\EnumMatchToBooleanConverter.cs" />
     <Compile Include="Converters\StarWidthConverter.cs" />
     <Compile Include="Converters\ToTypeEqualityConverter.cs" />
-    <Compile Include="Helpers\CanvasList.cs" />
-    <Compile Include="Helpers\CustomCanvas.cs" />
-    <Compile Include="Helpers\CustomPartSystem.cs" />
-    <Compile Include="Helpers\DrawableMeasure.cs" />
+    <Compile Include="Helpers\DrawingVisualHost.cs" />
     <Compile Include="Helpers\CustomSystemWrapPanel.cs" />
     <Compile Include="Helpers\DrawingHelpers.cs" />
-    <Compile Include="Helpers\DrawingVisualPlus.cs" />
     <Compile Include="Helpers\OrientedSize.cs" />
     <Compile Include="Helpers\PreviewCanvas.cs" />
     <Compile Include="Helpers\PreviewSettings.cs" />
-    <Compile Include="Helpers\StaffLineCanvas.cs" />
     <Compile Include="Helpers\TypeFaces.cs" />
     <Compile Include="Log\LoggIt.cs" />
     <Compile Include="Log\LogView.xaml.cs">
@@ -341,19 +317,9 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="ViewModel\ViewModelLocator.cs" />
-    <Compile Include="View\PartsSegmentView.xaml.cs">
-      <DependentUpon>PartsSegmentView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\PartView.xaml.cs">
-      <DependentUpon>PartView.xaml</DependentUpon>
-    </Compile>
     <Page Include="View\ConfigurationView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\MeasureView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\NewScoreCreatorView.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -387,14 +353,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="View\PartsSegmentView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="View\PartView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -413,6 +371,7 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <Resource Include="Model\Fonts\BravuraText.ttf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

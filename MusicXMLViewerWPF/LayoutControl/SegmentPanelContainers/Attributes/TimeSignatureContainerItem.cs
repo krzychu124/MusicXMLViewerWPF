@@ -53,7 +53,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Attributes
             if (isSymbol)
             {
                 itemWidth = DrawingMethods.GetTextWidth(symbol, TypeFaces.GetMusicFont());
-                CanvasList canvas = new CanvasList(ItemWidth, 10);
+                DrawingVisualHost canvas = new DrawingVisualHost(ItemWidth, 10);
                 canvas.AddCharacterGlyph(new Point(0, staffLine[3]), symbol);
                 Children.Add(canvas);
             }
@@ -62,7 +62,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Attributes
                 char[] beatChars = beatSymbol.ToCharArray();
                 double[] beatCharWidths = beatSymbol.ToCharArray().GetCharsVisualWidth();
                 double beatWidth = beatCharWidths.Sum();
-                CanvasList canvasBeat = new CanvasList(beatWidth, 10);
+                DrawingVisualHost canvasBeat = new DrawingVisualHost(beatWidth, 10);
                 double offset = 0;
                 for (int i = 0; i < beatChars.Length; i++)
                 {
@@ -73,13 +73,14 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Attributes
                 char[] beatTimeChars = beatTimeSymbol.ToCharArray();
                 double[] beatTimeCharWidths = beatTimeSymbol.ToCharArray().GetCharsVisualWidth();
                 double beatTimeWidth = beatTimeCharWidths.Sum();
-                CanvasList canvasBeatTime = new CanvasList(beatTimeWidth, 10);
+                DrawingVisualHost canvasBeatTime = new DrawingVisualHost(beatTimeWidth, 10);
                 offset = 0.0;
                 for (int i = 0; i < beatTimeChars.Length; i++)
                 {
                     canvasBeatTime.AddCharacterGlyph(new Point(offset, 0), beatTimeChars[i].ToString());
                     offset += beatTimeCharWidths[i];
                 }
+                //measure legth + align
                 itemWidth = beatWidth > beatTimeWidth ? beatWidth : beatTimeWidth;
                 Width = itemWidth;
                 if (beatWidth > beatTimeWidth)
@@ -193,12 +194,11 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Attributes
         {
             get
             {
-                throw new NotImplementedException();
+                return 0;
             }
 
             set
             {
-                throw new NotImplementedException();
             }
         }
 

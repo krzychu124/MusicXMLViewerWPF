@@ -9,7 +9,7 @@ using System.Windows.Threading;
 
 namespace MusicXMLScore.Helpers
 {
-    class PreviewCanvas : CanvasList
+    class PreviewCanvas : DrawingVisualHost
     {
         public DrawingVisual Visual = new DrawingVisual();
         public PreviewCanvas()

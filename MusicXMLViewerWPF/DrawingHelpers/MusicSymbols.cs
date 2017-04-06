@@ -70,21 +70,6 @@ namespace MusicXMLScore.DrawingHelpers
         public readonly string mediumStaffOneSymbol = "\uE010";
         public static readonly string longStaffOneSymbol = "\uE016";
         #endregion
-        #region twoLine
-        public readonly string shortStaffTwoSymbol;
-        public readonly string mediumStaffTwoSymbol;
-        public readonly string longStaffTwoSymbol;
-        #endregion
-        #region threeLine
-        public readonly string shortStaffTreeSymbol;
-        public readonly string mediumStaffThreeSymbol;
-        public readonly string longStaffThreeSymbol;
-        #endregion
-        #region fourLine
-        public readonly string shortStaffFourSymbol;
-        public readonly string mediumStaffFourSymbol;
-        public readonly string longStaffFourSymbol;
-        #endregion
         #region fiveLine
         public readonly string shortStaffFiveSymbol = "\uE020";
         public static readonly string mediumStaffFiveSymbol = "\uE01A";

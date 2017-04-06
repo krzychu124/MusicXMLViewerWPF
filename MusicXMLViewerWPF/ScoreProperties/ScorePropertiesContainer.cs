@@ -122,7 +122,6 @@ namespace MusicXMLScore.ScoreProperties
             foreach (var part in partProperties.Values)
             {
                 part.GenerateAttributes(timeSignatures);
-                //part.AddAttributesToEachSystem()));
             }
         }
 
@@ -161,9 +160,9 @@ namespace MusicXMLScore.ScoreProperties
         {
             Model.MeasureItems.Attributes.ClefMusicXML clef = new Model.MeasureItems.Attributes.ClefMusicXML() { Line = "2" };
             //gets all cleff changes of this staff
-            var clefsChanges = PartProperties[partId].ClefPerStaff[staffNumber.ToString()];
+            ClefChangesDictionary clefsChanges = PartProperties[partId].ClefPerStaff[staffNumber.ToString()];
             // select all previous or same as passed measureId
-            var measureKeysList = clefsChanges.Keys.Where(id => int.Parse(id.Replace("X","")) <= int.Parse(measureId.Replace("X", ""))).ToList(); 
+            List<string> measureKeysList = clefsChanges.Keys.Where(id => int.Parse(id.Replace("X","")) <= int.Parse(measureId.Replace("X", ""))).ToList(); 
             if (measureKeysList.Contains(measureId))
             {
                 // check if dictionary of clefchanges has any clef with measure beginning position (fractionPosition == 0)
@@ -196,10 +195,38 @@ namespace MusicXMLScore.ScoreProperties
         /// <param name="measureId">MeasureId token, which is Measure.Number</param>
         /// <param name="partId">PartId token, which is Part.Id in list of Part inside ScorePartwiseMusicXML</param>
         /// <returns>Key attributes attached to measureId in selected Part.Id</returns>
-        public Model.MeasureItems.Attributes.KeyMusicXML GetKeySignature(string measureId, string partId)
+        public Model.MeasureItems.Attributes.KeyMusicXML GetKeySignature(string measureId, string partId, int fractionPosition = 0)
         {
-            Model.MeasureItems.Attributes.KeyMusicXML key = partProperties[partId].KeyAttributes[measureId];
-            return key; //? new Model.MeasureItems.Attributes.KeyMusicXML();
+            // gets all key changes inside score
+            KeyChangesDictionary keyChanges = PartProperties[partId].KeyChanges;
+            Model.MeasureItems.Attributes.KeyMusicXML key = null;// = partProperties[partId].KeyAttributes[measureId];
+
+            //select all previous or same as passed measureId
+            List<string> measureKeyList = keyChanges.Keys.Where(id => int.Parse(id.Replace("X", "")) <= int.Parse(measureId.Replace("X", ""))).ToList();
+            if (measureKeyList.Contains(measureId))
+            {
+                //check if dictionary of keyChanges has any key with measure beginning position (fractionPosition = 0)
+                var measureKeyBeginning = keyChanges[measureId].KeysChanges.Where(x => x.Item2 == 0);
+                //check if this.[mesaureId] has key with fractionPosition == 0
+                //if, not check if passed Items.fraction.Position is higher than first key inside keyChanges list of this measureId
+                if (measureKeyBeginning.Count() == 0 && fractionPosition < keyChanges[measureId].KeysChanges.FirstOrDefault().Item2)
+                {
+                    int x = measureKeyList.Count - 1;
+                    //get last key change from previous measure
+                    key = keyChanges[measureKeyList.ElementAt(x - 1)].KeysChanges.LastOrDefault().Item3;
+                }
+                else
+                {
+                    //get last key with fractionPosition lower of equal than this Item.fractionPosition
+                    key = keyChanges[measureId].KeysChanges.Where(x => x.Item2 <= fractionPosition).LastOrDefault().Item3;
+                }
+            }
+            else
+            {
+                //get previous closest key
+                key = keyChanges[measureKeyList.LastOrDefault()].KeysChanges.LastOrDefault().Item3;
+            }
+            return key?? new Model.MeasureItems.Attributes.KeyMusicXML();
         }
 
         /// <summary>

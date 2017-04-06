@@ -10,7 +10,7 @@ namespace MusicXMLViewerWPF.Misc
 {
     interface IDrawableMusicalObject
     {
-        CanvasList DrawableMusicalObject { get; set; }
+        DrawingVisualHost DrawableMusicalObject { get; set; }
         DrawableMusicalObjectStatus DrawableObjectStatus { get; }
         bool Loaded { get; }
         void InitDrawableObject();

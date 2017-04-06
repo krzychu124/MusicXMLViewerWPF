@@ -29,7 +29,7 @@ namespace MusicXMLScore.ViewModel
         private List<Part> partList;
         private List<List<Part>> partSegmentsList = new List<List<Part>>();
         private ObservableCollection<UIElement> partsSegments = new ObservableCollection<UIElement>();
-        private CanvasList page = new CanvasList();
+        private DrawingVisualHost page = new DrawingVisualHost();
         private double pageHeight = 0.0;
         private double pageWidth = 0.0;
         #endregion
@@ -46,31 +46,20 @@ namespace MusicXMLScore.ViewModel
             //TOdo collection of PartSegmentViews to represent as Page
             //! here default page which contains one ParSegmentView for simple test
             Point dimensions = ViewModelLocator.Instance.Main.CurrentPageLayout.PageDimensions.GetPageDimensionsInPx();
-            Page.Width = dimensions.X;
-            Page.Height = dimensions.Y;
+            //Page.Width = dimensions.X;
+            //Page.Height = dimensions.Y;
             PageWidth = dimensions.X;
             PageHeight = dimensions.Y;
             AddPartSegment();
-        }
-        public PageViewModel(List<Part> partList)
-        {
-            TestCommand = new RelayCommand(OnTestCommand);
-            PartList = partList; //TODO_I test, improve, continue
-            CreatePartSegment();
-            FillPartSegment();
         }
 
         public PageViewModel(ScorePartwiseMusicXML scorePartwise, int index)
         {
             pageIndex = index;
-            PrimitivePageGenerator p = new PrimitivePageGenerator(scorePartwise);
             newPage = new DrawingHelpers.PageDrawingSystem(scorePartwise, pageIndex);
             Point dimensions = ViewModelLocator.Instance.Main.CurrentPageLayout.PageDimensions.GetPageDimensionsInPx();
             PageWidth = dimensions.X;
             PageHeight = dimensions.Y;
-            //Page = p.Page;
-            //partsSegments.Add(page);
-            PartsSegments.Add(p.PageHost);
             PartsSegments.Add(newPage.PageCanvas);
         }
         #endregion
@@ -78,7 +67,7 @@ namespace MusicXMLScore.ViewModel
         #region Properties
         public List<Part> PartList { get { return partList; } set { partList = value; } }
         public ObservableCollection<UIElement> PartsSegments { get { return partsSegments; } set { partsSegments = value; } }
-        public CanvasList Page { get { return page; } set { Set(nameof(Page), ref page, value); } }
+        public DrawingVisualHost Page { get { return page; } set { Set(nameof(Page), ref page, value); } }
         public RelayCommand TestCommand { get; set; }
         public double PageHeight { get { return pageHeight; } set { Set(nameof(PageHeight), ref pageHeight, value); } }
         public double PageWidth { get { return pageWidth; } set { Set(nameof(PageWidth), ref pageWidth, value); } }
@@ -87,17 +76,9 @@ namespace MusicXMLScore.ViewModel
         #region Methods
         private void AddPartSegment()
         {
-            //! part segment canvas...
-            //View.PartsSegmentView psv = new View.PartsSegmentView();
-            //psv.SetValue(CustomPartsSegmentPanel.TopMarginProperty, 20.0);
             PartsSegments.Add(page);
         }
-        private void AddPartSegment(List<Part> segmentPartList)
-        {
-            View.PartsSegmentView psv = new View.PartsSegmentView() { DataContext = new PartsSegmentViewModel(segmentPartList) };
-            psv.SetValue(CustomPartsSegmentPanel.TopMarginProperty, 20.0);
-            PartsSegments.Add(psv);
-        }
+        
         private void CreatePartSegment()//! Temporary solution for prototype visualization
         {
             if (PartList == null) { return; }
@@ -136,27 +117,7 @@ namespace MusicXMLScore.ViewModel
                 partSegmentsList.Add(partlist);
             }
         }
-        private void FillPartSegment()
-        { 
-            List<List<Part>> llp = new List<List<Part>>();
-            for (int j = 0; j < partSegmentsList.ElementAt(0).Count; j++)
-            {
-                List<Part> lp = new List<Part>();
-                for (int i = 0; i < partSegmentsList.Count; i++)
-                {
-                    lp.Add(partSegmentsList.ElementAt(i).ElementAt(j));
-                }
-                llp.Add(lp);
-            }
-            foreach (var ps in llp)
-            {
-                AddPartSegment(ps);
-            }
-            //foreach (var partSegment in partSegmentsList)
-            //{
-            //    AddPartSegment(partSegment);
-            //}
-        }
+        
         #endregion
 
         #region Commands, Action<>, Func<>

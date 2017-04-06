@@ -113,6 +113,28 @@ namespace MusicXMLScore.DrawingHelpers
                             }
                         }
                     }
+                    if (!KeyChanges.ContainsKey(item))
+                    {
+                        KeyChanges keys = new ScoreProperties.KeyChanges();
+                        for (int i = 1; i <= numberOfStaffs; i++)
+                        {
+                            var key = ViewModel.ViewModelLocator.Instance.Main.CurrentScoreProperties.GetKeySignature(item, partId, 0);
+                            keys.Add(i.ToString(), 0, key);
+                        }
+                        KeyChanges.Add(item, keys);
+                    }
+                    if (KeyChanges.ContainsKey(item))
+                    {
+                        KeyChanges keys = KeyChanges[item];
+                        if (keys.KeysChanges.All(x => x.Item2 != 0))
+                        {
+                            for (int i = 1; i <= numberOfStaffs; i++)
+                            {
+                                var key = ViewModel.ViewModelLocator.Instance.Main.CurrentScoreProperties.GetKeySignature(item, partId, 0);
+                                keys.Add(i.ToString(), 0, key);
+                            }
+                        }
+                    }
                 }
             }
         }

@@ -14,18 +14,18 @@ namespace MusicXMLScore.ViewModel
 {
     class CustomSystemViewModel : ViewModelBase
     {
-        private ObservableCollection<UIElement> uielementlist = new ObservableCollection<UIElement>();
+        private ObservableCollection<UIElement> uielementlist;// = new ObservableCollection<UIElement>();
 
         public ObservableCollection<UIElement> UIElementsList { get { return uielementlist; } }
 
         public CustomSystemViewModel()
         {
-            Rest r = new Rest(SymbolDuration.MusSymbolToDurStr(MusSymbolDuration.Quarter),new Point());
-            MusicXMLScore.Helpers.CanvasList cl = new Helpers.CanvasList(300, 200);
-            DrawingVisual dv = new DrawingVisual();
-            r.Draw(dv);
-            cl.AddVisual(dv);
-            uielementlist.Add(cl);
+            //Rest r = new Rest(SymbolDuration.MusSymbolToDurStr(MusSymbolDuration.Quarter),new Point());
+            //MusicXMLScore.Helpers.CanvasList cl = new Helpers.CanvasList(300, 200);
+            //DrawingVisual dv = new DrawingVisual();
+            //r.Draw(dv);
+            //cl.AddVisual(dv);
+            //uielementlist.Add(cl);
             //CustomSystemPanel csp1 = new CustomSystemPanel();
             //CustomSystemPanel csp2 = new CustomSystemPanel();
             //uielementlist.Add(csp1);
