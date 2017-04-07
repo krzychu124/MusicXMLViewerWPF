@@ -64,21 +64,13 @@ namespace MusicXMLScore.DrawingHelpers
             {
                 numberOfStaffs = int.Parse(staves);
             }
-            if (partIndex != null)
-            {
-                GetLayoutInfo(part);
-                
-            }
+            GetLayoutInfo(part);
             stavesDistance = staffLayout.ElementAt(0).StaffDistance;
             SetSystemMeasureRanges(score);
             SetPartHeight();
-            //GenerateClefAttributes();
             GenerateKeyAttributes();
             GenerateDivisionChanges();
             GenerateFirstMeasureIdPerSystem();
-            //GenerateClefChanges();
-            //GenerateAttributes();
-            
         }
 
         /// <summary>
