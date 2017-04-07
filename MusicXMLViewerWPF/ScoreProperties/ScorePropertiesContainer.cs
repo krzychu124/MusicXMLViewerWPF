@@ -68,6 +68,8 @@ namespace MusicXMLScore.ScoreProperties
         }
         public void RemoveScore(string scoreID)
         {
+            if (scoreID == null) return;
+
             if (scorePropertiesContainer.ContainsKey(scoreID))
             {
                 scorePropertiesContainer.Remove(scoreID);
@@ -77,15 +79,16 @@ namespace MusicXMLScore.ScoreProperties
         }
         public void SelectScore(string scoreID)
         {
+            currentLayoutProperties = scoreLayoutContainer["default"];
+            currentScoreProperties = scorePropertiesContainer["default"];
+            if (scoreID == null)
+            {
+                return;
+            }
             if (scorePropertiesContainer.ContainsKey(scoreID))
             {
                 currentLayoutProperties = scoreLayoutContainer[scoreID];
                 currentScoreProperties = scorePropertiesContainer[scoreID];
-            }
-            else
-            {
-                currentLayoutProperties = scoreLayoutContainer["default"];
-                currentScoreProperties = scorePropertiesContainer["default"];
             }
         }
     }
