@@ -54,7 +54,7 @@ namespace MusicXMLScore.Helpers
             return calculatedSize; // availableSize; //! base.MeasureOverride(availableSize);
         }
 
-        protected override Size ArrangeOverride(Size finalSize) //TODO_L bug with position
+        protected override Size ArrangeOverride(Size finalSize) 
         {
             var childrens = InternalChildren;
             if (childrens == null) { return finalSize; }

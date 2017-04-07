@@ -246,7 +246,7 @@ namespace MusicXMLViewerWPF
 
         public void InitDrawableObject()
         {
-            DrawableMusicalObject = new DrawingVisualHost(this.Width, this.Height);
+            DrawableMusicalObject = new DrawingVisualHost();
             DrawingVisual barline = new DrawingVisual();
             DrawBarline(barline, new Point(),10);
             DrawableMusicalObject.AddVisual(barline);

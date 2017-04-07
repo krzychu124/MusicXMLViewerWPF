@@ -162,7 +162,7 @@ namespace MusicXMLViewerWPF
 
             if (Loaded)
             {
-                DrawableMusicalObject = new MusicXMLScore.Helpers.DrawingVisualHost(this.Width, this.Height);
+                DrawableMusicalObject = new MusicXMLScore.Helpers.DrawingVisualHost();
                 DrawingVisual clef = new DrawingVisual();
                 Draw(clef);
                 DrawableMusicalObject.AddVisual(clef);

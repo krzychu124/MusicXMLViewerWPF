@@ -47,7 +47,7 @@ namespace MusicXMLScore.ViewModel
         CClef
     }
 
-    class NewScoreCreatorViewModel : ViewModelBase  //TODO Refactor to new MeasureView for preview 
+    class NewScoreCreatorViewModel : ViewModelBase 
     {
         #region fields
         private bool customsetting;
@@ -112,7 +112,6 @@ namespace MusicXMLScore.ViewModel
 
         private void InitPreview()
         {
-           //TODO check if necessary ==> MusicScore.Defaults = new MusicXMLViewerWPF.Defaults.Defaults();
             //MusicScore.Defaults.Scale.Set(40);
         }
 
@@ -151,7 +150,7 @@ namespace MusicXMLScore.ViewModel
             }
         }
 
-        private void UpdatePreview() //todo refactor
+        private void UpdatePreview() 
         {
             ConfigurationPreview.ClearVisuals();
             float scale = defaults.Scale.Tenths;

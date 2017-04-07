@@ -203,7 +203,7 @@ namespace MusicXMLViewerWPF
         {
             if (Loaded)
             {
-                DrawableMusicalObject = new DrawingVisualHost(this.Width, this.Height);
+                DrawableMusicalObject = new DrawingVisualHost();
                 DrawingVisual key = new DrawingVisual();
                 Draw(key);
                 DrawableMusicalObject.AddVisual(key);

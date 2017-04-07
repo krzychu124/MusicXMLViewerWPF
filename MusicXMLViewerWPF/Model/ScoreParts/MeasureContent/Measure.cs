@@ -476,7 +476,7 @@ namespace MusicXMLViewerWPF.ScoreParts.MeasureContent
                 Logger.Log($"Measure {number} has no width: {Width}");
                 int num = music_characters.Count();
                 elements_count = num;
-                ThreadPool.QueueUserWorkItem(m => CalculateMeasureWidth());
+                //ThreadPool.QueueUserWorkItem(m => CalculateMeasureWidth());
             }
             bool t = int.TryParse(x.Attribute("number").Value, out number);
             if (t == false) Logger.Log($"Measure number is: {x.Attribute("number").Value}");

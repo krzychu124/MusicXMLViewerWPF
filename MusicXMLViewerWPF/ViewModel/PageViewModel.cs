@@ -42,8 +42,7 @@ namespace MusicXMLScore.ViewModel
         public PageViewModel() // todo_l get view dimensions !!!
         {
             TestCommand = new RelayCommand(OnTestCommand);
-
-            //TOdo collection of PartSegmentViews to represent as Page
+            
             //! here default page which contains one ParSegmentView for simple test
             Point dimensions = ViewModelLocator.Instance.Main.CurrentPageLayout.PageDimensions.GetPageDimensionsInPx();
             //Page.Width = dimensions.X;
