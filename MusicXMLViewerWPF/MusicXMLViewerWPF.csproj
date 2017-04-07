@@ -131,6 +131,7 @@
     <Compile Include="LayoutStyle\Styles\NotesLayoutStyle.cs" />
     <Compile Include="LayoutStyle\Styles\PageLayoutStyle.cs" />
     <Compile Include="LayoutStyle\Styles\SystemLayoutStyle.cs" />
+    <Compile Include="Model\CreditMusicXML.cs" />
     <Compile Include="Model\Helpers\AccidentalTextMusicXML.cs" />
     <Compile Include="Model\Helpers\EmptyLineMusicXML.cs" />
     <Compile Include="Model\Helpers\EmptyMusicXML.cs" />

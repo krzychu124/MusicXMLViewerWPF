@@ -300,8 +300,6 @@ namespace MusicXMLScore.ViewModel
                 TabItem newTab = new TabItem() { Header = filedestination, Content = new PagesControllerView(), DataContext = vm };
                 TabsCreated.Add(newTab);
                 SelectedTabItem = newTab;
-
-                
                 IsBlank = false;
             }
             else

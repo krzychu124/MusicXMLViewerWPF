@@ -23,7 +23,7 @@ namespace MusicXMLViewerWPF
         private string movementTitle; //! Done
         private IdentificationMusicXML identification;
         private DefaultsMusicXML defaults;
-        private List<Credit> credits = new List<Credit>(); //! Done
+        private List<CreditMusicXML> credits = new List<CreditMusicXML>(); //! Done
         private PartListMusicXML partlist;
         private List<ScorePartwisePartMusicXML> part;
         private string version;
@@ -82,7 +82,7 @@ namespace MusicXMLViewerWPF
             }
         }
         [XmlElement("credit")]
-        public List<Credit> Credits
+        public List<CreditMusicXML> Credits
         {
             get { return credits; }
             set
