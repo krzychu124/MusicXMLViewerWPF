@@ -38,7 +38,6 @@ namespace MusicXMLScore.DrawingHelpers
 
         public PartsSystemDrawing(int systemIndex, List<string> measuresToDraw, List<string> partsIdList, Dictionary<string, PartProperties> partsProperties, int pageIndex)
         {
-            //if (partIDsList == null || partIDsList.Count == 0) { return; }
             this.systemIndex = systemIndex;
             measuresList = measuresToDraw;
             this.partIDsList = partsIdList;
@@ -214,7 +213,6 @@ namespace MusicXMLScore.DrawingHelpers
                 {
                     if (i == 0)
                     {
-                        //positionCoords.Add(possibleIndexes[i], startingPosition);
                         int currentDuration = durationOfPosition[possibleIndexes[i]];
                         double previewSpacing = staffSpace * SpacingValue(currentDuration, shortestDuration, 0.6);
                         positions.Add(possibleIndexes[i], Tuple.Create(startingPosition, previewSpacing));
@@ -224,7 +222,6 @@ namespace MusicXMLScore.DrawingHelpers
                         int currentDuration = durationOfPosition[possibleIndexes[i]];
                         double previewSpacing = staffSpace * SpacingValue(currentDuration, shortestDuration, 0.6);
                         startingPosition += previewSpacing;
-                        //positionCoords.Add(possibleIndexes[i], startingPosition);
                         positions.Add(possibleIndexes[i], Tuple.Create(startingPosition, previewSpacing));
                     }
                 }
@@ -237,7 +234,6 @@ namespace MusicXMLScore.DrawingHelpers
                     }
                     if (i > 0)
                     {
-                        //var pos = positions[possibleIndexes[i]].Item1;
                         durationTable.Add(possibleIndexes[i], positions[possibleIndexes[i]].Item1);
                     }
                 }
@@ -260,7 +256,6 @@ namespace MusicXMLScore.DrawingHelpers
         private void CorrectStretch(double maxWidth, Dictionary<int, Tuple<double, double>> positions, List<int> indexes)
         {
             LayoutStyle.MeasureLayoutStyle attributesLayout = ViewModel.ViewModelLocator.Instance.Main.CurrentLayout.LayoutStyle.MeasureStyle;
-            //double maxWidth = availableWidth - startingPositionAfterAttributes;
             double currentFullWidth = positions.Sum(x => x.Value.Item2);
             double difference = (maxWidth - attributesLayout.AttributesRightOffset.TenthsToWPFUnit()) - currentFullWidth;
             for (int i = 0; i < indexes.Count; i++)
@@ -292,8 +287,8 @@ namespace MusicXMLScore.DrawingHelpers
         private void GetSetSystemMargins() //TODO_WIP do more tests... //
         {
             var currentPartProperties = partsPropertiesList.ElementAt(0).Value;
-            leftMargin = 0;// currentPartProperties.SystemLayout.ElementAt(systemIndex).SystemMargins.LeftMargin.TenthsToWPFUnit();
-            rightMargin = 0;//currentPartProperties.SystemLayout.ElementAt(systemIndex).SystemMargins.RightMargin.TenthsToWPFUnit();
+            leftMargin = 0;
+            rightMargin = 0;
         }
 
         private void PartsSegmentsDraw()

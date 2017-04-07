@@ -218,11 +218,6 @@ namespace MusicXMLScore.LayoutControl
                 attributesList.Add(item.Key, attributes);
             }
             CalculateBeginningAttributes(attributesList);
-            //double attributesWidth = 0.0;// CalculateBeginningAttributes(attributesList);
-            //foreach (var item in staffs)
-            //{
-            //    //item.Value.ArrangeItemsByDuration(availableWidth, attributesWidth,  maxDuration);
-            //}
         }
         private double CalculateBeginningAttributes(Dictionary<string, List<IMeasureItemVisual>> attributesList)
         {
@@ -269,10 +264,6 @@ namespace MusicXMLScore.LayoutControl
                     keysWidths.Add(staffs[item.Key].ArrangeAttributes(item.Value as IAttributeItemVisual /*maxClefWidth*/));
                 }
                 maxKeyWidth = keysWidths.Max();
-                //if(maxKeyWidth == 0)
-                //{
-                //    maxKeyWidth = maxClefWidth;
-                //}
             }
             if (times.Count != 0)
             {
@@ -283,10 +274,6 @@ namespace MusicXMLScore.LayoutControl
                     timesWidths.Add(staffs[item.Key].ArrangeAttributes(item.Value as IAttributeItemVisual /*maxKeyWidth*/));
                 }
                 maxTimeWidth = timesWidths.Max();
-                //if (maxTimeWidth ==0)
-                //{
-                //    maxTimeWidth = maxKeyWidth;
-                //}
             }
             attributesWidths = Tuple.Create(maxClefWidth, maxKeyWidth, maxTimeWidth);
             return 0.0;

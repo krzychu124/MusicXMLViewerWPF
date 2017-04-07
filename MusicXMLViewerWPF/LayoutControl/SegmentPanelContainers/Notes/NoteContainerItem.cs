@@ -45,13 +45,9 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
         private List<double> ledgerLinesPositions;
         private string staffNumber;
         private System.Windows.Media.Brush color;
-        //private ToolTip tt = new ToolTip();
+
         public NoteContainerItem(NoteMusicXML note, int fractionPosition, string partId, string measureId, string staffId)
         {
-            //test
-            //this.MouseMove += Canvas_MouseMove;
-            //ToolTip = tt;
-            //
             noteItem = new List<NoteMusicXML>();
             noteItem.Add(note);
             isChordNote = false;
@@ -65,10 +61,6 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
         }
         public NoteContainerItem(List<NoteMusicXML> chordList, int fractionPosition, string partId, string measureId, string staffId)
         {
-            //test
-            //this.MouseMove += Canvas_MouseMove;
-            //ToolTip = tt;
-            //
             noteItem = chordList;
             isChordNote = true;
             this.fractionPosition = fractionPosition;
@@ -310,14 +302,5 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
                 itemCanvas = value;
             }
         }
-
-        //test only
-        //private void Canvas_MouseMove(object sender, MouseEventArgs e)
-        //{
-        //    tt.Placement = System.Windows.Controls.Primitives.PlacementMode.Relative;
-        //    tt.HorizontalOffset = e.GetPosition((IInputElement)sender).X + 10;
-        //    tt.VerticalOffset = e.GetPosition((IInputElement)sender).Y + 10;
-        //    tt.Content = "X-Coordinate: " + e.GetPosition((IInputElement)sender).X + "\n" + "Y-Coordinate: " + e.GetPosition((IInputElement)sender).Y;
-        //}
     }
 }

@@ -11,7 +11,6 @@ namespace MusicXMLScore.DrawingHelpers
     class PageDrawingSystem
     {
         #region Fields
-
         private List<string> firstMeasureIdPerSystem;
         private List<int> firstMeasureIndexPerSystem;
         private List<List<string>> measuresIdRangePerSystem;
@@ -24,11 +23,9 @@ namespace MusicXMLScore.DrawingHelpers
         //! PartsSystem<MeasuresIDsList<MeasureId>
         private List<PartsSystemDrawing> partSystemsList;
         private ScorePartwiseMusicXML score;
-
         #endregion Fields
 
         #region Constructors
-
         public PageDrawingSystem(ScorePartwiseMusicXML score, int pageIndex)
         {
             this.pageIndex = pageIndex;
@@ -110,7 +107,7 @@ namespace MusicXMLScore.DrawingHelpers
                 }
                 Canvas.SetTop(system.PartSystemCanvas, systemDistanceToPrevious);
                 Canvas.SetLeft(system.PartSystemCanvas, lMargin);
-                systemDistanceToPrevious += system.Size.Height;//.TenthsToWPFUnit();
+                systemDistanceToPrevious += system.Size.Height;
             }
         }
 
@@ -118,7 +115,7 @@ namespace MusicXMLScore.DrawingHelpers
         {
             foreach (var part in score.Part)
             {
-                PartProperties tempPartProperties = ViewModelLocator.Instance.Main.CurrentPartsProperties[part.Id]; /*new PartProperties(score, part.Id); */
+                PartProperties tempPartProperties = ViewModelLocator.Instance.Main.CurrentPartsProperties[part.Id];
                 int partIndex = score.Part.IndexOf(part);
                 if (partIndex != 0)
                 {

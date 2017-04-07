@@ -23,7 +23,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
         private int itemDuration =0;
         private double itemWidth = 0.0;
         private double itemWidthMin = 0.0;
-        private double itemWidthOpt = 0.0; // optimal
+        private double itemWidthOpt = 0.0; 
         private bool measureRest = false;
         private string symbol;
         private string partId;
@@ -80,7 +80,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
         {
             get
             {
-                return itemWeight;//throw new NotImplementedException();
+                return itemWeight;
             }
             set
             {
@@ -154,7 +154,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
             {
                 return noteItem.Items.OfType<RestMusicXML>().FirstOrDefault().Measure == YesNoMusicXML.yes ? true : false;
             }
-            return false; //false;
+            return false; 
         }
 
         private void Draw(bool measure)
