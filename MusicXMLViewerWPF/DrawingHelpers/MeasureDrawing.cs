@@ -1,5 +1,4 @@
-﻿using MusicXMLViewerWPF.ScoreParts.MeasureContent;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -26,7 +25,6 @@ namespace MusicXMLScore.DrawingHelpers
         private bool invalidated = false;
         private bool keyVisible = false;
         private LayoutControl.LayoutGeneral layout;
-        private Measure measure;
         private double measureHeight = 60.0;
         private ScorePartwisePartMeasureMusicXML measureSerializable;
         private double measureWidth = 0.0;
@@ -46,20 +44,7 @@ namespace MusicXMLScore.DrawingHelpers
 
         public MeasureDrawing()
         {
-            this.measure = new Measure();
         }
-
-        //public MeasureDrawing(Measure measure)
-        //{
-        //    MainWindowViewModel mwvm = ViewModelLocator.Instance.Main;
-        //    pageProperies = (PageProperties)ViewModel.ViewModelLocator.Instance.Main.CurrentPageProperties;
-        //    this.measure = measure;
-        //    PagesControllerViewModel pcvm = mwvm.SelectedTabItem.DataContext as PagesControllerViewModel ;
-        //    stavesCount = (uint)pcvm.MusicScore.Parts.ElementAt(0).Value.StavesCount;
-        //    measureHeight = pageProperies.StaffHeight.MMToWPFUnit();
-        //    DrawAttributes();
-        //    CreateVisualObject();
-        //}
         public MeasureDrawing(ScorePartwisePartMeasureMusicXML measure, LayoutControl.LayoutGeneral layout, string id)
         {
             partId = id;
@@ -67,7 +52,6 @@ namespace MusicXMLScore.DrawingHelpers
             measureWidth = measure.CalculatedWidth;
             measureHeight = ViewModelLocator.Instance.Main.CurrentPageLayout.StaffHeight.MMToWPFUnit();
             this.layout = layout;
-            //PrimitiveRectangle();
             CreateVisualObjectChilds();
         }
         public MeasureDrawing(string measureId, string partId, double staffDistance, int stavesCount)
@@ -82,7 +66,6 @@ namespace MusicXMLScore.DrawingHelpers
             GetMeasureProperties();
             //CreateStaffLine();
             CreateVisualObject();
-            //DrawAttributes();
         }
 
         
@@ -104,20 +87,6 @@ namespace MusicXMLScore.DrawingHelpers
         }
 
         public bool Invalidated { get { return invalidated; } private set { invalidated = value; } }
-
-        public double MeasureWidth { get { return measureWidth; } }
-
-        public int Number
-        {
-            get
-            {
-                return measure.Number;
-            }
-            set
-            {
-                measure.Number = value;
-            }
-        }
 
         public PageProperties PageProperties
         {
@@ -146,8 +115,6 @@ namespace MusicXMLScore.DrawingHelpers
 
         private void CreateStaffLine()
         {
-
-            //CanvasList measureCanvas = new CanvasList(measureWidth, measureHeight);
             Point p = new Point(0, layout.PageProperties.StaffHeight.MMToWPFUnit());
             staffLinesCoords = new double[stavesCount];
             staffLinesYpositions = new Dictionary<int, double[]>();
@@ -157,11 +124,8 @@ namespace MusicXMLScore.DrawingHelpers
                 DrawableStaffLine staff = new DrawableStaffLine(layout.PageProperties, measureWidth, offsetPoint: p);
                 staffLinesYpositions.Add((int)i+1, staff.LinesYpositions);
                 staffLinesCoords[i] = p.Y;
-                //measureCanvas.AddVisual(staff.PartialObjectVisual);
                 visualObject.AddVisual(staff.PartialObjectVisual);
             }
-            //visualObject.AddVisual(measureCanvas);
-            //visualObject.SetToolTipText($"measure {id}, {partId} width: {measureWidth}");
         }
 
         private void CreateVisualObject()
@@ -175,78 +139,18 @@ namespace MusicXMLScore.DrawingHelpers
         /// </summary>
         private void CreateVisualObjectChilds()
         {
-            //AddNotes();
-            //AddDirections();
             ArrangeMeasureLayout();
-        }
-
-        private void DrawAttributes()
-        {
-            if (clefVisible)
-            {
-
-                //LayoutControl.SegmentPanel spanel = new LayoutControl.SegmentPanel(partId);
-                //spanel.AddAttributesContainer(new LayoutControl.SegmentPanelContainers.MeasureAttributesContainer(measureSerializable.Items.OfType<AttributesMusicXML>().FirstOrDefault()));
-                ////ClefMusicXML clef = measureSerializable.Items.OfType<AttributesMusicXML>().FirstOrDefault().Clef.ElementAt(0);
-                ////int clefNumber = clef.Number != null? int.Parse(clef.Number) : 1;
-                ////ClefVisualObject clefVisual = new ClefVisualObject(clef, staffLinesYpositions[clefNumber]);
-                ////visualObject.AddVisual(clefVisual.BaseObjectVisual);
-                //visualObject.Children.Add(spanel);
-            }
-            if (keyVisible)
-            {
-
-            }
-            if (timeSigVisible)
-            {
-                //TimeMusicXML timeSig = measureSerializable.Items.OfType<AttributesMusicXML>().FirstOrDefault().Time.ElementAt(0);
-                //int timeSigNumber = timeSig.Number != null ? int.Parse(timeSig.Number) : 1;
-                //TimeSignatureVisualObject timeSigVisual = new TimeSignatureVisualObject(timeSig, staffLinesYpositions[timeSigNumber]);
-                //visualObject.AddVisual(timeSigVisual.BaseObjectVisual);
-            }
         }
 
         private void GetMeasureProperties()
         {
             measureSerializable = ViewModelLocator.Instance.Main.CurrentSelectedScore.Part.ElementAt(partId.GetPartIdIndex()).MeasuresByNumber[id];
-            //if (measureSerializable.Items.OfType<AttributesMusicXML>().Count() != 0)
-            //{
-            //    var attributes = measureSerializable.Items.OfType<AttributesMusicXML>().FirstOrDefault();
-            //    clefVisible = attributes.Clef != null ? attributes.Clef.Count != 0 ? true : false : false;
-            //    timeSigVisible = attributes.Time != null ? attributes.Time.Count != 0 ? true : false : false;
-            //    if (attributes.StaffDetails != null)
-            //    {
-            //        //attributes.StaffDetails.Select(i=> i).Where(i=> i) //TODO_LATER implement staffDetails class
-            //    }
-            //}
             measureHeight = layout.PageProperties.StaffHeight.MMToWPFUnit() * stavesCount + (stavesDistance.TenthsToWPFUnit() * (stavesCount - 1));
             measureWidth = measureSerializable.CalculatedWidth.TenthsToWPFUnit();
             size = new Size(measureWidth, measureHeight);
-            visualObject = new DrawingVisualHost();// measureWidth, measureHeight);
+            visualObject = new DrawingVisualHost();
         }
-        //private void PrimitiveRectangle()
-        //{
-            
 
-        //    Point p = new Point(0, -layout.PageProperties.StaffHeight.MMToWPFUnit());
-        //    for (uint i = 0; i < 1/*stavesCount*/; i++)
-        //    {
-        //        CanvasList MeasureCanvas = new CanvasList(measureWidth, measureHeight);
-        //        p.Y = p.Y + (stavesDistance.TenthsToWPFUnit()) * i;
-        //        Point l_t = new Point(p.X, p.Y);
-        //        Point r_b = new Point(p.X + measureWidth, p.Y + measureHeight);
-        //        Rect primitive = new Rect(l_t, r_b);
-        //        DrawingVisual rectVis = new DrawingVisual();
-        //        using (DrawingContext dc = rectVis.RenderOpen())
-        //        {
-        //            Brush color = Helpers.DrawingHelpers.PickBrush();
-        //            dc.DrawRectangle(color, new Pen(color, 1), primitive);
-        //        }
-        //        MeasureCanvas.AddVisual(rectVis);
-        //        visualObject.AddVisual(MeasureCanvas);
-        //    }
-        //    visualObject.SetToolTipText($"measure {id}, {partId} width: {measureWidth}");
-        //}
         /// <summary>
         /// Updates VisualObject - currently whole object is cleared and instatiated again from scratch
         /// </summary>

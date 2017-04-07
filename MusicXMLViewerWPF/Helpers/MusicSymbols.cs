@@ -215,17 +215,7 @@ namespace MusicXMLViewerWPF
         public const string zeroT = "\uF56C";
         #endregion
         #endregion
-
-        public static string getNoteSymbol(MusSymbolDuration m)
-        {
-            string s = "??";
-            
-            if (DurationSymbol_Note.ContainsKey(m))
-            {
-                s = DurationSymbol_Note[m];
-            }
-            return s;
-        }
+        
         public static string getNoteSymbol(string s,bool d)
         {
             string x = "n?";
@@ -246,29 +236,6 @@ namespace MusicXMLViewerWPF
             }
             return x;
         }
-
-        public static string getRestSymbol(string s)
-        {
-            MusSymbolDuration m = SymbolDuration.DurStrToMusSymbol(s);
-            s = "??";
-            if (DurationSymbol_Rest.ContainsKey(m))
-            {
-                s = DurationSymbol_Rest[m];
-            }
-            
-            return s;
-        }
-
-        public static Dictionary<MusSymbolDuration, string> DurationSymbol_Note = new Dictionary<MusSymbolDuration, string>() {
-            { MusSymbolDuration.Whole, WholeDot}, //! temp //
-            { MusSymbolDuration.Half, Half},
-            { MusSymbolDuration.Quarter, Quarter},
-            { MusSymbolDuration.Eight, Eight},
-            { MusSymbolDuration.Sixteen, Sixteen},
-            { MusSymbolDuration.d32nd, ThirtyTwo},
-            { MusSymbolDuration.d64th, SixstyFour},
-            { MusSymbolDuration.Unknown, "n?" }
-        };
         public static Dictionary<string, string> DurationSymbol_Note_S = new Dictionary<string, string>() {
             { "whole", WholeDot},
             { "half", Half},
@@ -288,16 +255,6 @@ namespace MusicXMLViewerWPF
             { "32nd", ThirtyTwoU},
             { "64th", SixstyFourU},
             { "", "n?" }
-        };
-        public static Dictionary<MusSymbolDuration, string> DurationSymbol_Rest = new Dictionary<MusSymbolDuration, string>() {
-            { MusSymbolDuration.Whole, WholeRest},
-            { MusSymbolDuration.Half, HalfRest},
-            { MusSymbolDuration.Quarter, QuarterRest},
-            { MusSymbolDuration.Eight, EightRest},
-            { MusSymbolDuration.Sixteen, SixteenRest},
-            { MusSymbolDuration.d32nd, ThirtyTwoRest},
-            { MusSymbolDuration.d64th, SixstyFourRest},
-            { MusSymbolDuration.Unknown, "r?" }
         };
     }
 }

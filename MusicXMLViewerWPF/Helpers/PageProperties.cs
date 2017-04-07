@@ -1,9 +1,6 @@
 ﻿using MusicXMLScore.Converters;
 using MusicXMLScore.Model;
 using MusicXMLScore.Model.Defaults;
-using MusicXMLScore.ViewModel;
-using MusicXMLViewerWPF;
-using MusicXMLViewerWPF.Defaults;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +8,6 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Media;
 
 namespace MusicXMLScore.Helpers
 {
@@ -162,17 +158,6 @@ namespace MusicXMLScore.Helpers
             CalculateConverterFactor();
             CalculatePageDimensions();
             GenerateAvaliableLinePositions();
-        }
-        internal PageProperties(MusicScore ms)
-        {
-           this.scale = ms.Defaults.Scale.Tenths;
-            this.staffHeight = ms.Defaults.Scale.Millimeters;
-            default_width = ms.Defaults.Page.Width;
-            default_height = ms.Defaults.Page.Height;
-            SetOrientation();
-            CalculateConverterFactor();
-            CalculateStaffSpace();
-            CalculatePageDimensions();
         }
         public PageProperties(double scale, double staffLineHeight, double widthTenths, double heightTenths)
         {

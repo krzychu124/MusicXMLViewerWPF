@@ -4,14 +4,12 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using MusicXMLViewerWPF;
 using MusicXMLScore.Helpers;
-using MusicXMLViewerWPF.ScoreParts.MeasureContent;
 using GalaSoft.MvvmLight;
 
 namespace MusicXMLScore.ViewModel
@@ -68,7 +66,6 @@ namespace MusicXMLScore.ViewModel
         private string selectedkeysymbol;
         private string selectedkeytype = "Flat";
         private TimeSigSettingOptions currenttimesig = TimeSigSettingOptions.standard;
-        private static MusicXMLViewerWPF.Defaults.Defaults defaults = new MusicXMLViewerWPF.Defaults.Defaults();
         #endregion
 
         #region properties
@@ -152,47 +149,7 @@ namespace MusicXMLScore.ViewModel
 
         private void UpdatePreview() 
         {
-            ConfigurationPreview.ClearVisuals();
-            float scale = defaults.Scale.Tenths;
-            Point key = new Point(2*scale, 0.5 * scale);
-            Point clef = new Point(0.5*scale, 0.5 * scale);
-            Point timesig = new Point(1.25*scale, 0.5 * scale);
-            Point measure = new Point(0.25*scale, 0.5 * scale);
-            DrawingVisual k_d = new DrawingVisual();
-            DrawingVisual c_d = new DrawingVisual();
-            DrawingVisual t_d = new DrawingVisual();
-            DrawingVisual b_d = new DrawingVisual();
-            DrawingVisual r_d = new DrawingVisual();
-            DrawingVisual m = new DrawingVisual();
-            Measure meae = new Measure(4.5f * scale); //! { Width = 4.5f * scale};
-            using(DrawingContext dc= m.RenderOpen())
-            {
-                meae.Draw_Measure(dc, measure);
-            }
-            int fifths = (int)MusicXMLViewerWPF.Key.GetFifths(SelectedKeySymbol);
-            MusicXMLViewerWPF.Key k = new MusicXMLViewerWPF.Key(fifths,"major",0);
-            string cl = SelectedClefS.Value == ViewModel.ClefType.GClef ? "G" : SelectedClefS.Value == ViewModel.ClefType.FClef ? "F" : "C";
-            MusicXMLViewerWPF.ClefType ct = new MusicXMLViewerWPF.ClefType(cl);
-            Clef c = new Clef(cl,2,0);
-            string ttype = CurrentTimeSigOption == TimeSigSettingOptions.standard ? "" : CurrentTimeSigOption.ToString();
-            TimeSignature t = new TimeSignature((int)TimeSigTime, (int)SelectedTimeBeats.Value, ttype);
-            Barline br = new Barline() { Style = Barline.BarStyle.light_light };
-            Rest r = new Rest("whole", new Point( 3.5f* scale, 0.5 * scale));
-
-            br.DrawBarline(b_d, new Point(4.5f * scale , 0.5 * scale), 5f);
-            r.Draw(r_d);
-            k.Relative = key;
-            c.Relative = clef;
-            t.Relative = timesig;
-            k.Draw(k_d, k.Relative, ct);
-            c.Draw(c_d);
-            t.Draw(t_d);
-            ConfigurationPreview.AddVisual(m);
-            ConfigurationPreview.AddVisual(k_d);
-            ConfigurationPreview.AddVisual(c_d);
-            ConfigurationPreview.AddVisual(t_d);
-            ConfigurationPreview.AddVisual(r_d);
-            ConfigurationPreview.AddVisual(b_d);
+            //TODO refactor
         }
         
         public DrawingVisual AddVis()

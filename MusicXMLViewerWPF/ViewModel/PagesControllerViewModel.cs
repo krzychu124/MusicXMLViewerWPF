@@ -49,7 +49,6 @@ namespace MusicXMLScore.ViewModel
         private string id;
 
         private bool isBlank = true;
-        private MusicScore musicScore;
         private ObservableCollection<UIElement> pageCollection;
         private ScorePartwiseMusicXML partwise;
         private string title = "";
@@ -60,15 +59,11 @@ namespace MusicXMLScore.ViewModel
 
         public PagesControllerViewModel()
         {
-            //PropertyChanged += PagesControllerViewModel_PropertyChanged;
-            MessengerInstance.Register<GenericMessage<List<Part>>>(this, "toNextPage", false, RelocatePartsNextPage);
         }
         
         public PagesControllerViewModel(int numberOfPages)
         {
-            //PropertyChanged += PagesControllerViewModel_PropertyChanged;
             IsBlank = false;
-            MusicScore = new MusicScore();
             PagesCollection = new ObservableCollection<UIElement>();
             for (int i = 0; i < numberOfPages; i++)
             {
@@ -80,13 +75,10 @@ namespace MusicXMLScore.ViewModel
 
         #region Properties
 
-        //public object Content { get { return new object(); } private set { content = value; } }
         public string Header { get { return header; } private set { header = value; } }
         public string ID { get { return id; } }
         public bool IsBlank { get { return isBlank; } set { Set(nameof(IsBlank), ref isBlank, value); } }
-        public MusicScore MusicScore { get { return musicScore; } private set { if (value != null) { Set(nameof(MusicScore), ref musicScore, value); } } }
         public ObservableCollection<UIElement> PagesCollection { get { return pageCollection; } set { pageCollection = value; } }
-        public List<List<Part>> PagesList { get; set; }
         public ScorePartwiseMusicXML Partwise
         {
             get
@@ -134,57 +126,11 @@ namespace MusicXMLScore.ViewModel
             PageViewModel pvm = new PageViewModel(sp, index);
             PagesCollection.Add(new PageView() { DataContext = pvm });
         }
-
-        /// <summary>
-        /// Generate Pages using PartList from loaded MusicScore (if MusicScore not support NewPageSystem - generate from scratch)
-        /// </summary>
-        private void ArrangePages()
-        {
-            PagesList = new List<List<Part>>();
-            if (MusicScore.SupportNewPage)
-            {
-                foreach (var item in MusicScore.PagesList)
-                {
-                    List<Part> partslist = new List<Part>();
-                    foreach (var part in item)
-                    {
-                        partslist.Add(part);
-                    }
-                    PagesList.Add(partslist);
-                }
-            }
-            else
-            {
-                //ToDO_H generate from scratch
-                CreatePages();
-            }
-        }
-
-        private void CreatePages()
-        {
-            PagesList = MusicScore.PagesList;// throw new NotImplementedException();
-        }
         
         private void PagesControllerViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(MusicScore))
-            {
-                if(MusicScore != null)
-                {
-                    IsBlank = false;
-                }
-            }
+            
         }
-        private void RelocatePartsNextPage(GenericMessage<List<Part>> partListToRelocate)
-        {
-            Console.WriteLine("relocated to next page");
-            //MessengerInstance.Unregister(this);
-        }
-        private void RelocatePartsPreviousPage(GenericMessage<List<Part>> partListToRelocate)
-        {
-            Console.WriteLine("relocated to previous page");
-        }
-
         #endregion Methods
     }
 }

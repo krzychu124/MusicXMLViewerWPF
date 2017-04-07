@@ -22,16 +22,12 @@ namespace MusicXMLScore.LayoutControl
         public LayoutGeneral()
         {
             pageProperties = new PageProperties();
-            layoutStyle = new LayoutStyle.Layout();
-        }
-        internal LayoutGeneral(MusicScore musicScore)
-        {
-            pageProperties = new PageProperties(musicScore);
+            layoutStyle = new Layout();
         }
         public LayoutGeneral(ScorePartwiseMusicXML score)
         {
             pageProperties = score !=null?  new PageProperties(score.Defaults): null;
-            layoutStyle = new LayoutStyle.Layout(score);
+            layoutStyle = new Layout(score);
         }
 
         private void SaveAsDefaultStyle() //! not tested
@@ -46,7 +42,7 @@ namespace MusicXMLScore.LayoutControl
             XmlSerializer xml = new XmlSerializer(layoutStyle.GetType());
             using (var stream = File.OpenRead(@".\DefaultLayoutStyle.xml"))
             {
-                layoutStyle = (LayoutStyle.Layout) xml.Deserialize(stream);
+                layoutStyle = (Layout) xml.Deserialize(stream);
             }
         }
         public PageProperties PageProperties { get { return pageProperties; } }

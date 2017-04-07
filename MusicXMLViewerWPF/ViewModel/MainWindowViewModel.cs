@@ -111,7 +111,7 @@ namespace MusicXMLScore.ViewModel
         public ObservableCollection<TabItem> TabsCreated { get { return tabscreated; } set { if (value != null) { tabscreated = value; } } }
         public RelayCommand TestButtonCommand { get; set; }
         internal Dictionary<string, PartProperties> CurrentPartsProperties { get { return ScoreProperties.CurrentScoreProperties.PartProperties;/*currentpartPropertiesContainer;*/ } /*set { currentpartPropertiesContainer = value; }*/ }
-        internal MusicXMLScore.ScoreProperties.ScoreProperties CurrentScoreProperties {  get { return scoreProperties.CurrentScoreProperties;  } }
+        internal ScoreProperties.ScoreProperties CurrentScoreProperties {  get { return scoreProperties.CurrentScoreProperties;  } }
         internal ScorePropertiesContainer ScoreProperties
         {
             get
@@ -169,13 +169,6 @@ namespace MusicXMLScore.ViewModel
             IsBlank = true;
             TabsCreated.Add(tab);
             SelectedTabItem = tab;
-        }
-
-        private void GenerateLayout(MusicScore musicscore)
-        {
-            LayoutControl.LayoutGeneral layout = new LayoutControl.LayoutGeneral(musicscore);
-            //tabsLayouts.Add(musicscore.ID, layout);
-            //CurrentLayout = layout;
         }
 
         private void GenerateLayout(ScorePartwiseMusicXML score)
@@ -300,8 +293,6 @@ namespace MusicXMLScore.ViewModel
                 TabItem newTab = new TabItem() { Header = filedestination, Content = new PagesControllerView(), DataContext = vm };
                 TabsCreated.Add(newTab);
                 SelectedTabItem = newTab;
-
-                
                 IsBlank = false;
             }
             else
