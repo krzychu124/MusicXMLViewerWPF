@@ -12,8 +12,9 @@ using MusicXMLScore.Helpers;
 
 namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Attributes
 {
-    class KeyContainerItem : Canvas, IAttributeItemVisual
+    class KeyContainerItem : IAttributeItemVisual
     {
+        private Canvas itemCanvas;
         private readonly int attributeIndex = 1;
         private bool empty = false;
         private bool visible = true;
@@ -27,6 +28,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Attributes
         
         public KeyContainerItem(KeyMusicXML key, int fractionPosition, string measureId, string partId, string staffNumber)
         {
+            itemCanvas = new Canvas();
             this.partId = partId;
             currentClef = ViewModel.ViewModelLocator.Instance.Main.CurrentScoreProperties.GetClef(measureId, partId, int.Parse(staffNumber), fractionPosition);
             fifts = int.Parse(key.Items[key.ItemsElementName.GetValueIndexFromObjectArray(KeyChoiceTypes.fifths)].ToString());
@@ -38,7 +40,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Attributes
         private void Draw()
         {
             var staffLineCoords = ViewModel.ViewModelLocator.Instance.Main.CurrentPageLayout.AvaliableIndexLinePositions;
-            DrawingVisualHost cl = new DrawingVisualHost(10, 10);
+            DrawingVisualHost cl = new DrawingVisualHost();
             if (fifts == 0)
             {
                 itemWidth = 0;
@@ -60,7 +62,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Attributes
                 }
                 itemWidth = keySignatureWidth;
             }
-            Children.Add(cl);
+            ItemCanvas.Children.Add(cl);
         }
 
         private void GetSymbol()
@@ -162,6 +164,19 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Attributes
             get
             {
                 return attributeIndex;
+            }
+        }
+
+        public Canvas ItemCanvas
+        {
+            get
+            {
+                return itemCanvas;
+            }
+
+            set
+            {
+                itemCanvas = value;
             }
         }
     }

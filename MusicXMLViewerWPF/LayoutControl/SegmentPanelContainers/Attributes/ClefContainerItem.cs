@@ -12,8 +12,9 @@ using MusicXMLScore.ScoreProperties;
 
 namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Attributes
 {
-    class ClefContainerItem : Canvas, IAttributeItemVisual
+    class ClefContainerItem : IAttributeItemVisual
     {
+        private Canvas itemCanvas;
         private readonly int attributeIndex = 0;
         private double itemWidth;
         private Rect itemRectBounds;
@@ -34,6 +35,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Attributes
             this.sign = clef.Sign;
             this.line = clef.Line != null ? int.Parse(clef.Line) : 0;
             this.octaveChange = clef.ClefOctaveChange != null ? int.Parse(clef.ClefOctaveChange) : 0;
+            itemCanvas = new Canvas();
             if (clef.AdditionalSpecified)
             {
                 isAdditional = clef.Additional == Model.Helpers.SimpleTypes.YesNoMusicXML.yes ? true : false;
@@ -104,7 +106,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Attributes
                 //cc.Width = 10;
                 //cc.Height = 10;
                 cc.AddCharacterGlyph(new Point(0, tempLine), tempSymbol, isAdditional);
-                Children.Add(cc);
+                ItemCanvas.Children.Add(cc);
             }
             else
             {
@@ -277,6 +279,19 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Attributes
             get
             {
                 return attributeIndex;
+            }
+        }
+
+        public Canvas ItemCanvas
+        {
+            get
+            {
+                return itemCanvas;
+            }
+
+            set
+            {
+                itemCanvas = value;
             }
         }
     }

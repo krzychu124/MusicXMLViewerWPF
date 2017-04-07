@@ -10,102 +10,34 @@ using System.Windows.Media;
 
 namespace MusicXMLScore.Helpers
 {
-    public class DrawingVisualHost : UIElement
+    public class DrawingVisualHost : FrameworkElement
     {
-        ToolTip t = new ToolTip();
         private List<Visual> visuals;
-        public List<Visual> Visuals { get { return visuals; } }
-        Point pt = new Point();
-
+        private ContainerVisual _containerVisual;
         public DrawingVisualHost()
         {
+            _containerVisual = new ContainerVisual();
             visuals = new List<Visual>();
-            IsHitTestVisible = false;
+            //IsHitTestVisible = true;
+            AddVisualChild(_containerVisual);
         }
-
-        public DrawingVisualHost(double width, double height)
-        {
-            visuals= new List<Visual>();
-            IsHitTestVisible = false;
-            //this.MouseEnter += new MouseEventHandler(MyVisualHost_MouseEnter);
-            //this.MouseLeave += new MouseEventHandler(MyVisualHost_MouseLeave);
-        }
-
-        private void MyVisualHost_MouseLeave(object sender, MouseEventArgs e)
-        {
-            if (t.IsOpen == true)
-                t.IsOpen = false;
-        }
-
-        private void MyVisualHost_MouseEnter(object sender, MouseEventArgs e)
-        {
-            pt = e.GetPosition((UIElement)sender);
-            EllipseGeometry expandedHitTestArea = new EllipseGeometry(pt, 1.0, 1.0);
-            VisualTreeHelper.HitTest(this, null, new HitTestResultCallback(myCallback), new GeometryHitTestParameters(expandedHitTestArea));
-        }
-
-        private HitTestResultBehavior myCallback(HitTestResult result) //TODO more hit tests later
-        {
-            IntersectionDetail intersectionDetail = ((GeometryHitTestResult)result).IntersectionDetail;
-            switch (intersectionDetail)
-            {
-                case IntersectionDetail.NotCalculated:
-                    return HitTestResultBehavior.Continue;
-                case IntersectionDetail.Empty:
-                    return HitTestResultBehavior.Continue;
-                case IntersectionDetail.FullyInside:
-                    bool stop = OpenToolTip(result);
-                    return stop ? HitTestResultBehavior.Stop : HitTestResultBehavior.Continue;
-                case IntersectionDetail.FullyContains:
-                    bool stop2 = OpenToolTip(result);
-                    return stop2 ? HitTestResultBehavior.Stop : HitTestResultBehavior.Continue;
-                case IntersectionDetail.Intersects:
-                    bool stop3 = OpenToolTip(result);
-                    return HitTestResultBehavior.Stop;
-            }
-            return HitTestResultBehavior.Stop;
-        }
-        private bool OpenToolTip(HitTestResult result)
-        {
-            if (result.VisualHit.GetType() == typeof(DrawingVisual))
-            {
-                if (!t.IsOpen)
-                {
-                    if (t.Content == null)
-                    {
-                        return false;
-                    }
-                    t.IsOpen = true;
-                    t.PlacementTarget = this;
-                }
-
-            }
-            return true;
-        }
+        
         protected override Visual GetVisualChild(int index)
         {
-            if (index < 0 || index >= VisualChildrenCount)
-            {
-                throw new ArgumentOutOfRangeException();
-            }
-            return visuals[index];
+            return _containerVisual;// visuals[index];
         }
         protected override int VisualChildrenCount
         {
             get
             {
-                return visuals.Count;
+                return _containerVisual == null ? 0:1;//.Children.Count; //visuals.Count;
             }
         }
-        /// <summary>
-        /// Adds visual to Visual, VisualChild and LogicalChild collection 
-        /// </summary>
-        /// <param name="visual"></param>
         public void AddVisual(Visual visual)
         {
-            visuals.Add(visual);
-            base.AddVisualChild(visual);
-            //base.AddLogicalChild(visual);
+            _containerVisual.Children.Add(visual);
+            //visuals.Add(visual);
+            //AddVisualChild(visual);
         }
 
         /// <summary>
@@ -116,7 +48,7 @@ namespace MusicXMLScore.Helpers
         {
             visuals.Remove(visual);
 
-            base.RemoveVisualChild(visual);
+            RemoveVisualChild(visual);
             //base.RemoveLogicalChild(visual);
         }
 
@@ -125,11 +57,12 @@ namespace MusicXMLScore.Helpers
         /// </summary>
         public void ClearVisuals()
         {
-            int x = VisualChildrenCount;
-            for (int i = 0; i < x; i++)
-            {
-                DeleteVisual(visuals[0]);
-            }
+            _containerVisual.Children.Clear();
+            //int x = VisualChildrenCount;
+            //for (int i = 0; i < x; i++)
+            //{
+            //    DeleteVisual(visuals[0]);
+            //}
         }
     }
 }

@@ -56,7 +56,7 @@ namespace MusicXMLViewerWPF.Misc
         {
             Page p = new Page();
             color = color == null ? Brushes.Black : color;
-            Point page = new Point(p.Width, p.Height); //todo test
+            Point page = new Point(p.Width, p.Height); 
             Point page_margins = new Point(0, p.Margins.Bottom);
             Point calculated_margins = CalculatePosition(page, page_margins); // test
             if (withsub)

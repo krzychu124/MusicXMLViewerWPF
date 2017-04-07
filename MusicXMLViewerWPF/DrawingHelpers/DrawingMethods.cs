@@ -53,7 +53,7 @@ namespace MusicXMLScore.DrawingHelpers
             double smallFactor = isSmall ? 0.7 : 1;
             Point calculatedPosition = new Point(position.X, position.Y /** PageProperties.PxPerMM()*/);
 
-            double characterSize = pageProperties.StaffHeight.MMToWPFUnit() * smallFactor; //40;//todo refactor to scale
+            double characterSize = pageProperties.StaffHeight.MMToWPFUnit() * smallFactor; 
 
             using (DrawingContext dc = visual.RenderOpen())
             {
@@ -86,7 +86,7 @@ namespace MusicXMLScore.DrawingHelpers
             double smallFactor = isSmall ? 0.7 : 1;
             Point calculatedPosition = new Point(position.X, position.Y/* + pageProperties.IndexStaffLinePositions[3]*/);
 
-            double characterSize = pageProperties.StaffHeight.MMToWPFUnit() * smallFactor; //40;//todo refactor to scale
+            double characterSize = pageProperties.StaffHeight.MMToWPFUnit() * smallFactor; 
 
             using (DrawingContext dc = visual.RenderOpen())
             {

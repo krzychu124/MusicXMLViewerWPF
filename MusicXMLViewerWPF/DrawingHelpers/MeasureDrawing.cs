@@ -135,23 +135,6 @@ namespace MusicXMLScore.DrawingHelpers
         {
             Invalidated = true;
         }
-        
-
-        /// <summary>
-        /// Add Direction to measure content
-        /// </summary>
-        private void AddDirection()
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Add note to measure content
-        /// </summary>
-        private void AddNote()
-        {
-            throw new NotImplementedException();
-        }
 
         /// <summary>
         /// Adds loaded drawable object to main canvas visual

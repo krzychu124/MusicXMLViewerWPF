@@ -15,8 +15,9 @@ using System.Windows.Shapes;
 
 namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
 {
-    class NoteContainerItem : Canvas, INoteItemVisual
+    class NoteContainerItem : INoteItemVisual
     {
+        private Canvas itemCanvas;
         private static Random r= new Random();
         private int itemDuration = 0;
         private double itemWidth = 0.0;
@@ -44,7 +45,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
         private List<double> ledgerLinesPositions;
         private string staffNumber;
         private System.Windows.Media.Brush color;
-        private ToolTip tt = new ToolTip();
+        //private ToolTip tt = new ToolTip();
         public NoteContainerItem(NoteMusicXML note, int fractionPosition, string partId, string measureId, string staffId)
         {
             //test
@@ -59,6 +60,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
             this.measureId = measureId;
             this.partId = partId;
             this.staffNumber = staffId;
+            itemCanvas = new Canvas();
             InitNoteProperties();
         }
         public NoteContainerItem(List<NoteMusicXML> chordList, int fractionPosition, string partId, string measureId, string staffId)
@@ -74,6 +76,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
             this.measureId = measureId;
             this.partId = partId;
             this.staffNumber = staffId != null ? staffId : "1";
+            itemCanvas = new Canvas();
             InitNoteProperties();
         }
 
@@ -97,7 +100,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
         private void Draw()
         {
             bool small = noteVisualType == NoteChoiceTypeMusicXML.cue || noteVisualType == NoteChoiceTypeMusicXML.grace ? true : false;
-            DrawingVisualHost noteCanvas = new DrawingVisualHost(10, 10);
+            DrawingVisualHost noteCanvas = new DrawingVisualHost();
             int index = 0;
             foreach (var note in noteItem)
             {
@@ -123,14 +126,14 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
                     indexLedgers++;
                 }
             }
-            Children.Add(noteCanvas);
+            ItemCanvas.Children.Add(noteCanvas);
         }
 
         public void DrawSpace(double length, bool red = false)
         {
             Brush color;
             int shiftY = 50;
-            DrawingVisualHost spaceCanvas = new DrawingVisualHost(10, 10);
+            DrawingVisualHost spaceCanvas = new DrawingVisualHost();
             if (red)
             {
                 color = Brushes.Red;
@@ -147,7 +150,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
                 dc.DrawLine(new Pen(color, 3.0), new Point(0, y), new Point(length -0.05, y));
             }
             spaceCanvas.AddVisual(dv);
-            Children.Add(spaceCanvas);
+            ItemCanvas.Children.Add(spaceCanvas);
         }
         private void CheckForLedgerLines()
         {
@@ -295,13 +298,26 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
             }
         }
 
-        //test only
-        private void Canvas_MouseMove(object sender, MouseEventArgs e)
+        public Canvas ItemCanvas
         {
-            tt.Placement = System.Windows.Controls.Primitives.PlacementMode.Relative;
-            tt.HorizontalOffset = e.GetPosition((IInputElement)sender).X + 10;
-            tt.VerticalOffset = e.GetPosition((IInputElement)sender).Y + 10;
-            tt.Content = "X-Coordinate: " + e.GetPosition((IInputElement)sender).X + "\n" + "Y-Coordinate: " + e.GetPosition((IInputElement)sender).Y;
+            get
+            {
+                return itemCanvas;
+            }
+
+            set
+            {
+                itemCanvas = value;
+            }
         }
+
+        //test only
+        //private void Canvas_MouseMove(object sender, MouseEventArgs e)
+        //{
+        //    tt.Placement = System.Windows.Controls.Primitives.PlacementMode.Relative;
+        //    tt.HorizontalOffset = e.GetPosition((IInputElement)sender).X + 10;
+        //    tt.VerticalOffset = e.GetPosition((IInputElement)sender).Y + 10;
+        //    tt.Content = "X-Coordinate: " + e.GetPosition((IInputElement)sender).X + "\n" + "Y-Coordinate: " + e.GetPosition((IInputElement)sender).Y;
+        //}
     }
 }

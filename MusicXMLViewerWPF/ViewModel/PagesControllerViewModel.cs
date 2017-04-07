@@ -60,13 +60,13 @@ namespace MusicXMLScore.ViewModel
 
         public PagesControllerViewModel()
         {
-            PropertyChanged += PagesControllerViewModel_PropertyChanged;
+            //PropertyChanged += PagesControllerViewModel_PropertyChanged;
             MessengerInstance.Register<GenericMessage<List<Part>>>(this, "toNextPage", false, RelocatePartsNextPage);
         }
         
         public PagesControllerViewModel(int numberOfPages)
         {
-            PropertyChanged += PagesControllerViewModel_PropertyChanged;
+            //PropertyChanged += PagesControllerViewModel_PropertyChanged;
             IsBlank = false;
             MusicScore = new MusicScore();
             PagesCollection = new ObservableCollection<UIElement>();

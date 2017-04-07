@@ -215,6 +215,7 @@ namespace MusicXMLScore.ViewModel
             var name = SelectedTabItem.DataContext as ViewModel.PagesControllerViewModel;
             Log.LoggIt.Log($"File {name.Title} has been closed");
             scoreProperties.RemoveScore(name.ID);
+            SelectedTabItem.Template = null;
             TabsCreated.Remove(SelectedTabItem); // TODO_L Refactor commands to work on selected tab (loaded file/new score)
             
             if (TabsCreated.Count == 0)
@@ -294,6 +295,7 @@ namespace MusicXMLScore.ViewModel
             {
                 GenerateLayout(xml);//! 02.03 GenerateLayout(musicscore);
                 vm.AddScorePartwise(xml);
+                SelectedTabItem.Template = null;
                 TabsCreated.Remove(SelectedTabItem);
                 TabItem newTab = new TabItem() { Header = filedestination, Content = new PagesControllerView(), DataContext = vm };
                 TabsCreated.Add(newTab);
