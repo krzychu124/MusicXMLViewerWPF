@@ -160,7 +160,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
         private void Draw(bool measure)
         {
             staffLines = ViewModel.ViewModelLocator.Instance.Main.CurrentPageLayout.AvaliableIndexLinePositions;
-            DrawingVisualHost rest = new DrawingVisualHost(10, 10);
+            DrawingVisualHost rest = new DrawingVisualHost();
             
             Brush color = ViewModel.ViewModelLocator.Instance.Main.CurrentLayout.LayoutStyle.Colors[int.Parse(noteItem.Voice)];
             double positionY = 0.0;
@@ -192,7 +192,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
         {
             Brush color;
             int shiftY = 50;
-            DrawingVisualHost spaceCanvas = new DrawingVisualHost(10, 10);
+            DrawingVisualHost spaceCanvas = new DrawingVisualHost();
             if (red)
             {
                 color = Brushes.Red;

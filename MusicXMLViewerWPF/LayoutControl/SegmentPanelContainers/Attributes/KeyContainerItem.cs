@@ -40,7 +40,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Attributes
         private void Draw()
         {
             var staffLineCoords = ViewModel.ViewModelLocator.Instance.Main.CurrentPageLayout.AvaliableIndexLinePositions;
-            DrawingVisualHost cl = new DrawingVisualHost(10, 10);
+            DrawingVisualHost cl = new DrawingVisualHost();
             if (fifts == 0)
             {
                 itemWidth = 0;

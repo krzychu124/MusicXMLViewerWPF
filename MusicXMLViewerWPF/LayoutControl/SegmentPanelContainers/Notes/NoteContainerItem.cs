@@ -45,7 +45,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
         private List<double> ledgerLinesPositions;
         private string staffNumber;
         private System.Windows.Media.Brush color;
-        private ToolTip tt = new ToolTip();
+        //private ToolTip tt = new ToolTip();
         public NoteContainerItem(NoteMusicXML note, int fractionPosition, string partId, string measureId, string staffId)
         {
             //test
@@ -100,7 +100,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
         private void Draw()
         {
             bool small = noteVisualType == NoteChoiceTypeMusicXML.cue || noteVisualType == NoteChoiceTypeMusicXML.grace ? true : false;
-            DrawingVisualHost noteCanvas = new DrawingVisualHost(10, 10);
+            DrawingVisualHost noteCanvas = new DrawingVisualHost();
             int index = 0;
             foreach (var note in noteItem)
             {
@@ -133,7 +133,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
         {
             Brush color;
             int shiftY = 50;
-            DrawingVisualHost spaceCanvas = new DrawingVisualHost(10, 10);
+            DrawingVisualHost spaceCanvas = new DrawingVisualHost();
             if (red)
             {
                 color = Brushes.Red;

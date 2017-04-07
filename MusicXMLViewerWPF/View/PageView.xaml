@@ -11,8 +11,7 @@
 
     <ItemsControl x:Name="PartsSegments" ItemsSource="{Binding PartsSegments}" Background="Beige">
         <ItemsControl.Effect>
-            <DropShadowEffect/>
-            <!--<DropShadowEffect Color="Gray" BlurRadius="5" ShadowDepth="5"></DropShadowEffect>-->
+            <DropShadowEffect Color="Gray" BlurRadius="5" ShadowDepth="5"></DropShadowEffect>
         </ItemsControl.Effect>
         <ItemsControl.ItemsPanel>
             <ItemsPanelTemplate>

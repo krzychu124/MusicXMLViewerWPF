@@ -55,7 +55,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Attributes
             if (isSymbol)
             {
                 itemWidth = DrawingMethods.GetTextWidth(symbol, TypeFaces.GetMusicFont());
-                DrawingVisualHost canvas = new DrawingVisualHost(ItemWidth, 10);
+                DrawingVisualHost canvas = new DrawingVisualHost();
                 canvas.AddCharacterGlyph(new Point(0, staffLine[3]), symbol);
                 ItemCanvas.Children.Add(canvas);
             }
@@ -64,7 +64,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Attributes
                 char[] beatChars = beatSymbol.ToCharArray();
                 double[] beatCharWidths = beatSymbol.ToCharArray().GetCharsVisualWidth();
                 double beatWidth = beatCharWidths.Sum();
-                DrawingVisualHost canvasBeat = new DrawingVisualHost(beatWidth, 10);
+                DrawingVisualHost canvasBeat = new DrawingVisualHost();
                 double offset = 0;
                 for (int i = 0; i < beatChars.Length; i++)
                 {
@@ -75,7 +75,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Attributes
                 char[] beatTimeChars = beatTimeSymbol.ToCharArray();
                 double[] beatTimeCharWidths = beatTimeSymbol.ToCharArray().GetCharsVisualWidth();
                 double beatTimeWidth = beatTimeCharWidths.Sum();
-                DrawingVisualHost canvasBeatTime = new DrawingVisualHost(beatTimeWidth, 10);
+                DrawingVisualHost canvasBeatTime = new DrawingVisualHost();
                 offset = 0.0;
                 for (int i = 0; i < beatTimeChars.Length; i++)
                 {

@@ -228,7 +228,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
         //        //------------------------------------------
         //        //Spacing factor shrink method when items with calculated spacings can't fit inside measure length
         //        //Currently using small spacing factors to prevent this situation
-        //        //ToDo
+        //       
         //        //------------------------------------------
         //    }
         //    if (positionsCoordsBeforeStretch.LastOrDefault().Value.Item1 + positionsCoordsBeforeStretch.LastOrDefault().Value.Item2 < availableWidth)
