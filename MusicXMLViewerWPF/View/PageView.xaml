@@ -9,14 +9,15 @@
              xmlns:Configuration="clr-namespace:MusicXMLScore.ViewModel" xmlns:Log="clr-namespace:MusicXMLScore.Log" x:Class="MusicXMLScore.ViewModel.PageView"
              mc:Ignorable="d" Height="{Binding PageHeight}" Width="{Binding PageWidth}" x:Name="uc" d:DesignWidth="500" d:DesignHeight="250.333">
 
-    <Grid x:Name="gridPage" Width="Auto" Height="Auto" Background="Beige" >
-        <ItemsControl x:Name="PartsSegments" ItemsSource="{Binding PartsSegments}">
-            <ItemsControl.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <!--<helpers:CustomPartsSegmentPanel IsHitTestVisible="False" Height="Auto"/>-->
-                    <VirtualizingStackPanel></VirtualizingStackPanel>
-                </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-        </ItemsControl>
-    </Grid>
+    <ItemsControl x:Name="PartsSegments" ItemsSource="{Binding PartsSegments}" Background="Beige">
+        <ItemsControl.Effect>
+            <DropShadowEffect/>
+            <!--<DropShadowEffect Color="Gray" BlurRadius="5" ShadowDepth="5"></DropShadowEffect>-->
+        </ItemsControl.Effect>
+        <ItemsControl.ItemsPanel>
+            <ItemsPanelTemplate>
+                <Canvas></Canvas>
+            </ItemsPanelTemplate>
+        </ItemsControl.ItemsPanel>
+    </ItemsControl>
 </UserControl>

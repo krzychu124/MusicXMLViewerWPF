@@ -65,7 +65,6 @@
                             </Border>
                         </Grid>
                         <Grid Grid.Row="1">
-                            <!--TODO dynamic vertical stacpanel with radiobuttons depending on selected clef in previous combobox-->
                         </Grid>
                     </Grid>
                 </GroupBox>
