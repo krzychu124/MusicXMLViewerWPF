@@ -16,7 +16,6 @@ namespace MusicXMLScore.LayoutStyle
         private MeasureLayoutStyle measureStyle;
         private NotesLayoutStyle notesStyle;
         private PageLayoutStyle pageStyle;
-        private SystemLayoutStyle systemStyle;
         private Dictionary<int, Brush> colors;
         public Layout()
         {
@@ -25,7 +24,6 @@ namespace MusicXMLScore.LayoutStyle
             measureStyle = new MeasureLayoutStyle();
             notesStyle = new NotesLayoutStyle();
             pageStyle = new PageLayoutStyle();
-            systemStyle = new SystemLayoutStyle();
             colors = new Dictionary<int, Brush>()
             {
                 {1, Brushes.Black },
@@ -107,20 +105,7 @@ namespace MusicXMLScore.LayoutStyle
                 pageStyle = value;
             }
         }
-
-        public SystemLayoutStyle SystemStyle
-        {
-            get
-            {
-                return systemStyle;
-            }
-
-            set
-            {
-                systemStyle = value;
-            }
-        }
-
+        
         public Dictionary<int, Brush> Colors
         {
             get

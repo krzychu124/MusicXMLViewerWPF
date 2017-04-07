@@ -1,4 +1,6 @@
-﻿using MusicXMLViewerWPF;
+﻿using MusicXMLScore.Model.Helpers.SimpleTypes;
+using MusicXMLScore.Model.MeasureItems;
+using MusicXMLViewerWPF;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +16,7 @@ namespace MusicXMLScore.LayoutStyle
         private double thinLineThickness = 0.75;
         private double spaceBetweenDoubleBarlines = 1;
         #region RepeatStyle
-        private WingType defaultWingStyle = WingType.none;
+        private WingedMusicXML defaultWingStyle =  WingedMusicXML.none;
         private double forwadRepeatDotOffset = 2;
         private double backwartRepeatDotOffset = 2;
         #endregion
@@ -64,7 +66,7 @@ namespace MusicXMLScore.LayoutStyle
             }
         }
 
-        public WingType DefaultWingStyle
+        public WingedMusicXML DefaultWingStyle
         {
             get
             {

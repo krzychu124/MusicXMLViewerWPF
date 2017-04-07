@@ -18,26 +18,23 @@ namespace MusicXMLScore.Helpers
         {
             _containerVisual = new ContainerVisual();
             visuals = new List<Visual>();
-            //IsHitTestVisible = true;
             AddVisualChild(_containerVisual);
         }
         
         protected override Visual GetVisualChild(int index)
         {
-            return _containerVisual;// visuals[index];
+            return _containerVisual;
         }
         protected override int VisualChildrenCount
         {
             get
             {
-                return _containerVisual == null ? 0:1;//.Children.Count; //visuals.Count;
+                return _containerVisual == null ? 0:1;
             }
         }
         public void AddVisual(Visual visual)
         {
             _containerVisual.Children.Add(visual);
-            //visuals.Add(visual);
-            //AddVisualChild(visual);
         }
 
         /// <summary>
@@ -49,7 +46,6 @@ namespace MusicXMLScore.Helpers
             visuals.Remove(visual);
 
             RemoveVisualChild(visual);
-            //base.RemoveLogicalChild(visual);
         }
 
         /// <summary>
@@ -58,11 +54,6 @@ namespace MusicXMLScore.Helpers
         public void ClearVisuals()
         {
             _containerVisual.Children.Clear();
-            //int x = VisualChildrenCount;
-            //for (int i = 0; i < x; i++)
-            //{
-            //    DeleteVisual(visuals[0]);
-            //}
         }
     }
 }

@@ -130,7 +130,6 @@
     <Compile Include="LayoutStyle\Styles\MeasureLayoutStyle.cs" />
     <Compile Include="LayoutStyle\Styles\NotesLayoutStyle.cs" />
     <Compile Include="LayoutStyle\Styles\PageLayoutStyle.cs" />
-    <Compile Include="LayoutStyle\Styles\SystemLayoutStyle.cs" />
     <Compile Include="Model\CreditMusicXML.cs" />
     <Compile Include="Model\Helpers\AccidentalTextMusicXML.cs" />
     <Compile Include="Model\Helpers\EmptyLineMusicXML.cs" />
@@ -235,11 +234,9 @@
     <Compile Include="Converters\StarWidthConverter.cs" />
     <Compile Include="Converters\ToTypeEqualityConverter.cs" />
     <Compile Include="Helpers\DrawingVisualHost.cs" />
-    <Compile Include="Helpers\CustomSystemWrapPanel.cs" />
     <Compile Include="Helpers\DrawingHelpers.cs" />
     <Compile Include="Helpers\OrientedSize.cs" />
     <Compile Include="Helpers\PreviewCanvas.cs" />
-    <Compile Include="Helpers\PreviewSettings.cs" />
     <Compile Include="Helpers\TypeFaces.cs" />
     <Compile Include="Log\LoggIt.cs" />
     <Compile Include="Log\LogView.xaml.cs">
@@ -251,59 +248,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModel\MainWindowViewModel.cs" />
-    <Compile Include="Model\Credit.cs" />
-    <Compile Include="Model\Defaults\Defaults.cs" />
-    <Compile Include="Model\Identification\Identification.cs" />
-    <Compile Include="Model\Misc\DrawingHelpers.cs" />
-    <Compile Include="Model\Misc\IAutoPosition.cs" />
-    <Compile Include="Model\Misc\IDrawableMusicalObject.cs" />
-    <Compile Include="Model\Misc\LineBreak.cs" />
-    <Compile Include="Model\Misc\LoadFile.cs" />
     <Compile Include="Model\Misc\RandomGenerator.cs" />
-    <Compile Include="Model\Misc\ScoreSystem.cs" />
-    <Compile Include="Model\Misc\Segments.cs" />
-    <Compile Include="Model\ScoreParts\MeasureContent\Attributes.cs" />
-    <Compile Include="Model\ScoreParts\MeasureContent\Barline.cs" />
-    <Compile Include="Model\Defaults\SystemLayout.cs" />
     <Compile Include="Model\Misc\Calc.cs" />
-    <Compile Include="Model\ScoreParts\MeasureContent\ClefType.cs" />
-    <Compile Include="Model\Defaults\Appearance.cs" />
-    <Compile Include="Model\Defaults\Scale.cs" />
-    <Compile Include="Model\ScoreParts\MeasureContent\Directions.cs" />
-    <Compile Include="Model\Misc\IDrawable.cs" />
-    <Compile Include="Model\ScoreParts\MeasureContent\Key.cs" />
     <Compile Include="DrawingHelpers\MusicSymbols.cs" />
-    <Compile Include="Model\MusicScore.cs" />
-    <Compile Include="Model\ScoreParts\MeasureContent\Measure.cs" />
-    <Compile Include="Model\ScoreParts\MeasureContent\SegmentType.cs" />
-    <Compile Include="Model\ScoreParts\Part.cs" />
-    <Compile Include="Model\ScoreParts\ScorePart.cs" />
-    <Compile Include="Model\Defaults\Print.cs" />
-    <Compile Include="Model\ScoreParts\MeasureContent\Notes\Lyrics.cs" />
-    <Compile Include="Model\ScoreParts\MeasureContent\Notes\Rest.cs" />
-    <Compile Include="Model\ScoreParts\PartList.cs" />
-    <Compile Include="Model\ScoreParts\MeasureContent\SymbolDuration.cs" />
-    <Compile Include="Model\ScoreParts\MeasureContent\Notes\Articulations.cs" />
-    <Compile Include="Model\ScoreParts\MeasureContent\Clef.cs" />
-    <Compile Include="Model\ScoreParts\MeasureContent\Dynamics.cs" />
-    <Compile Include="Model\Misc\Segment.cs" />
-    <Compile Include="Model\ScoreParts\MeasureContent\Notes\Notations.cs" />
-    <Compile Include="Model\ScoreParts\MeasureContent\Notes\Note.cs" />
-    <Compile Include="Model\Defaults\Page.cs" />
-    <Compile Include="Model\ScoreParts\MeasureContent\Notes\Pitch.cs" />
-    <Compile Include="Model\Misc\Logger.cs" />
-    <Compile Include="Model\ScoreParts\MeasureContent\TimeSignature.cs" />
-    <Compile Include="Model\Misc\XmlRead.cs" />
-    <Compile Include="Model\Misc\TypeFaces.cs" />
     <Compile Include="Model\WorkMusicXML.cs" />
-    <Compile Include="View\CreditsView.xaml.cs">
-      <DependentUpon>CreditsView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="ViewModel\CreditsViewModel.cs" />
-    <Compile Include="View\CustomSystemView.xaml.cs">
-      <DependentUpon>CustomSystemView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="ViewModel\CustomSystemViewModel.cs" />
     <Compile Include="View\PagesControllerView.xaml.cs">
       <DependentUpon>PagesControllerView.xaml</DependentUpon>
     </Compile>
@@ -335,14 +283,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="MainWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="View\CreditsView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="View\CustomSystemView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

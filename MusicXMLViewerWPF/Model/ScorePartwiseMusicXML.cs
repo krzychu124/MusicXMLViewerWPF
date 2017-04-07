@@ -4,12 +4,8 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
-using System.Xml.Linq;
-using MusicXMLViewerWPF;
 using System.Xml.Serialization;
 using MusicXMLScore.Model;
-using MusicXMLViewerWPF.Identification;
-using MusicXMLViewerWPF.Defaults;
 
 namespace MusicXMLViewerWPF
 {
@@ -104,7 +100,7 @@ namespace MusicXMLViewerWPF
                 version = value;
             }
         }
-        //[XmlIgnore]
+
         [XmlElement("part-list")]
         public PartListMusicXML Partlist
         {
