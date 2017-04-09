@@ -124,6 +124,7 @@
     <Compile Include="LayoutControl\SegmentPanelContainers\Notes\INoteItemVisual.cs" />
     <Compile Include="LayoutControl\SegmentPanelContainers\Notes\NoteContainerItem.cs" />
     <Compile Include="LayoutControl\SegmentPanelContainers\Notes\RestContainterItem.cs" />
+    <Compile Include="LayoutControl\SegmentPanelContainers\Notes\StemItem.cs" />
     <Compile Include="LayoutStyle\Styles\BarlineLayoutStyle.cs" />
     <Compile Include="LayoutStyle\Styles\BeamLayoutStyle.cs" />
     <Compile Include="LayoutStyle\Layout.cs" />

@@ -45,7 +45,8 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
         private List<double> ledgerLinesPositions;
         private string staffNumber;
         private System.Windows.Media.Brush color;
-
+        private StemItem stem;
+        private bool isSmall = false;
         public NoteContainerItem(NoteMusicXML note, int fractionPosition, string partId, string measureId, string staffId)
         {
             noteItem = new List<NoteMusicXML>();
@@ -87,17 +88,18 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
             GetSymbol();
             GetPitch();
             Draw();
+            stem = new StemItem(this);
         }
 
         private void Draw()
         {
-            bool small = noteVisualType == NoteChoiceTypeMusicXML.cue || noteVisualType == NoteChoiceTypeMusicXML.grace ? true : false;
+            isSmall = noteVisualType == NoteChoiceTypeMusicXML.cue || noteVisualType == NoteChoiceTypeMusicXML.grace ? true : false;
             DrawingVisualHost noteCanvas = new DrawingVisualHost();
             int index = 0;
             foreach (var note in noteItem)
             {
                 color = ViewModel.ViewModelLocator.Instance.Main.CurrentLayout.LayoutStyle.Colors[int.Parse(note.Voice)];
-                noteCanvas.AddCharacterGlyph(new Point(0, pitchedValue[index]), symbol, small, color);
+                noteCanvas.AddCharacterGlyph(new Point(0, pitchedValue[index]), symbol, isSmall, color);
                 
                 if (hasDots)
                 {
@@ -105,7 +107,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
                 }
                 index++;
             }
-            itemWidthMin = DrawingMethods.GetTextWidth(symbol, TypeFaces.GetMusicFont());
+            itemWidthMin = DrawingMethods.GetTextWidth(symbol, TypeFaces.GetMusicFont(), isSmall);
             itemWidthOpt = itemWidthMin;
             CheckForLedgerLines();
             if (needLedgerLines)
@@ -300,6 +302,71 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
             set
             {
                 itemCanvas = value;
+            }
+        }
+
+        public Dictionary<int, int> PitchedPosition
+        {
+            get
+            {
+                return pitchedPosition;
+            }
+
+            set
+            {
+                pitchedPosition = value;
+            }
+        }
+
+        public List<NoteMusicXML> NoteItem
+        {
+            get
+            {
+                return noteItem;
+            }
+
+            set
+            {
+                noteItem = value;
+            }
+        }
+
+        public Dictionary<int, double> StaffLine
+        {
+            get
+            {
+                return staffLine;
+            }
+
+            set
+            {
+                staffLine = value;
+            }
+        }
+
+        public Brush Color
+        {
+            get
+            {
+                return color;
+            }
+
+            set
+            {
+                color = value;
+            }
+        }
+
+        public bool IsSmall
+        {
+            get
+            {
+                return isSmall;
+            }
+
+            set
+            {
+                isSmall = value;
             }
         }
     }
