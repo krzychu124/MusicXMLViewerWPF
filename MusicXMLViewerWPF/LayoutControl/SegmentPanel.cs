@@ -55,9 +55,6 @@ namespace MusicXMLScore.LayoutControl
         public void AddNotesContainer(MeasureItemsContainer measureNotes, int numberOfStave = 1)
         {
             measureNotes.Tag = numberOfStave.ToString();
-            //var t = attributesContainer.ElementAt(0).Value.ContainerWidth;
-            //measureNotes.ArrangeNotes(panelWidth - t);
-            //Canvas.SetLeft(measureNotes, t);
             if (numberOfStave != 1)
             {
                 double staffHeight = ViewModel.ViewModelLocator.Instance.Main.CurrentPageLayout.StaffHeight.MMToWPFUnit();

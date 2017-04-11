@@ -44,9 +44,11 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
         private bool needLedgerLines = false;
         private List<double> ledgerLinesPositions;
         private string staffNumber;
-        private System.Windows.Media.Brush color;
+        private Brush color;
         private StemItem stem;
+        private BeamItem beams;
         private bool isSmall = false;
+        private bool hasBeams = false;
         public NoteContainerItem(NoteMusicXML note, int fractionPosition, string partId, string measureId, string staffId)
         {
             noteItem = new List<NoteMusicXML>();
@@ -59,6 +61,10 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
             this.staffNumber = staffId;
             itemCanvas = new Canvas();
             InitNoteProperties();
+            if (hasBeams)
+            {
+                InitBeams();
+            }
         }
         public NoteContainerItem(List<NoteMusicXML> chordList, int fractionPosition, string partId, string measureId, string staffId)
         {
@@ -71,6 +77,16 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
             this.staffNumber = staffId != null ? staffId : "1";
             itemCanvas = new Canvas();
             InitNoteProperties();
+            if (hasBeams)
+            {
+                InitBeams();
+            }
+        }
+
+        private void InitBeams()
+        {
+            string voice = noteItem.Where(x => x.Voice != null).Select(x => x.Voice).FirstOrDefault();
+            beams = new BeamItem(noteItem.SelectMany(x => x.Beam).ToList(), voice, fractionPosition, stem);
         }
 
         private void SetVisualType()
@@ -89,6 +105,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
             GetPitch();
             Draw();
             stem = new StemItem(this);
+            hasBeams = noteItem.Any(x => x.Beam.Count != 0) ? true : false;
         }
 
         private void Draw()
@@ -367,6 +384,32 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
             set
             {
                 isSmall = value;
+            }
+        }
+
+        public BeamItem Beams
+        {
+            get
+            {
+                return beams;
+            }
+
+            set
+            {
+                beams = value;
+            }
+        }
+
+        public StemItem Stem
+        {
+            get
+            {
+                return stem;
+            }
+
+            set
+            {
+                stem = value;
             }
         }
     }

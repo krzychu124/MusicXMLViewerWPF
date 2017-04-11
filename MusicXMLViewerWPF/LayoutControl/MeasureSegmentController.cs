@@ -10,6 +10,8 @@ using System.Diagnostics;
 using MusicXMLScore.LayoutControl.SegmentPanelContainers.Attributes;
 using MusicXMLScore.Model.MeasureItems.Attributes;
 using MusicXMLScore.LayoutControl.SegmentPanelContainers;
+using MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes;
+using MusicXMLScore.Helpers;
 
 namespace MusicXMLScore.LayoutControl
 {
@@ -23,9 +25,8 @@ namespace MusicXMLScore.LayoutControl
         private double width = 0;
         private PartProperties partProperties;
         Dictionary<string, SegmentPanelContainers.MeasureItemsContainer> staffs;
-        Dictionary<string, SegmentPanelContainers.MeasureAttributesContainer> attributesContainer;
         private Tuple<double, double, double> attributesWidths;
-
+        private BeamItemsController beamsController;
         public int MaxDuration
         {
             get
@@ -52,6 +53,32 @@ namespace MusicXMLScore.LayoutControl
             }
         }
 
+        internal Dictionary<string, MeasureItemsContainer> Staffs
+        {
+            get
+            {
+                return staffs;
+            }
+
+            set
+            {
+                staffs = value;
+            }
+        }
+
+        internal BeamItemsController BeamsController
+        {
+            get
+            {
+                return beamsController;
+            }
+
+            set
+            {
+                beamsController = value;
+            }
+        }
+
         public MeasureSegmentController(Model.ScorePartwisePartMeasureMusicXML measure, string partID, int stavesCount, int systemIndex, int pageIndex)
         {
             this.systemIndex = systemIndex;
@@ -72,7 +99,8 @@ namespace MusicXMLScore.LayoutControl
             int durationCursor = 0;
             var measureItems = measure.Items;
             staffs = new Dictionary<string, SegmentPanelContainers.MeasureItemsContainer>();
-
+            List<BeamItem> beam = new List<BeamItem>();
+        
             for (int i = 0; i < stavesCount; i++)
             {
                 staffs.Add((i + 1).ToString(), new SegmentPanelContainers.MeasureItemsContainer(measure.Number, partID, i + 1));
@@ -108,8 +136,12 @@ namespace MusicXMLScore.LayoutControl
                         }
                         else
                         {
-                            //int tempDuration = n.IsChord() ? durationCursor : durationCursor - n.GetDuration();
-                            staffs[staffNumber].AppendNote(new SegmentPanelContainers.Notes.NoteContainerItem(n, durationCursor, partID, measure.Number, staffNumber), durationCursor, voice);
+                            var noteContainer = new SegmentPanelContainers.Notes.NoteContainerItem(n, durationCursor, partID, measure.Number, staffNumber);
+                            if (noteContainer.Beams != null)
+                            {
+                                beam.Add(noteContainer.Beams);
+                            }
+                            staffs[staffNumber].AppendNote(noteContainer, durationCursor, voice);
                         }
                         durationCursor += !n.IsChord() ? n.GetDuration() : 0;
                         break;
@@ -117,6 +149,7 @@ namespace MusicXMLScore.LayoutControl
                         break;
                 }
             }
+            beamsController = new BeamItemsController(beam);
             GenerateAndAddAttributesContainers(measure.Number, partID);
             width = measure.CalculatedWidth.TenthsToWPFUnit();
             ArrangeContainers(measure.CalculatedWidth.TenthsToWPFUnit(), maxDuration);
@@ -306,6 +339,13 @@ namespace MusicXMLScore.LayoutControl
         public SegmentPanel GetContentPanel()
         {
             return segmentPanel;
+        }
+        public void AddBeams(List<DrawingVisualHost> beams)
+        {
+            foreach (var item in beams)
+            {
+                segmentPanel.Children.Add(item);
+            }
         }
     }
 }

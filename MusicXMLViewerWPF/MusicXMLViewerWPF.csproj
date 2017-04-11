@@ -110,6 +110,7 @@
     <Compile Include="Helpers\MusicSymbols.cs" />
     <Compile Include="Helpers\PageProperties.cs" />
     <Compile Include="Helpers\SimpleWrapPanel.cs" />
+    <Compile Include="LayoutControl\SegmentPanelContainers\BeamItemsController.cs" />
     <Compile Include="LayoutControl\LayoutGeneral.cs" />
     <Compile Include="LayoutControl\MeasureSegmentController.cs" />
     <Compile Include="LayoutControl\SegmentPanel.cs" />
@@ -120,6 +121,7 @@
     <Compile Include="LayoutControl\SegmentPanelContainers\IMeasureItemVisual.cs" />
     <Compile Include="LayoutControl\SegmentPanelContainers\MeasureAttributesContainer.cs" />
     <Compile Include="LayoutControl\SegmentPanelContainers\MeasureItemsContainer.cs" />
+    <Compile Include="LayoutControl\SegmentPanelContainers\Notes\BeamItem.cs" />
     <Compile Include="LayoutControl\SegmentPanelContainers\Notes\CalculationHelpers.cs" />
     <Compile Include="LayoutControl\SegmentPanelContainers\Notes\INoteItemVisual.cs" />
     <Compile Include="LayoutControl\SegmentPanelContainers\Notes\NoteContainerItem.cs" />

@@ -14,7 +14,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
 {
     class MeasureItemsContainer : Canvas
     {
-        List<IMeasureItemVisual> measureItemsVisuals;
+        private List<IMeasureItemVisual> measureItemsVisuals;
         private List<NoteMusicXML> notesList;
         private List<Tuple<int, IMeasureItemVisual>> itemsWithPostition;
         private ScorePartwisePartMeasureMusicXML measure;

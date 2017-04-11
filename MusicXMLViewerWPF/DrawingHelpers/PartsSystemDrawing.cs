@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using MusicXMLScore.LayoutControl;
+using MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes;
+using MusicXMLScore.LayoutControl.SegmentPanelContainers;
 
 namespace MusicXMLScore.DrawingHelpers
 {
@@ -240,10 +242,24 @@ namespace MusicXMLScore.DrawingHelpers
                 foreach (MeasureSegmentController measure in m)
                 {
                     measure.ArrangeUsingDurationTable(durationTable);
+                    RedrawBeams(measure, durationTable);
                 }
+                
             }
             //TODO_WIP arrange MeasureAttributesContainer items; If more than one part, rearange measureattributes placement of each part measure using largest width offset of every type 
 
+        }
+
+        private void RedrawBeams(MeasureSegmentController measureSegment, Dictionary<int, double> durationTable)
+        {
+            if (measureSegment.BeamsController != null)
+            {
+                measureSegment.BeamsController.Draw(durationTable);
+                if (measureSegment.BeamsController.BeamsVisuals != null)
+                {
+                    measureSegment.AddBeams(measureSegment.BeamsController.BeamsVisuals);
+                }
+            }
         }
 
         private double SpacingValue(double duration, double shortest, double alpha = 0.6)

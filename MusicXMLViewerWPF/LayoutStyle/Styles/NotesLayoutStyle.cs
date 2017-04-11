@@ -14,7 +14,7 @@ namespace MusicXMLScore.LayoutStyle
         private double minStemLength = 22;
         private double normalStemLength = 35;
         private double maxStemLength = 45;
-        private double stemThickness = 0.75;
+        private double stemThickness = 1.2;
 
         private double dotStandardOffset = 1; //! test
         private double dotIfFlagOffset = 1; //! test

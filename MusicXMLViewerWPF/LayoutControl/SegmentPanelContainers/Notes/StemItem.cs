@@ -19,11 +19,27 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
         private Point startPoint;
         private Point endPoint;
         private NoteContainerItem note;
+        private double sizeFactor;
         private Dictionary<int, double> positionsTable;
+
+        internal NoteContainerItem NoteReference
+        {
+            get
+            {
+                return note;
+            }
+
+            set
+            {
+                note = value;
+            }
+        }
+
         public StemItem(NoteContainerItem note)
         {
             this.note = note;
             positionsTable = note.StaffLine;
+            sizeFactor = note.IsSmall ? 0.8 : 1.0;
             InitStem();
             Draw();
         }
@@ -46,18 +62,32 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
         {
             double noteWidth = note.ItemWidthMin;
             double y = positionsTable[notePitchedPosition];
-            double sizeFactor = note.IsSmall ? 0.8 : 1.0;
             double length = 35.0.TenthsToWPFUnit() * sizeFactor;
+            double yShift = 1.68.TenthsToWPFUnit();
             if(direction == StemValueMusicXML.up)
             {
-                startPoint = new Point(noteWidth *0.95, y);
-                endPoint = new Point(noteWidth * 0.95, y - length);
+                startPoint = new Point(noteWidth * sizeFactor, y - yShift);
+                endPoint = new Point(noteWidth * sizeFactor, y - length);
             }
             else
             {
-                startPoint = new Point(0.5.TenthsToWPFUnit() * 0.95, y);
-                endPoint = new Point(0.5.TenthsToWPFUnit() * 0.95, y + length);
+                startPoint = new Point(0, y + yShift);
+                endPoint = new Point(0, y + length);
             }
+        }
+        public Point GetStemEnd()
+        {
+            return endPoint;
+        }
+
+        public Point GetStemBegin()
+        {
+            return startPoint;
+        }
+
+        public Brush GetColor()
+        {
+            return note.Color;
         }
 
         private void GetDirection(StemMusicXML stem)
@@ -71,7 +101,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
             DrawingVisual dv = new DrawingVisual();
             using (DrawingContext dc = dv.RenderOpen())
             {
-                dc.DrawLine(new Pen(note.Color, notesStyle.StemThickness), startPoint, endPoint);
+                dc.DrawLine(new Pen(note.Color, notesStyle.StemThickness * sizeFactor), startPoint, endPoint);
             }
             DrawingVisualHost dvh = new DrawingVisualHost();
             dvh.AddVisual(dv);
