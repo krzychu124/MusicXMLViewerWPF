@@ -119,7 +119,6 @@
     <Compile Include="LayoutControl\SegmentPanelContainers\Attributes\KeyContainerItem.cs" />
     <Compile Include="LayoutControl\SegmentPanelContainers\Attributes\TimeSignatureContainerItem.cs" />
     <Compile Include="LayoutControl\SegmentPanelContainers\IMeasureItemVisual.cs" />
-    <Compile Include="LayoutControl\SegmentPanelContainers\MeasureAttributesContainer.cs" />
     <Compile Include="LayoutControl\SegmentPanelContainers\MeasureItemsContainer.cs" />
     <Compile Include="LayoutControl\SegmentPanelContainers\Notes\BeamItem.cs" />
     <Compile Include="LayoutControl\SegmentPanelContainers\Notes\CalculationHelpers.cs" />
