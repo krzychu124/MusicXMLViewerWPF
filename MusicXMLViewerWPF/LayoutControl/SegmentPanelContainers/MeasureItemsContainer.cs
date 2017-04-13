@@ -16,33 +16,61 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
     {
         private List<IMeasureItemVisual> measureItemsVisuals;
         private List<NoteMusicXML> notesList;
-        private List<Tuple<int, IMeasureItemVisual>> itemsWithPostition;
+        private List<Tuple<int, IMeasureItemVisual>> itemsWithPosition;
+        private Dictionary<string, List<Tuple<int, IMeasureItemVisual>>> itemsPositionsPerStaff;
         private ScorePartwisePartMeasureMusicXML measure;
         private string measureId = "";
         private string partId;
         private int staveNumber;
+        private int staffsNumber;
         internal List<Tuple<int, IMeasureItemVisual>> ItemsWithPostition
         {
             get
             {
-                return itemsWithPostition;
+                return itemsWithPosition;
             }
 
             set
             {
-                itemsWithPostition = value;
+                itemsWithPosition = value;
             }
         }
 
-        public MeasureItemsContainer(string measureId, string partId, int numberOfStave)
+        internal Dictionary<string, List<Tuple<int, IMeasureItemVisual>>> ItemsPositionsPerStaff
+        {
+            get
+            {
+                return itemsPositionsPerStaff;
+            }
+
+            set
+            {
+                itemsPositionsPerStaff = value;
+            }
+        }
+
+        public MeasureItemsContainer(string measureId, string partId, int numberOfStave, string staffs)
         {
             measureItemsVisuals = new List<IMeasureItemVisual>();
             notesList = new List<NoteMusicXML>();
-            itemsWithPostition = new List<Tuple<int, IMeasureItemVisual>>();
+            itemsWithPosition = new List<Tuple<int, IMeasureItemVisual>>();
+            InitPositionsPerStaff(staffs);
             this.measureId = measureId;
             this.partId = partId;
             staveNumber = numberOfStave;
+            staffsNumber = int.Parse(staffs);
         }
+
+        private void InitPositionsPerStaff(string staffs)
+        {
+            int numberOfStaffs = int.Parse(staffs);
+            itemsPositionsPerStaff = new Dictionary<string, List<Tuple<int, IMeasureItemVisual>>>();
+            for (int i = 0; i < numberOfStaffs; i++)
+            {
+                itemsPositionsPerStaff.Add( (i + 1).ToString(), new List<Tuple<int, IMeasureItemVisual>>());
+            }
+        }
+
         public MeasureItemsContainer(ScorePartwisePartMeasureMusicXML measure, string partId, int numberOfStave)
         {
             measureItemsVisuals = new List<IMeasureItemVisual>();
@@ -104,31 +132,65 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
                 }
             }
         }
+
+        internal void ArrangeStaffs(double staffDistance)
+        {
+            for (int i = 0; i < itemsPositionsPerStaff.Count; i++)
+            {
+                string staffNumber = (i+1).ToString();
+                foreach (var item in itemsPositionsPerStaff[staffNumber])
+                {
+                    double top = staffNumber != "1" ? staffDistance : 0.0;
+                    if (item.Item2 is NoteContainerItem)
+                    {
+                        var note = item.Item2 as NoteContainerItem;
+                        note.Stem.SetStaffOffset(top);
+                    }
+                    Canvas.SetTop(item.Item2.ItemCanvas as Canvas, top);
+                }
+            }
+        }
+
         public void ArrangeUsingDurationTable(Dictionary<int, double> durationTable)
         {
             //-----------------
             // Keys: -3, -2, -1 used for attributes: clef, key and time
             //-----------------
-            var measureBeginningAttributes = itemsWithPostition.Where(x => x.Item1 == 0 && x.Item2 is IAttributeItemVisual).Select(x => x.Item2).ToList();
+            var measureBeginningAttributes = itemsWithPosition.Where(x => x.Item1 == 0 && x.Item2 is IAttributeItemVisual).Select(x => x.Item2).ToList();
             if (measureBeginningAttributes.Count != 0)
             {
-                ClefContainerItem clef = measureBeginningAttributes.Where(x => x is ClefContainerItem).FirstOrDefault() as ClefContainerItem;
-                if (clef != null)
+                //ClefContainerItem clef = measureBeginningAttributes.Where(x => x is ClefContainerItem).FirstOrDefault() as ClefContainerItem;
+                var clef = measureBeginningAttributes.Where(x => x is ClefContainerItem).ToList();//as ClefContainerItem;
+                if (clef.Count != 0)
                 {
-                    ArrangeAttributes(clef, durationTable[-3]);
+                    foreach (var c in clef)
+                    {
+                        ArrangeAttributes(c as ClefContainerItem, new Dictionary<string, double>(), durationTable[-3]);
+                    }
+                    //ArrangeAttributes(clef, new Dictionary<string, double>(),  durationTable[-3]);
                 }
-                KeyContainerItem key = measureBeginningAttributes.Where(x => x is KeyContainerItem).FirstOrDefault() as KeyContainerItem;
-                if (key != null)
+                //KeyContainerItem key = measureBeginningAttributes.Where(x => x is KeyContainerItem).FirstOrDefault() as KeyContainerItem;
+                var key = measureBeginningAttributes.Where(x => x is KeyContainerItem).ToList();
+                if (key.Count != 0)
                 {
-                    ArrangeAttributes(key, durationTable[-2]);
+                    foreach (var item in key)
+                    {
+                        ArrangeAttributes(item as KeyContainerItem, new Dictionary<string, double>(), durationTable[-2]);
+                    }
+                   // ArrangeAttributes(key, new Dictionary<string, double>(), durationTable[-2]);
                 }
-                TimeSignatureContainerItem time = measureBeginningAttributes.Where(x => x is TimeSignatureContainerItem).FirstOrDefault() as TimeSignatureContainerItem;
-                if (time != null)
+                //TimeSignatureContainerItem time = measureBeginningAttributes.Where(x => x is TimeSignatureContainerItem).FirstOrDefault() as TimeSignatureContainerItem;
+                var time = measureBeginningAttributes.Where(x => x is TimeSignatureContainerItem).ToList();
+                if (time.Count != 0)
                 {
-                    ArrangeAttributes(time, durationTable[-1]);
+                    foreach (var item in time)
+                    {
+                        ArrangeAttributes(item as TimeSignatureContainerItem, new Dictionary<string, double>(), durationTable[-1]);
+                    }
+                   // ArrangeAttributes(time, new Dictionary<string, double>(), durationTable[-1]);
                 }
             }
-            foreach (var item in itemsWithPostition)
+            foreach (var item in itemsWithPosition)
             {
                 if (item.Item2 is INoteItemVisual)
                 {
@@ -148,10 +210,10 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
 
         public List<int> GetDurationIndexes()
         {
-            return itemsWithPostition.Select(x => x.Item1).Distinct().ToList();
+            return itemsWithPosition.Select(x => x.Item1).Distinct().ToList();
         }
         
-        public double ArrangeAttributes(IAttributeItemVisual attributeVisual, double currentPosition = 0.0)
+        public double ArrangeAttributes(IAttributeItemVisual attributeVisual, Dictionary<string, double> staffPositions, double currentPosition = 0.0)
         {
             double width = currentPosition;
             LayoutStyle.MeasureLayoutStyle attributesLayout = ViewModel.ViewModelLocator.Instance.Main.CurrentLayout.LayoutStyle.MeasureStyle;
@@ -180,25 +242,46 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
 
             return width;
         }
-        public void AppendNote(NoteContainerItem note, int cursorPosition, string voice = "1")
+
+        public void AppendNoteWithStaffNumber(NoteContainerItem note, int cursorPosition, string voice, string staffNumber)
         {
             Tuple<int, IMeasureItemVisual> noteVisual = new Tuple<int, IMeasureItemVisual>(cursorPosition, note);
             AddNote(note);
-            itemsWithPostition.Add(noteVisual);
+            itemsWithPosition.Add(noteVisual);
+            itemsPositionsPerStaff[staffNumber].Add(noteVisual);
         }
-
+        public void AppendNote(NoteContainerItem note, int cursorPosition, string voice = "1", string staffNumber = "1")
+        {
+            Tuple<int, IMeasureItemVisual> noteVisual = new Tuple<int, IMeasureItemVisual>(cursorPosition, note);
+            AddNote(note);
+            itemsWithPosition.Add(noteVisual);
+        }
+        public void AppendRestWithStaffNumber(RestContainterItem rest, int cursorPosition, string voice, string staffNumber)
+        {
+            Tuple<int, IMeasureItemVisual> restVisual = new Tuple<int, IMeasureItemVisual>(cursorPosition, rest);
+            AddRest(rest);
+            itemsWithPosition.Add(restVisual);
+            itemsPositionsPerStaff[staffNumber].Add(restVisual);
+        }
         public void AppendRest(RestContainterItem rest, int cursorPosition, string voice = "1")
         {
             Tuple<int, IMeasureItemVisual> restVisual = new Tuple<int, IMeasureItemVisual>(cursorPosition, rest);
             AddRest(rest);
-            itemsWithPostition.Add(restVisual);
+            itemsWithPosition.Add(restVisual);
+        }
+        public void AppendAttributeWithStaffNumber(IAttributeItemVisual attributeItem, int cursorPosition, string staffNumber)
+        {
+            Tuple<int, IMeasureItemVisual> attributesVisual = new Tuple<int, IMeasureItemVisual>(cursorPosition, attributeItem);
+            AddAttribute(attributeItem);
+            itemsWithPosition.Add(attributesVisual);
+            itemsPositionsPerStaff[staffNumber].Add(attributesVisual);
         }
 
         public void AppendAttribute(IAttributeItemVisual attributeItem, int cursorPosition)//temp
         {
             Tuple<int, IMeasureItemVisual> attributesVisual = new Tuple<int, IMeasureItemVisual>(cursorPosition, attributeItem);
             AddAttribute(attributeItem);
-            itemsWithPostition.Add(attributesVisual);
+            itemsWithPosition.Add(attributesVisual);
         }
         public void AddNote(NoteContainerItem noteVisual)
         {
