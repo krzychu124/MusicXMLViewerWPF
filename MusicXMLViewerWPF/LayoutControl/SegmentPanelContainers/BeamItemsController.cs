@@ -104,7 +104,9 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
         Dictionary<int, BeamItem> beamedNotes;
         string voice;
         List<DrawingVisualHost> beamVisuals = new List<DrawingVisualHost>();
-
+        Dictionary<int, List<BeamItem>> beamsList;
+        int maxBeams;
+        double slope;
         public List<DrawingVisualHost> BeamVisuals
         {
             get
@@ -122,13 +124,41 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
         {
             this.voice = voice;
             beamedNotes = beamedNotesFractions;
+            InitSegment();
         }
+
+        private void InitSegment()
+        {
+            beamsList = new Dictionary<int, List<BeamItem>>();
+            maxBeams = beamedNotes.Select(x => x.Value.Beams.Count).Max();
+            for (int i = 1; i <= maxBeams; i++)
+            {
+                List<BeamItem> tempList = beamedNotes.Values.Select(x => x).Where(x => x.Beams.ContainsKey(i)).Select(x=>x).ToList();
+
+                beamsList.Add(i, tempList);
+            }
+        }
+
         public void Draw(Dictionary<int, double> positionsTable)
         {
             Dictionary<int, Point> positions = new Dictionary<int, Point>();
+            Dictionary<int, Dictionary<string, Point>> positionsAll = new Dictionary<int, Dictionary<string, Point>>();
+            CalculateSlopes();
+            CorrectStems();
             foreach (var item in beamedNotes)
             {
-                positions.Add(item.Key, new Point(positionsTable[item.Key] + beamedNotes[item.Key].Stem.GetStemEnd().X, beamedNotes[item.Key].Stem.GetStemEnd().Y));
+                int direction = item.Value.Stem.IsDirectionDown() ? -1 : 1;
+                double offset = 2.5.TenthsToWPFUnit() * direction;
+                Dictionary<string, Point> beamPositions = new Dictionary<string, Point>();
+                Point position = new Point(positionsTable[item.Key] + beamedNotes[item.Key].Stem.GetStemEndCalculated().X, beamedNotes[item.Key].Stem.GetStemEndCalculated().Y);
+                double tempYOffset = offset;
+                for (int i = 1; i <= item.Value.Beams.Count; i++)
+                {
+                    beamPositions.Add(i.ToString(), new Point(position.X, position.Y + tempYOffset));
+                    tempYOffset += 7.5.TenthsToWPFUnit() * direction;
+                }
+                positionsAll.Add(item.Key, beamPositions);
+                positions.Add(item.Key, new Point(positionsTable[item.Key] + beamedNotes[item.Key].Stem.GetStemEndCalculated().X, beamedNotes[item.Key].Stem.GetStemEndCalculated().Y + offset));
             }
             DrawingVisual dv = new DrawingVisual();
             var keys = positions.Keys.ToArray();
@@ -136,12 +166,115 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
             {
                 for (int i = 1; i < positions.Count; i++)
                 {
-                    dc.DrawLine(new Pen(beamedNotes.FirstOrDefault().Value.Stem.GetColor(), 5.0.TenthsToWPFUnit()), positions[keys[i-1]], positions[keys[i]]);
+                    dc.DrawLine(new Pen(beamedNotes.FirstOrDefault().Value.Stem.GetColor(), 5.0.TenthsToWPFUnit()), positions[keys[i - 1]], positions[keys[i]]);
                 }
+                //for (int i = 1; i < positionsAll.Count; i++)
+                //{
+                //    int index = beamedNotes[i - 1].FractionPosition;
+                //    foreach (var item in positionsAll[index].Values)
+                //    {
+                //        //if (item.)
+                //        dc.DrawLine(new Pen(beamedNotes.FirstOrDefault().Value.Stem.GetColor(), 5.0.TenthsToWPFUnit()), positionsAll[i - 1].ElementAt(keys[i - 1]).Value, positionsAll[i - 1].ElementAt(keys[i]).Value);
+                //    }
+                //}
             }
             DrawingVisualHost dvh = new DrawingVisualHost();
             dvh.AddVisual(dv);
             beamVisuals.Add(dvh);
+        }
+
+        private void CorrectStems()
+        {
+            List<BeamItem> mainBeam = beamsList[1];
+            bool isDown = mainBeam.FirstOrDefault().Stem.IsDirectionDown();
+            //higher pitchedPosition - lower note pitch
+            if (isDown)
+            {
+                if (mainBeam.Count == 2) //correct stem lengths using calculated slope(distance difference between stem endPoints
+                {
+                    if (mainBeam[0].Stem.NoteReference.PitchedPosition[0] > mainBeam[1].Stem.NoteReference.PitchedPosition[0])
+                    {
+                        double endPointFirstStem = mainBeam[0].Stem.GetStemEndCalculated().Y;
+                        mainBeam[1].Stem.SetEndPointY(endPointFirstStem - (slope * 10.0.TenthsToWPFUnit()) +2.5.TenthsToWPFUnit());
+                    }
+                    else
+                    {
+                        double endPointLastStem = mainBeam[1].Stem.GetStemEndCalculated().Y;
+                        mainBeam[0].Stem.SetEndPointY(endPointLastStem - (slope * 10.0.TenthsToWPFUnit()) + 2.5.TenthsToWPFUnit());
+                    }
+
+                }
+                else
+                {
+
+                }
+            }
+            else
+            { 
+
+            }
+        }
+
+        private void CalculateSlopes()
+        {
+            List<BeamItem> mainBeam = beamsList[1];
+            bool isDown = mainBeam.FirstOrDefault().Stem.IsDirectionDown();
+            int begin = mainBeam.FirstOrDefault().Stem.NoteReference.PitchedPosition.FirstOrDefault().Value;
+            int end = mainBeam.LastOrDefault().Stem.NoteReference.PitchedPosition.FirstOrDefault().Value;
+            slope = GetSlope(begin, end);
+        }
+
+        private double GetSlope(int begin, int end)
+        {
+            if (CheckIfLedgerLine(begin))
+            {
+                return 1;
+            }
+            if (CheckIfLedgerLine(end))
+            {
+                return 1;
+            }
+            double slope = 0.0;
+            int difference = Math.Abs(begin - end);
+            switch (difference)
+            {
+                case 0:
+                    break;
+                case 1:
+                    slope = 0.5;
+                    break;
+                case 2 :
+                    slope = 1;
+                    break;
+                case 3:
+                    slope = 1;
+                    break;
+                case 4:
+                    slope = 1;
+                    break;
+                case 5:
+                    slope = 1.5;
+                    break;
+                case 6:
+                    slope = 1.5;
+                    break;
+                case 7:
+                    slope = 1.5;
+                    break;
+                default:
+                    slope = 2;
+                    break;
+            }
+            return slope;
+        }
+
+        private bool CheckIfLedgerLine(int pitch)
+        {
+            if (pitch > 10 || pitch < -2)
+            {
+                return true;
+            }
+            return false;
         }
     }
 }
