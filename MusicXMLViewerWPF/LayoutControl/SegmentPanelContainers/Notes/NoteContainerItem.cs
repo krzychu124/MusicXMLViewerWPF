@@ -43,7 +43,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
         private double itemWeight = 0.0;
         private bool needLedgerLines = false;
         private List<double> ledgerLinesPositions;
-        private string staffNumber;
+        private string itemStaff;
         private Brush color;
         private StemItem stem;
         private BeamItem beams;
@@ -58,7 +58,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
             SetVisualType();
             this.measureId = measureId;
             this.partId = partId;
-            this.staffNumber = staffId;
+            this.itemStaff = staffId;
             itemCanvas = new Canvas();
             InitNoteProperties();
             if (hasBeams)
@@ -74,7 +74,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
             SetVisualType();
             this.measureId = measureId;
             this.partId = partId;
-            this.staffNumber = staffId != null ? staffId : "1";
+            this.itemStaff = staffId != null ? staffId : "1";
             itemCanvas = new Canvas();
             InitNoteProperties();
             if (hasBeams)
@@ -191,6 +191,15 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
             return pitchedPosition.Values.Min();
         }
 
+        internal void AddStem(DrawingVisualHost dvh)
+        {
+            var stem = ItemCanvas.Children.OfType<DrawingVisualHost>().Where(x => (string)x.Tag == "stem").FirstOrDefault();
+            if (stem != null)
+            {
+                ItemCanvas.Children.Remove(stem);
+            }
+            ItemCanvas.Children.Add(dvh);
+        }
 
         private void SetLedgerLinesPositions(int count, bool above = false)
         {
@@ -225,7 +234,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
         private void GetPitch()
         {
             //var clef = ViewModel.ViewModelLocator.Instance.Main.CurrentScoreProperties.GetClef(measureId, partId, int.Parse(staffId));
-            var clef = ViewModel.ViewModelLocator.Instance.Main.CurrentScoreProperties.GetClef(measureId, partId, int.Parse(staffNumber), fractionPosition);
+            var clef = ViewModel.ViewModelLocator.Instance.Main.CurrentScoreProperties.GetClef(measureId, partId, int.Parse(itemStaff), fractionPosition);
             pitchObject = new List<object>();
             altered = new Dictionary<int, bool>();
             pitchedPosition = new Dictionary<int, int>();
@@ -410,6 +419,19 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
             set
             {
                 stem = value;
+            }
+        }
+
+        public string ItemStaff
+        {
+            get
+            {
+                return itemStaff;
+            }
+
+            set
+            {
+                itemStaff = value;
             }
         }
     }

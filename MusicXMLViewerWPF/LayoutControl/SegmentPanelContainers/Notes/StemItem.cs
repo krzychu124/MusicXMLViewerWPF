@@ -17,10 +17,15 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
         private StemValueMusicXML direction;
         private bool visible = true;
         private Point startPoint;
+        private Point calculatedStartPoint;
         private Point endPoint;
+        private Point calculatedEndPoint;
         private NoteContainerItem note;
         private double sizeFactor;
         private Dictionary<int, double> positionsTable;
+        private double stemLength;
+        private bool isDown;
+        private double staffLineOffset;
 
         internal NoteContainerItem NoteReference
         {
@@ -32,6 +37,19 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
             set
             {
                 note = value;
+            }
+        }
+
+        public double StemLength
+        {
+            get
+            {
+                return stemLength;
+            }
+
+            set
+            {
+                stemLength = value;
             }
         }
 
@@ -53,31 +71,120 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
                 if (stem != null)
                 {
                     GetDirection(stem);
-                    CalculatePosition(note.PitchedPosition.FirstOrDefault().Value);
+                    bool hasBeam = note.NoteItem.FirstOrDefault().Beam.Count != 0 ? true : false;
+                    CalculatePosition(note.PitchedPosition.FirstOrDefault().Value, hasBeam);
                 }
             }
         }
 
-        private void CalculatePosition(int notePitchedPosition)
+        private void CalculatePosition(int notePitchedPosition, bool hasBeam = false)
         {
             double noteWidth = note.ItemWidthMin;
             double y = positionsTable[notePitchedPosition];
             double length = 35.0.TenthsToWPFUnit() * sizeFactor;
             double yShift = 1.68.TenthsToWPFUnit();
+
             if(direction == StemValueMusicXML.up)
             {
                 startPoint = new Point(noteWidth * sizeFactor, y - yShift);
-                endPoint = new Point(noteWidth * sizeFactor, y - length);
+                if (notePitchedPosition > 10)
+                {
+                    //set end point to middle staff line
+                    endPoint = new Point(noteWidth * sizeFactor, positionsTable[4]);
+                }
+                else
+                {
+                    if (notePitchedPosition < 4) // lower than middle staffline pitch position
+                    {
+                        //shortest length
+                        double shortestLength = 25.0.TenthsToWPFUnit() * sizeFactor;
+                        if (hasBeam)
+                        {
+                            // beam thickness added to length
+                            shortestLength = 30.0.TenthsToWPFUnit() * sizeFactor; 
+                        }
+                        if (notePitchedPosition < -2)
+                        {
+                            // set shortest length
+                            endPoint = new Point(noteWidth * sizeFactor, y - shortestLength); 
+                        }
+                        else
+                        {
+                            //shorten legth according to pitch (between normal length and shortest)
+                            double shortestLengthCorrection = ((notePitchedPosition + 2) / (double)6) * 10.0.TenthsToWPFUnit();
+                            endPoint = new Point(noteWidth * sizeFactor, y - (shortestLength + shortestLengthCorrection));
+                        }
+                    }
+                    else // If pitch is between 4 and 10
+                    {
+                        endPoint = new Point(noteWidth * sizeFactor, y - length);
+                    }
+                }
+                isDown = false;
+            }
+            else // stem down
+            {
+                startPoint = new Point(0, y + yShift);
+                if (notePitchedPosition < -2)
+                {
+                    //set end point to middle staff line
+                    endPoint = new Point(0, positionsTable[4]);
+                }
+                else
+                {
+                    if (notePitchedPosition > 4) // higher than middle staffline pitch position
+                    {
+                        double shortestLength = 25.0.TenthsToWPFUnit() * sizeFactor;
+                        if (hasBeam)
+                        {
+                            // beam thickness added to length
+                            shortestLength = 30.0.TenthsToWPFUnit() * sizeFactor;
+                        }
+                        if (notePitchedPosition > 10)
+                        {
+                            // set shortest length
+                            endPoint = new Point(0, y + shortestLength);
+                        }
+                        else
+                        {
+                            //shorten legth according to pitch (between normal length and shortest)
+                            double shortestLengthCorrection = ((10 - notePitchedPosition) / (double)5) * 10.0.TenthsToWPFUnit();
+                            endPoint = new Point(0, y + (shortestLength + shortestLengthCorrection));
+                        }
+                    }
+                    else // if pitch is between -2 and 4
+                    {
+                        endPoint = new Point(0, y + length);
+                    }
+                }
+                isDown = true;
+            }
+            CalculateStemLength();
+        }
+        private void CalculateStemLength()
+        {
+            if (IsDirectionDown())
+            {
+                stemLength = endPoint.Y - startPoint.Y;
             }
             else
             {
-                startPoint = new Point(0, y + yShift);
-                endPoint = new Point(0, y + length);
+                stemLength = startPoint.Y - endPoint.Y;
             }
         }
+
         public Point GetStemEnd()
         {
             return endPoint;
+        }
+
+        /// <summary>
+        /// StemEndPoint corrected with staff number position
+        /// </summary>
+        /// <returns></returns>
+        public Point GetStemEndCalculated()
+        {
+            return calculatedEndPoint;
         }
 
         public Point GetStemBegin()
@@ -90,6 +197,30 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
             return note.Color;
         }
 
+        /// <summary>
+        /// Returns true if stem direction is down
+        /// </summary>
+        /// <returns></returns>
+        public bool IsDirectionDown()
+        {
+            return isDown;
+        }
+
+        /// <summary>
+        /// Calculates stem start and end point positions according to staffLine placement
+        /// </summary>
+        /// <param name="offset"></param>
+        public void SetStaffOffset(double offset)
+        {
+            staffLineOffset = offset;
+            calculatedStartPoint = new Point(startPoint.X, startPoint.Y + offset);
+            calculatedEndPoint = new Point(endPoint.X, endPoint.Y + offset);
+        }
+
+        /// <summary>
+        /// Sets stem direction using StemMusicXML object
+        /// </summary>
+        /// <param name="stem"></param>
         private void GetDirection(StemMusicXML stem)
         {
             direction = stem.Value;
@@ -105,7 +236,20 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
             }
             DrawingVisualHost dvh = new DrawingVisualHost();
             dvh.AddVisual(dv);
-            note.ItemCanvas.Children.Add(dvh);
+            dvh.Tag = "stem";
+            note.AddStem(dvh);
+        }
+
+        /// <summary>
+        /// Sets new Stem EndPoint Vertical value and updates stem visual
+        /// </summary>
+        /// <param name="endPointY"></param>
+        internal void SetEndPointY(double endPointY)
+        {
+            calculatedEndPoint.Y = endPointY;
+            endPoint.Y = endPointY - staffLineOffset;
+            CalculateStemLength();
+            Draw();
         }
     }
 }
