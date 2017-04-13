@@ -28,7 +28,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
         private string symbol;
         private string partId;
         private string measureId;
-        private string staffId;
+        private string itemStaff;
         private int dotCount = 0;
         private Dictionary<int, double> staffLines = new Dictionary<int, double>();
         private NoteTypeValueMusicXML restType = NoteTypeValueMusicXML.whole;
@@ -122,6 +122,19 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
             }
         }
 
+        public string ItemStaff
+        {
+            get
+            {
+                return itemStaff;
+            }
+
+            set
+            {
+                itemStaff = value;
+            }
+        }
+
         public RestContainterItem(NoteMusicXML note, int itemIndex, string partId, string measureId, string staffId)
         {
             itemCanvas = new Canvas();
@@ -129,7 +142,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
             this.itemIndex = itemIndex;
             this.partId = partId;
             this.measureId = measureId;
-            this.staffId = staffId;
+            this.itemStaff = staffId;
             customPitch = CheckIfCustomPitchSet();
             Draw(CheckIfMeasure());
             CalculateMinWidth();
@@ -249,7 +262,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
         {
             if (customPitch)
             {
-                var clef = ViewModel.ViewModelLocator.Instance.Main.CurrentScoreProperties.GetClef(measureId, partId, int.Parse(staffId), itemIndex);
+                var clef = ViewModel.ViewModelLocator.Instance.Main.CurrentScoreProperties.GetClef(measureId, partId, int.Parse(itemStaff), itemIndex);
                 return CalculationHelpers.GetPitchIndexStaffLine(new PitchMusicXML() { Step = customStep, Octave = customOctave }, clef);
             }
             else

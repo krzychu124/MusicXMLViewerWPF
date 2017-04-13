@@ -244,10 +244,7 @@ namespace MusicXMLScore.DrawingHelpers
                     measure.ArrangeUsingDurationTable(durationTable);
                     RedrawBeams(measure, durationTable);
                 }
-                
             }
-            //TODO_WIP arrange MeasureAttributesContainer items; If more than one part, rearange measureattributes placement of each part measure using largest width offset of every type 
-
         }
 
         private void RedrawBeams(MeasureSegmentController measureSegment, Dictionary<int, double> durationTable)

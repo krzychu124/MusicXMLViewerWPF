@@ -9,6 +9,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
 {
     interface IMeasureItemVisual
     {
+        string ItemStaff { get; set; }
         Canvas ItemCanvas { get; set; }
         double ItemWidth { get; }
         double ItemWidthMin { get; set; }

@@ -14,6 +14,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Attributes
 {
     class KeyContainerItem : IAttributeItemVisual
     {
+        private string itemStaff;
         private Canvas itemCanvas;
         private readonly int attributeIndex = 1;
         private bool empty = false;
@@ -177,6 +178,19 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Attributes
             set
             {
                 itemCanvas = value;
+            }
+        }
+
+        public string ItemStaff
+        {
+            get
+            {
+                return itemStaff;
+            }
+
+            set
+            {
+                itemStaff = value;
             }
         }
     }

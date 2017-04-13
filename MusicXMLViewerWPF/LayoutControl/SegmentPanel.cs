@@ -43,7 +43,7 @@ namespace MusicXMLScore.LayoutControl
         {
             measureAttributes.ItemCanvas.Tag = numberOfStave.ToString();
             Canvas.SetLeft(measureAttributes.ItemCanvas, 0); //adding left offset, refactor to %of staffline height, or add to each child element
-            if (numberOfStave != 1)//works property if number of staves is 2, higher nuber will overlap with 2nd. stave, WiP
+            if (numberOfStave != 1)//works properly if number of staves is 2, higher nuber will overlap with 2nd. stave, WiP
             {
                 double staffHeight = ViewModel.ViewModelLocator.Instance.Main.CurrentPageLayout.StaffHeight.MMToWPFUnit();
                 Canvas.SetTop(measureAttributes.ItemCanvas, staffHeight + defaultStavesDistance.TenthsToWPFUnit());
@@ -55,11 +55,12 @@ namespace MusicXMLScore.LayoutControl
         public void AddNotesContainer(MeasureItemsContainer measureNotes, int numberOfStave = 1)
         {
             measureNotes.Tag = numberOfStave.ToString();
-            if (numberOfStave != 1)
-            {
+            //if (numberOfStave != 1)
+            //{
                 double staffHeight = ViewModel.ViewModelLocator.Instance.Main.CurrentPageLayout.StaffHeight.MMToWPFUnit();
-                Canvas.SetTop(measureNotes, staffHeight + defaultStavesDistance.TenthsToWPFUnit());
-            }
+                measureNotes.ArrangeStaffs(staffHeight + defaultStavesDistance.TenthsToWPFUnit());
+                //Canvas.SetTop(measureNotes, staffHeight + defaultStavesDistance.TenthsToWPFUnit());
+            //}
             Children.Add(measureNotes);
             InitNotesContainer();
             notesContainer.Add(numberOfStave, measureNotes);
