@@ -24,7 +24,7 @@ namespace MusicXMLScore.LayoutControl
         private int maxDuration = 1;
         private double width = 0;
         private PartProperties partProperties;
-        Dictionary<string, SegmentPanelContainers.MeasureItemsContainer> staffs;
+        //Dictionary<string, SegmentPanelContainers.MeasureItemsContainer> staffs;
         private Tuple<double, double, double> attributesWidths;
         private BeamItemsController beamsController;
         MeasureItemsContainer testItemsContainer;
@@ -54,18 +54,18 @@ namespace MusicXMLScore.LayoutControl
             }
         }
 
-        internal Dictionary<string, MeasureItemsContainer> Staffs
-        {
-            get
-            {
-                return staffs;
-            }
+        //internal Dictionary<string, MeasureItemsContainer> Staffs
+        //{
+        //    get
+        //    {
+        //        return staffs;
+        //    }
 
-            set
-            {
-                staffs = value;
-            }
-        }
+        //    set
+        //    {
+        //        staffs = value;
+        //    }
+        //}
 
         internal BeamItemsController BeamsController
         {
@@ -99,13 +99,13 @@ namespace MusicXMLScore.LayoutControl
             maxDuration = (int)((4 / (double)denominator) * ( currentDivisions * numerator));
             int durationCursor = 0;
             var measureItems = measure.Items;
-            staffs = new Dictionary<string, MeasureItemsContainer>();
+            //staffs = new Dictionary<string, MeasureItemsContainer>();
             List<BeamItem> beam = new List<BeamItem>();
             testItemsContainer = new MeasureItemsContainer(measure.Number, partID, stavesCount, stavesCount.ToString());
-            for (int i = 0; i < 1; i++)
-            {
-                staffs.Add((i + 1).ToString(), new MeasureItemsContainer(measure.Number, partID, i + 1, stavesCount.ToString()));
-            }
+            //for (int i = 0; i < 1; i++)
+            //{
+            //    staffs.Add((i + 1).ToString(), new MeasureItemsContainer(measure.Number, partID, i + 1, stavesCount.ToString()));
+            //}
 
             for (int i = 0; i < measure.Items.Length; i++)
             {

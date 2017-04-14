@@ -168,15 +168,6 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
                 {
                     dc.DrawLine(new Pen(beamedNotes.FirstOrDefault().Value.Stem.GetColor(), 5.0.TenthsToWPFUnit()), positions[keys[i - 1]], positions[keys[i]]);
                 }
-                //for (int i = 1; i < positionsAll.Count; i++)
-                //{
-                //    int index = beamedNotes[i - 1].FractionPosition;
-                //    foreach (var item in positionsAll[index].Values)
-                //    {
-                //        //if (item.)
-                //        dc.DrawLine(new Pen(beamedNotes.FirstOrDefault().Value.Stem.GetColor(), 5.0.TenthsToWPFUnit()), positionsAll[i - 1].ElementAt(keys[i - 1]).Value, positionsAll[i - 1].ElementAt(keys[i]).Value);
-                //    }
-                //}
             }
             DrawingVisualHost dvh = new DrawingVisualHost();
             dvh.AddVisual(dv);
@@ -187,15 +178,56 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
         {
             List<BeamItem> mainBeam = beamsList[1];
             bool isDown = mainBeam.FirstOrDefault().Stem.IsDirectionDown();
-            //higher pitchedPosition - lower note pitch
+            //! higher pitchedPosition ==> lower note pitch
+
+            //
+            var firstNoteBeamPitch = mainBeam.Where(x => x.Beams[1] == Model.Helpers.SimpleTypes.BeamValueMusicXML.begin).FirstOrDefault().Stem.NoteReference.PitchedPosition.FirstOrDefault().Value;
+            var lastNoteBeamPitch = mainBeam.Where(x => x.Beams[1] == Model.Helpers.SimpleTypes.BeamValueMusicXML.end).FirstOrDefault().Stem.NoteReference.PitchedPosition.FirstOrDefault().Value;
             if (isDown)
             {
-                if (mainBeam.Count == 2) //correct stem lengths using calculated slope(distance difference between stem endPoints
+                if (mainBeam.Count == 2) //? correct stem lengths using calculated slope(distance difference between stem endPoints
                 {
-                    if (mainBeam[0].Stem.NoteReference.PitchedPosition[0] > mainBeam[1].Stem.NoteReference.PitchedPosition[0])
+                    if (firstNoteBeamPitch == lastNoteBeamPitch)
+                    {
+                        return;
+                    }
+                    if (firstNoteBeamPitch > lastNoteBeamPitch)
                     {
                         double endPointFirstStem = mainBeam[0].Stem.GetStemEndCalculated().Y;
-                        mainBeam[1].Stem.SetEndPointY(endPointFirstStem - (slope * 10.0.TenthsToWPFUnit()) +2.5.TenthsToWPFUnit());
+                        mainBeam[1].Stem.SetEndPointY(endPointFirstStem - (slope * 10.0.TenthsToWPFUnit()) /*? +2.5.TenthsToWPFUnit()*/);
+                    }
+                    else
+                    {
+                        double endPointLastStem = mainBeam[1].Stem.GetStemEndCalculated().Y;
+                        mainBeam[0].Stem.SetEndPointY(endPointLastStem - (slope * 10.0.TenthsToWPFUnit()) /*? + 2.5.TenthsToWPFUnit()*/);
+                    }
+
+                }
+                else
+                {
+                    if (firstNoteBeamPitch == lastNoteBeamPitch) //? 1st == last means beam is horizontal
+                    {
+                        int maxPitch = mainBeam.Max(x => x.Stem.NoteReference.PitchedPosition.FirstOrDefault().Value);
+                        double shortestStem = mainBeam.Select(x => x.Stem).Max(x => x.GetStemEndCalculated().Y);
+                        foreach (var item in mainBeam)
+                        {
+                            item.Stem.SetEndPointY(shortestStem);
+                        }
+                    }
+                }
+            }
+            else //! If stem is Up
+            {
+                if (mainBeam.Count == 2) //? correct stem lengths using calculated slope(distance difference between stem endPoints
+                {
+                    if (firstNoteBeamPitch == lastNoteBeamPitch)
+                    {
+                        return;
+                    }
+                    if (firstNoteBeamPitch > lastNoteBeamPitch)
+                    {
+                        double endPointFirstStem = mainBeam[0].Stem.GetStemEndCalculated().Y;
+                        mainBeam[1].Stem.SetEndPointY(endPointFirstStem - (slope * 10.0.TenthsToWPFUnit()) + 2.5.TenthsToWPFUnit());
                     }
                     else
                     {
@@ -204,14 +236,18 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
                     }
 
                 }
-                else
+                else //! if more than 2 beamed notes
                 {
-
+                    if (firstNoteBeamPitch == lastNoteBeamPitch) //? 1st == last => beam is horizontal
+                    {
+                        int maxPitch = mainBeam.Min(x => x.Stem.NoteReference.PitchedPosition.FirstOrDefault().Value);
+                        double shortestStem = mainBeam.Select(x => x.Stem).Min(x => x.GetStemEndCalculated().Y);
+                        foreach (var item in mainBeam)
+                        {
+                            item.Stem.SetEndPointY(shortestStem);
+                        }
+                    }
                 }
-            }
-            else
-            { 
-
             }
         }
 
