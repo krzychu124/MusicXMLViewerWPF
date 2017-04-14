@@ -105,8 +105,8 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
         string voice;
         List<DrawingVisualHost> beamVisuals = new List<DrawingVisualHost>();
         Dictionary<int, List<BeamItem>> beamsList;
-        int maxBeams;
-        double slope;
+        int maxBeams; //max beams of all beamed notes
+        double slope; // not real slope...  ==> interval in staffspaces between first and last beamed note
         public List<DrawingVisualHost> BeamVisuals
         {
             get
@@ -260,6 +260,12 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
             slope = GetSlope(begin, end);
         }
 
+        /// <summary>
+        /// Hard-coded slope based on begin and end beamed notes interval
+        /// </summary>
+        /// <param name="begin"></param>
+        /// <param name="end"></param>
+        /// <returns></returns>
         private double GetSlope(int begin, int end)
         {
             if (CheckIfLedgerLine(begin))
@@ -304,6 +310,11 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
             return slope;
         }
 
+        /// <summary>
+        /// Check if passed note pitch has ledger line/s
+        /// </summary>
+        /// <param name="pitch"></param>
+        /// <returns>True if pitch has ledger line</returns>
         private bool CheckIfLedgerLine(int pitch)
         {
             if (pitch > 10 || pitch < -2)
