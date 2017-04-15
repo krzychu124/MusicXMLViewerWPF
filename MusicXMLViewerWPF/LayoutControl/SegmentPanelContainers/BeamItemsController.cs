@@ -194,7 +194,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
                     if (firstNoteBeamPitch > lastNoteBeamPitch)
                     {
                         double endPointFirstStem = mainBeam[0].Stem.GetStemEndCalculated().Y;
-                        mainBeam[1].Stem.SetEndPointY(endPointFirstStem - (slope * 10.0.TenthsToWPFUnit()) /*? +2.5.TenthsToWPFUnit()*/);
+                        mainBeam[1].Stem.SetEndPointY(endPointFirstStem - (slope * 10.0.TenthsToWPFUnit()) /*? +2.5.TenthsToWPFUnit()*/); //add some to stem length to compensate beams
                     }
                     else
                     {
@@ -213,6 +213,14 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
                         {
                             item.Stem.SetEndPointY(shortestStem);
                         }
+                    }
+                    if (firstNoteBeamPitch > lastNoteBeamPitch)
+                    {
+                        AdvancedStemCorrection(isDown, true);
+                    }
+                    if (firstNoteBeamPitch < lastNoteBeamPitch)
+                    {
+                        AdvancedStemCorrection(isDown, false);
                     }
                 }
             }
@@ -247,10 +255,99 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
                             item.Stem.SetEndPointY(shortestStem);
                         }
                     }
+                    if (firstNoteBeamPitch > lastNoteBeamPitch)
+                    {
+                        AdvancedStemCorrection(isDown, true);
+                    }
+                    if (firstNoteBeamPitch < lastNoteBeamPitch)
+                    {
+                        AdvancedStemCorrection(isDown, false);
+                    }
                 }
             }
         }
 
+        private void AdvancedStemCorrection(bool isStemDownwardsDirection, bool slopeUpward)
+        {
+            List<BeamItem> mainBeamsList = beamsList[1];
+            List<BeamItem> midBeamsList = mainBeamsList.Skip(1).Take(mainBeamsList.Count - 2).ToList();
+            var pitchesList = GetPitchesFromBeamList(mainBeamsList);
+            var iterationsPerPitch = PitchesListConvertToCounts(pitchesList);
+            bool horizontalBeam = false;
+            var test = iterationsPerPitch.GroupBy(group => group.Value).Where(group => group.Count() > 1).Where(x=>x.Any(z=>z.Value != 1)).ToList();
+            //if found any pitch iterations set beam to hotizontal/ no slope
+            if (iterationsPerPitch.Any(x=>x.Value > 2) || test.Count !=0 )
+            {
+                horizontalBeam = true;
+                if (isStemDownwardsDirection)
+                {
+                    var lowestStemEnd = mainBeamsList.Select(x => x).Where(x => x.Stem.NoteReference.PitchedPosition.Values.FirstOrDefault() == pitchesList.Max(y => y.Value)).FirstOrDefault().Stem.GetStemEndCalculated().Y;
+                    foreach (var item in mainBeamsList)
+                    {
+                        item.Stem.SetEndPointY(lowestStemEnd);
+                    }
+                }
+                else
+                {
+                    var highestStemEnd = mainBeamsList.Select(x => x).Where(x => x.Stem.NoteReference.PitchedPosition.Values.FirstOrDefault() == pitchesList.Min(y => y.Value)).FirstOrDefault().Stem.GetStemEndCalculated().Y;
+                    foreach (var item in mainBeamsList)
+                    {
+                        item.Stem.SetEndPointY(highestStemEnd);
+                    }
+                }
+            }
+            //if stem lengths set in horizonlal section, just skip other calculations
+            if (!horizontalBeam)
+            {
+                if (isStemDownwardsDirection)
+                {
+                    //find lowest pitch, set sortest stem then recalculate other stems according to calculated slope
+                    if (slopeUpward)
+                    {
+
+                    }
+                    else
+                    {
+
+                    }
+                }
+                else
+                {
+                    //find highest pitch, set sortest stem then recalculate other stems according to calculated slope
+                    if (slopeUpward)
+                    {
+                        // var 
+                    }
+                    else
+                    {
+
+                    }
+                }
+            }
+        }
+
+        public Dictionary<int, int> GetPitchesFromBeamList(List<BeamItem> beamItemList)
+        {
+            Dictionary<int, int> pitches = beamItemList.Select((x, y) => new { fraction = x.FractionPosition, pitch = x.Stem.NoteReference.PitchedPosition.FirstOrDefault().Value }).ToDictionary(item => item.fraction, item => item.pitch);
+            return pitches;
+        }
+
+        public Dictionary<int, int> PitchesListConvertToCounts(Dictionary<int, int> pitches)
+        {
+            Dictionary<int, int> result = new Dictionary<int, int>();
+            foreach (var item in pitches)
+            {
+                if (result.ContainsKey(item.Value))
+                {
+                    result[item.Value] += 1;
+                }
+                else
+                {
+                    result.Add(item.Value, 1);
+                }
+            }
+            return result;
+        }
         private void CalculateSlopes()
         {
             List<BeamItem> mainBeam = beamsList[1];
