@@ -43,15 +43,14 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
         private double itemWeight = 0.0;
         private bool needLedgerLines = false;
         private List<double> ledgerLinesPositions;
-        private string staffNumber;
-        private System.Windows.Media.Brush color;
-        //private ToolTip tt = new ToolTip();
+        private string itemStaff;
+        private Brush color;
+        private StemItem stem;
+        private BeamItem beams;
+        private bool isSmall = false;
+        private bool hasBeams = false;
         public NoteContainerItem(NoteMusicXML note, int fractionPosition, string partId, string measureId, string staffId)
         {
-            //test
-            //this.MouseMove += Canvas_MouseMove;
-            //ToolTip = tt;
-            //
             noteItem = new List<NoteMusicXML>();
             noteItem.Add(note);
             isChordNote = false;
@@ -59,25 +58,35 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
             SetVisualType();
             this.measureId = measureId;
             this.partId = partId;
-            this.staffNumber = staffId;
+            this.itemStaff = staffId;
             itemCanvas = new Canvas();
             InitNoteProperties();
+            if (hasBeams)
+            {
+                InitBeams();
+            }
         }
         public NoteContainerItem(List<NoteMusicXML> chordList, int fractionPosition, string partId, string measureId, string staffId)
         {
-            //test
-            //this.MouseMove += Canvas_MouseMove;
-            //ToolTip = tt;
-            //
             noteItem = chordList;
             isChordNote = true;
             this.fractionPosition = fractionPosition;
             SetVisualType();
             this.measureId = measureId;
             this.partId = partId;
-            this.staffNumber = staffId != null ? staffId : "1";
+            this.itemStaff = staffId != null ? staffId : "1";
             itemCanvas = new Canvas();
             InitNoteProperties();
+            if (hasBeams)
+            {
+                InitBeams();
+            }
+        }
+
+        private void InitBeams()
+        {
+            string voice = noteItem.Where(x => x.Voice != null).Select(x => x.Voice).FirstOrDefault();
+            beams = new BeamItem(noteItem.SelectMany(x => x.Beam).ToList(), voice, fractionPosition, stem);
         }
 
         private void SetVisualType()
@@ -95,17 +104,19 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
             GetSymbol();
             GetPitch();
             Draw();
+            stem = new StemItem(this);
+            hasBeams = noteItem.Any(x => x.Beam.Count != 0) ? true : false;
         }
 
         private void Draw()
         {
-            bool small = noteVisualType == NoteChoiceTypeMusicXML.cue || noteVisualType == NoteChoiceTypeMusicXML.grace ? true : false;
+            isSmall = noteVisualType == NoteChoiceTypeMusicXML.cue || noteVisualType == NoteChoiceTypeMusicXML.grace ? true : false;
             DrawingVisualHost noteCanvas = new DrawingVisualHost();
             int index = 0;
             foreach (var note in noteItem)
             {
                 color = ViewModel.ViewModelLocator.Instance.Main.CurrentLayout.LayoutStyle.Colors[int.Parse(note.Voice)];
-                noteCanvas.AddCharacterGlyph(new Point(0, pitchedValue[index]), symbol, small, color);
+                noteCanvas.AddCharacterGlyph(new Point(0, pitchedValue[index]), symbol, isSmall, color);
                 
                 if (hasDots)
                 {
@@ -113,7 +124,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
                 }
                 index++;
             }
-            itemWidthMin = DrawingMethods.GetTextWidth(symbol, TypeFaces.GetMusicFont());
+            itemWidthMin = DrawingMethods.GetTextWidth(symbol, TypeFaces.GetMusicFont(), isSmall);
             itemWidthOpt = itemWidthMin;
             CheckForLedgerLines();
             if (needLedgerLines)
@@ -180,6 +191,15 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
             return pitchedPosition.Values.Min();
         }
 
+        internal void AddStem(DrawingVisualHost dvh)
+        {
+            var stem = ItemCanvas.Children.OfType<DrawingVisualHost>().Where(x => (string)x.Tag == "stem").FirstOrDefault();
+            if (stem != null)
+            {
+                ItemCanvas.Children.Remove(stem);
+            }
+            ItemCanvas.Children.Add(dvh);
+        }
 
         private void SetLedgerLinesPositions(int count, bool above = false)
         {
@@ -214,7 +234,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
         private void GetPitch()
         {
             //var clef = ViewModel.ViewModelLocator.Instance.Main.CurrentScoreProperties.GetClef(measureId, partId, int.Parse(staffId));
-            var clef = ViewModel.ViewModelLocator.Instance.Main.CurrentScoreProperties.GetClef(measureId, partId, int.Parse(staffNumber), fractionPosition);
+            var clef = ViewModel.ViewModelLocator.Instance.Main.CurrentScoreProperties.GetClef(measureId, partId, int.Parse(itemStaff), fractionPosition);
             pitchObject = new List<object>();
             altered = new Dictionary<int, bool>();
             pitchedPosition = new Dictionary<int, int>();
@@ -311,13 +331,108 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
             }
         }
 
-        //test only
-        //private void Canvas_MouseMove(object sender, MouseEventArgs e)
-        //{
-        //    tt.Placement = System.Windows.Controls.Primitives.PlacementMode.Relative;
-        //    tt.HorizontalOffset = e.GetPosition((IInputElement)sender).X + 10;
-        //    tt.VerticalOffset = e.GetPosition((IInputElement)sender).Y + 10;
-        //    tt.Content = "X-Coordinate: " + e.GetPosition((IInputElement)sender).X + "\n" + "Y-Coordinate: " + e.GetPosition((IInputElement)sender).Y;
-        //}
+        public Dictionary<int, int> PitchedPosition
+        {
+            get
+            {
+                return pitchedPosition;
+            }
+
+            set
+            {
+                pitchedPosition = value;
+            }
+        }
+
+        public List<NoteMusicXML> NoteItem
+        {
+            get
+            {
+                return noteItem;
+            }
+
+            set
+            {
+                noteItem = value;
+            }
+        }
+
+        public Dictionary<int, double> StaffLine
+        {
+            get
+            {
+                return staffLine;
+            }
+
+            set
+            {
+                staffLine = value;
+            }
+        }
+
+        public Brush Color
+        {
+            get
+            {
+                return color;
+            }
+
+            set
+            {
+                color = value;
+            }
+        }
+
+        public bool IsSmall
+        {
+            get
+            {
+                return isSmall;
+            }
+
+            set
+            {
+                isSmall = value;
+            }
+        }
+
+        public BeamItem Beams
+        {
+            get
+            {
+                return beams;
+            }
+
+            set
+            {
+                beams = value;
+            }
+        }
+
+        public StemItem Stem
+        {
+            get
+            {
+                return stem;
+            }
+
+            set
+            {
+                stem = value;
+            }
+        }
+
+        public string ItemStaff
+        {
+            get
+            {
+                return itemStaff;
+            }
+
+            set
+            {
+                itemStaff = value;
+            }
+        }
     }
 }

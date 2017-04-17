@@ -15,6 +15,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Attributes
 {
     class TimeSignatureContainerItem : IAttributeItemVisual
     {
+        private string itemStaff;
         private Canvas itemCanvas;
         private readonly int attributeIndex = 2;
         private double itemWidth;
@@ -222,6 +223,19 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Attributes
             set
             {
                 itemCanvas = value;
+            }
+        }
+
+        public string ItemStaff
+        {
+            get
+            {
+                return itemStaff;
+            }
+
+            set
+            {
+                itemStaff = value;
             }
         }
     }

@@ -10,6 +10,8 @@ using System.Diagnostics;
 using MusicXMLScore.LayoutControl.SegmentPanelContainers.Attributes;
 using MusicXMLScore.Model.MeasureItems.Attributes;
 using MusicXMLScore.LayoutControl.SegmentPanelContainers;
+using MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes;
+using MusicXMLScore.Helpers;
 
 namespace MusicXMLScore.LayoutControl
 {
@@ -22,10 +24,10 @@ namespace MusicXMLScore.LayoutControl
         private int maxDuration = 1;
         private double width = 0;
         private PartProperties partProperties;
-        Dictionary<string, SegmentPanelContainers.MeasureItemsContainer> staffs;
-        Dictionary<string, SegmentPanelContainers.MeasureAttributesContainer> attributesContainer;
+        //Dictionary<string, SegmentPanelContainers.MeasureItemsContainer> staffs;
         private Tuple<double, double, double> attributesWidths;
-
+        private BeamItemsController beamsController;
+        MeasureItemsContainer testItemsContainer;
         public int MaxDuration
         {
             get
@@ -52,6 +54,32 @@ namespace MusicXMLScore.LayoutControl
             }
         }
 
+        //internal Dictionary<string, MeasureItemsContainer> Staffs
+        //{
+        //    get
+        //    {
+        //        return staffs;
+        //    }
+
+        //    set
+        //    {
+        //        staffs = value;
+        //    }
+        //}
+
+        internal BeamItemsController BeamsController
+        {
+            get
+            {
+                return beamsController;
+            }
+
+            set
+            {
+                beamsController = value;
+            }
+        }
+
         public MeasureSegmentController(Model.ScorePartwisePartMeasureMusicXML measure, string partID, int stavesCount, int systemIndex, int pageIndex)
         {
             this.systemIndex = systemIndex;
@@ -68,15 +96,16 @@ namespace MusicXMLScore.LayoutControl
             var currentTime = ViewModel.ViewModelLocator.Instance.Main.CurrentScoreProperties.GetTimeSignature(measure.Number);
             double denominator = currentDivisions ==1 ? 1 : currentTime.GetDenominator();
             double numerator = currentDivisions == 1 ? 1 : currentTime.GetNumerator();
-            maxDuration = (int)((4 / (double)denominator/*currentTime.GetDenominator()*/) * ( currentDivisions * numerator/*currentTime.GetNumerator()*/));
+            maxDuration = (int)((4 / (double)denominator) * ( currentDivisions * numerator));
             int durationCursor = 0;
             var measureItems = measure.Items;
-            staffs = new Dictionary<string, SegmentPanelContainers.MeasureItemsContainer>();
-
-            for (int i = 0; i < stavesCount; i++)
-            {
-                staffs.Add((i + 1).ToString(), new SegmentPanelContainers.MeasureItemsContainer(measure.Number, partID, i + 1));
-            }
+            //staffs = new Dictionary<string, MeasureItemsContainer>();
+            List<BeamItem> beam = new List<BeamItem>();
+            testItemsContainer = new MeasureItemsContainer(measure.Number, partID, stavesCount, stavesCount.ToString());
+            //for (int i = 0; i < 1; i++)
+            //{
+            //    staffs.Add((i + 1).ToString(), new MeasureItemsContainer(measure.Number, partID, i + 1, stavesCount.ToString()));
+            //}
 
             for (int i = 0; i < measure.Items.Length; i++)
             {
@@ -104,12 +133,18 @@ namespace MusicXMLScore.LayoutControl
                         string voice = n.Voice;
                         if (n.IsRest())
                         {
-                            staffs[staffNumber].AppendRest(new SegmentPanelContainers.Notes.RestContainterItem(n, durationCursor, partID, measure.Number, staffNumber), durationCursor, voice);
+                            testItemsContainer.AppendRestWithStaffNumber(new SegmentPanelContainers.Notes.RestContainterItem(n, durationCursor, partID, measure.Number, staffNumber), durationCursor, voice, staffNumber);
+                            //staffs[staffNumber].AppendRest(new SegmentPanelContainers.Notes.RestContainterItem(n, durationCursor, partID, measure.Number, staffNumber), durationCursor, voice);
                         }
                         else
                         {
-                            //int tempDuration = n.IsChord() ? durationCursor : durationCursor - n.GetDuration();
-                            staffs[staffNumber].AppendNote(new SegmentPanelContainers.Notes.NoteContainerItem(n, durationCursor, partID, measure.Number, staffNumber), durationCursor, voice);
+                            var noteContainer = new SegmentPanelContainers.Notes.NoteContainerItem(n, durationCursor, partID, measure.Number, staffNumber);
+                            if (noteContainer.Beams != null)
+                            {
+                                beam.Add(noteContainer.Beams);
+                            }
+                            testItemsContainer.AppendNoteWithStaffNumber(noteContainer, durationCursor, voice, staffNumber);
+                            //staffs[staffNumber].AppendNote(noteContainer, durationCursor, voice, staffNumber);
                         }
                         durationCursor += !n.IsChord() ? n.GetDuration() : 0;
                         break;
@@ -117,6 +152,7 @@ namespace MusicXMLScore.LayoutControl
                         break;
                 }
             }
+            beamsController = new BeamItemsController(beam);
             GenerateAndAddAttributesContainers(measure.Number, partID);
             width = measure.CalculatedWidth.TenthsToWPFUnit();
             ArrangeContainers(measure.CalculatedWidth.TenthsToWPFUnit(), maxDuration);
@@ -164,7 +200,8 @@ namespace MusicXMLScore.LayoutControl
                         foreach (var clef in clefList)
                         {
                             ClefContainerItem clefContainer = new ClefContainerItem(clef.Item1, clef.Item2, clef.Item3);
-                            staffs[clef.Item1].AppendAttribute(clefContainer, clef.Item2);
+                            testItemsContainer.AppendAttributeWithStaffNumber(clefContainer, clef.Item2, clef.Item1);
+                            //staffs[clef.Item1].AppendAttribute(clefContainer, clef.Item2);
                         }
                     }
                 }
@@ -177,7 +214,8 @@ namespace MusicXMLScore.LayoutControl
                         {
                             string staffNumber = key.Item1 != null ? key.Item1 : i.ToString();
                             KeyContainerItem keyContainer = new KeyContainerItem(key.Item3, key.Item2, measureNumber, partID, staffNumber);
-                            staffs[staffNumber].AppendAttribute(keyContainer, key.Item2);
+                            testItemsContainer.AppendAttributeWithStaffNumber(keyContainer, key.Item2, staffNumber);
+                            //staffs[staffNumber].AppendAttribute(keyContainer, key.Item2);
                         }
                     }
                 }
@@ -190,7 +228,8 @@ namespace MusicXMLScore.LayoutControl
                         {
                             string staffNumber = time.Item1 != null ? time.Item1 : i.ToString();
                             TimeSignatureContainerItem timeContainer = new TimeSignatureContainerItem(time.Item1, time.Item2, time.Item3);
-                            staffs[staffNumber].AppendAttribute(timeContainer, time.Item2);
+                            testItemsContainer.AppendAttributeWithStaffNumber(timeContainer, time.Item2, staffNumber);
+                            //staffs[staffNumber].AppendAttribute(timeContainer, time.Item2);
                         }
                     }
                 }
@@ -198,19 +237,24 @@ namespace MusicXMLScore.LayoutControl
         }
         public void ArrangeUsingDurationTable(Dictionary<int, double> durationTable)
         {
-            foreach (var staff in staffs)
-            {
-                staff.Value.ArrangeUsingDurationTable(durationTable);
-            }
+            testItemsContainer.ArrangeUsingDurationTable(durationTable);
+            //foreach (var staff in staffs)
+            //{
+            //    staff.Value.ArrangeUsingDurationTable(durationTable);
+            //}
         }
 
         private void ArrangeContainers(double availableWidth, int maxDuration)
         {
             Dictionary<string, List<Tuple<int, IMeasureItemVisual>>> itemsPerStaff = new Dictionary<string, List<Tuple<int, IMeasureItemVisual>>>();
-            foreach (var item in staffs)
+            for (int i = 1; i <= stavesCount; i++)
             {
-                itemsPerStaff.Add(item.Key, item.Value.ItemsWithPostition);
+                itemsPerStaff.Add(i.ToString(), testItemsContainer.ItemsPositionsPerStaff[i.ToString()]);
             }
+            //foreach (var item in staffs)
+            //{
+            //    itemsPerStaff.Add(item.Key, item.Value.ItemsWithPostition);
+            //}
             Dictionary<string, List<IMeasureItemVisual>> attributesList = new Dictionary<string, List<IMeasureItemVisual>>();
             foreach (var item in itemsPerStaff)
             {
@@ -218,11 +262,6 @@ namespace MusicXMLScore.LayoutControl
                 attributesList.Add(item.Key, attributes);
             }
             CalculateBeginningAttributes(attributesList);
-            //double attributesWidth = 0.0;// CalculateBeginningAttributes(attributesList);
-            //foreach (var item in staffs)
-            //{
-            //    //item.Value.ArrangeItemsByDuration(availableWidth, attributesWidth,  maxDuration);
-            //}
         }
         private double CalculateBeginningAttributes(Dictionary<string, List<IMeasureItemVisual>> attributesList)
         {
@@ -255,8 +294,8 @@ namespace MusicXMLScore.LayoutControl
                 List<double> clefWidths = new List<double>();
                 foreach (var item in clefs)
                 {
-
-                    clefWidths.Add(staffs[item.Key].ArrangeAttributes(item.Value as IAttributeItemVisual));
+                    clefWidths.Add(testItemsContainer.ArrangeAttributes(item.Value as IAttributeItemVisual, new Dictionary<string, double>()));
+                    //clefWidths.Add(staffs[item.Key].ArrangeAttributes(item.Value as IAttributeItemVisual, new Dictionary<string, double>()));
                 }
                 maxClefWidth = clefWidths.Max();
             }
@@ -265,46 +304,40 @@ namespace MusicXMLScore.LayoutControl
                 List<double> keysWidths = new List<double>();
                 foreach (var item in keys)
                 {
-
-                    keysWidths.Add(staffs[item.Key].ArrangeAttributes(item.Value as IAttributeItemVisual /*maxClefWidth*/));
+                    keysWidths.Add(testItemsContainer.ArrangeAttributes(item.Value as IAttributeItemVisual, new Dictionary<string, double>()));
+                    //keysWidths.Add(staffs[item.Key].ArrangeAttributes(item.Value as IAttributeItemVisual, new Dictionary<string, double>()));
                 }
                 maxKeyWidth = keysWidths.Max();
-                //if(maxKeyWidth == 0)
-                //{
-                //    maxKeyWidth = maxClefWidth;
-                //}
             }
             if (times.Count != 0)
             {
                 List<double> timesWidths = new List<double>();
                 foreach (var item in times)
                 {
-
-                    timesWidths.Add(staffs[item.Key].ArrangeAttributes(item.Value as IAttributeItemVisual /*maxKeyWidth*/));
+                    timesWidths.Add(testItemsContainer.ArrangeAttributes(item.Value as IAttributeItemVisual, new Dictionary<string, double>()));
+                    //timesWidths.Add(staffs[item.Key].ArrangeAttributes(item.Value as IAttributeItemVisual, new Dictionary<string, double>()));
                 }
                 maxTimeWidth = timesWidths.Max();
-                //if (maxTimeWidth ==0)
-                //{
-                //    maxTimeWidth = maxKeyWidth;
-                //}
             }
             attributesWidths = Tuple.Create(maxClefWidth, maxKeyWidth, maxTimeWidth);
             return 0.0;
         }
         private void AppendContainersToSegment()
         {
-            foreach (var item in staffs)
-            {
-                segmentPanel.AddNotesContainer(item.Value, int.Parse(item.Key));
-            }
+            segmentPanel.AddNotesContainer(testItemsContainer, stavesCount);
+            //foreach (var item in staffs)
+            //{
+            //    segmentPanel.AddNotesContainer(item.Value, int.Parse(item.Key));
+            //}
         }
         public List<int> GetIndexes()
         {
             List<List<int>> indexes = new List<List<int>>();
-            foreach (var item in staffs)
-            {
-                indexes.Add(item.Value.GetDurationIndexes());
-            }
+            indexes.Add(testItemsContainer.GetDurationIndexes());
+            //foreach (var item in staffs)
+            //{
+            //    indexes.Add(item.Value.GetDurationIndexes());
+            //}
             return indexes.SelectMany(x => x).Distinct().ToList();
         }
 
@@ -319,6 +352,13 @@ namespace MusicXMLScore.LayoutControl
         public SegmentPanel GetContentPanel()
         {
             return segmentPanel;
+        }
+        public void AddBeams(List<DrawingVisualHost> beams)
+        {
+            foreach (var item in beams)
+            {
+                segmentPanel.Children.Add(item);
+            }
         }
     }
 }
