@@ -90,10 +90,10 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
             }
             foreach (var item in beamsSegmentsPerVoice.Values)
             {
-                foreach (var segment in item)
+                foreach (var beamSegment in item)
                 {
-                    segment.Draw(durationTable);
-                    beamsVisuals.AddRange(segment.BeamVisuals);
+                    beamSegment.Draw(durationTable);
+                    beamsVisuals.AddRange(beamSegment.BeamVisuals);
                 }
             }
         }
@@ -101,12 +101,15 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
 
     class BeamSegment
     {
-        Dictionary<int, BeamItem> beamedNotes;
+        Dictionary<int, BeamItem> beamedStems;
         string voice;
         List<DrawingVisualHost> beamVisuals = new List<DrawingVisualHost>();
         Dictionary<int, List<BeamItem>> beamsList;
-        int maxBeams; //max beams of all beamed notes
-        double slope; // not real slope...  ==> interval in staffspaces between first and last beamed note
+        int maxBeams; //! max beams of all beamed notes
+        double slope; //! not real slope...  ==> interval in staffspaces between first and last beamed note
+        double slopeValue; //! real slope... :)
+        bool isSlopeUpward; //! slope direction
+        Dictionary<int, double> positionsTable;
         public List<DrawingVisualHost> BeamVisuals
         {
             get
@@ -123,69 +126,108 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
         public BeamSegment(Dictionary<int, BeamItem> beamedNotesFractions, string voice)
         {
             this.voice = voice;
-            beamedNotes = beamedNotesFractions;
-            InitSegment();
+            beamedStems = beamedNotesFractions;
+            InitBeamSegment();
         }
 
-        private void InitSegment()
+        private void InitBeamSegment()
         {
             beamsList = new Dictionary<int, List<BeamItem>>();
-            maxBeams = beamedNotes.Select(x => x.Value.Beams.Count).Max();
+            maxBeams = beamedStems.Select(x => x.Value.Beams.Count).Max();
             for (int i = 1; i <= maxBeams; i++)
             {
-                List<BeamItem> tempList = beamedNotes.Values.Select(x => x).Where(x => x.Beams.ContainsKey(i)).Select(x=>x).ToList();
-
+                List<BeamItem> tempList = beamedStems.Values.Select(x => x).Where(x => x.Beams.ContainsKey(i)).Select(x=>x).ToList();
                 beamsList.Add(i, tempList);
             }
         }
 
         public void Draw(Dictionary<int, double> positionsTable)
         {
-            Dictionary<int, Point> positions = new Dictionary<int, Point>();
-            Dictionary<int, Dictionary<string, Point>> positionsAll = new Dictionary<int, Dictionary<string, Point>>();
-            CalculateSlopes();
+            Dictionary<int, Point> stemPositions = new Dictionary<int, Point>();
+            CalculateSlopes(positionsTable);
             CorrectStems();
-            foreach (var item in beamedNotes)
+            foreach (var item in beamedStems)
             {
                 int direction = item.Value.Stem.IsDirectionDown() ? -1 : 1;
                 double offset = 2.5.TenthsToWPFUnit() * direction;
                 Dictionary<string, Point> beamPositions = new Dictionary<string, Point>();
-                Point position = new Point(positionsTable[item.Key] + beamedNotes[item.Key].Stem.GetStemEndCalculated().X, beamedNotes[item.Key].Stem.GetStemEndCalculated().Y);
+                Point position = new Point(positionsTable[item.Key] + beamedStems[item.Key].Stem.GetStemEndCalculated().X, beamedStems[item.Key].Stem.GetStemEndCalculated().Y);
                 double tempYOffset = offset;
                 for (int i = 1; i <= item.Value.Beams.Count; i++)
                 {
                     beamPositions.Add(i.ToString(), new Point(position.X, position.Y + tempYOffset));
                     tempYOffset += 7.5.TenthsToWPFUnit() * direction;
                 }
-                positionsAll.Add(item.Key, beamPositions);
-                positions.Add(item.Key, new Point(positionsTable[item.Key] + beamedNotes[item.Key].Stem.GetStemEndCalculated().X, beamedNotes[item.Key].Stem.GetStemEndCalculated().Y + offset));
+                stemPositions.Add(item.Key, new Point(positionsTable[item.Key] + beamedStems[item.Key].Stem.GetStemEndCalculated().X, beamedStems[item.Key].Stem.GetStemEndCalculated().Y + offset));
             }
-            DrawingVisual dv = new DrawingVisual();
-            var keys = positions.Keys.ToArray();
-            using (DrawingContext dc = dv.RenderOpen())
+            DrawingVisual beamsDrawingVisual = new DrawingVisual();
+            var fractionKeys = stemPositions.Keys.ToArray();
+            int dir = beamedStems.FirstOrDefault().Value.Stem.IsDirectionDown() ? -1 : 1;
+            using (DrawingContext dc = beamsDrawingVisual.RenderOpen())
             {
-                for (int i = 1; i < positions.Count; i++)
+                for (int i = 1; i < stemPositions.Count; i++)
                 {
-                    dc.DrawLine(new Pen(beamedNotes.FirstOrDefault().Value.Stem.GetColor(), 5.0.TenthsToWPFUnit()), positions[keys[i - 1]], positions[keys[i]]);
+                    //! skip counting beam hooks
+                    int beamsCount = beamedStems[fractionKeys[i - 1]].Beams.Where(
+                        x=>x.Value != Model.Helpers.SimpleTypes.BeamValueMusicXML.forwardhook ||
+                        x.Value != Model.Helpers.SimpleTypes.BeamValueMusicXML.backwardhook).Count();
+
+                    for (int j = 0; j < beamsCount; j++)
+                    {
+                        if (beamedStems[fractionKeys[i]].Beams.ContainsKey(j+1))//? necessary to skip beam drawing if current beam is end
+                        {
+                            dc.DrawLine(new Pen(beamedStems.FirstOrDefault().Value.Stem.GetColor(), 5.0.TenthsToWPFUnit()), new Point(stemPositions[fractionKeys[i - 1]].X, stemPositions[fractionKeys[i - 1]].Y + j * (7.5.TenthsToWPFUnit() * dir)), new Point(stemPositions[fractionKeys[i]].X, stemPositions[fractionKeys[i]].Y + j * (7.5.TenthsToWPFUnit() * dir)));
+                        }
+                        if (beamedStems[fractionKeys[i]].Beams.ContainsValue(Model.Helpers.SimpleTypes.BeamValueMusicXML.backwardhook) && j +1 == beamsCount)
+                        {
+                            DrawBeamHooks(dc, i, j, stemPositions, Model.Helpers.SimpleTypes.BeamValueMusicXML.backwardhook);
+                        }
+                        if (beamedStems[fractionKeys[i-1]].Beams.ContainsValue(Model.Helpers.SimpleTypes.BeamValueMusicXML.forwardhook) && j+1 == beamsCount)
+                        {
+                            //? j-1 temp, need tests (without decrementing hook is drawn with one beamSpacing lower
+                            DrawBeamHooks(dc, i, j-1, stemPositions, Model.Helpers.SimpleTypes.BeamValueMusicXML.forwardhook);
+                        }
+                    }
+                    
                 }
             }
-            DrawingVisualHost dvh = new DrawingVisualHost();
-            dvh.AddVisual(dv);
-            beamVisuals.Add(dvh);
+            DrawingVisualHost drawingVisualHost = new DrawingVisualHost();
+            drawingVisualHost.AddVisual(beamsDrawingVisual);
+            beamVisuals.Add(drawingVisualHost);
+        }
+
+        private void DrawBeamHooks(DrawingContext dc, int i, int j, Dictionary<int,Point> positions, Model.Helpers.SimpleTypes.BeamValueMusicXML hookType)
+        {
+            int isForward = hookType == Model.Helpers.SimpleTypes.BeamValueMusicXML.forwardhook ? 1 : 0; // forwardHook need previous stem position
+            int dir = beamedStems.FirstOrDefault().Value.Stem.IsDirectionDown() ? -1 : 1;
+            int slopeDir = isSlopeUpward ? -1 : 1;
+            var keys = positions.Keys.ToArray();
+            int hookCount = beamedStems[keys[i - isForward]].Beams.Select(x => x.Value).Where(x => x == hookType).Count();
+            double hookLength = hookType == Model.Helpers.SimpleTypes.BeamValueMusicXML.forwardhook ? 10.0.TenthsToWPFUnit() : -10.0.TenthsToWPFUnit(); 
+            for (int h = 1; h <= hookCount; h++)
+            {
+                Point stemEndPoint = new Point(positions[keys[i - isForward]].X, positions[keys[i- isForward]].Y + (j + h) * (7.5.TenthsToWPFUnit() * dir));
+                double hookX = stemEndPoint.X + hookLength;
+                double hookY = FindStemEndY(slopeDir * slopeValue, stemEndPoint, hookX);
+                dc.DrawLine(new Pen(beamedStems.FirstOrDefault().Value.Stem.GetColor(), 5.0.TenthsToWPFUnit()), new Point(hookX, hookY), stemEndPoint);
+            }
         }
 
         private void CorrectStems()
         {
             List<BeamItem> mainBeam = beamsList[1];
-            bool isDown = mainBeam.FirstOrDefault().Stem.IsDirectionDown();
+            bool isStemDirestionDown = mainBeam.FirstOrDefault().Stem.IsDirectionDown();
             //! higher pitchedPosition ==> lower note pitch
-
-            //
+            Point p = new Point(0, 22);
+            Point p1 = new Point(10, slope * 10.0.TenthsToWPFUnit());
+            double test = FindStemEndY(slopeValue, p1, p.X);
             var firstNoteBeamPitch = mainBeam.Where(x => x.Beams[1] == Model.Helpers.SimpleTypes.BeamValueMusicXML.begin).FirstOrDefault().Stem.NoteReference.PitchedPosition.FirstOrDefault().Value;
             var lastNoteBeamPitch = mainBeam.Where(x => x.Beams[1] == Model.Helpers.SimpleTypes.BeamValueMusicXML.end).FirstOrDefault().Stem.NoteReference.PitchedPosition.FirstOrDefault().Value;
-            if (isDown)
+
+            if (isStemDirestionDown)
             {
-                if (mainBeam.Count == 2) //? correct stem lengths using calculated slope(distance difference between stem endPoints
+                //? correct stem lengths using calculated slope(distance difference between stem endPoints
+                if (mainBeam.Count == 2) 
                 {
                     if (firstNoteBeamPitch == lastNoteBeamPitch)
                     {
@@ -193,13 +235,14 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
                     }
                     if (firstNoteBeamPitch > lastNoteBeamPitch)
                     {
+                        isSlopeUpward = true;
                         double endPointFirstStem = mainBeam[0].Stem.GetStemEndCalculated().Y;
-                        mainBeam[1].Stem.SetEndPointY(endPointFirstStem - (slope * 10.0.TenthsToWPFUnit()) /*? +2.5.TenthsToWPFUnit()*/); //add some to stem length to compensate beams
+                        mainBeam[1].Stem.SetEndPointY(endPointFirstStem - (slope * 10.0.TenthsToWPFUnit()) +2.5.TenthsToWPFUnit()); //add some to stem length to compensate beams
                     }
                     else
                     {
                         double endPointLastStem = mainBeam[1].Stem.GetStemEndCalculated().Y;
-                        mainBeam[0].Stem.SetEndPointY(endPointLastStem - (slope * 10.0.TenthsToWPFUnit()) /*? + 2.5.TenthsToWPFUnit()*/);
+                        mainBeam[0].Stem.SetEndPointY(endPointLastStem - (slope * 10.0.TenthsToWPFUnit()) +2.5.TenthsToWPFUnit());
                     }
 
                 }
@@ -216,17 +259,18 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
                     }
                     if (firstNoteBeamPitch > lastNoteBeamPitch)
                     {
-                        AdvancedStemCorrection(isDown, true);
+                        AdvancedStemCorrection(isStemDirestionDown, true);
                     }
                     if (firstNoteBeamPitch < lastNoteBeamPitch)
                     {
-                        AdvancedStemCorrection(isDown, false);
+                        AdvancedStemCorrection(isStemDirestionDown, false);
                     }
                 }
             }
             else //! If stem is Up
             {
-                if (mainBeam.Count == 2) //? correct stem lengths using calculated slope(distance difference between stem endPoints
+                //? correct stem lengths using calculated slope(distance difference between stem endPoints
+                if (mainBeam.Count == 2) 
                 {
                     if (firstNoteBeamPitch == lastNoteBeamPitch)
                     {
@@ -234,13 +278,14 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
                     }
                     if (firstNoteBeamPitch > lastNoteBeamPitch)
                     {
-                        double endPointFirstStem = mainBeam[0].Stem.GetStemEndCalculated().Y;
-                        mainBeam[1].Stem.SetEndPointY(endPointFirstStem - (slope * 10.0.TenthsToWPFUnit()) + 2.5.TenthsToWPFUnit());
+                        isSlopeUpward = true;
+                        double endPointFirstStem = mainBeam[1].Stem.GetStemEndCalculated().Y;
+                        mainBeam[0].Stem.SetEndPointY(endPointFirstStem + (slope * 10.0.TenthsToWPFUnit()) + 2.5.TenthsToWPFUnit());
                     }
                     else
                     {
-                        double endPointLastStem = mainBeam[1].Stem.GetStemEndCalculated().Y;
-                        mainBeam[0].Stem.SetEndPointY(endPointLastStem - (slope * 10.0.TenthsToWPFUnit()) + 2.5.TenthsToWPFUnit());
+                        double endPointLastStem = mainBeam[0].Stem.GetStemEndCalculated().Y;
+                        mainBeam[1].Stem.SetEndPointY(endPointLastStem +(slope * 10.0.TenthsToWPFUnit()) + 2.5.TenthsToWPFUnit());
                     }
 
                 }
@@ -257,11 +302,11 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
                     }
                     if (firstNoteBeamPitch > lastNoteBeamPitch)
                     {
-                        AdvancedStemCorrection(isDown, true);
+                        AdvancedStemCorrection(isStemDirestionDown, true);
                     }
                     if (firstNoteBeamPitch < lastNoteBeamPitch)
                     {
-                        AdvancedStemCorrection(isDown, false);
+                        AdvancedStemCorrection(isStemDirestionDown, false);
                     }
                 }
             }
@@ -270,13 +315,15 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
         private void AdvancedStemCorrection(bool isStemDownwardsDirection, bool slopeUpward)
         {
             List<BeamItem> mainBeamsList = beamsList[1];
-            List<BeamItem> midBeamsList = mainBeamsList.Skip(1).Take(mainBeamsList.Count - 2).ToList();
+            //List<BeamItem> midBeamsList = mainBeamsList.Skip(1).Take(mainBeamsList.Count - 2).ToList();
+            isSlopeUpward = slopeUpward;
             var pitchesList = GetPitchesFromBeamList(mainBeamsList);
             var iterationsPerPitch = PitchesListConvertToCounts(pitchesList);
             bool horizontalBeam = false;
-            var test = iterationsPerPitch.GroupBy(group => group.Value).Where(group => group.Count() > 1).Where(x=>x.Any(z=>z.Value != 1)).ToList();
-            //if found any pitch iterations set beam to hotizontal/ no slope
-            if (iterationsPerPitch.Any(x=>x.Value > 2) || test.Count !=0 )
+            var pitchSequenceRepeats = iterationsPerPitch.GroupBy(group => group.Value).Where(group => group.Count() > 1).Where(x=>x.Any(z=>z.Value != 1)).ToList();
+            
+            //! if found any pitch iterations set beam to hotizontal/ no slope
+            if (iterationsPerPitch.Any(x=>x.Value > 2) || pitchSequenceRepeats.Count !=0 )
             {
                 horizontalBeam = true;
                 if (isStemDownwardsDirection)
@@ -284,6 +331,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
                     var lowestStemEnd = mainBeamsList.Select(x => x).Where(x => x.Stem.NoteReference.PitchedPosition.Values.FirstOrDefault() == pitchesList.Max(y => y.Value)).FirstOrDefault().Stem.GetStemEndCalculated().Y;
                     foreach (var item in mainBeamsList)
                     {
+                        //! update stem
                         item.Stem.SetEndPointY(lowestStemEnd);
                     }
                 }
@@ -292,35 +340,66 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
                     var highestStemEnd = mainBeamsList.Select(x => x).Where(x => x.Stem.NoteReference.PitchedPosition.Values.FirstOrDefault() == pitchesList.Min(y => y.Value)).FirstOrDefault().Stem.GetStemEndCalculated().Y;
                     foreach (var item in mainBeamsList)
                     {
+                        //! update stem
                         item.Stem.SetEndPointY(highestStemEnd);
                     }
                 }
             }
-            //if stem lengths set in horizonlal section, just skip other calculations
+            //! if stem lengths set in horizonlal section, just skip other calculations
             if (!horizontalBeam)
             {
                 if (isStemDownwardsDirection)
                 {
-                    //find lowest pitch, set sortest stem then recalculate other stems according to calculated slope
+                    //! find lowest pitch, set sortest stem then recalculate other stems according to calculated slope
+                    var highestNote = mainBeamsList.Select(x => x).Where(x => x.Stem.NoteReference.PitchedPosition.Values.FirstOrDefault() == pitchesList.Max(y => y.Value)).FirstOrDefault();
+                    double highestStemEnd = highestNote.Stem.GetStemEndCalculated().Y;
+                    double highestStemEndX = positionsTable[highestNote.FractionPosition];
                     if (slopeUpward)
                     {
-
+                        foreach (var item in mainBeamsList)
+                        {
+                            double calculatedStemEndX = positionsTable[item.FractionPosition] - highestStemEndX;
+                            double stemEndY = FindStemEndY(-slopeValue, new Point(0, highestStemEnd), calculatedStemEndX);
+                            //! update stem
+                            item.Stem.SetEndPointY(stemEndY);
+                        }
                     }
                     else
                     {
-
+                        foreach (var item in mainBeamsList)
+                        {
+                            double calculatedStemEndX = positionsTable[item.FractionPosition] - highestStemEndX;
+                            double stemEndY = FindStemEndY(slopeValue, new Point(0, highestStemEnd), calculatedStemEndX);
+                            //! update stem
+                            item.Stem.SetEndPointY(stemEndY);
+                        }
                     }
                 }
                 else
                 {
-                    //find highest pitch, set sortest stem then recalculate other stems according to calculated slope
+                    //! find highest pitch, set sortest stem then recalculate other stems according to calculated slope
+                    var highestNote = mainBeamsList.Select(x => x).Where(x => x.Stem.NoteReference.PitchedPosition.Values.FirstOrDefault() == pitchesList.Min(y => y.Value)).FirstOrDefault();
+                    double highestStemEnd = highestNote.Stem.GetStemEndCalculated().Y;
+                    double highestStemEndX = positionsTable[highestNote.FractionPosition];
                     if (slopeUpward)
                     {
-                        // var 
+                        foreach (var item in mainBeamsList)
+                        {
+                            double calculatedStemEndX = positionsTable[item.FractionPosition] - highestStemEndX;
+                            double stemEndY = FindStemEndY(-slopeValue, new Point(0, highestStemEnd), calculatedStemEndX);
+                            //! update stem
+                            item.Stem.SetEndPointY(stemEndY);
+                        }
                     }
                     else
                     {
-
+                        foreach (var item in mainBeamsList)
+                        {
+                            double calculatedStemEndX = positionsTable[item.FractionPosition] - highestStemEndX;
+                            double stemEndY = FindStemEndY(slopeValue, new Point(0, highestStemEnd), calculatedStemEndX);
+                            //! update stem
+                            item.Stem.SetEndPointY(stemEndY);
+                        }
                     }
                 }
             }
@@ -348,13 +427,25 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
             }
             return result;
         }
-        private void CalculateSlopes()
+        private void CalculateSlopes(Dictionary<int, double> positionsTable)
         {
+            this.positionsTable = positionsTable;
             List<BeamItem> mainBeam = beamsList[1];
             bool isDown = mainBeam.FirstOrDefault().Stem.IsDirectionDown();
             int begin = mainBeam.FirstOrDefault().Stem.NoteReference.PitchedPosition.FirstOrDefault().Value;
             int end = mainBeam.LastOrDefault().Stem.NoteReference.PitchedPosition.FirstOrDefault().Value;
             slope = GetSlope(begin, end);
+            slopeValue = ConvertBeamSlopeToSlope(slope, GetDistanceBetweenFirstLastStem());
+        }
+
+        private double GetDistanceBetweenFirstLastStem()
+        {
+            double result = 0.0;
+            List<BeamItem> mainBeam = beamsList[1];
+            double firstX = positionsTable[mainBeam.FirstOrDefault().FractionPosition];
+            double lastX = positionsTable[mainBeam.LastOrDefault().FractionPosition];
+            result = lastX - firstX;
+            return result;
         }
 
         /// <summary>
@@ -419,6 +510,39 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
                 return true;
             }
             return false;
+        }
+        private double ConvertBeamSlopeToSlope(double beamSlope, double distanceBetweenFirstLastStem)
+        {
+            double result;
+            Point last = new Point(distanceBetweenFirstLastStem, beamSlope * 10.0.TenthsToWPFUnit());
+            Point first = new Point();
+            result = CalculateSlopeValue(first, last);
+            return result;
+        }
+
+        private double CalculateSlopeValue(Point first, Point last)
+        {
+            double result;
+            if (first.X == last.X)
+            {
+                //points lying on vertical line, division by 0 
+                return 0; 
+            }
+            result = (last.Y - first.Y) / (last.X - first.X);
+            return result;
+        }
+
+        private double FindStemEndY(double slope, Point referencePoint, double stemX)
+        {
+            double result;
+            if (referencePoint.X == stemX)
+            {
+                //division by 0; 
+                //points have same x position, stem end.Y should be equal
+                return referencePoint.Y;
+            }
+            result = -(slope * (referencePoint.X - stemX)) + referencePoint.Y;
+            return result;
         }
     }
 }
