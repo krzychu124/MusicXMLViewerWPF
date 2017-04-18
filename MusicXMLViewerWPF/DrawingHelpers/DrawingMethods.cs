@@ -74,7 +74,7 @@ namespace MusicXMLScore.DrawingHelpers
             }
         }
 
-        public static void AddCharacterGlyph(this DrawingVisualHost canvas, Point position, string character, bool isSmall = false, Brush color = null)
+        public static void AddCharacterGlyph(this DrawingVisualHost visualHost, Point position, string character, bool isSmall = false, Brush color = null)
         {
             Brush characterColor = color ?? Brushes.Black;
             DrawingVisual visual = new DrawingVisual();
@@ -105,7 +105,7 @@ namespace MusicXMLScore.DrawingHelpers
                     null);   // xmlLanguage
                 dc.DrawGlyphRun(characterColor, gr);
             }
-            canvas.AddVisual(visual);
+            visualHost.AddVisual(visual);
         }
 
         public static Size GetTextHeight(string text, double size, Typeface typeFace)

@@ -165,13 +165,28 @@ namespace MusicXMLScore.DrawingHelpers
         public const string HalfDot = "\uE0A3";
         public const string QuarterDot = "\uE0A4";
         //public const string DurationDot = "\U0001D157";
+        //upwards
         public const string NoteLine = "\uE010";
-
-        public const string FlagEight = "\U0001D16E";
-        public const string FlagSixteen = "\U0001D16f";
-        public const string FlagThirtyTwo = "\U0001D170";
-        public const string FlagSixstyFour = "\U0001D171";
-        #endregion     
+        public const string Flag8thU = "\uE240";
+        public const string Flag16thU = "\uE242";
+        public const string Flag32ndU = "\uE244";
+        public const string Flag64thU = "\uE246";
+        public const string Flag128thU = "\uE248";
+        public const string Flag256thU = "\uE24A";
+        public const string Flag512thU = "\uE24C";
+        public const string Flag1024thU = "\uE24E";
+        public const string CombiningFlagU = "\uE250";
+        //downwards
+        public const string Flag8thD = "\uE241";
+        public const string Flag16thD = "\uE243";
+        public const string Flag32ndD = "\uE245";
+        public const string Flag64thD = "\uE247";
+        public const string Flag128thD = "\uE249";
+        public const string Flag256thD = "\uE24B";
+        public const string Flag512thD = "\uE24D";
+        public const string Flag1024thD = "\uE24F";
+        public const string CombiningFlagD = "\uE251";
+        #endregion
 
         #region articulations
         public const string Accent = "\uE4A0";
@@ -300,8 +315,36 @@ namespace MusicXMLScore.DrawingHelpers
         public const string TPlusSignBig = "\uE08C";
         #endregion
         #endregion
-        
-        public static string getNoteSymbol(string s,bool d)
+
+        public static string GetFlag(NoteTypeValueMusicXML noteType, bool isDownwards)
+        {
+            string flag = "";
+            if (!isDownwards)
+            {
+                if (FlagsSymbols_Upwards.ContainsKey(noteType))
+                {
+                    flag = FlagsSymbols_Upwards[noteType];
+                }
+                else
+                {
+                    throw new NotImplementedException();
+                }
+            }
+            else
+            {
+                if (FlagsSymbols_Downwards.ContainsKey(noteType))
+                {
+                    flag = FlagsSymbols_Downwards[noteType];
+                }
+                else
+                {
+                    throw new NotImplementedException();
+                }
+            }
+            return flag;
+        }
+
+        public static string GetNoteSymbol(string s,bool d)
         {
             string x = "n?";
             if (d==true)
@@ -411,6 +454,26 @@ namespace MusicXMLScore.DrawingHelpers
             {NoteTypeValueMusicXML.Item256th, QuarterStdNoteHead },
             {NoteTypeValueMusicXML.Item512th, QuarterStdNoteHead },
             {NoteTypeValueMusicXML.Item1024th, QuarterStdNoteHead },
+        };
+        private static Dictionary<NoteTypeValueMusicXML, string> FlagsSymbols_Upwards = new Dictionary<NoteTypeValueMusicXML, string>() {
+            {NoteTypeValueMusicXML.eighth, Flag8thU },
+            {NoteTypeValueMusicXML.Item16th, Flag16thU},
+            {NoteTypeValueMusicXML.Item32nd, Flag32ndU },
+            {NoteTypeValueMusicXML.Item64th, Flag64thU },
+            {NoteTypeValueMusicXML.Item128th, Flag128thU },
+            {NoteTypeValueMusicXML.Item256th, Flag256thU },
+            {NoteTypeValueMusicXML.Item512th, Flag512thU },
+            {NoteTypeValueMusicXML.Item1024th, Flag1024thU },
+        };
+        private static Dictionary<NoteTypeValueMusicXML, string> FlagsSymbols_Downwards = new Dictionary<NoteTypeValueMusicXML, string>() {
+            {NoteTypeValueMusicXML.eighth, Flag8thD },
+            {NoteTypeValueMusicXML.Item16th, Flag16thD},
+            {NoteTypeValueMusicXML.Item32nd, Flag32ndD },
+            {NoteTypeValueMusicXML.Item64th, Flag64thD },
+            {NoteTypeValueMusicXML.Item128th, Flag128thD },
+            {NoteTypeValueMusicXML.Item256th, Flag256thD },
+            {NoteTypeValueMusicXML.Item512th, Flag512thD },
+            {NoteTypeValueMusicXML.Item1024th, Flag1024thD },
         };
     }
 }
