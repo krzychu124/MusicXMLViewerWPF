@@ -65,7 +65,15 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
             {
                 InitBeams();
             }
+            else
+            {
+                if((int)noteType  < 8)
+                {
+                    DrawFlag();
+                }
+            }
         }
+
         public NoteContainerItem(List<NoteMusicXML> chordList, int fractionPosition, string partId, string measureId, string staffId)
         {
             noteItem = chordList;
@@ -81,6 +89,24 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
             {
                 InitBeams();
             }
+            else
+            {
+                if ((int)noteType < 8)
+                {
+                    DrawFlag();
+                }
+            }
+        }
+        
+        private void DrawFlag()
+        {
+            bool isFlagDownwards = stem.IsDirectionDown();
+            string flagSymbol = MusicSymbols.GetFlag(noteType, isFlagDownwards);
+            Point stemEnd = stem.GetStemEnd();
+            DrawingVisualHost flagHost = new DrawingVisualHost();
+            flagHost.AddCharacterGlyph(stemEnd, flagSymbol, isSmall, color);
+            flagHost.Tag = "flag";
+            AddFlag(flagHost);
         }
 
         private void InitBeams()
@@ -200,6 +226,15 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
             }
             ItemCanvas.Children.Add(dvh);
         }
+        private void AddFlag(DrawingVisualHost flagHost)
+        {
+            var flag = ItemCanvas.Children.OfType<DrawingVisualHost>().Where(x => (string)x.Tag == "flag").FirstOrDefault();
+            if (flag != null)
+            {
+                ItemCanvas.Children.Remove(flag);
+            }
+            ItemCanvas.Children.Add(flagHost);
+        }
 
         private void SetLedgerLinesPositions(int count, bool above = false)
         {
@@ -225,8 +260,14 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
         private void GetSymbol()
         {
             Tuple<NoteTypeValueMusicXML, bool> value = CalculationHelpers.GetBaseDurationValue(duration, partId, measureId);
-            noteType = value.Item1;
-            
+            if (noteVisualType == NoteChoiceTypeMusicXML.grace)
+            {
+                noteType = noteItem.FirstOrDefault().Type.Value;
+            }
+            else
+            {
+                noteType = value.Item1;
+            }
             hasDots = value.Item2;
             symbol = MusicSymbols.GetNoteHeadSymbolNoteType(noteType);
         }
