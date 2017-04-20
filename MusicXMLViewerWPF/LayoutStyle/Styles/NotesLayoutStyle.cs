@@ -16,8 +16,8 @@ namespace MusicXMLScore.LayoutStyle
         private double maxStemLength = 45;
         private double stemThickness = 1.2;
 
-        private double dotStandardOffset = 1; //! test
-        private double dotIfFlagOffset = 1; //! test
+        private double dotStandardOffset = 5; //! test
+        private double dotIfFlagOffset = 5; //! test
 
         #region ArticulationStyle
         private double articulationToNoteOffset = 2;

@@ -158,7 +158,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
                 }
                 if (hasDots)
                 {
-
+                    DrawDots(noteVisualHost, index);
                 }
                 index++;
             }
@@ -176,6 +176,25 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
                 }
             }
             ItemCanvas.Children.Add(noteVisualHost);
+        }
+
+        private void DrawDots(DrawingVisualHost noteVisualHost, int index)
+        {
+            double dotPositionY = pitchedValue[index];
+            if (pitchedPosition[index] % 2 == 0)
+            {
+                double sizeFactor = isSmall ? 0.8 : 1.0;
+                double shiftUp = 5.0.TenthsToWPFUnit() * sizeFactor;
+                dotPositionY -= shiftUp;
+            }
+            int dotCount = noteItem[index].Dot.Count;
+            double noteWidth = DrawingMethods.GetTextWidth(symbol, TypeFaces.GetMusicFont(), isSmall);
+            Point dotPosition = new Point(noteWidth + layoutStyle.NotesStyle.DotStandardOffset.TenthsToWPFUnit(), dotPositionY);
+            for (int i = 0; i < dotCount; i++)
+            {
+                noteVisualHost.AddCharacterGlyph(dotPosition, MusicSymbols.Dot, isSmall, color);
+                dotPosition.X += layoutStyle.NotesStyle.DotStandardOffset.TenthsToWPFUnit();
+            }
         }
 
         private void DrawAccidental(NoteMusicXML note, int index, DrawingVisualHost noteVisualHost)
