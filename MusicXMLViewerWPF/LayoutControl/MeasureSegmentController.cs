@@ -87,7 +87,9 @@ namespace MusicXMLScore.LayoutControl
             var measureItems = measure.Items;
             List<BeamItem> beam = new List<BeamItem>();
             measureItemsContainer = new MeasureItemsContainer(measure.Number, partID, stavesCount, stavesCount.ToString());
-
+            List<NoteMusicXML> temporaryChordList = new List<NoteMusicXML>();
+            int chordDuration = 0;
+            string tempStaffNumber = "1";
             for (int i = 0; i < measure.Items.Length; i++)
             {
                 string typeName = measure.Items[i].GetType().Name;
@@ -116,18 +118,85 @@ namespace MusicXMLScore.LayoutControl
                     string voice = note.Voice;
                     if (note.IsRest())
                     {
+                        if (temporaryChordList.Count != 0)
+                        {
+                            var noteContainer = GenerateNoteContainerFromChords(temporaryChordList, durationCursor, partID, measure.Number, tempStaffNumber);
+                            temporaryChordList.Clear();
+                            if (noteContainer.Item1.Beams != null)
+                            {
+                                beam.Add(noteContainer.Item1.Beams);
+                            }
+                            //! add previous notesChord to container
+                            measureItemsContainer.AppendNoteWithStaffNumber(noteContainer.Item1, noteContainer.Item2, noteContainer.Item3, noteContainer.Item4);
+                            durationCursor += chordDuration;
+                        }
+                        //! add rest to container
                         measureItemsContainer.AppendRestWithStaffNumber(new RestContainterItem(note, durationCursor, partID, measure.Number, staffNumber), durationCursor, voice, staffNumber);
+                        durationCursor += note.GetDuration();
                     }
                     else
                     {
-                        var noteContainer = new NoteContainerItem(note, durationCursor, partID, measure.Number, staffNumber);
-                        if (noteContainer.Beams != null)
+                        if (!note.IsChord())
                         {
-                            beam.Add(noteContainer.Beams);
+                            if (!note.IsGrace())
+                            {
+                                if (temporaryChordList.Count != 0)
+                                {
+                                    var noteContainer = GenerateNoteContainerFromChords(temporaryChordList, durationCursor, partID, measure.Number, tempStaffNumber);
+                                    temporaryChordList.Clear();
+                                    if (noteContainer.Item1.Beams != null)
+                                    {
+                                        beam.Add(noteContainer.Item1.Beams);
+                                    }
+                                    //! add previous notesChord to container
+                                    measureItemsContainer.AppendNoteWithStaffNumber(noteContainer.Item1, noteContainer.Item2, noteContainer.Item3, noteContainer.Item4);
+                                    durationCursor += chordDuration;
+                                }
+                                chordDuration = note.GetDuration();
+                                tempStaffNumber = staffNumber;
+                                temporaryChordList.Add(note);
+
+                            }
+                            //temporaryChordList.Add(note);
                         }
-                        measureItemsContainer.AppendNoteWithStaffNumber(noteContainer, durationCursor, voice, staffNumber);
+                        else
+                        {
+                            temporaryChordList.Add(note);
+                        }
                     }
-                    durationCursor += !note.IsChord() ? note.GetDuration() : 0;
+                }
+                if (i < measure.Items.Length)
+                {
+                    if (temporaryChordList.Count != 0)
+                    {
+                        if (i + 1 < measure.Items.Length)
+                        {
+                            if (!(measure.Items[i+1] is NoteMusicXML))
+                            {
+                                var noteContainer = GenerateNoteContainerFromChords(temporaryChordList, durationCursor, partID, measure.Number, tempStaffNumber);
+                                temporaryChordList.Clear();
+                                if (noteContainer.Item1.Beams != null)
+                                {
+                                    beam.Add(noteContainer.Item1.Beams);
+                                }
+                                //! add previous notesChord to container
+                                measureItemsContainer.AppendNoteWithStaffNumber(noteContainer.Item1, noteContainer.Item2, noteContainer.Item3, noteContainer.Item4);
+                                durationCursor += chordDuration;
+                            }
+                        }
+                        if (i + 1 == measure.Items.Length)
+                        {
+                            var noteContainer = GenerateNoteContainerFromChords(temporaryChordList, durationCursor, partID, measure.Number, tempStaffNumber);
+                            temporaryChordList.Clear();
+                            if (noteContainer.Item1.Beams != null)
+                            {
+                                beam.Add(noteContainer.Item1.Beams);
+                            }
+                            //! add previous notesChord to container
+                            measureItemsContainer.AppendNoteWithStaffNumber(noteContainer.Item1, noteContainer.Item2, noteContainer.Item3, noteContainer.Item4);
+                            durationCursor += chordDuration;
+                        }
+                    }
                 }
             }
             beamsController = new BeamItemsController(beam);
@@ -139,6 +208,12 @@ namespace MusicXMLScore.LayoutControl
             stopWatch.Stop();
             Log.LoggIt.Log($"Measure content {measure.Number} (Switch) processig done in: {stopWatch.ElapsedMilliseconds}", Log.LogType.Warning);
 
+        }
+        private Tuple<NoteContainerItem, int, string, string> GenerateNoteContainerFromChords(List<NoteMusicXML> chordList, int durationCursor, string partId, string measireId, string staffId)
+        {
+            string chordVoice = chordList.FirstOrDefault().Voice;
+            NoteContainerItem noteContainer = new NoteContainerItem(chordList, durationCursor, partId, measireId, staffId);
+            return Tuple.Create(noteContainer, durationCursor, chordVoice, staffId);
         }
 
         private bool CheckIfElementsOtherThanClefKeyTime(AttributesMusicXML a, int currentFraction)

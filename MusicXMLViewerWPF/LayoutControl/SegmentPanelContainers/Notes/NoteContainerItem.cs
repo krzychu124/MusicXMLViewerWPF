@@ -68,7 +68,8 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
             InitNoteProperties();
             if (hasBeams)
             {
-                InitBeams();
+                hasBeams = false; // temp testing 
+               // InitBeams();
             }
             else
             {
@@ -81,6 +82,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
 
         public NoteContainerItem(List<NoteMusicXML> chordList, int fractionPosition, string partId, string measureId, string staffId)
         {
+            layoutStyle = ViewModel.ViewModelLocator.Instance.Main.CurrentLayout.LayoutStyle;
             noteItem = chordList;
             isChordNote = true;
             this.fractionPosition = fractionPosition;
@@ -89,10 +91,12 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
             this.partId = partId;
             this.itemStaff = staffId != null ? staffId : "1";
             itemCanvas = new Canvas();
+            //hasBeams = false; // temp testing 
+
             InitNoteProperties();
             if (hasBeams)
             {
-                InitBeams();
+                 InitBeams();
             }
             else
             {

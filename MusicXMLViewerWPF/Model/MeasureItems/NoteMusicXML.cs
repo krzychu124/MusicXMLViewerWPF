@@ -599,6 +599,10 @@ namespace MusicXMLScore.Model.MeasureItems
         {
             return ItemsElementName.Contains(NoteChoiceTypeMusicXML.chord);
         }
+        public bool IsGrace()
+        {
+            return ItemsElementName.Contains(NoteChoiceTypeMusicXML.grace);
+        }
     }
     [Serializable]
     public class UnpitchedMusicXML

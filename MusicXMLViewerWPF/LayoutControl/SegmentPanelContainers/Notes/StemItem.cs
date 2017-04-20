@@ -64,7 +64,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
 
         private void InitStem()
         {
-           if (note.NoteItem.Count == 1)
+            if (note.NoteItem.Count == 1)
             {
                 var noteItem = note.NoteItem.ElementAt(0);
                 var stem = noteItem.Stem;
@@ -73,6 +73,21 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
                     GetDirection(stem);
                     bool hasBeam = note.NoteItem.FirstOrDefault().Beam.Count != 0 ? true : false;
                     CalculatePosition(note.PitchedPosition.FirstOrDefault().Value, hasBeam);
+                }
+            }
+            else
+            {
+                var notes = note.NoteItem.Where(x => x.IsGrace() == false);
+                foreach (var noteItem in notes)
+                {
+                    //var noteItem = note;
+                    var stem = noteItem.Stem;
+                    if (stem != null)
+                    {
+                        GetDirection(stem);
+                        bool hasBeam = note.NoteItem.FirstOrDefault().Beam.Count != 0 ? true : false;
+                        CalculatePosition(note.PitchedPosition.FirstOrDefault().Value, hasBeam);
+                    }
                 }
             }
         }
