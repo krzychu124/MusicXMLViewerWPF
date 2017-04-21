@@ -189,11 +189,12 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
             }
             int dotCount = noteItem[index].Dot.Count;
             double noteWidth = DrawingMethods.GetTextWidth(symbol, TypeFaces.GetMusicFont(), isSmall);
+            double dotWidth = DrawingMethods.GetTextWidth(MusicSymbols.Dot, TypeFaces.GetMusicFont(), isSmall);
             Point dotPosition = new Point(noteWidth + layoutStyle.NotesStyle.DotStandardOffset.TenthsToWPFUnit(), dotPositionY);
             for (int i = 0; i < dotCount; i++)
             {
                 noteVisualHost.AddCharacterGlyph(dotPosition, MusicSymbols.Dot, isSmall, color);
-                dotPosition.X += layoutStyle.NotesStyle.DotStandardOffset.TenthsToWPFUnit();
+                dotPosition.X += layoutStyle.NotesStyle.DotStandardOffset.TenthsToWPFUnit() + dotWidth;
             }
         }
 
@@ -403,6 +404,13 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
                     UnpitchedMusicXML pitch = (UnpitchedMusicXML)pitchObject[pitchIndex];
                     pitchedPosition.Add(pitchIndex, CalculationHelpers.GetPitchIndexStaffLine(new PitchMusicXML() { Step = pitch.DisplayStep, Octave = pitch.DisplayOctave }, clef));
                     pitchedValue.Add(pitchIndex, staffLine[pitchedPosition[pitchIndex]]);
+                }
+            }
+            if (altered.Any(x=>x.Value == true))//bug fix - all chorded notes should have been altered if any
+            {
+                for (int i = 0; i < altered.Count; i++)
+                {
+                    altered[i] = true;
                 }
             }
         }
