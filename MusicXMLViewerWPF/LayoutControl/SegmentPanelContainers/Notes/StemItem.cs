@@ -116,23 +116,23 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
                 startPoint = new Point(noteWidth * sizeFactor, highestPitchPosition - yShift);
                 if (notePitchedPosition > 10)
                 {
-                    //set end point to middle staff line
+                    //! set end point to middle staff line
                     endPoint = new Point(noteWidth * sizeFactor, positionsTable[4]);
                 }
                 else
                 {
                     if (notePitchedPosition < 4) // lower than middle staffline pitch position
                     {
-                        //shortest length
+                        //! shortest length
                         double shortestLength = 25.0.TenthsToWPFUnit() * sizeFactor;
                         if (hasBeam)
                         {
-                            // beam thickness added to length
+                            //! beam thickness added to length
                             shortestLength = 30.0.TenthsToWPFUnit() * sizeFactor; 
                         }
                         if (notePitchedPosition < -2)
                         {
-                            // set shortest length
+                            //! set shortest length
                             endPoint = new Point(noteWidth * sizeFactor, y - shortestLength); 
                         }
                         else
@@ -142,21 +142,21 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
                             endPoint = new Point(noteWidth * sizeFactor, y - (shortestLength + shortestLengthCorrection));
                         }
                     }
-                    else // If pitch is between 4 and 10
+                    else //! If pitch is between 4 and 10
                     {
                         endPoint = new Point(noteWidth * sizeFactor, y - length);
                     }
                 }
                 isDown = false;
             }
-            else // stem down
+            else //! stem down
             {
                 int highestPitch = note.PitchedPosition.Min(x => x.Value);
                 double highestPitchPosition = positionsTable[highestPitch];
                 startPoint = new Point(0, highestPitchPosition + yShift);
                 if (notePitchedPosition < -2)
                 {
-                    //set end point to middle staff line
+                    //! set end point to middle staff line
                     endPoint = new Point(0, positionsTable[4]);
                 }
                 else
@@ -166,22 +166,22 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
                         double shortestLength = 25.0.TenthsToWPFUnit() * sizeFactor;
                         if (hasBeam)
                         {
-                            // beam thickness added to length
+                            //! beam thickness added to length
                             shortestLength = 30.0.TenthsToWPFUnit() * sizeFactor;
                         }
                         if (notePitchedPosition > 10)
                         {
-                            // set shortest length
+                            //! set shortest length
                             endPoint = new Point(0, y + shortestLength);
                         }
                         else
                         {
-                            //shorten legth according to pitch (between normal length and shortest)
+                            //! shorten legth according to pitch (between normal length and shortest)
                             double shortestLengthCorrection = ((10 - notePitchedPosition) / (double)5) * 10.0.TenthsToWPFUnit();
                             endPoint = new Point(0, y + (shortestLength + shortestLengthCorrection));
                         }
                     }
-                    else // if pitch is between -2 and 4
+                    else //! if pitch is between -2 and 4
                     {
                         endPoint = new Point(0, y + length);
                     }
