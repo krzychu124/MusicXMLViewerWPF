@@ -1,11 +1,18 @@
 # MusicXMLViewerWPF
 
-**_Everything here is an experiment here so everything could be changed completely in the near future._**
-#### Main goal of this project is learn and improve _C#_ by programming something bigger than "Calculator".
+**_Everything here is an experiment here, so everything could be changed completely in the near future._**
+## Main goal of this project: 
+### MusicXML Files: 
+ - [x] **Read** 
+ - [ ] **Display** 
+ - [ ] **Edit** 
+ - [ ] **Save** 
+ - [ ] **Print**
+---
 ---
 
 ### **Currently under developement:**
-   - [x] **MusicXML** Reading
+   - [x] **MusicXML File** Reading valid MusicXML files
    - [ ] **BasicUI Layout:** In-progress
       - [ ] Notes drawing
         - [x] NoteHeads - other than standard skipped for now
@@ -42,5 +49,5 @@
     
 ### **At the end:**  
   - [ ] Basic interaction with drawn/loaded Music Score or Template
-  - [ ] Drag 'n Drop objects, Copy/Paste selection etc... 
+  - [ ] Drag and Drop objects, Copy/Paste selection etc... 
   - [ ] Simple printing system: PDF, image, XPS or something else
