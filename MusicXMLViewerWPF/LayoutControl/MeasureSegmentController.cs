@@ -92,6 +92,27 @@ namespace MusicXMLScore.LayoutControl
             string tempStaffNumber = "1";
             for (int i = 0; i < measure.Items.Length; i++)
             {
+                if (temporaryChordList.Count != 0)
+                {
+                    if (!(measure.Items[i] is NoteMusicXML))
+                    {
+                        if (measure.Items[i] is DirectionMusicXML)
+                        {
+                            //continue; // bugfix => when chorded notes sequence is splited by direction items 
+                        }
+
+                        var noteContainer = GenerateNoteContainerFromChords(temporaryChordList, durationCursor, partID, measure.Number, tempStaffNumber);
+                        temporaryChordList.Clear();
+                        if (noteContainer.Item1.Beams != null)
+                        {
+                            beam.Add(noteContainer.Item1.Beams);
+                        }
+                        //! add previous notesChord to container
+                        measureItemsContainer.AppendNoteWithStaffNumber(noteContainer.Item1, noteContainer.Item2, noteContainer.Item3, noteContainer.Item4);
+                        durationCursor += chordDuration;
+                    }
+                }
+
                 string typeName = measure.Items[i].GetType().Name;
                 if (typeName == nameof(AttributesMusicXML))
                 {
@@ -171,18 +192,7 @@ namespace MusicXMLScore.LayoutControl
                     {
                         if (i + 1 < measure.Items.Length)
                         {
-                            if (!(measure.Items[i+1] is NoteMusicXML))
-                            {
-                                var noteContainer = GenerateNoteContainerFromChords(temporaryChordList, durationCursor, partID, measure.Number, tempStaffNumber);
-                                temporaryChordList.Clear();
-                                if (noteContainer.Item1.Beams != null)
-                                {
-                                    beam.Add(noteContainer.Item1.Beams);
-                                }
-                                //! add previous notesChord to container
-                                measureItemsContainer.AppendNoteWithStaffNumber(noteContainer.Item1, noteContainer.Item2, noteContainer.Item3, noteContainer.Item4);
-                                durationCursor += chordDuration;
-                            }
+                            
                         }
                         if (i + 1 == measure.Items.Length)
                         {
