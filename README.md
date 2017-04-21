@@ -7,9 +7,13 @@
 ---
 
 ### **Currently under developement:**
-   - [x] **MusicXML File** Reading valid MusicXML files
-   - [ ] **BasicUI Layout:** In-progress
-      - [ ] Notes drawing
+   - [x] **MusicXML File:** Reading valid MusicXML files
+   - [ ] **BasicUI Layout:** _In-progress_
+   
+      - [x] **Basic Measures Layout Arrange System** _(files **with** new-page, new-system elements support)_
+      - [ ] **Advanced Measures Layout Arrange System** _(files **without** new-page, new system elements)_ **WiP**
+      
+      - [ ] **Notes drawing:**
         - [x] NoteHeads - other than standard skipped for now
         - [x] NoteChords
         - [x] Rests
@@ -27,15 +31,18 @@
            - [ ] Slide
            - [ ] Slur
            - [ ] Tied Notes
-      - [x] Measure Attributes drawing (Clef, Key, Time Signature)
-      - [ ] Basic directions drawing
-        - [ ] Coda
-        - [ ] Dynamincs
-        - [ ] Segno
-        - [ ] Wedge (dim., cresc.)
-      - [ ] Barlines, Repeats, Endings, Staff grouping and other lines
-      
-
+      - [x] **Measure Attributes** (Clef, Key, Time Signature)
+      - [ ] **Basic directions:**
+         - [ ] Coda
+         - [ ] Dynamincs
+         - [ ] Segno
+         - [ ] Wedge (dim., cresc.)
+      - [ ] **Barlines**
+      - [ ] **Repeats**
+      - [ ] **Endings**
+      - [ ] **Staff grouping**
+      - [ ] **Other missing lines**
+ 
 ### **Next:**
   - [ ] Different types of Views (full, part, instrument or group)
   - [ ] Auto align content, 
