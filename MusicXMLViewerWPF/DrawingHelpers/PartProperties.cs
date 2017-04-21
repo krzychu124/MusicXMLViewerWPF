@@ -520,7 +520,7 @@ namespace MusicXMLScore.DrawingHelpers
                             break;
                         case nameof(NoteMusicXML):
                             NoteMusicXML n = (NoteMusicXML)measure.Items[i];
-                            fractionCursor += n.GetDuration();
+                            fractionCursor += n.IsChord() ||n.IsGrace() ? 0: n.GetDuration();
                             break;
                     }
                 }
