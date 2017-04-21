@@ -239,6 +239,8 @@ namespace MusicXMLScore.DrawingHelpers
                         durationTable.Add(possibleIndexes[i], positions[possibleIndexes[i]].Item1);
                     }
                 }
+                int lastDuration = durationTable.Keys.Max() + 1;
+                durationTable.Add(lastDuration, measureWidth); //adds one more which is measure duration (rigth barline position / calculating center position)
                 foreach (MeasureSegmentController measure in m)
                 {
                     measure.ArrangeUsingDurationTable(durationTable);

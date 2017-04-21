@@ -1,7 +1,9 @@
-﻿using MusicXMLScore.DrawingHelpers;
+﻿using MusicXMLScore.Converters;
+using MusicXMLScore.DrawingHelpers;
 using MusicXMLScore.Helpers;
 using MusicXMLScore.Model.Helpers.SimpleTypes;
 using MusicXMLScore.Model.MeasureItems;
+using MusicXMLScore.Model.MeasureItems.NoteItems;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,6 +24,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
         private int itemDuration = 0;
         private double itemWidth = 0.0;
         private double itemRightMargin = 0.0;
+        private double itemLeftMargin = 0.0;
         private double itemWidthMin = 0.0;
         private double itemWidthOpt = 0.0;
         private List<NoteMusicXML> noteItem;
@@ -49,8 +52,10 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
         private BeamItem beams;
         private bool isSmall = false;
         private bool hasBeams = false;
+        private LayoutStyle.Layout layoutStyle;
         public NoteContainerItem(NoteMusicXML note, int fractionPosition, string partId, string measureId, string staffId)
         {
+            layoutStyle = ViewModel.ViewModelLocator.Instance.Main.CurrentLayout.LayoutStyle;
             noteItem = new List<NoteMusicXML>();
             noteItem.Add(note);
             isChordNote = false;
@@ -63,7 +68,8 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
             InitNoteProperties();
             if (hasBeams)
             {
-                InitBeams();
+                hasBeams = false; // temp testing 
+               // InitBeams();
             }
             else
             {
@@ -76,6 +82,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
 
         public NoteContainerItem(List<NoteMusicXML> chordList, int fractionPosition, string partId, string measureId, string staffId)
         {
+            layoutStyle = ViewModel.ViewModelLocator.Instance.Main.CurrentLayout.LayoutStyle;
             noteItem = chordList;
             isChordNote = true;
             this.fractionPosition = fractionPosition;
@@ -84,10 +91,12 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
             this.partId = partId;
             this.itemStaff = staffId != null ? staffId : "1";
             itemCanvas = new Canvas();
+            //hasBeams = false; // temp testing 
+
             InitNoteProperties();
             if (hasBeams)
             {
-                InitBeams();
+                 InitBeams();
             }
             else
             {
@@ -137,16 +146,19 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
         private void Draw()
         {
             isSmall = noteVisualType == NoteChoiceTypeMusicXML.cue || noteVisualType == NoteChoiceTypeMusicXML.grace ? true : false;
-            DrawingVisualHost noteCanvas = new DrawingVisualHost();
+            DrawingVisualHost noteVisualHost = new DrawingVisualHost();
             int index = 0;
             foreach (var note in noteItem)
             {
                 color = ViewModel.ViewModelLocator.Instance.Main.CurrentLayout.LayoutStyle.Colors[int.Parse(note.Voice)];
-                noteCanvas.AddCharacterGlyph(new Point(0, pitchedValue[index]), symbol, isSmall, color);
-                
+                noteVisualHost.AddCharacterGlyph(new Point(0, pitchedValue[index]), symbol, isSmall, color);
+                if (note.Accidental != null)
+                {
+                    DrawAccidental(note, noteItem.IndexOf(note), noteVisualHost);
+                }
                 if (hasDots)
                 {
-
+                    DrawDots(noteVisualHost, index);
                 }
                 index++;
             }
@@ -159,11 +171,108 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
                 int indexLedgers = 0;
                 foreach (var ledgerPosition in ledgerLinesPositions)
                 {
-                    noteCanvas.AddLedgerLine(new Point(position.X, ledgerLinesPositions[indexLedgers]), itemWidthMin);
+                    noteVisualHost.AddLedgerLine(new Point(position.X, ledgerLinesPositions[indexLedgers]), itemWidthMin);
                     indexLedgers++;
                 }
             }
-            ItemCanvas.Children.Add(noteCanvas);
+            ItemCanvas.Children.Add(noteVisualHost);
+        }
+
+        private void DrawDots(DrawingVisualHost noteVisualHost, int index)
+        {
+            double dotPositionY = pitchedValue[index];
+            if (pitchedPosition[index] % 2 == 0)
+            {
+                double sizeFactor = isSmall ? 0.8 : 1.0;
+                double shiftUp = 5.0.TenthsToWPFUnit() * sizeFactor;
+                dotPositionY -= shiftUp;
+            }
+            int dotCount = noteItem[index].Dot.Count;
+            double noteWidth = DrawingMethods.GetTextWidth(symbol, TypeFaces.GetMusicFont(), isSmall);
+            double dotWidth = DrawingMethods.GetTextWidth(MusicSymbols.Dot, TypeFaces.GetMusicFont(), isSmall);
+            Point dotPosition = new Point(noteWidth + layoutStyle.NotesStyle.DotStandardOffset.TenthsToWPFUnit(), dotPositionY);
+            for (int i = 0; i < dotCount; i++)
+            {
+                noteVisualHost.AddCharacterGlyph(dotPosition, MusicSymbols.Dot, isSmall, color);
+                dotPosition.X += layoutStyle.NotesStyle.DotStandardOffset.TenthsToWPFUnit() + dotWidth;
+            }
+        }
+
+        private void DrawAccidental(NoteMusicXML note, int index, DrawingVisualHost noteVisualHost)
+        {
+            AccidentalMusicXML accidental = note.Accidental;
+            string accidentalSymbol = GetAccidentalSymbolString(accidental.Value);
+            double size = 1.0;
+            double totalAccidentalSize = 0.0;
+            bool hasBracket = accidental.BracketSpecified ? accidental.Bracket == YesNoMusicXML.yes? true : false : false;
+            bool hasParentheses = accidental.ParenthesesSpecified ? accidental.Parentheses == YesNoMusicXML.yes ? true : false : false;
+            if (isSmall)
+            {
+                size = 0.7;
+            }
+            if (accidental.SizeSpecified)
+            {
+                size = accidental.Size == SymbolSizeMusicXML.cue ? 0.7 : accidental.Size == SymbolSizeMusicXML.large ? 1.2 : 1.0;
+            }
+            if (accidental.CautionarySpecified)
+            {
+                hasParentheses = accidental.Cautionary == YesNoMusicXML.yes ? true : false;
+                //! missing implementation if yes
+            }
+            //! accidental.Editiorial skipped...
+
+
+            double accidentalWidth = DrawingMethods.GetTextWidth(accidentalSymbol, TypeFaces.GetMusicFont(), isSmall);
+            double accidentalMargin = layoutStyle.NotesStyle.AccidentalToNoteSpace.TenthsToWPFUnit();
+            double noteHeadYPosition = pitchedValue[index];
+
+            if (hasBracket)
+            {
+                totalAccidentalSize += 2 * DrawingMethods.GetTextWidth(MusicSymbols.AccidentalBracketL, TypeFaces.GetMusicFont(), size);
+            }
+            if (hasParentheses)
+            {
+                totalAccidentalSize += 2 * DrawingMethods.GetTextWidth(MusicSymbols.AccidentalParenthesesL, TypeFaces.GetMusicFont(), size);
+            }
+            if (hasBracket || hasParentheses)
+            {
+                string left = hasBracket ? MusicSymbols.AccidentalBracketL : MusicSymbols.AccidentalParenthesesL;
+                noteVisualHost.AddCharacterGlyph(new Point(0 - (totalAccidentalSize + accidentalWidth + accidentalMargin), noteHeadYPosition), left, isSmall, color);
+                string rigth = hasBracket ? MusicSymbols.AccidentalBracketR : MusicSymbols.AccidentalParenthesesR;
+                noteVisualHost.AddCharacterGlyph(new Point(0 - (totalAccidentalSize / 2 + accidentalWidth + accidentalMargin), noteHeadYPosition), accidentalSymbol, isSmall, color);
+                noteVisualHost.AddCharacterGlyph(new Point(0 - (totalAccidentalSize / 2) - accidentalMargin, noteHeadYPosition), rigth, isSmall, color);
+                SetLeftMargin(totalAccidentalSize + accidentalWidth + accidentalMargin);
+            }
+            else
+            {
+                noteVisualHost.AddCharacterGlyph(new Point( (0 - accidentalWidth - accidentalMargin), noteHeadYPosition), accidentalSymbol, isSmall, color);
+                SetLeftMargin(accidentalWidth + accidentalMargin);
+            }
+        }
+
+        private string GetAccidentalSymbolString(AccidentalValueMusicXML value)
+        {
+            switch (value)
+            {
+                case AccidentalValueMusicXML.sharp:
+                    return MusicSymbols.Sharp;
+                case AccidentalValueMusicXML.natural:
+                    return MusicSymbols.Natural;
+                case AccidentalValueMusicXML.flat:
+                    return MusicSymbols.Flat;
+                case AccidentalValueMusicXML.doublesharp:
+                    return MusicSymbols.DoubleSharp;
+                case AccidentalValueMusicXML.sharpsharp:
+                    return MusicSymbols.SharpSharp;
+                case AccidentalValueMusicXML.flatflat:
+                    return MusicSymbols.DoubleFlat;
+                case AccidentalValueMusicXML.naturalsharp:
+                    return MusicSymbols.NaturalSharp;
+                case AccidentalValueMusicXML.naturalflat:
+                    return MusicSymbols.NaturalFlat;
+                default:
+                    return "AccMissing";
+            }
         }
 
         public void DrawSpace(double length, bool red = false)
@@ -274,7 +383,6 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
 
         private void GetPitch()
         {
-            //var clef = ViewModel.ViewModelLocator.Instance.Main.CurrentScoreProperties.GetClef(measureId, partId, int.Parse(staffId));
             var clef = ViewModel.ViewModelLocator.Instance.Main.CurrentScoreProperties.GetClef(measureId, partId, int.Parse(itemStaff), fractionPosition);
             pitchObject = new List<object>();
             altered = new Dictionary<int, bool>();
@@ -298,6 +406,22 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
                     pitchedValue.Add(pitchIndex, staffLine[pitchedPosition[pitchIndex]]);
                 }
             }
+            if (altered.Any(x=>x.Value == true))//bug fix - all chorded notes should have been altered if any
+            {
+                for (int i = 0; i < altered.Count; i++)
+                {
+                    altered[i] = true;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Sets left margin of note, used for layout anti-collision calculations
+        /// </summary>
+        /// <param name="value"></param>
+        private void SetLeftMargin(double value)
+        {
+            itemLeftMargin = value > itemLeftMargin ? value : itemLeftMargin;
         }
 
         private void CalculateWeight()
@@ -473,6 +597,19 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
             set
             {
                 itemStaff = value;
+            }
+        }
+
+        public double ItemLeftMargin
+        {
+            get
+            {
+                return itemLeftMargin;
+            }
+
+            set
+            {
+                itemLeftMargin = value;
             }
         }
     }

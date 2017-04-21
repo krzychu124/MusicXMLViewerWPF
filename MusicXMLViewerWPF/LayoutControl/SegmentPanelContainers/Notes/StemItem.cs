@@ -64,15 +64,39 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
 
         private void InitStem()
         {
-           if (note.NoteItem.Count == 1)
+            if (note.NoteItem.Count == 1)
             {
                 var noteItem = note.NoteItem.ElementAt(0);
                 var stem = noteItem.Stem;
-                if (stem != null)
+                if (stem != null) //! if stem is set for current Note
                 {
                     GetDirection(stem);
                     bool hasBeam = note.NoteItem.FirstOrDefault().Beam.Count != 0 ? true : false;
                     CalculatePosition(note.PitchedPosition.FirstOrDefault().Value, hasBeam);
+                }
+            }
+            else
+            {
+                var notes = note.NoteItem.Where(noteItem => noteItem.IsGrace() == false);
+                foreach (var noteItem in notes)
+                {
+                    //var noteItem = note;
+                    var stem = noteItem.Stem;
+                    if (stem != null) //! if stem is set for current Note
+                    {
+                        GetDirection(stem);
+                        bool hasBeam = note.NoteItem.FirstOrDefault().Beam.Count != 0 ? true : false;
+                        int pitchedPosition = 0;
+                        if (isDown)
+                        {
+                            pitchedPosition = note.PitchedPosition.Max(x => x.Value);
+                        }
+                        else
+                        {
+                            pitchedPosition = note.PitchedPosition.Min(x => x.Value);
+                        }
+                        CalculatePosition(pitchedPosition, hasBeam);
+                    }
                 }
             }
         }
@@ -84,9 +108,12 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
             double length = 35.0.TenthsToWPFUnit() * sizeFactor;
             double yShift = 1.68.TenthsToWPFUnit();
 
-            if(direction == StemValueMusicXML.up)
+
+            if (direction == StemValueMusicXML.up)
             {
-                startPoint = new Point(noteWidth * sizeFactor, y - yShift);
+                int highestPitch = note.PitchedPosition.Max(x => x.Value);
+                double highestPitchPosition = positionsTable[highestPitch];
+                startPoint = new Point(noteWidth * sizeFactor, highestPitchPosition - yShift);
                 if (notePitchedPosition > 10)
                 {
                     //set end point to middle staff line
@@ -124,7 +151,9 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
             }
             else // stem down
             {
-                startPoint = new Point(0, y + yShift);
+                int highestPitch = note.PitchedPosition.Min(x => x.Value);
+                double highestPitchPosition = positionsTable[highestPitch];
+                startPoint = new Point(0, highestPitchPosition + yShift);
                 if (notePitchedPosition < -2)
                 {
                     //set end point to middle staff line

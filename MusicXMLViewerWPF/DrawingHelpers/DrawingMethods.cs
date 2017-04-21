@@ -42,6 +42,31 @@ namespace MusicXMLScore.DrawingHelpers
             }
             return totalWidth;
         }
+        public static double GetTextWidth(string text, Typeface typeFace, double sizeFactor)
+        {
+            GlyphTypeface glyphTypeface;
+            if (!typeFace.TryGetGlyphTypeface(out glyphTypeface))
+                throw new InvalidOperationException("No glyphtypeface found");
+
+            double size = ViewModel.ViewModelLocator.Instance.Main.CurrentPageLayout.StaffHeight.MMToWPFUnit() * sizeFactor;
+
+            ushort[] glyphIndexes = new ushort[text.Length];
+            double[] advanceWidths = new double[text.Length];
+
+            double totalWidth = 0;
+            char[] ch = text.ToCharArray();
+            for (int n = 0; n < text.Length; n++)
+            {
+                ushort glyphIndex = glyphTypeface.CharacterToGlyphMap[text[n]];
+                glyphIndexes[n] = glyphIndex;
+
+                double width = glyphTypeface.AdvanceWidths[glyphIndex] * size;
+                advanceWidths[n] = width;
+
+                totalWidth += width;
+            }
+            return totalWidth;
+        }
         public static void DrawCharacterGlyph(DrawingVisual visual, Point position, ushort glyphIndex, bool isSmall = false)
         {
             PageProperties pageProperties = (PageProperties)ViewModel.ViewModelLocator.Instance.Main.CurrentPageLayout;

@@ -204,8 +204,16 @@ namespace MusicXMLScore.DrawingHelpers
         public const string Sharp = "\uE262";
         public const string Flat = "\uE260";
         public const string DoubleSharp = "\uE263";
+        public const string SharpSharp = "\uE269";
+        public const string NaturalSharp = "\uE268";
+        public const string NaturalFlat = "\uE267";
         public const string DoubleFlat = "\uE264";
         public const string RepeatDots = "\uE043";
+        public const string AccidentalBracketL = "\uE26C";
+        public const string AccidentalBracketR = "\uE26D";
+        public const string AccidentalParenthesesL = "\uE26A";
+        public const string AccidentalParenthesesR = "\uE26B";
+
         #endregion
 
         #region ornaments

@@ -9,7 +9,7 @@
              xmlns:Configuration="clr-namespace:MusicXMLScore.ViewModel" xmlns:Log="clr-namespace:MusicXMLScore.Log" x:Class="MusicXMLScore.ViewModel.PageView"
              mc:Ignorable="d" Height="{Binding PageHeight}" Width="{Binding PageWidth}" x:Name="uc" d:DesignWidth="500" d:DesignHeight="250.333">
 
-    <ItemsControl x:Name="PartsSegments" ItemsSource="{Binding PartsSegments}" Background="Beige">
+    <ItemsControl x:Name="PartsSegments" ItemsSource="{Binding PartsSegments}" Background="WhiteSmoke">
         <ItemsControl.Effect>
             <DropShadowEffect Color="Gray" BlurRadius="5" ShadowDepth="5"></DropShadowEffect>
         </ItemsControl.Effect>
