@@ -2,12 +2,7 @@
 
 **_Everything here is an experiment here, so everything could be changed completely in the near future._**
 ## Main goal of this project: 
-### MusicXML Files: 
- - [x] **Read** 
- - [ ] **Display** 
- - [ ] **Edit** 
- - [ ] **Save** 
- - [ ] **Print**
+## MusicXML Files: Read + Display + Edit + Save/Print
 ---
 ---
 
