@@ -30,6 +30,21 @@ namespace MusicXMLScore.Model
                 miscellaneous = value;
             }
         }
+
+        [XmlElement("encoding")]
+        public EncodingMusicXML Encoding
+        {
+            get
+            {
+                return encoding;
+            }
+
+            set
+            {
+                encoding = value;
+            }
+        }
+
         [XmlElement("creator")]
         public TypedTextMusicXML Creator
         {
@@ -69,6 +84,7 @@ namespace MusicXMLScore.Model
                 relation = value;
             }
         }
+
 
         public IdentificationMusicXML()
         {

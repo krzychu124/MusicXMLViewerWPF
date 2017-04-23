@@ -194,6 +194,24 @@ namespace MusicXMLViewerWPF
             {
                 layoutInfoInsideScore = true; // else false, missing new-system, new-page attributes, forces manual layout calculations
             }
+            if (Identification?.Encoding != null)
+            {
+                var printLayoutSupport = Identification.Encoding.ItemsElementName.Any(x => x == MusicXMLScore.Model.Identification.EncodingChoiceType.supports);
+                if (printLayoutSupport)
+                {
+                    var printSupports = Identification.Encoding.Items.Select(x => x).Where(x => x is MusicXMLScore.Model.Identification.SupportsMusicXML);
+                    List<MusicXMLScore.Model.Identification.SupportsMusicXML> supprorts = new List<MusicXMLScore.Model.Identification.SupportsMusicXML>();
+                    foreach (var item in printSupports)
+                    {
+                        supprorts.Add(item as MusicXMLScore.Model.Identification.SupportsMusicXML);
+                    }
+                    var layoutSupports = supprorts.Where(x => x.Element == "print");
+                    if (layoutSupports.Count() != 0)
+                    {
+                        layoutInfoInsideScore = true;
+                    }
+                }
+            }
         }
     }
 }
