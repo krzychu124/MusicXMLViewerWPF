@@ -10,6 +10,7 @@ using System.Windows.Controls;
 using MusicXMLScore.LayoutControl;
 using MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes;
 using MusicXMLScore.LayoutControl.SegmentPanelContainers;
+using MusicXMLScore.LayoutStyle;
 
 namespace MusicXMLScore.DrawingHelpers
 {
@@ -28,12 +29,11 @@ namespace MusicXMLScore.DrawingHelpers
         private Dictionary<string, PartSegmentDrawing> partsSegments;
         private Canvas partSystemCanvas;
         private double partWidth;
-
-        private double rightMargin;
-
+        
         private Size size;
         private int systemIndex;
         private int pageIndex;
+        private MeasureLayoutStyle attributesLayout;
         #endregion Fields
 
         #region Constructors
@@ -46,6 +46,7 @@ namespace MusicXMLScore.DrawingHelpers
             partWidth = measuresList.CalculateWidth(partIDsList.ElementAt(0));
             this.partsPropertiesList = partsProperties;
             this.pageIndex = pageIndex;
+            attributesLayout = ViewModel.ViewModelLocator.Instance.Main.CurrentLayout.LayoutStyle.MeasureStyle;
             GetSetSystemMargins();
             PartsSegmentsDraw();
         }
@@ -139,18 +140,140 @@ namespace MusicXMLScore.DrawingHelpers
             this.size = new Size(partWidth, distanceToTop);
         }
 
-        private void ArrangeContent()
+        private void ArrangeMeasureContent() //TODO split on more methods
         {
-            partSystemCanvas.Width = size.Width;
-            partSystemCanvas.Height = size.Height;
-            LayoutStyle.MeasureLayoutStyle attributesLayout = ViewModel.ViewModelLocator.Instance.Main.CurrentLayout.LayoutStyle.MeasureStyle;
+            SetPartSystemDimensions(size.Width, size.Height);
+            SetPartSegmentCanvasPositions();
+            List<List<MeasureSegmentController>> partMeasuresList = GetMeasuresList();
+
+            foreach (var partMeasureSegment in partMeasuresList)
+            {
+                Dictionary<int, double> durationTable = new Dictionary<int, double>();
+                List<List<int>> indexes = GetAllMeasureIndexes(partMeasureSegment);
+                double measureWidth = partMeasureSegment.Select(x => x.Width).Max();
+                Tuple<double, double, double> attributesWidth = GetAttributesWidth(partMeasureSegment);
+                double maxClef = attributesWidth.Item1;
+                double maxKey = attributesWidth.Item2;
+                double maxTime = attributesWidth.Item3;
+                durationTable.Add(-3, 0);
+                durationTable.Add(-2, maxClef);
+                durationTable.Add(-1, maxKey + maxClef);
+                durationTable.Add(0, maxClef + maxKey + maxTime);
+
+                List<int> positionIndexes = indexes.SelectMany(x => x).Distinct().ToList();
+                positionIndexes.Sort();
+                double startingPosition = durationTable[0] + attributesLayout.AttributesRightOffset.TenthsToWPFUnit();
+                Dictionary<int, Tuple<double, double>> positions = GeneratePositionsTable(partMeasureSegment, positionIndexes, startingPosition);
+
+                double targetWidth = measureWidth - durationTable[0];
+                LayoutHelpers.StretchPositionsToWidth(targetWidth, positions, positionIndexes);
+
+                AddPositionsToDurationTable(durationTable, positionIndexes, positions);
+                int lastDuration = durationTable.Keys.Max() + 1;
+                //! adds one more which is measure duration (rigth barline position / calculating center position)
+                durationTable.Add(lastDuration, measureWidth);
+
+                //! Update measure segments content with calculated duration position table
+                foreach (MeasureSegmentController measureSegment in partMeasureSegment)
+                {
+                    measureSegment.ArrangeUsingDurationTable(durationTable);
+                    RedrawBeams(measureSegment, durationTable);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Adds position coords(X) of each index to current durationTable.
+        /// </summary>
+        /// <param name="durationTable"></param>
+        /// <param name="positionIndexes"></param>
+        /// <param name="positions"></param>
+        private static void AddPositionsToDurationTable(Dictionary<int, double> durationTable, List<int> positionIndexes, Dictionary<int, Tuple<double, double>> positions)
+        {
+            for (int i = 0; i < positions.Count; i++)
+            {
+                if (i == 0)
+                {
+                    durationTable[0] = positions[positionIndexes[i]].Item1;
+                }
+                if (i > 0)
+                {
+                    durationTable.Add(positionIndexes[i], positions[positionIndexes[i]].Item1);
+                }
+            }
+        }
+
+        private Dictionary<int, Tuple<double, double>> GeneratePositionsTable(List<MeasureSegmentController> partMeasureSegment, List<int> positionIndexes, double startingPosition)
+        {
             double staffSpace = ViewModel.ViewModelLocator.Instance.Main.CurrentPageLayout.StaffSpace.MMToWPFUnit();
+            Dictionary<int, int> durationOfPosition = GetDurationOfPosition(partMeasureSegment, positionIndexes);
+            int shortestDuration = durationOfPosition.Values.Where(x => x > 0).Min();
+            Dictionary<int, Tuple<double, double>> positions = new Dictionary<int, Tuple<double, double>>();
+            double currentStartPosition = startingPosition;
+            for (int i = 0; i < durationOfPosition.Count; i++)
+            {
+                if (i == 0)
+                {
+                    int currentDuration = durationOfPosition[positionIndexes[i]];
+                    double previewSpacing = staffSpace * LayoutHelpers.SpacingValue(currentDuration, shortestDuration, 0.6);
+                    positions.Add(positionIndexes[i], Tuple.Create(currentStartPosition, previewSpacing));
+                }
+                else
+                {
+                    int currentDuration = durationOfPosition[positionIndexes[i]];
+                    double previewSpacing = staffSpace * LayoutHelpers.SpacingValue(currentDuration, shortestDuration, 0.6);
+                    currentStartPosition += previewSpacing;
+                    positions.Add(positionIndexes[i], Tuple.Create(currentStartPosition, previewSpacing));
+                }
+            }
+            return positions;
+        }
+
+        /// <summary>
+        /// Gets List of all measureSemgent content(notes, rests) indexes from all parts.
+        /// </summary>
+        /// <param name="partMeasureSegment"></param>
+        /// <returns></returns>
+        private List<List<int>> GetAllMeasureIndexes(List<MeasureSegmentController> partMeasureSegment)
+        {
+            List<List<int>> indexes = new List<List<int>>();
+            foreach (var measureSegment in partMeasureSegment)
+            {
+                indexes.Add(measureSegment.GetIndexes());
+            }
+            return indexes;
+        }
+
+        /// <summary>
+        /// Sets positions of all partSegments Canvas.
+        /// </summary>
+        private void SetPartSegmentCanvasPositions()
+        {
             foreach (var partSegment in partsSegments.Values)
             {
                 string partSegmentId = partSegment.PartId;
                 Canvas.SetTop(partSegment.PartSegmentCanvas, partsPositions[partSegmentId].Item3); //TODO_H layout-problem with first part...
                 Canvas.SetLeft(partSegment.PartSegmentCanvas, partsPositions[partSegmentId].Item1);
             }
+        }
+
+        /// <summary>
+        /// Sets Canvas dimensions
+        /// </summary>
+        /// <param name="width"></param>
+        /// <param name="height"></param>
+        private void SetPartSystemDimensions(double width, double height)
+        {
+            partSystemCanvas.Width = width;
+            partSystemCanvas.Height = height;
+        }
+
+        /// <summary>
+        /// Returns List of all measures from all PartSegment
+        /// </summary>
+        /// <returns></returns>
+        private List<List<MeasureSegmentController>> GetMeasuresList()
+        {
             int measuresCount = partsSegments.ElementAt(0).Value.PartMeasures.Count;
             List<List<MeasureSegmentController>> measuresList = new List<List<MeasureSegmentController>>();
             for (int i = 0; i < measuresCount; i++)
@@ -162,93 +285,75 @@ namespace MusicXMLScore.DrawingHelpers
                 }
                 measuresList.Add(measures);
             }
-            foreach (var m in measuresList)
-            {
-                List<Tuple<double, double, double>> attributesWidths = new List<Tuple<double, double, double>>();
-                Dictionary<int, double> durationTable = new Dictionary<int, double>();
-                List<List<int>> indexes = new List<List<int>>();
-                double measureWidth = m.Select(x => x.Width).Max();
-                foreach (var partMeasure in m)
-                {
-                    attributesWidths.Add(partMeasure.GetAttributesWidths());
-                    indexes.Add(partMeasure.GetIndexes());
-                }
-                double maxClef = attributesWidths.Select(x => x.Item1).Max();
-                if (maxClef != 0)
-                {
-                    maxClef += attributesLayout.ClefLeftOffset.TenthsToWPFUnit() + attributesLayout.ClefRightOffset.TenthsToWPFUnit();
-                }
-                double maxKey = attributesWidths.Select(x => x.Item2).Max();
-                if (maxKey != 0)
-                {
-                    maxKey += attributesLayout.KeySigLeftOffset.TenthsToWPFUnit() + attributesLayout.KeySigRightOffset.TenthsToWPFUnit();
-                }
-                double maxTime = attributesWidths.Select(x => x.Item3).Max();
-                if (maxTime != 0)
-                {
-                    maxTime += attributesLayout.TimeSigLeftOffset.TenthsToWPFUnit() + attributesLayout.TimeSigRightOffset.TenthsToWPFUnit();
-                }
-                durationTable.Add(-3, 0);
-                durationTable.Add(-2, maxClef);
-                durationTable.Add(-1, maxKey + maxClef);
-                durationTable.Add(0, maxClef + maxKey + maxTime);
-                double availableWidth = measureWidth - durationTable[0];
-                List<int> possibleIndexes = indexes.SelectMany(x => x).Distinct().ToList();
-                possibleIndexes.Sort();
-                Dictionary<int, int> durationOfPosition = new Dictionary<int, int>();
-                int measureDuration = m.Select(x => x.MaxDuration).Max();
-                for (int i = 0; i < possibleIndexes.Count; i++)
-                {
-                    if (i < possibleIndexes.Count - 1)
-                    {
-                        durationOfPosition.Add(possibleIndexes[i], possibleIndexes[i + 1] - possibleIndexes[i]);
-                    }
-                    else
-                    {
-                        durationOfPosition.Add(possibleIndexes[possibleIndexes.Count - 1], measureDuration - possibleIndexes[possibleIndexes.Count - 1]);
-                    }
-                }
-                int shortestDuration = durationOfPosition.Values.Where(x=>x > 0).Min();
-                Dictionary<int, Tuple<double, double>> positions = new Dictionary<int, Tuple<double, double>>();
-                double startingPosition = durationTable[0] + attributesLayout.AttributesRightOffset.TenthsToWPFUnit();
-                for (int i = 0; i < durationOfPosition.Count; i++)
-                {
-                    if (i == 0)
-                    {
-                        int currentDuration = durationOfPosition[possibleIndexes[i]];
-                        double previewSpacing = staffSpace * SpacingValue(currentDuration, shortestDuration, 0.6);
-                        positions.Add(possibleIndexes[i], Tuple.Create(startingPosition, previewSpacing));
-                    }
-                    else
-                    {
-                        int currentDuration = durationOfPosition[possibleIndexes[i]];
-                        double previewSpacing = staffSpace * SpacingValue(currentDuration, shortestDuration, 0.6);
-                        startingPosition += previewSpacing;
-                        positions.Add(possibleIndexes[i], Tuple.Create(startingPosition, previewSpacing));
-                    }
-                }
-                CorrectStretch(availableWidth, positions, possibleIndexes);
-                for (int i = 0; i < positions.Count; i++)
-                {
-                    if (i== 0)
-                    {
-                        durationTable[0]  = positions[possibleIndexes[i]].Item1;
-                    }
-                    if (i > 0)
-                    {
-                        durationTable.Add(possibleIndexes[i], positions[possibleIndexes[i]].Item1);
-                    }
-                }
-                int lastDuration = durationTable.Keys.Max() + 1;
-                durationTable.Add(lastDuration, measureWidth); //adds one more which is measure duration (rigth barline position / calculating center position)
-                foreach (MeasureSegmentController measure in m)
-                {
-                    measure.ArrangeUsingDurationTable(durationTable);
-                    RedrawBeams(measure, durationTable);
-                }
-            }
+            return measuresList;
         }
 
+        /// <summary>
+        /// Gets max width of all beginning attributes from measure segment of all parts
+        /// </summary>
+        /// <param name="measureSegments">List of measures with the same Number from all parts</param>
+        /// <returns>Max width of each attribute(clef,key,time) of all parts</returns>
+        private Tuple<double,double,double> GetAttributesWidth(List<MeasureSegmentController> measureSegments)
+        {
+            List<Tuple<double, double, double>> attributesWidths = new List<Tuple<double, double, double>>();
+            foreach (var measureSegment in measureSegments)
+            {
+                attributesWidths.Add(measureSegment.GetAttributesWidths());
+            }
+            double maxClef = 0.0;
+            double maxKey = 0.0;
+            double maxTime = 0.0;
+            if (attributesWidths.Count != 0)
+            {
+                maxClef = attributesWidths.Select(x => x.Item1).Max();
+                maxKey = attributesWidths.Select(x => x.Item2).Max();
+                maxTime = attributesWidths.Select(x => x.Item3).Max();
+            }
+            if (maxClef != 0)
+            {
+                maxClef += attributesLayout.ClefLeftOffset.TenthsToWPFUnit() + attributesLayout.ClefRightOffset.TenthsToWPFUnit();
+            }
+            if (maxKey != 0)
+            {
+                maxKey += attributesLayout.KeySigLeftOffset.TenthsToWPFUnit() + attributesLayout.KeySigRightOffset.TenthsToWPFUnit();
+            }
+            if (maxTime != 0)
+            {
+                maxTime += attributesLayout.TimeSigLeftOffset.TenthsToWPFUnit() + attributesLayout.TimeSigRightOffset.TenthsToWPFUnit();
+            }
+
+            return Tuple.Create(maxClef, maxKey, maxTime);
+        }
+
+        /// <summary>
+        /// Gets each position duration.
+        /// </summary>
+        /// <param name="partMeasureSegment"></param>
+        /// <param name="positionIndexes">All unique position indexes</param>
+        /// <returns>Collection of each position duration</returns>
+        private Dictionary<int,int> GetDurationOfPosition(List<MeasureSegmentController> partMeasureSegment, List<int> positionIndexes)
+        {
+            int measureDuration = partMeasureSegment.Select(x => x.MaxDuration).Max();
+            Dictionary<int, int> durationOfPosition = new Dictionary<int, int>();
+            for (int i = 0; i < positionIndexes.Count; i++)
+            {
+                if (i < positionIndexes.Count - 1)
+                {
+                    durationOfPosition.Add(positionIndexes[i], positionIndexes[i + 1] - positionIndexes[i]);
+                }
+                else
+                {
+                    durationOfPosition.Add(positionIndexes[positionIndexes.Count - 1], measureDuration - positionIndexes[positionIndexes.Count - 1]);
+                }
+            }
+            return durationOfPosition;
+        }
+
+        /// <summary>
+        /// Upades/draws beams between notes if any.
+        /// </summary>
+        /// <param name="measureSegment">Selected measureSegment</param>
+        /// <param name="durationTable">Reference durationTable</param>
         private void RedrawBeams(MeasureSegmentController measureSegment, Dictionary<int, double> durationTable)
         {
             if (measureSegment.BeamsController != null)
@@ -259,44 +364,6 @@ namespace MusicXMLScore.DrawingHelpers
                     measureSegment.AddBeams(measureSegment.BeamsController.BeamsVisuals);
                 }
             }
-        }
-
-        private double SpacingValue(double duration, double shortest, double alpha = 0.6)
-        {
-            double result = 1;
-            result = 1 + (alpha * (Math.Log(duration / shortest, 2.0)));
-            return result;
-        }
-
-        private void CorrectStretch(double maxWidth, Dictionary<int, Tuple<double, double>> positions, List<int> indexes)
-        {
-            LayoutStyle.MeasureLayoutStyle attributesLayout = ViewModel.ViewModelLocator.Instance.Main.CurrentLayout.LayoutStyle.MeasureStyle;
-            double currentFullWidth = positions.Sum(x => x.Value.Item2);
-            double difference = (maxWidth - attributesLayout.AttributesRightOffset.TenthsToWPFUnit()) - currentFullWidth;
-            for (int i = 0; i < indexes.Count; i++)
-            {
-                Tuple<double, double> currentTuple = positions[indexes[i]];
-                double currentPosition = currentTuple.Item1 ;
-                double correctedSpacing = (currentTuple.Item2 / currentFullWidth) * difference;
-
-                if (i == 0)
-                {
-                    Tuple<double, double> t = Tuple.Create(currentPosition, correctedSpacing + currentTuple.Item2);
-                    positions[indexes[i]] = t;
-                }
-                else
-                {
-                    currentPosition = positions[indexes[i - 1]].Item1 + positions[indexes[i - 1]].Item2;
-                    Tuple<double, double> t = Tuple.Create(currentPosition, correctedSpacing + currentTuple.Item2);
-                    positions[indexes[i]] = t;
-                }
-            }
-        }
-
-        private void CalculateSize()
-        {
-            var lastSegmentPosition = partsPositions.LastOrDefault();
-            this.size = new Size(partWidth + lastSegmentPosition.Value.Item1, lastSegmentPosition.Value.Item3);
         }
 
         private void GetSetSystemMargins() //TODO_WIP do more tests... //
@@ -318,7 +385,7 @@ namespace MusicXMLScore.DrawingHelpers
                 PartSystemCanvas.Children.Add(partSegment.PartSegmentCanvas);
             }
             CalculatePositions();
-            ArrangeContent();
+            ArrangeMeasureContent();
         }
 
         #endregion Methods
