@@ -14,7 +14,7 @@ using MusicXMLScore.LayoutStyle;
 
 namespace MusicXMLScore.DrawingHelpers
 {
-    public class PartsSystemDrawing
+    class PartsSystemDrawing
     {
         #region Fields
 
@@ -49,6 +49,18 @@ namespace MusicXMLScore.DrawingHelpers
             attributesLayout = ViewModel.ViewModelLocator.Instance.Main.CurrentLayout.LayoutStyle.MeasureStyle;
             GetSetSystemMargins();
             PartsSegmentsDraw();
+        }
+        public PartsSystemDrawing(int systemIndex, Dictionary<string, List<MeasureSegmentController>> measuresToArrange, List<string> partsIdList, Dictionary<string, PartProperties> partsProperties, int pageIndex)
+        {
+            this.systemIndex = systemIndex;
+            this.partIDsList = partsIdList;
+            partWidth = measuresToArrange.Sum(x => x.Value.FirstOrDefault().MinimalWidthWithAttributes);
+            
+            this.partsPropertiesList = partsProperties;
+            this.pageIndex = pageIndex;
+            attributesLayout = ViewModel.ViewModelLocator.Instance.Main.CurrentLayout.LayoutStyle.MeasureStyle;
+            GetSetSystemMargins();
+            PartsSegmentsDraw(measuresToArrange);
         }
 
         public double LeftMargin
@@ -140,7 +152,7 @@ namespace MusicXMLScore.DrawingHelpers
             this.size = new Size(partWidth, distanceToTop);
         }
 
-        private void ArrangeMeasureContent() //TODO split on more methods
+        private void ArrangeMeasureContent(bool advancedLayout) //TODO split on more methods
         {
             SetPartSystemDimensions(size.Width, size.Height);
             SetPartSegmentCanvasPositions();
@@ -151,6 +163,10 @@ namespace MusicXMLScore.DrawingHelpers
                 Dictionary<int, double> durationTable = new Dictionary<int, double>();
                 List<List<int>> indexes = GetAllMeasureIndexes(partMeasureSegment);
                 double measureWidth = partMeasureSegment.Select(x => x.Width).Max();
+                if (advancedLayout)
+                {
+                    measureWidth = partMeasureSegment.Select(x => x.MinimalWidthWithAttributes).Max();
+                }
                 Tuple<double, double, double> attributesWidth = GetAttributesWidth(partMeasureSegment);
                 double maxClef = attributesWidth.Item1;
                 double maxKey = attributesWidth.Item2;
@@ -370,7 +386,7 @@ namespace MusicXMLScore.DrawingHelpers
         {
             var currentPartProperties = partsPropertiesList.ElementAt(0).Value;
             leftMargin = 0;
-            rightMargin = 0;
+            //rightMargin = 0;
         }
 
         private void PartsSegmentsDraw()
@@ -385,7 +401,22 @@ namespace MusicXMLScore.DrawingHelpers
                 PartSystemCanvas.Children.Add(partSegment.PartSegmentCanvas);
             }
             CalculatePositions();
-            ArrangeMeasureContent();
+            ArrangeMeasureContent(false);
+        }
+
+        private void PartsSegmentsDraw(Dictionary<string, List<MeasureSegmentController>> measuresList)
+        {
+            partsSegments = new Dictionary<string, PartSegmentDrawing>();
+            partSystemCanvas = new Canvas();
+            foreach (var partId in partIDsList)
+            {
+                PartSegmentDrawing partSegment = new PartSegmentDrawing(measuresList[partId], partId, partsPropertiesList[partId], systemIndex, pageIndex);
+                partsSegments.Add(partId, partSegment);
+                partSegment.GenerateContent(true);
+                PartSystemCanvas.Children.Add(partSegment.PartSegmentCanvas);
+            }
+            CalculatePositions();
+            ArrangeMeasureContent(true);
         }
 
         #endregion Methods

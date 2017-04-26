@@ -44,7 +44,18 @@ namespace MusicXMLScore.ViewModel
             PageHeight = dimensions.Y;
             AddPartSegment();
         }
-
+        public PageViewModel(int pageIndex):this()
+        {
+            this.pageIndex = pageIndex;
+        }
+        //! test
+        public PageViewModel(Canvas page)
+        {
+            Point dimensions = ViewModelLocator.Instance.Main.CurrentPageLayout.PageDimensions.GetPageDimensionsInPx();
+            PageWidth = dimensions.X;
+            PageHeight = dimensions.Y;
+            PartsSegments.Add(page);
+        }
         public PageViewModel(ScorePartwiseMusicXML scorePartwise, int index)
         {
             pageIndex = index;

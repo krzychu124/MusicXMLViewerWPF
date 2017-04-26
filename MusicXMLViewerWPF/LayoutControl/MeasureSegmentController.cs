@@ -8,10 +8,10 @@ using MusicXMLScore.DrawingHelpers;
 using MusicXMLScore.Model.MeasureItems;
 using System.Diagnostics;
 using MusicXMLScore.LayoutControl.SegmentPanelContainers.Attributes;
-using MusicXMLScore.Model.MeasureItems.Attributes;
 using MusicXMLScore.LayoutControl.SegmentPanelContainers;
 using MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes;
 using MusicXMLScore.Helpers;
+using System.Windows.Controls;
 
 namespace MusicXMLScore.LayoutControl
 {
@@ -23,11 +23,15 @@ namespace MusicXMLScore.LayoutControl
         private int stavesCount = 1;
         private int maxDuration = 1;
         private double width = 0;
+        private double minimalWidth;
         private PartProperties partProperties;
         //Dictionary<string, SegmentPanelContainers.MeasureItemsContainer> staffs;
         private Tuple<double, double, double> attributesWidths;
         private BeamItemsController beamsController;
         MeasureItemsContainer measureItemsContainer;
+        private string measureID;
+        private double minimalWidthWithAttributes;
+
         public int MaxDuration
         {
             get
@@ -66,11 +70,51 @@ namespace MusicXMLScore.LayoutControl
             }
         }
 
+        public double MinimalWidth
+        {
+            get
+            {
+                return minimalWidth;
+            }
+
+            set
+            {
+                minimalWidth = value;
+            }
+        }
+
+        public string MeasureID
+        {
+            get
+            {
+                return measureID;
+            }
+
+            set
+            {
+                measureID = value;
+            }
+        }
+
+        public double MinimalWidthWithAttributes
+        {
+            get
+            {
+                return minimalWidthWithAttributes;
+            }
+
+            set
+            {
+                minimalWidthWithAttributes = value;
+            }
+        }
+
         public MeasureSegmentController(Model.ScorePartwisePartMeasureMusicXML measure, string partID, int stavesCount, int systemIndex, int pageIndex)
         {
             this.systemIndex = systemIndex;
             this.pageIndex = pageIndex;
             this.stavesCount = stavesCount;
+            this.measureID = measure.Number;
             partProperties = ViewModel.ViewModelLocator.Instance.Main.CurrentPartsProperties[partID];
             Stopwatch stopWatch;
 
@@ -157,7 +201,7 @@ namespace MusicXMLScore.LayoutControl
                     }
                     else
                     {
-                        if (!note.IsChord())
+                        if (!note.IsChord()) //TODO switch grace and chord conditions order... (grace could be chord too :) )
                         {
                             if (!note.IsGrace())
                             {
@@ -212,12 +256,11 @@ namespace MusicXMLScore.LayoutControl
             beamsController = new BeamItemsController(beam);
             GenerateAndAddAttributesContainers(measure.Number, partID);
             width = measure.CalculatedWidth.TenthsToWPFUnit();
-            ArrangeContainers(measure.CalculatedWidth.TenthsToWPFUnit(), maxDuration);
+            ArrangeContainers(measure.CalculatedWidth.TenthsToWPFUnit(), maxDuration); 
             AppendContainersToSegment();
 
             stopWatch.Stop();
             Log.LoggIt.Log($"Measure content {measure.Number} (Switch) processig done in: {stopWatch.ElapsedMilliseconds}", Log.LogType.Warning);
-
         }
         private Tuple<NoteContainerItem, int, string, string> GenerateNoteContainerFromChords(List<NoteMusicXML> chordList, int durationCursor, string partId, string measireId, string staffId)
         {
@@ -373,7 +416,7 @@ namespace MusicXMLScore.LayoutControl
         }
         private void AppendContainersToSegment()
         {
-            segmentPanel.AddNotesContainer(measureItemsContainer, stavesCount);
+            segmentPanel.AddMeasureContainer(measureItemsContainer, stavesCount);
         }
         public List<int> GetIndexes()
         {
@@ -388,11 +431,15 @@ namespace MusicXMLScore.LayoutControl
         /// <returns></returns>
         public Tuple<double, double, double> GetAttributesWidths()
         {
-            return attributesWidths;
+            return attributesWidths ?? Tuple.Create(0.0, 0.0, 0.0);
         }
         public SegmentPanel GetContentPanel()
         {
             return segmentPanel;
+        }
+        public Canvas GetMeasureCanvas()
+        {
+            return measureItemsContainer;
         }
         public void AddBeams(List<DrawingVisualHost> beams)
         {
@@ -400,6 +447,14 @@ namespace MusicXMLScore.LayoutControl
             {
                 segmentPanel.Children.Add(item);
             }
+        }
+        public double MinimalContentWidth()
+        {
+            var contentItemsWidth = measureItemsContainer.GetMinimalContentWidth();
+            var attributesWidth = GetAttributesWidths();
+            minimalWidthWithAttributes = contentItemsWidth + (attributesWidths.Item1 + attributesWidths.Item2 + attributesWidths.Item3);
+            //! calculate optimal width using spacing values
+            return contentItemsWidth;
         }
     }
 }

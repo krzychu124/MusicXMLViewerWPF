@@ -102,7 +102,6 @@
     <Compile Include="DrawingHelpers\IDrawableObjectPart.cs" />
     <Compile Include="DrawingHelpers\PageDrawingSystem.cs" />
     <Compile Include="DrawingHelpers\PartProperties.cs" />
-    <Compile Include="DrawingHelpers\PartPropertiesContainer.cs" />
     <Compile Include="DrawingHelpers\PartSegmentDrawing.cs" />
     <Compile Include="DrawingHelpers\PartsSystemDrawing.cs" />
     <Compile Include="Helpers\ComparisonHelpers.cs" />
@@ -110,6 +109,9 @@
     <Compile Include="Helpers\MusicSymbols.cs" />
     <Compile Include="Helpers\PageProperties.cs" />
     <Compile Include="Helpers\SimpleWrapPanel.cs" />
+    <Compile Include="LayoutControl\AdvancedMeasureLayout.cs" />
+    <Compile Include="LayoutControl\LayoutHelpers.cs" />
+    <Compile Include="LayoutControl\MeasureSegmentContainer.cs" />
     <Compile Include="LayoutControl\SegmentPanelContainers\BeamItemsController.cs" />
     <Compile Include="LayoutControl\LayoutGeneral.cs" />
     <Compile Include="LayoutControl\MeasureSegmentController.cs" />

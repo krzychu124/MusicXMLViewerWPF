@@ -232,6 +232,11 @@ namespace MusicXMLScore.Helpers
                 avaliableIndexLinePositions.Add(i, i * halfLineSpacing);
             }
         }
+        public double GetContentWidth()
+        {
+            return pageDimensions.GetPageDimensionsInTenths().X.TenthsToWPFUnit() - (pageMarginBoth.LeftMargin.TenthsToWPFUnit() + pageMarginBoth.RightMargin.TenthsToWPFUnit());
+        }
+
         private void SetPageMargins(List<PageMarginsMusicXML> marginsList)
         {
             if (marginsList == null)

@@ -130,12 +130,12 @@ namespace MusicXMLScore.DrawingHelpers
                 }
             }
         }
-
+        //! Refactor needed - missing default layout if Loaded score does not contain any layout supporting print elements
         private void GetLayoutInfo(List<Model.ScorePartwisePartMeasureMusicXML> part)
         {
             int currPageListIndex = 0;
             int previousPageListIndex = 0;
-            foreach (var item in partSysemsInPages)
+            foreach (var item in partSysemsInPages)//! working properly only if score contains layout elements
             {
                 int currentSystemIndex = 0;
                 List<SystemLayoutMusicXML> tempSysLayouts = new List<SystemLayoutMusicXML>();

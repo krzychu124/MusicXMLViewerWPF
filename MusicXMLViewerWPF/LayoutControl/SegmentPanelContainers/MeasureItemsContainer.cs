@@ -29,7 +29,6 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
             {
                 return itemsWithPosition;
             }
-
             set
             {
                 itemsWithPosition = value;
@@ -68,69 +67,6 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
             for (int i = 0; i < numberOfStaffs; i++)
             {
                 itemsPositionsPerStaff.Add( (i + 1).ToString(), new List<Tuple<int, IMeasureItemVisual>>());
-            }
-        }
-
-        //? ---------------- Refactored-----------------------
-        public MeasureItemsContainer(ScorePartwisePartMeasureMusicXML measure, string partId, int numberOfStave)
-        {
-            measureItemsVisuals = new List<IMeasureItemVisual>();
-            notesList = new List<NoteMusicXML>();
-            this.measure = measure;
-            measureId = measure.Number;
-            this.partId = partId;
-            staveNumber = numberOfStave;
-            notesList = measure.Items.OfType<NoteMusicXML>().ToList();
-            List<NoteMusicXML> chordListTemp = new List<NoteMusicXML>();
-            for (int i = 0; i < notesList.Count; i++)
-            {
-                NoteChoiceTypeMusicXML noteType = notesList[i].GetNoteType();
-                NoteChoiceTypeMusicXML tempChoice = NoteChoiceTypeMusicXML.none;
-                string staff = "1";
-                if (int.Parse(notesList[i].Staff) != staveNumber)
-                {
-                    continue;
-                }
-                if (notesList[i].ItemsElementName.Contains(NoteChoiceTypeMusicXML.rest))
-                {
-                    if (chordListTemp.Count != 0)
-                    {
-                        staff = chordListTemp.ElementAt(0).Staff;
-                        NoteContainerItem note = new NoteContainerItem(chordListTemp, i, partId, measure.Number, staff);
-                        AddNote(note);
-                        chordListTemp.Clear();
-                    }
-                    RestContainterItem rest = new RestContainterItem(notesList[i], i, partId, measure.Number, staff);
-                    AddRest(rest);
-                    continue;
-                }
-                if (notesList[i].ItemsElementName.Contains(NoteChoiceTypeMusicXML.chord))
-                {
-                    chordListTemp.Add(notesList[i]);
-                }
-                else
-                {
-                    if (chordListTemp.Count != 0)
-                    {
-                        staff = chordListTemp.ElementAt(0).Staff;
-                        NoteContainerItem note = new NoteContainerItem(chordListTemp, i, partId, measure.Number, staff);
-                        AddNote(note);
-                        chordListTemp.Clear();
-                        chordListTemp.Add(notesList[i]);
-                    }
-                    else
-                    {
-                        chordListTemp.Add(notesList[i]);
-                    }
-                    tempChoice = noteType;
-                }
-                if (chordListTemp.Count != 0 && i+1 == notesList.Count)
-                {
-                    staff = chordListTemp.ElementAt(0).Staff;
-                    NoteContainerItem note = new NoteContainerItem(chordListTemp, i, partId, measure.Number, staff);
-                    AddNote(note);
-                    chordListTemp.Clear();
-                }
             }
         }
 
@@ -265,6 +201,12 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
             return width;
         }
 
+        public double GetMinimalContentWidth()
+        {
+            var perStaffMinWidth = itemsPositionsPerStaff.Select(x => x.Value).Select(z => z.Where(y=>y.Item1 !=0 ||!(y.Item1 == 0 && y.Item2 is IAttributeItemVisual)).Select(x => x.Item2.ItemLeftMargin + x.Item2.ItemRightMargin + x.Item2.ItemWidth /*+ (x.Item2 is INoteItemVisual? 2.0.TenthsToWPFUnit():0.0)*/).Sum()).Max();
+            return perStaffMinWidth;
+        }
+
         public void AppendNoteWithStaffNumber(NoteContainerItem note, int cursorPosition, string voice, string staffNumber)
         {
             Tuple<int, IMeasureItemVisual> noteVisual = new Tuple<int, IMeasureItemVisual>(cursorPosition, note);
@@ -272,12 +214,6 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
             itemsWithPosition.Add(noteVisual);
             itemsPositionsPerStaff[staffNumber].Add(noteVisual);
         }
-        //public void AppendNote(NoteContainerItem note, int cursorPosition, string voice = "1", string staffNumber = "1")
-        //{
-        //    Tuple<int, IMeasureItemVisual> noteVisual = new Tuple<int, IMeasureItemVisual>(cursorPosition, note);
-        //    AddNote(note);
-        //    itemsWithPosition.Add(noteVisual);
-        //}
         public void AppendRestWithStaffNumber(RestContainterItem rest, int cursorPosition, string voice, string staffNumber)
         {
             Tuple<int, IMeasureItemVisual> restVisual = new Tuple<int, IMeasureItemVisual>(cursorPosition, rest);
@@ -285,12 +221,6 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
             itemsWithPosition.Add(restVisual);
             itemsPositionsPerStaff[staffNumber].Add(restVisual);
         }
-        //public void AppendRest(RestContainterItem rest, int cursorPosition, string voice = "1")
-        //{
-        //    Tuple<int, IMeasureItemVisual> restVisual = new Tuple<int, IMeasureItemVisual>(cursorPosition, rest);
-        //    AddRest(rest);
-        //    itemsWithPosition.Add(restVisual);
-        //}
         public void AppendAttributeWithStaffNumber(IAttributeItemVisual attributeItem, int cursorPosition, string staffNumber)
         {
             Tuple<int, IMeasureItemVisual> attributesVisual = new Tuple<int, IMeasureItemVisual>(cursorPosition, attributeItem);
@@ -298,12 +228,6 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
             itemsWithPosition.Add(attributesVisual);
             itemsPositionsPerStaff[staffNumber].Add(attributesVisual);
         }
-        //public void AppendAttribute(IAttributeItemVisual attributeItem, int cursorPosition)//temp
-        //{
-        //    Tuple<int, IMeasureItemVisual> attributesVisual = new Tuple<int, IMeasureItemVisual>(cursorPosition, attributeItem);
-        //    AddAttribute(attributeItem);
-        //    itemsWithPosition.Add(attributesVisual);
-        //}
         public void AddNote(NoteContainerItem noteVisual)
         {
             measureItemsVisuals.Add(noteVisual);
