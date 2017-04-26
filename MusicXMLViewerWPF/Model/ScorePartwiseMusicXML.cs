@@ -183,17 +183,17 @@ namespace MusicXMLViewerWPF
             {
                 part.SetMeasuresDictionary();
             }
-            CheckVersion();
+            SearchForPrintElementsSupport();
         }
         /// <summary>
         /// If Version is lower than 3.0, whole layout system should be calculated and generated
         /// </summary>
-        private void CheckVersion()
+        private void SearchForPrintElementsSupport()
         {
-            if (this.Version == "3.0")
-            {
-                layoutInfoInsideScore = true; // else false, missing new-system, new-page attributes, forces manual layout calculations
-            }
+            //if (this.Version == "3.0")
+            //{
+            //    layoutInfoInsideScore = true; // else false, missing new-system, new-page attributes, forces manual layout calculations
+            //}
             if (Identification?.Encoding != null)
             {
                 var printLayoutSupport = Identification.Encoding.ItemsElementName.Any(x => x == MusicXMLScore.Model.Identification.EncodingChoiceType.supports);
@@ -211,6 +211,10 @@ namespace MusicXMLViewerWPF
                         layoutInfoInsideScore = true;
                     }
                 }
+            }
+            else
+            {
+                layoutInfoInsideScore = false;
             }
         }
     }
