@@ -64,5 +64,16 @@ namespace MusicXMLScore.Model
                 measures.Add(m.Number, m);
             }
         }
+
+        internal int GetStavesCount()
+        {
+            int numberOfStaves = 1;
+            var staves = measure.FirstOrDefault()?.Items?.OfType<MeasureItems.AttributesMusicXML>()?.FirstOrDefault()?.Staves ?? "1";
+            if (staves != null)
+            {
+                numberOfStaves = int.Parse(staves);
+            }
+            return numberOfStaves;
+        }
     }
 }
