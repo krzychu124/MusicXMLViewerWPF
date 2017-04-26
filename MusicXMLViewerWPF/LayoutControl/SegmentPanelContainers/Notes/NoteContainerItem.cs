@@ -27,6 +27,8 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
         private double itemLeftMargin = 0.0;
         private double itemWidthMin = 0.0;
         private double itemWidthOpt = 0.0;
+        private double horizontalOffset = 0.0;
+        private double verticalOffset = 0.0;
         private List<NoteMusicXML> noteItem;
         private bool isChordNote;
         private int fractionPosition;
@@ -164,6 +166,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
             }
             itemWidthMin = DrawingMethods.GetTextWidth(symbol, TypeFaces.GetMusicFont(), isSmall);
             itemWidthOpt = itemWidthMin;
+            itemWidth = itemWidthMin;
             CheckForLedgerLines();
             if (needLedgerLines)
             {
@@ -428,6 +431,13 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
         {
 
         }
+
+        public void SetItemMargins(double left, double right)//! wip
+        {
+            ItemLeftMargin = left;
+            ItemRightMargin = right;
+        }
+
         public double ItemWidthMin
         {
             get
@@ -607,9 +617,48 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
                 return itemLeftMargin;
             }
 
-            set
+            private set
             {
                 itemLeftMargin = value;
+            }
+        }
+
+        public double ItemRightMargin
+        {
+            get
+            {
+                return itemRightMargin;
+            }
+
+            private set
+            {
+                itemRightMargin = value;
+            }
+        }
+
+        public double HorizontalOffset
+        {
+            get
+            {
+                return horizontalOffset;
+            }
+
+            set
+            {
+                horizontalOffset = value;
+            }
+        }
+
+        public double VerticalOffset
+        {
+            get
+            {
+                return verticalOffset;
+            }
+
+            set
+            {
+                verticalOffset = value;
             }
         }
     }

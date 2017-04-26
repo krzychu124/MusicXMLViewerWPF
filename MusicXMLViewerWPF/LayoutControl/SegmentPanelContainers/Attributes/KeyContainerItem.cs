@@ -20,6 +20,8 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Attributes
         private bool empty = false;
         private bool visible = true;
         private double itemWidth;
+        private double itemLeftMargin;
+        private double itemRightMargin;
         private Rect itemRectBounds;
         private int[] keyIndexes;
         private int fifts;
@@ -33,6 +35,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Attributes
             this.partId = partId;
             currentClef = ViewModel.ViewModelLocator.Instance.Main.CurrentScoreProperties.GetClef(measureId, partId, int.Parse(staffNumber), fractionPosition);
             fifts = int.Parse(key.Items[key.ItemsElementName.GetValueIndexFromObjectArray(KeyChoiceTypes.fifths)].ToString());
+            SetStandardKeySigMargins();
             GenerateKeyIndexes();
             GetSymbol();
             Draw();
@@ -98,6 +101,18 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Attributes
                 //lower == flats
                 keyIndexes = KeyMusicXML.DefaultGFlatKeys.Select(i => i + clefKeyOffset).ToArray();
             }
+        }
+
+        private void SetStandardKeySigMargins()
+        {
+            LayoutStyle.Layout layout = ViewModel.ViewModelLocator.Instance.Main.CurrentLayout.LayoutStyle;
+            SetItemMargins(layout.MeasureStyle.KeySigLeftOffset.TenthsToWPFUnit(), layout.MeasureStyle.KeySigRightOffset.TenthsToWPFUnit());
+        }
+
+        public void SetItemMargins(double left, double right)
+        {
+            ItemLeftMargin = left;
+            ItemRightMargin = right;
         }
 
         public Rect ItemRectBounds
@@ -191,6 +206,32 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Attributes
             set
             {
                 itemStaff = value;
+            }
+        }
+
+        public double ItemLeftMargin
+        {
+            get
+            {
+                return itemLeftMargin;
+            }
+
+            private set
+            {
+                itemLeftMargin = value;
+            }
+        }
+
+        public double ItemRightMargin
+        {
+            get
+            {
+                return itemRightMargin;
+            }
+
+            private set
+            {
+                itemRightMargin = value;
             }
         }
     }
