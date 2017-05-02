@@ -178,7 +178,7 @@ namespace MusicXMLScore.DrawingHelpers
 
                 List<int> positionIndexes = indexes.SelectMany(x => x).Distinct().ToList();
                 positionIndexes.Sort();
-                double startingPosition = durationTable[0] + attributesLayout.AttributesRightOffset.TenthsToWPFUnit();
+                double startingPosition = durationTable[0]+ attributesLayout.AttributesRightOffset.TenthsToWPFUnit();
                 Dictionary<int, Tuple<double, double>> positions = GeneratePositionsTable(partMeasureSegment, positionIndexes, startingPosition);
 
                 double targetWidth = measureWidth - durationTable[0];
@@ -234,7 +234,7 @@ namespace MusicXMLScore.DrawingHelpers
                     double previewSpacing = staffSpace * LayoutHelpers.SpacingValue(currentDuration, shortestDuration, 0.6);
                     positions.Add(positionIndexes[i], Tuple.Create(currentStartPosition, previewSpacing));
                 }
-                else
+                else 
                 {
                     int currentDuration = durationOfPosition[positionIndexes[i]];
                     double previewSpacing = staffSpace * LayoutHelpers.SpacingValue(currentDuration, shortestDuration, 0.6);

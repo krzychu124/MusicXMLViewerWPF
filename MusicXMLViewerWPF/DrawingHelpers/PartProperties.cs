@@ -52,7 +52,7 @@ namespace MusicXMLScore.DrawingHelpers
         #endregion Fields
 
         #region Constructors
-        public PartProperties()
+        public PartProperties(string partId)
         {
             
         }
@@ -62,11 +62,11 @@ namespace MusicXMLScore.DrawingHelpers
             SetDefaultDistances(score);
             List<ScorePartwisePartMeasureMusicXML> measuresInPart = score.Part.ElementAt(partIndex).Measure;
             GetLayoutInfo(measuresInPart);
-            SetSystemMeasureRanges(score);
+            SetSystemMeasureRanges();
             SetPartHeight();
-            GenerateKeyAttributes();
+            //GenerateKeyAttributes();
             GenerateDivisionChanges();
-            GenerateFirstMeasureIdPerSystem();
+            //GenerateFirstMeasureIdPerSystem();
         }
 
         #endregion Constructors
@@ -439,7 +439,7 @@ namespace MusicXMLScore.DrawingHelpers
         {
             if (firstIdPerSystem == null)
             {
-                GenerateFirstMeasureIdPerSystem();
+                //GenerateFirstMeasureIdPerSystem();
             }
             if (firstIdPerSystem.Contains(measureId))
             {
@@ -752,12 +752,12 @@ namespace MusicXMLScore.DrawingHelpers
             double staffHeight = ViewModel.ViewModelLocator.Instance.Main.CurrentPageLayout.StaffHeight.MMToTenths();
             partHeight = staffHeight * numberOfStaves + (stavesDistance * (numberOfStaves - 1));
         }
-        private void SetSystemMeasureRanges(MusicXMLViewerWPF.ScorePartwiseMusicXML score)
+        public void SetSystemMeasureRanges(/*MusicXMLViewerWPF.ScorePartwiseMusicXML score*/)
         {
             LayoutControl.LayoutGeneral currentLayout = ViewModel.ViewModelLocator.Instance.Main.CurrentLayout;
             double defaultLeftMargin = currentLayout.PageMargins.LeftMargin;
             double defaultTopMargin = currentLayout.PageMargins.TopMargin;
-            var part = score.Part.ElementAt(partIndex);
+            var part = currentPart;// score.Part.ElementAt(partIndex);
             measuresPerSystem = new List<List<string>>();
             foreach (var page in partSysemsInPages)
             {
@@ -769,8 +769,8 @@ namespace MusicXMLScore.DrawingHelpers
                 }
                 measuresPerSystemPerPage.Add(new List<List<string>>(tempList));
             }
-            var measures = score.Part.ElementAt(partIndex).Measure;
-            score.SetLargestWidth();
+            var measures = part.Measure;// score.Part.ElementAt(partIndex).Measure;
+            //score.SetLargestWidth();
             double previousWidth = 0.0;
             double currentLineY = 0.0;
             coords = new Dictionary<string, Point>();
