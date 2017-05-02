@@ -9,6 +9,9 @@ using System.Threading.Tasks;
 using System.Windows.Controls;
 using MusicXMLScore.Converters;
 using MusicXMLScore.LayoutControl.SegmentPanelContainers.Attributes;
+using System.Windows;
+using System.Windows.Media;
+using MusicXMLScore.Helpers;
 
 namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
 {
@@ -23,6 +26,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
         private string partId;
         private int staveNumber;
         private int staffsNumber;
+        private Canvas temporaryBarline;
         internal List<Tuple<int, IMeasureItemVisual>> ItemsWithPostition
         {
             get
@@ -86,6 +90,8 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
                     Canvas.SetTop(item.Item2.ItemCanvas as Canvas, top);
                 }
             }
+            double tempHeight = staffsNumber == 1 ? 0.0 : staffDistance; //! temp
+            DrawTempBarline(tempHeight + 40.0.TenthsToWPFUnit()); //! Temp barline
         }
 
         public void ArrangeUsingDurationTable(Dictionary<int, double> durationTable)
@@ -131,7 +137,6 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
                 int notesCount = item.Value.Select(x => x.Item2).Where(x => x as INoteItemVisual != null).Count();
                 notesPerStaff.Add(item.Key, notesCount);
             }
-
             //! ------------------ Note items and additional Attribute items position set--------------------
             foreach (var item in itemsWithPosition)
             {
@@ -164,8 +169,24 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
                     SetLeft(item.Item2.ItemCanvas as Canvas, durationTable[item.Item1] - item.Item2.ItemWidth);
                 }
             }
+            SetLeft(temporaryBarline, durationTable.LastOrDefault().Value); //! Temp barline position test to end of measure (advanced layout visual helper)
         }
-
+        private void DrawTempBarline(double staffHeight)
+        {
+            temporaryBarline = new Canvas();
+            Point p1 = new Point();
+            Point p2 = new Point(0,staffHeight);
+            Pen pen = new Pen(Brushes.Black, 1.5.TenthsToWPFUnit());
+            DrawingVisual dv = new DrawingVisual();
+            using (DrawingContext dc = dv.RenderOpen())
+            {
+                dc.DrawLine(pen, p1, p2);
+            }
+            DrawingVisualHost dvh = new DrawingVisualHost();
+            dvh.AddVisual(dv);
+            temporaryBarline.Children.Add(dvh);
+            Children.Add(temporaryBarline);
+        }
         public List<int> GetDurationIndexes()
         {
             return itemsWithPosition.Select(x => x.Item1).Distinct().ToList();
@@ -180,9 +201,9 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
             {
                 case 0:
                     ClefContainerItem clef = attributeVisual as ClefContainerItem;
-                    width += attributesLayout.ClefLeftOffset.TenthsToWPFUnit();
+                    width += clef.ItemLeftMargin; //attributesLayout.ClefLeftOffset.TenthsToWPFUnit();
                     SetLeft(clef.ItemCanvas, width);
-                    width += clef.ItemWidth + attributesLayout.ClefRightOffset.TenthsToWPFUnit();
+                    width += clef.ItemWidth + clef.ItemRightMargin;// attributesLayout.ClefRightOffset.TenthsToWPFUnit();
                     break;
                 case 1:
                     KeyContainerItem key = attributeVisual as KeyContainerItem;
