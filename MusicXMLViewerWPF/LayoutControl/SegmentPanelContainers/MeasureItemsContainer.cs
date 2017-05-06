@@ -27,6 +27,8 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
         private int staveNumber;
         private int staffsNumber;
         private Canvas temporaryBarline;
+        private Canvas temporaryStartBarline;
+
         internal List<Tuple<int, IMeasureItemVisual>> ItemsWithPostition
         {
             get
@@ -91,7 +93,8 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
                 }
             }
             double tempHeight = staffsNumber == 1 ? 0.0 : staffDistance; //! temp
-            DrawTempBarline(tempHeight + 40.0.TenthsToWPFUnit()); //! Temp barline
+            DrawTempBarline(tempHeight + 40.0.TenthsToWPFUnit()); //! Temp barline (black)
+            DrawTempStartBarline(tempHeight + 40.0.TenthsToWPFUnit()); //! Temp 0.X position barline (red)
         }
 
         public void ArrangeUsingDurationTable(Dictionary<int, double> durationTable)
@@ -108,7 +111,10 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
                 {
                     foreach (var c in clef)
                     {
-                        ArrangeAttributes(c as ClefContainerItem, new Dictionary<string, double>(), durationTable[-3]);
+                        if (durationTable.ContainsKey(-3))
+                        {
+                            ArrangeAttributes(c as ClefContainerItem, new Dictionary<string, double>(), durationTable[-3]);
+                        }
                     }
                 }
                 //! ------------------ Key Signatures position set--------------------
@@ -117,7 +123,10 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
                 {
                     foreach (var item in key)
                     {
-                        ArrangeAttributes(item as KeyContainerItem, new Dictionary<string, double>(), durationTable[-2]);
+                        if (durationTable.ContainsKey(-2))
+                        {
+                            ArrangeAttributes(item as KeyContainerItem, new Dictionary<string, double>(), durationTable[-2]);
+                        }
                     }
                 }
                 //! ------------------ Time Signatures position set--------------------
@@ -126,7 +135,10 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
                 {
                     foreach (var item in time)
                     {
-                        ArrangeAttributes(item as TimeSignatureContainerItem, new Dictionary<string, double>(), durationTable[-1]);
+                            if (durationTable.ContainsKey(-1))
+                            {
+                                ArrangeAttributes(item as TimeSignatureContainerItem, new Dictionary<string, double>(), durationTable[-1]);
+                            }
                     }
                 }
             }
@@ -186,6 +198,22 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
             dvh.AddVisual(dv);
             temporaryBarline.Children.Add(dvh);
             Children.Add(temporaryBarline);
+        }
+        private void DrawTempStartBarline(double staffHeight)
+        {
+            temporaryStartBarline = new Canvas();
+            Point p1 = new Point();
+            Point p2 = new Point(0, staffHeight * 1.2);
+            Pen pen = new Pen(Brushes.Red, 1.5.TenthsToWPFUnit());
+            DrawingVisual dv = new DrawingVisual();
+            using (DrawingContext dc = dv.RenderOpen())
+            {
+                dc.DrawLine(pen, p1, p2);
+            }
+            DrawingVisualHost dvh = new DrawingVisualHost();
+            dvh.AddVisual(dv);
+            temporaryStartBarline.Children.Add(dvh);
+            Children.Add(temporaryStartBarline);
         }
         public List<int> GetDurationIndexes()
         {
