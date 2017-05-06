@@ -54,7 +54,7 @@ namespace MusicXMLScore.DrawingHelpers
         {
             this.systemIndex = systemIndex;
             this.partIDsList = partsIdList;
-            partWidth = measuresToArrange.Sum(x => x.Value.FirstOrDefault().MinimalWidthWithAttributes);
+            partWidth = measuresToArrange.Where(x => x.Key == measuresToArrange.Keys.FirstOrDefault()).FirstOrDefault().Value.Sum(x => x.MinimalWidthWithAttributes);
             
             this.partsPropertiesList = partsProperties;
             this.pageIndex = pageIndex;
@@ -182,7 +182,7 @@ namespace MusicXMLScore.DrawingHelpers
                 Dictionary<int, Tuple<double, double>> positions = GeneratePositionsTable(partMeasureSegment, positionIndexes, startingPosition);
 
                 double targetWidth = measureWidth - durationTable[0];
-                LayoutHelpers.StretchPositionsToWidth(targetWidth, positions, positionIndexes);
+                //LayoutHelpers.StretchPositionsToWidth(targetWidth, positions, positionIndexes);
 
                 AddPositionsToDurationTable(durationTable, positionIndexes, positions);
                 int lastDuration = durationTable.Keys.Max() + 1;
@@ -192,8 +192,9 @@ namespace MusicXMLScore.DrawingHelpers
                 //! Update measure segments content with calculated duration position table
                 foreach (MeasureSegmentController measureSegment in partMeasureSegment)
                 {
-                    measureSegment.ArrangeUsingDurationTable(durationTable);
-                    RedrawBeams(measureSegment, durationTable);
+                    //measureSegment.ArrangeUsingDurationTable(durationTable);
+                   // RedrawBeams(measureSegment, durationTable); 
+                   //? Temp disabled, advanced layout tests
                 }
             }
         }
@@ -350,6 +351,30 @@ namespace MusicXMLScore.DrawingHelpers
         private Dictionary<int,int> GetDurationOfPosition(List<MeasureSegmentController> partMeasureSegment, List<int> positionIndexes)
         {
             int measureDuration = partMeasureSegment.Select(x => x.MaxDuration).Max();
+            Dictionary<int, int> durationOfPosition = new Dictionary<int, int>();
+            for (int i = 0; i < positionIndexes.Count; i++)
+            {
+                if (i < positionIndexes.Count - 1)
+                {
+                    durationOfPosition.Add(positionIndexes[i], positionIndexes[i + 1] - positionIndexes[i]);
+                }
+                else
+                {
+                    durationOfPosition.Add(positionIndexes[positionIndexes.Count - 1], measureDuration - positionIndexes[positionIndexes.Count - 1]);
+                }
+            }
+            return durationOfPosition;
+        }
+
+        /// <summary>
+        /// Gets each position duration.
+        /// </summary>
+        /// <param name="measureDurationValue">Duration of measure</param>
+        /// <param name="positionIndexes">All unique position indexes</param>
+        /// <returns>Collection of each position duration</returns>
+        private Dictionary<int, int> GetDurationOfPosition(int measureDurationValue, List<int> positionIndexes)
+        {
+            int measureDuration = measureDurationValue;
             Dictionary<int, int> durationOfPosition = new Dictionary<int, int>();
             for (int i = 0; i < positionIndexes.Count; i++)
             {
