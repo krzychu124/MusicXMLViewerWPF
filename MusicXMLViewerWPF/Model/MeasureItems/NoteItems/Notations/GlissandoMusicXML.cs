@@ -150,7 +150,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems.Notations
 
             set
             {
-                value = value;
+                this.value = value;
             }
         }
     }

@@ -167,7 +167,7 @@ namespace MusicXMLScore.DrawingHelpers
                 {
                     measureWidth = partMeasureSegment.Select(x => x.MinimalWidthWithAttributes).Max();
                 }
-                Tuple<double, double, double> attributesWidth = GetAttributesWidth(partMeasureSegment);
+                Tuple<double, double, double> attributesWidth = LayoutHelpers.GetAttributesWidth(partMeasureSegment);
                 double maxClef = attributesWidth.Item1;
                 double maxKey = attributesWidth.Item2;
                 double maxTime = attributesWidth.Item3;
@@ -303,43 +303,6 @@ namespace MusicXMLScore.DrawingHelpers
                 measuresList.Add(measures);
             }
             return measuresList;
-        }
-
-        /// <summary>
-        /// Gets max width of all beginning attributes from measure segment of all parts
-        /// </summary>
-        /// <param name="measureSegments">List of measures with the same Number from all parts</param>
-        /// <returns>Max width of each attribute(clef,key,time) of all parts</returns>
-        private Tuple<double,double,double> GetAttributesWidth(List<MeasureSegmentController> measureSegments)
-        {
-            List<Tuple<double, double, double>> attributesWidths = new List<Tuple<double, double, double>>();
-            foreach (var measureSegment in measureSegments)
-            {
-                attributesWidths.Add(measureSegment.GetAttributesWidths());
-            }
-            double maxClef = 0.0;
-            double maxKey = 0.0;
-            double maxTime = 0.0;
-            if (attributesWidths.Count != 0)
-            {
-                maxClef = attributesWidths.Select(x => x.Item1).Max();
-                maxKey = attributesWidths.Select(x => x.Item2).Max();
-                maxTime = attributesWidths.Select(x => x.Item3).Max();
-            }
-            if (maxClef != 0)
-            {
-                maxClef += attributesLayout.ClefLeftOffset.TenthsToWPFUnit() + attributesLayout.ClefRightOffset.TenthsToWPFUnit();
-            }
-            if (maxKey != 0)
-            {
-                maxKey += attributesLayout.KeySigLeftOffset.TenthsToWPFUnit() + attributesLayout.KeySigRightOffset.TenthsToWPFUnit();
-            }
-            if (maxTime != 0)
-            {
-                maxTime += attributesLayout.TimeSigLeftOffset.TenthsToWPFUnit() + attributesLayout.TimeSigRightOffset.TenthsToWPFUnit();
-            }
-
-            return Tuple.Create(maxClef, maxKey, maxTime);
         }
 
         /// <summary>
