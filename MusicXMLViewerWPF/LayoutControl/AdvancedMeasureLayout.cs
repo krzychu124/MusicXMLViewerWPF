@@ -94,10 +94,8 @@ namespace MusicXMLScore.LayoutControl
         {
             List<string> partIDs = measureSegmentsContainer.PartIDsList;
             double pageContentWidth = ViewModelLocator.Instance.Main.CurrentPageLayout.GetContentWidth();
-            //! Loop through measures
             double currentWidth = 0.0;
             List<MeasureSegmentController> testList = new List<MeasureSegmentController>();
-            calculatedOptimalWidths = new List<Tuple<string, double>>();
             var partProperties = ViewModelLocator.Instance.Main.CurrentPartsProperties;
             Dictionary<string, List<MeasureSegmentController>> testDictionary = new Dictionary<string, List<MeasureSegmentController>>();
             measureColHelpers = new Dictionary<string, Dictionary<string, List<AntiCollisionHelper>>>();
@@ -113,24 +111,25 @@ namespace MusicXMLScore.LayoutControl
                 var measureOfAllParts = measureSegmentsContainer.MeasureSegments.Select(x => x.Value.ElementAt(i)).ToList();
                 var testDurations = measureOfAllParts.SelectMany(x => x.GetIndexes()).Distinct().ToList();
                 int shortestDuration = measureOfAllParts.Select(x => x.GetMinDuration()).Min();
-                SharedMeasureProperties s = new SharedMeasureProperties(measureOfAllParts.FirstOrDefault().MeasureID);
+                SharedMeasureProperties sharedMeasureProperties = new SharedMeasureProperties(measureOfAllParts.FirstOrDefault().MeasureID);
                 foreach (var measure in measureOfAllParts)
                 {
                     List<AntiCollisionHelper> acHelpers = measure.GetContentItemsProperties(shortestDuration);
-                    s.AddAntiCollisionHelper(measure.PartId, acHelpers);
+                    sharedMeasureProperties.AddAntiCollisionHelper(measure.PartId, acHelpers);
                     measureContentPropertiesList.Add(measure.PartId, acHelpers);
                 }
-                s.GenerateFractionPositions();
-                sharedMeasuresProps.Add(s);
-                double tempMinWidth = s.SharedWidth;
+                Tuple<double, double, double> attributesWidth = LayoutHelpers.GetAttributesWidth(measureOfAllParts);
+                sharedMeasureProperties.AddMeasureAttributesWidths(attributesWidth);
+                sharedMeasureProperties.GenerateFractionPositions();
+                sharedMeasuresProps.Add(sharedMeasureProperties);
+                double tempMinWidth = sharedMeasureProperties.SharedWidth;
                 var measuresMaxWidth = measureOfAllParts.Select(x => x.MinimalContentWidth()).Max();
                 string measureId = measureOfAllParts.FirstOrDefault().MeasureID;
-                calculatedOptimalWidths.Add(Tuple.Create(measureId, measuresMaxWidth));
                 measureColHelpers.Add(measureOfAllParts.FirstOrDefault().MeasureID, new Dictionary<string, List<AntiCollisionHelper>>(measureContentPropertiesList));
                 measureOfAllParts.ForEach((x) => { x.MinimalWidth = tempMinWidth /*measuresMaxWidth*/; }); //! temp
                 //! each part measure => get width => get max => stretch to optimal => set optimal width each part measure
 
-                if (i < 4)//! test, temp
+                if (i < 7)//! test, temp
                 {
                     if (currentWidth + measuresMaxWidth < pageContentWidth)
                     {
@@ -141,7 +140,6 @@ namespace MusicXMLScore.LayoutControl
                         }
                     }
                 }
-                
             }
             foreach (var item in partIDs)//! temp test, updates measures widths
             {
@@ -207,289 +205,12 @@ namespace MusicXMLScore.LayoutControl
         }
         private void GetOptimalStretch()
         {
-            //double tempItemMinWidth = 17.0.TenthsToWPFUnit();
             fractionPositionsPerMeasure = new Dictionary<string, Dictionary<int, double>>();
             foreach (var perMeasureCollHelpers in measureColHelpers)
             {
-                //Dictionary<int, double> fractionsPostitions = new Dictionary<int, double>();
                 string curMeasureId = perMeasureCollHelpers.Key;
-                //foreach (var perPartCollHelpers in perMeasureCollHelpers.Value)
-                //{
-                //    string curPartId = perPartCollHelpers.Key;
-                //    double minimalWidth = 0.0;
-                //    foreach (var item in perPartCollHelpers.Value)
-                //    {
-                //        item.FractionStretch = tempItemMinWidth * item.SpacingFactor;
-                //    }
-                //    var test = perPartCollHelpers.Value.GroupBy(x => x.FactionPosition).Select(x => x.ToList()).ToList();
-                //    foreach (var item in test)
-                //    {
-                //        //? check for 0 bug
-                //        //! Get shortest duration of durations inside current fraction
-                //        var min = item.Aggregate((c, d) => c.FractionDuration < d.FractionDuration ? c : d); 
-                //        minimalWidth += min.FractionStretch;
-                //        if (fractionsPostitions.ContainsKey(min.FactionPosition))
-                //        {
-                //            continue;
-                //        }
-                //        fractionsPostitions.Add(min.FactionPosition, minimalWidth - min.FractionStretch);
-                //    }
-                //    fractionsPostitions.Add(fractionsPostitions.Max(x=>x.Key) + 100, minimalWidth);
-                //    minimalWidth = 0.0;
-                //    for (int i = 1; i < perPartCollHelpers.Value.Count; i++)
-                //    {
-                //        AntiCollisionHelper currentCollHelper = perPartCollHelpers.Value[i - 1];
-                //        AntiCollisionHelper nextCollHelper = perPartCollHelpers.Value[i];
-                //    }
-                //}
                 fractionPositionsPerMeasure.Add(curMeasureId, sharedMeasuresProps.Where(x=>x.MeasureId == curMeasureId).FirstOrDefault().SharedFractionPositions);
-
-                //fractionPositionsPerMeasure.Add(curMeasureId, fractionsPostitions);
             }
         }
     }
-
-    [DebuggerDisplay("{DebugDisplay, nq}")]
-    class AntiCollisionHelper //temporary name
-    {
-        private int factionPosition;
-        private double fractionDuration;
-        private double spacingFactor;
-        private double elementWidth;
-        private double leftMinWidth;
-        private double rightMinWidth;
-        private double fractionPosX;
-        private double fractionStretch;
-        public int FactionPosition
-        {
-            get
-            {
-                return factionPosition;
-            }
-
-            set
-            {
-                factionPosition = value;
-            }
-        }
-
-        public double FractionDuration
-        {
-            get
-            {
-                return fractionDuration;
-            }
-
-            set
-            {
-                fractionDuration = value;
-            }
-        }
-
-        public double ElementWidth
-        {
-            get
-            {
-                return elementWidth;
-            }
-
-            set
-            {
-                elementWidth = value;
-            }
-        }
-
-        public double LeftMinWidth
-        {
-            get
-            {
-                return leftMinWidth;
-            }
-
-            set
-            {
-                leftMinWidth = value;
-            }
-        }
-
-        public double RightMinWidth
-        {
-            get
-            {
-                return rightMinWidth;
-            }
-
-            set
-            {
-                rightMinWidth = value;
-            }
-        }
-
-        private string DebugDisplay
-        {
-            get { return string.Format("{0}, {1:N2}, {2:N2}, {3:N2}, {4:N2} {5:N2} FS:{6:N2}", FactionPosition, FractionDuration, SpacingFactor, ElementWidth, LeftMinWidth, RightMinWidth, FractionStretch); }
-        }
-
-        public double SpacingFactor
-        {
-            get
-            {
-                return spacingFactor;
-            }
-
-            set
-            {
-                spacingFactor = value;
-            }
-        }
-
-        public double FractionPosX
-        {
-            get
-            {
-                return fractionPosX;
-            }
-
-            set
-            {
-                fractionPosX = value;
-            }
-        }
-
-        public double FractionStretch
-        {
-            get
-            {
-                return fractionStretch;
-            }
-
-            set
-            {
-                fractionStretch = value;
-            }
-        }
-
-        public AntiCollisionHelper(int fractionPosition, double fractionDuration, double spacingFactor, double elementWidth, double leftMin, double rightMin)
-        {
-            this.FactionPosition = fractionPosition;
-            this.FractionDuration = fractionDuration;
-            this.spacingFactor = spacingFactor;
-            this.ElementWidth = elementWidth;
-            this.LeftMinWidth = leftMin;
-            this.RightMinWidth = rightMin;
-        }
-    }
-
-    class SharedMeasureProperties
-    {
-        private string measureId;
-        private double sharedWidth;
-        private Dictionary<string, List<AntiCollisionHelper>> sharedACHelper;
-        private Dictionary<int, double> sharedFractionPositions;
-
-        public double SharedWidth
-        {
-            get
-            {
-                return sharedWidth;
-            }
-
-            set
-            {
-                sharedWidth = value;
-            }
-        }
-
-        public string MeasureId
-        {
-            get
-            {
-                return measureId;
-            }
-
-            set
-            {
-                measureId = value;
-            }
-        }
-
-        public Dictionary<int, double> SharedFractionPositions
-        {
-            get
-            {
-                return sharedFractionPositions;
-            }
-
-            set
-            {
-                sharedFractionPositions = value;
-            }
-        }
-
-        public SharedMeasureProperties(string measureId)
-        {
-            this.measureId = measureId;
-            sharedWidth = 0.0;
-            sharedACHelper = new Dictionary<string, List<AntiCollisionHelper>>();
-            sharedFractionPositions = new Dictionary<int, double>();
-        }
-
-        private void CalculateWidth()
-        {
-            sharedWidth = sharedFractionPositions.LastOrDefault().Value;
-        }
-
-        public void AddAntiCollisionHelper(string partId, AntiCollisionHelper acHelper)
-        {
-            if (sharedACHelper.ContainsKey(partId))
-            {
-                sharedACHelper[partId].Add(acHelper);
-            }
-            else
-            {
-                sharedACHelper.Add(partId, new List<AntiCollisionHelper>() { acHelper });
-            }
-        }
-        public void AddAntiCollisionHelper(string partId, List<AntiCollisionHelper> acHelper)
-        {
-            CalculateFractionStretch(acHelper);
-            if (sharedACHelper.ContainsKey(partId))
-            {
-                sharedACHelper[partId].AddRange(acHelper);
-            }
-            else
-            {
-                sharedACHelper.Add(partId, acHelper);
-
-            }
-        }
-        public void GenerateFractionPositions()
-        {
-            var grouppedFractions = sharedACHelper.SelectMany(x=>x.Value).OrderBy(x=>x.FactionPosition).GroupBy(x => x.FactionPosition).Select(x => x.ToList()).ToList(); //! not tested
-            double minWidth = 10.0.TenthsToWPFUnit();
-            foreach (var item in grouppedFractions)
-            {
-                var min = item.Aggregate((c, d) => c.FractionDuration < d.FractionDuration ? c : d);
-                minWidth += min.FractionStretch;
-                if (item.Any(x=>x.LeftMinWidth != 0))
-                {
-                    minWidth += item.Max(x=>x.LeftMinWidth); //! temp
-                }
-                sharedFractionPositions.Add(min.FactionPosition, minWidth - min.FractionStretch);
-                minWidth += item.Max(x=> x.RightMinWidth); //! temp
-            }
-            sharedFractionPositions.Add(sharedFractionPositions.Max(x=>x.Key) + 1, minWidth);
-            CalculateWidth();
-        }
-
-        private void CalculateFractionStretch(List<AntiCollisionHelper> acHelper)
-        {
-            double tempItemMinWidth = 20.0.TenthsToWPFUnit(); //! temp
-            foreach (var item in acHelper)
-            {
-                item.FractionStretch = item.SpacingFactor * tempItemMinWidth;
-            }
-        }
-    }
-
 }

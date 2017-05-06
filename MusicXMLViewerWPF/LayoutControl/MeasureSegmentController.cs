@@ -31,7 +31,7 @@ namespace MusicXMLScore.LayoutControl
         MeasureItemsContainer measureItemsContainer;
         private string measureID;
         private double minimalWidthWithAttributes;
-
+        private string partId;
         public int MaxDuration
         {
             get
@@ -80,6 +80,8 @@ namespace MusicXMLScore.LayoutControl
             set
             {
                 minimalWidth = value;
+                int partIndex = ViewModel.ViewModelLocator.Instance.Main.CurrentSelectedScore.Part.FindIndex(x => x.Id == partId);
+                ViewModel.ViewModelLocator.Instance.Main.CurrentSelectedScore.Part.ElementAt(partIndex).MeasuresByNumber[measureID].CalculatedWidth = minimalWidth.WPFUnitToTenths();
             }
         }
 
@@ -109,10 +111,24 @@ namespace MusicXMLScore.LayoutControl
             }
         }
 
+        public string PartId
+        {
+            get
+            {
+                return partId;
+            }
+
+            set
+            {
+                partId = value;
+            }
+        }
+
         public MeasureSegmentController(Model.ScorePartwisePartMeasureMusicXML measure, string partID, int stavesCount, int systemIndex, int pageIndex)
         {
             this.systemIndex = systemIndex;
             this.pageIndex = pageIndex;
+            this.partId = partID;
             this.stavesCount = stavesCount;
             this.measureID = measure.Number;
             partProperties = ViewModel.ViewModelLocator.Instance.Main.CurrentPartsProperties[partID];
@@ -452,9 +468,33 @@ namespace MusicXMLScore.LayoutControl
         {
             var contentItemsWidth = measureItemsContainer.GetMinimalContentWidth();
             var attributesWidth = GetAttributesWidths();
-            minimalWidthWithAttributes = contentItemsWidth + (attributesWidths.Item1 + attributesWidths.Item2 + attributesWidths.Item3);
+            minimalWidthWithAttributes = ( contentItemsWidth + (attributesWidths.Item1 + attributesWidths.Item2 + attributesWidths.Item3)) *1.5;
+            ViewModel.ViewModelLocator.Instance.Main.CurrentSelectedScore.Part.FirstOrDefault().MeasuresByNumber[measureID].CalculatedWidth = MinimalWidthWithAttributes.WPFUnitToTenths();//! Test
             //! calculate optimal width using spacing values
-            return contentItemsWidth;
+            return contentItemsWidth ;
+        }
+        public List<AntiCollisionHelper> GetContentItemsProperties(int shortestDuration = 1)
+        {
+            List<AntiCollisionHelper> antiCollHelpers = new List<AntiCollisionHelper>();
+            var allfractions = measureItemsContainer.GetDurationIndexes();
+            foreach (var fraction in allfractions)
+            {
+                List<IMeasureItemVisual> fractionVisuals = measureItemsContainer.ItemsWithPostition.Where(x => x.Item1 == fraction && x.Item2 is INoteItemVisual).Select(item=>item.Item2).ToList();
+                foreach (var itemVisual in fractionVisuals)
+                {
+                    INoteItemVisual note = itemVisual as INoteItemVisual;
+                    double itemFractionFactor = LayoutHelpers.SpacingValue(note.ItemDuration, shortestDuration);
+                    double factor = note.ItemDuration;
+                    antiCollHelpers.Add(new AntiCollisionHelper(fraction, factor, itemFractionFactor, note.ItemWidth, note.ItemLeftMargin, note.ItemRightMargin));
+                }
+            }
+            return antiCollHelpers;
+        }
+        public int GetMinDuration()
+        {
+            var allfractions = measureItemsContainer.GetDurationIndexes();
+            var durationsOfPostion = LayoutHelpers.GetDurationOfPosition(maxDuration, allfractions);
+            return durationsOfPostion.Values.Where(x => x > 0).Min();
         }
     }
 }

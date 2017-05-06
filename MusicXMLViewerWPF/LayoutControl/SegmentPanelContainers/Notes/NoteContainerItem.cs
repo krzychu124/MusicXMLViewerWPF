@@ -117,6 +117,10 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
             DrawingVisualHost flagHost = new DrawingVisualHost();
             flagHost.AddCharacterGlyph(stemEnd, flagSymbol, isSmall, color);
             flagHost.Tag = "flag";
+            if (!isFlagDownwards)
+            {
+                itemRightMargin = DrawingMethods.GetTextWidth(flagSymbol, TypeFaces.GetMusicFont());
+            }
             AddFlag(flagHost);
         }
 
