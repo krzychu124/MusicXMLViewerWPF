@@ -147,10 +147,11 @@ namespace MusicXMLScore.LayoutControl
             }
             GetOptimalStretch();
             TestStretch();
-            PartsSystemDrawing psd = new PartsSystemDrawing(0, testDictionary, partIDs, partProperties, 0);
-            Canvas.SetTop(psd.PartSystemCanvas, 100);
-            Canvas.SetLeft(psd.PartSystemCanvas, 30);
-            AddPage(psd.PartSystemCanvas);
+            //PartsSystemDrawing psd = new PartsSystemDrawing(0, testDictionary, partIDs, partProperties, 0);
+            //Canvas.SetTop(psd.PartSystemCanvas, 100);
+            //Canvas.SetLeft(psd.PartSystemCanvas, 30);
+            //AddPage(psd.PartSystemCanvas);
+            SystemsCollector();
         }
 
         private void TestStretch() //! test 
@@ -201,7 +202,61 @@ namespace MusicXMLScore.LayoutControl
         }
         public void SystemsCollector()
         {
+            List<Tuple<string, double>> allMeasuresWidths = new List<Tuple<string, double>>();
+            foreach (var measure in measureSegmentsContainer.MeasureSegments.FirstOrDefault().Value)
+            {
+                allMeasuresWidths.Add(Tuple.Create(measure.MeasureID, measure.MinimalWidth));
+            }
 
+            double availableSystemWidth = ViewModelLocator.Instance.Main.CurrentPageLayout.GetContentWidth();
+            double currentSystemWidth = 0.0;
+            List<Tuple<string, double>> tempList = new List<Tuple<string, double>>();
+            List<PartsSystemDrawing> partSystems = new List<PartsSystemDrawing>();
+            int systemIndex = 0;
+            int pageIndex = 0;
+            for (int i = 0; i < allMeasuresWidths.Count; i++)
+            {
+                currentSystemWidth += allMeasuresWidths[i].Item2;
+                if (currentSystemWidth > availableSystemWidth)
+                {
+                    var measuresIDs = tempList.Select(x => x.Item1);
+                    Dictionary<string, List<MeasureSegmentController>> measuresToAdd = new Dictionary<string, List<MeasureSegmentController>>();
+                    var partIDs = measureSegmentsContainer.PartIDsList;
+                    foreach (var id in partIDs)
+                    {
+                        List<MeasureSegmentController> measuresList = new List<MeasureSegmentController>();
+                        measuresList = measureSegmentsContainer.MeasureSegments[id].Where(x => measuresIDs.Contains(x.MeasureID)).ToList();
+                        measuresToAdd.Add(id, measuresList);
+                    }
+                    partSystems.Add(GeneratePartSystem(systemIndex, pageIndex, measuresToAdd));
+                    tempList.Clear();
+                    currentSystemWidth = allMeasuresWidths[i].Item2;
+                    tempList.Add(allMeasuresWidths[i]);
+                    systemIndex++;
+                }
+                else
+                {
+                    tempList.Add(allMeasuresWidths[i]);
+                }
+                if (i == allMeasuresWidths.Count -1 && tempList.Count != 0)
+                {
+                    var measuresIDs = tempList.Select(x => x.Item1);
+                    Dictionary<string, List<MeasureSegmentController>> measuresToAdd = new Dictionary<string, List<MeasureSegmentController>>();
+                    var partIDs = measureSegmentsContainer.PartIDsList;
+                    foreach (var id in partIDs)
+                    {
+                        List<MeasureSegmentController> measuresList = new List<MeasureSegmentController>();
+                        measuresList = measureSegmentsContainer.MeasureSegments[id].Where(x => measuresIDs.Contains(x.MeasureID)).ToList();
+                        measuresToAdd.Add(id, measuresList);
+                    }
+                    partSystems.Add(GeneratePartSystem(systemIndex, pageIndex, measuresToAdd));
+                    tempList.Clear();
+                }
+            }
+            PageDrawingSystem pds = new PageDrawingSystem(pageIndex);
+            pds.AddPartsSytem(partSystems);
+            pds.ArrangeSystems(true);
+            AddPage(pds.PageCanvas);
         }
         private void GetOptimalStretch()
         {

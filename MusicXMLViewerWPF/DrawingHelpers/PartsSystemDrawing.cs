@@ -158,43 +158,42 @@ namespace MusicXMLScore.DrawingHelpers
             SetPartSegmentCanvasPositions();
             List<List<MeasureSegmentController>> partMeasuresList = GetMeasuresList();
 
-            foreach (var partMeasureSegment in partMeasuresList)
+            if (advancedLayout == false)
             {
-                Dictionary<int, double> durationTable = new Dictionary<int, double>();
-                List<List<int>> indexes = GetAllMeasureIndexes(partMeasureSegment);
-                double measureWidth = partMeasureSegment.Select(x => x.Width).Max();
-                if (advancedLayout)
+                foreach (var partMeasureSegment in partMeasuresList)
                 {
-                    measureWidth = partMeasureSegment.Select(x => x.MinimalWidthWithAttributes).Max();
-                }
-                Tuple<double, double, double> attributesWidth = LayoutHelpers.GetAttributesWidth(partMeasureSegment);
-                double maxClef = attributesWidth.Item1;
-                double maxKey = attributesWidth.Item2;
-                double maxTime = attributesWidth.Item3;
-                durationTable.Add(-3, 0);
-                durationTable.Add(-2, maxClef);
-                durationTable.Add(-1, maxKey + maxClef);
-                durationTable.Add(0, maxClef + maxKey + maxTime);
+                    Dictionary<int, double> durationTable = new Dictionary<int, double>();
+                    List<List<int>> indexes = GetAllMeasureIndexes(partMeasureSegment);
+                    double measureWidth = partMeasureSegment.Select(x => x.Width).Max();
+                    
+                    Tuple<double, double, double> attributesWidth = LayoutHelpers.GetAttributesWidth(partMeasureSegment);
+                    double maxClef = attributesWidth.Item1;
+                    double maxKey = attributesWidth.Item2;
+                    double maxTime = attributesWidth.Item3;
+                    durationTable.Add(-3, 0);
+                    durationTable.Add(-2, maxClef);
+                    durationTable.Add(-1, maxKey + maxClef);
+                    durationTable.Add(0, maxClef + maxKey + maxTime);
 
-                List<int> positionIndexes = indexes.SelectMany(x => x).Distinct().ToList();
-                positionIndexes.Sort();
-                double startingPosition = durationTable[0]+ attributesLayout.AttributesRightOffset.TenthsToWPFUnit();
-                Dictionary<int, Tuple<double, double>> positions = GeneratePositionsTable(partMeasureSegment, positionIndexes, startingPosition);
+                    List<int> positionIndexes = indexes.SelectMany(x => x).Distinct().ToList();
+                    positionIndexes.Sort();
+                    double startingPosition = durationTable[0] + attributesLayout.AttributesRightOffset.TenthsToWPFUnit();
+                    Dictionary<int, Tuple<double, double>> positions = GeneratePositionsTable(partMeasureSegment, positionIndexes, startingPosition);
 
-                double targetWidth = measureWidth - durationTable[0];
-                //LayoutHelpers.StretchPositionsToWidth(targetWidth, positions, positionIndexes);
+                    double targetWidth = measureWidth - durationTable[0];
+                    LayoutHelpers.StretchPositionsToWidth(targetWidth, positions, positionIndexes);
 
-                AddPositionsToDurationTable(durationTable, positionIndexes, positions);
-                int lastDuration = durationTable.Keys.Max() + 1;
-                //! adds one more which is measure duration (rigth barline position / calculating center position)
-                durationTable.Add(lastDuration, measureWidth);
+                    AddPositionsToDurationTable(durationTable, positionIndexes, positions);
+                    int lastDuration = durationTable.Keys.Max() + 1;
+                    //! adds one more which is measure duration (rigth barline position / calculating center position)
+                    durationTable.Add(lastDuration, measureWidth);
 
-                //! Update measure segments content with calculated duration position table
-                foreach (MeasureSegmentController measureSegment in partMeasureSegment)
-                {
-                    //measureSegment.ArrangeUsingDurationTable(durationTable);
-                   // RedrawBeams(measureSegment, durationTable); 
-                   //? Temp disabled, advanced layout tests
+                    //! Update measure segments content with calculated duration position table
+                    foreach (MeasureSegmentController measureSegment in partMeasureSegment)
+                    {
+                        measureSegment.ArrangeUsingDurationTable(durationTable);
+                        RedrawBeams(measureSegment, durationTable); 
+                    }
                 }
             }
         }

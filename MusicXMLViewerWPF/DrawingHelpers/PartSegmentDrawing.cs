@@ -46,7 +46,7 @@ namespace MusicXMLScore.DrawingHelpers
             this.systemIndex = systemIndex;
             this.pageIndex = pageIndex;
             stavesCount = partProperties.NumberOfStaves;
-            staffDistance = partProperties.StaffLayoutPerPage[pageIndex].ElementAt(systemIndex).StaffDistance;
+            staffDistance = partProperties.StaffLayoutPerPage[pageIndex].ElementAt(0).StaffDistance;
             CalculateDimensions();
         }
 

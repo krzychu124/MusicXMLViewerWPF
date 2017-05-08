@@ -107,7 +107,7 @@ namespace MusicXMLScore.ViewModel
             PagesCollection = new ObservableCollection<UIElement>();
             DrawingHelpers.PartProperties pp = ViewModelLocator.Instance.Main.CurrentPartsProperties[spmXML.Part.ElementAt(0).Id];
             bool autoLayoutSupport = ViewModelLocator.Instance.Main.CurrentScoreProperties.AutoLayoutSupportByScore;
-            autoLayoutSupport = false;
+            //autoLayoutSupport = false;
             if (autoLayoutSupport)
             {
                 foreach (var pages in pp.PartSysemsInPages)
