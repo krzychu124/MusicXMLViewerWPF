@@ -72,5 +72,13 @@ namespace MusicXMLScore.LayoutControl
                 Log.LoggIt.Log($"Wrong partID while trying to add measureSegmentController to measureSegments Dictionary {partId}", Log.LogType.Warning);
             }
         }
+        public void UpdateMeasureWidths()
+        {
+            var partIDs = PartIDsList;
+            foreach (var item in partIDs)//! temp test, updates measures widths
+            {
+                ViewModel.ViewModelLocator.Instance.Main.CurrentPartsProperties[item].SetSystemMeasureRanges();
+            }
+        }
     }
 }
