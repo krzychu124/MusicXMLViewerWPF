@@ -161,6 +161,8 @@ namespace MusicXMLScore.LayoutControl
         {
             int currentPageIndex = 0;
             double currentPageContentHeight = 0.0;
+            bool newPage = false;
+            bool newSystem = false;
             SystemsCollector(currentPageIndex);
         }
         public void SystemsCollector(int pageIndex)
@@ -231,51 +233,5 @@ namespace MusicXMLScore.LayoutControl
             }
         }
     }
-    class LayoutDistances
-    {
-        private double defaultStaffDistance;
-        private double defaultSystemDistance;
-        private double defaultTopSystemDistance;
-        Dictionary<int, double> systemDistances;
-        Dictionary<int, double> systemHeights;
-        public LayoutDistances()
-        {
-            SetDefaultDistances();
-        }
-        public LayoutDistances(double staffDistance, double systemDistance, double topSystemDistance)
-        {
-            defaultStaffDistance = staffDistance;
-            defaultSystemDistance = systemDistance;
-            defaultTopSystemDistance = topSystemDistance;
-        }
-
-        private void SetDefaultDistances()
-        {
-            var layout = ViewModel.ViewModelLocator.Instance.Main.CurrentLayout;
-            defaultSystemDistance = 2.5 * layout.PageProperties.StaffHeight.MMToTenths();
-            defaultTopSystemDistance = 3 * layout.PageProperties.StaffHeight.MMToTenths();
-            defaultStaffDistance = 1.7 * layout.PageProperties.StaffHeight.MMToTenths();
-        }
-        public void GenerateDistances(List<string> partIds)
-        {
-
-        }
-    }
-
-    class LayoutSystemInfo
-    {
-        double systemHeight;
-        double systemWidth;
-        //! distances between parts inside this system
-        Dictionary<string, double> partStaffDistances;
-        //! calculated part heights 
-        Dictionary<string, double> partHeights;
-        //! collection of measure widths to generate measures row
-        Dictionary<string, double> measureSharedWidths;
-        public LayoutSystemInfo()
-        {
-
-        }
-    }
-
+    
 }

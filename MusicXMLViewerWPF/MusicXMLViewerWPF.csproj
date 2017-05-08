@@ -109,6 +109,8 @@
     <Compile Include="Helpers\MusicSymbols.cs" />
     <Compile Include="Helpers\PageProperties.cs" />
     <Compile Include="Helpers\SimpleWrapPanel.cs" />
+    <Compile Include="LayoutControl\AdvancedLayoutHelpers\LayoutPageContentInfo.cs" />
+    <Compile Include="LayoutControl\AdvancedLayoutHelpers\LayoutSystemInfo.cs" />
     <Compile Include="LayoutControl\AdvancedMeasureLayout.cs" />
     <Compile Include="LayoutControl\AdvancedLayoutHelpers\AntiCollisionHelper.cs" />
     <Compile Include="LayoutControl\AdvancedLayoutHelpers\LayoutHelpers.cs" />
