@@ -23,7 +23,7 @@ namespace MusicXMLScore.LayoutControl
         private Dictionary<string, Dictionary<int, double>> fractionPositionsPerMeasure;
 
         List<SharedMeasureProperties> sharedMeasuresProps = new List<SharedMeasureProperties>();
-
+        Dictionary<int, LayoutPageContentInfo> layoutPageInfo;
         public ObservableCollection<UIElement> PagesCollection
         {
             get
@@ -77,6 +77,7 @@ namespace MusicXMLScore.LayoutControl
             measureSegmentsContainer = new MeasureSegmentContainer();
             var partIdsList = scoreFile.Part.Select(x => x.Id).ToList();
             measureSegmentsContainer.InitPartIDs(partIdsList);
+            //! var test = measureSegmentsContainer["P1"]; //// indexer test
             foreach (var part in scoreFile.Part)
             {
                 int stavesCount = part.GetStavesCount();
@@ -160,68 +161,126 @@ namespace MusicXMLScore.LayoutControl
         public void PagesCollector()
         {
             int currentPageIndex = 0;
-            double currentPageContentHeight = 0.0;
-            bool newPage = false;
-            bool newSystem = false;
-            SystemsCollector(currentPageIndex);
-        }
-        public void SystemsCollector(int pageIndex)
-        {
             List<Tuple<string, double>> allMeasuresWidths = new List<Tuple<string, double>>();
             foreach (var measure in measureSegmentsContainer.MeasureSegments.FirstOrDefault().Value)
             {
                 allMeasuresWidths.Add(Tuple.Create(measure.MeasureID, measure.MinimalWidth));
             }
+            List<string> unarrangedMeasures = new List<string>(allMeasuresWidths.Select(x=>x.Item1));
 
-            double availableSystemWidth = ViewModelLocator.Instance.Main.CurrentPageLayout.GetContentWidth();
-            double currentSystemWidth = 0.0;
-            List<Tuple<string, double>> tempList = new List<Tuple<string, double>>();
-            List<PartsSystemDrawing> partSystems = new List<PartsSystemDrawing>();
-            int currentSystemIndex = 0;
-
-            for (int i = 0; i < allMeasuresWidths.Count; i++)
+            SystemsCollector(currentPageIndex, allMeasuresWidths, unarrangedMeasures);
+        }
+        public void SystemsCollector(int pageIndex, List<Tuple<string, double>>allMeasures, List<string> unarrangedMeasures)
+        {
+            List<Tuple<string, double>> allMeasuresWidths = allMeasures;
+            
+            layoutPageInfo = new Dictionary<int, LayoutPageContentInfo>();
+            LayoutPageContentInfo pageContent = new LayoutPageContentInfo(pageIndex);
+            double currentWidth = 0.0;
+            double currentHeight = 0.0;
+            List<string> arrangedMeasures = new List<string>();
+            List<SharedMeasureProperties> measuresToSystem = new List<SharedMeasureProperties>();
+            for (int i = 0; i < unarrangedMeasures.Count; i++)
             {
-                currentSystemWidth += allMeasuresWidths[i].Item2;
-                if (currentSystemWidth > availableSystemWidth)
+                
+                string measureId = unarrangedMeasures[i];
+                SharedMeasureProperties currentMeasureProperties = sharedMeasuresProps.Where(x => x.MeasureId == measureId).FirstOrDefault();
+                currentWidth += currentMeasureProperties.SharedWidth; //! allMeasuresWidths.Where(x => x.Item1 == measureId).FirstOrDefault().Item2;
+                if (currentWidth > pageContent.PageContentWidth)
                 {
-                    var measuresIDs = tempList.Select(x => x.Item1);
-                    Dictionary<string, List<MeasureSegmentController>> measuresToAdd = new Dictionary<string, List<MeasureSegmentController>>();
-                    var partIDs = measureSegmentsContainer.PartIDsList;
-                    foreach (var id in partIDs)
+                    List<SharedMeasureProperties> tempCollection = new List<SharedMeasureProperties>(measuresToSystem);
+                    LayoutSystemInfo layoutSystem = new LayoutSystemInfo(tempCollection);
+                    var partProperties = ViewModelLocator.Instance.Main.CurrentPartsProperties;
+                    var partHeights = partProperties.Select((a) => new { key = a.Key, value = a.Value.PartHeight }).ToDictionary(item => item.key, item => item.value);
+                    layoutSystem.AddPartHeights(partHeights);
+                    layoutSystem.GeneratePartDistances(pageContent.DefaultStaffDistance);
+                    layoutSystem.CalculateSystemDimensions();
+                    layoutSystem.GenerateCoords();
+                    bool fitsInPage = pageContent.AddSystemDimensionInfo(layoutSystem);
+                    if (!fitsInPage)
                     {
-                        List<MeasureSegmentController> measuresList = new List<MeasureSegmentController>();
-                        measuresList = measureSegmentsContainer.MeasureSegments[id].Where(x => measuresIDs.Contains(x.MeasureID)).ToList();
-                        measuresToAdd.Add(id, measuresList);
+                        pageContent.ArrangeSystems();
+                        layoutPageInfo.Add(pageIndex, pageContent);
+                        pageIndex++;
+                        pageContent = new LayoutPageContentInfo(pageIndex);
+                        pageContent.AddSystemDimensionInfo(layoutSystem);
                     }
-                    partSystems.Add(GeneratePartSystem(currentSystemIndex, pageIndex, measuresToAdd));
-                    tempList.Clear();
-                    currentSystemWidth = allMeasuresWidths[i].Item2;
-                    tempList.Add(allMeasuresWidths[i]);
-                    currentSystemIndex++;
+                    measuresToSystem.Clear();
+                    currentWidth = 0.0;
                 }
                 else
                 {
-                    tempList.Add(allMeasuresWidths[i]);
-                }
-                if (i == allMeasuresWidths.Count -1 && tempList.Count != 0)
-                {
-                    var measuresIDs = tempList.Select(x => x.Item1);
-                    Dictionary<string, List<MeasureSegmentController>> measuresToAdd = new Dictionary<string, List<MeasureSegmentController>>();
-                    var partIDs = measureSegmentsContainer.PartIDsList;
-                    foreach (var id in partIDs)
+                    if (currentMeasureProperties == null)
                     {
-                        List<MeasureSegmentController> measuresList = new List<MeasureSegmentController>();
-                        measuresList = measureSegmentsContainer.MeasureSegments[id].Where(x => measuresIDs.Contains(x.MeasureID)).ToList();
-                        measuresToAdd.Add(id, measuresList);
+                        Log.LoggIt.Log($"Measure Id: {measureId} not found in SharedMeasureProperties");
                     }
-                    partSystems.Add(GeneratePartSystem(currentSystemIndex, pageIndex, measuresToAdd));
-                    tempList.Clear();
+                    else
+                    {
+                        measuresToSystem.Add(currentMeasureProperties);
+                    }
+                }
+               
+                if (i == (unarrangedMeasures.Count - 1) && measuresToSystem.Count != 0)
+                {
+                    List<SharedMeasureProperties> tempCollection = new List<SharedMeasureProperties>(measuresToSystem);
+                    LayoutSystemInfo layoutSystem = new LayoutSystemInfo(tempCollection);
+                    var partProperties = ViewModelLocator.Instance.Main.CurrentPartsProperties;
+                    var partHeights = partProperties.Select((a) => new { key = a.Key, value = a.Value.PartHeight }).ToDictionary(item => item.key, item => item.value);
+                    layoutSystem.AddPartHeights(partHeights);
+                    layoutSystem.GeneratePartDistances(pageContent.DefaultStaffDistance);
+                    layoutSystem.CalculateSystemDimensions();
+                    layoutSystem.GenerateCoords();
+                    bool fitsInPage = pageContent.AddSystemDimensionInfo(layoutSystem);
+                    if (!fitsInPage)
+                    {
+                        pageContent.ArrangeSystems();
+                        layoutPageInfo.Add(pageIndex, pageContent);
+                        pageIndex++;
+                        pageContent = new LayoutPageContentInfo(pageIndex);
+                        pageContent.AddSystemDimensionInfo(layoutSystem);
+                        pageContent.ArrangeSystems();
+                        layoutPageInfo.Add(pageIndex, pageContent);
+                    }
+                    else
+                    {
+                        pageContent.ArrangeSystems();
+                        layoutPageInfo.Add(pageIndex, pageContent);
+                    }
+                }
+                if (i == (unarrangedMeasures.Count - 1) && layoutPageInfo.Count != pageIndex + 1)
+                {
+                    pageContent.ArrangeSystems();
+                    layoutPageInfo.Add(pageIndex, pageContent);
                 }
             }
-            PageDrawingSystem pds = new PageDrawingSystem(pageIndex);
-            pds.AddPartsSytem(partSystems);
-            pds.ArrangeSystems(true);
-            AddPage(pds.PageCanvas);
+
+            var partIDs = measureSegmentsContainer.PartIDsList;
+            var partPropertiesTest = ViewModelLocator.Instance.Main.CurrentPartsProperties;
+            var coords = layoutPageInfo.SelectMany(x => x.Value.AllMeasureCoords()).Distinct().ToDictionary(item =>item.Key,item=> item.Value);
+            foreach (var p in partIDs)
+            {
+                partPropertiesTest[p].Coords = coords;
+            }
+            foreach (var page in layoutPageInfo)
+            {
+                List<PartsSystemDrawing> partSystemsTest = new List<PartsSystemDrawing>();
+                foreach (var system in page.Value.SystemDimensionsInfo)
+                {
+                    Dictionary<string, List<MeasureSegmentController>> measuresToAdd = new Dictionary<string, List<MeasureSegmentController>>();
+                    foreach (var partID in partIDs)
+                    {
+                        List<MeasureSegmentController> measures = new List<MeasureSegmentController>();
+                        var measuresIDs = system.Measures.Select(x=>x.MeasureId);
+                        measures = measureSegmentsContainer.MeasureSegments[partID].Where(x => measuresIDs.Contains(x.MeasureID)).ToList();
+                        measuresToAdd.Add(partID, measures);
+                    }
+                    partSystemsTest.Add(GeneratePartSystem(0, page.Key, measuresToAdd));
+                }
+                PageDrawingSystem pdsTest = new PageDrawingSystem(page.Key);
+                pdsTest.AddPartsSytem(partSystemsTest);
+                pdsTest.ArrangeSystems(true, page.Value.AllSystemsPositions());
+                AddPage(pdsTest.PageCanvas);
+            }
         }
         private void GetOptimalStretch()
         {
