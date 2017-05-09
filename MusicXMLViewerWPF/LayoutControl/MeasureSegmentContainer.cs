@@ -15,6 +15,8 @@ namespace MusicXMLScore.LayoutControl
             MeasureSegments = new Dictionary<string, List<MeasureSegmentController>>();
         }
 
+        public List<MeasureSegmentController> this[string key] { get { return measureSegments[key]; } }
+
         /// <summary>
         /// MeasureSegments PartID as Key, List of MeasureSegmentsControllers as Value
         /// </summary>
