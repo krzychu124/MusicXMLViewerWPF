@@ -1,6 +1,7 @@
 ﻿using MusicXMLScore.Converters;
 using MusicXMLScore.ViewModel;
 using MusicXMLViewerWPF;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
@@ -107,7 +108,7 @@ namespace MusicXMLScore.DrawingHelpers
             }
         }
 
-        public void ArrangeSystems(bool advancedLayout = false)
+        public void ArrangeSystems(bool advancedLayout = false, List<Point> precalculatedCoords = null)
         {
             double systemDistanceToPrevious = 0.0;
             if (!advancedLayout)
@@ -138,12 +139,24 @@ namespace MusicXMLScore.DrawingHelpers
             }
             else
             {
-                foreach (var system in partSystemsList)
+                if (precalculatedCoords != null)
                 {
-                    Canvas.SetTop(system.PartSystemCanvas, systemDistanceToPrevious);
-                    Canvas.SetLeft(system.PartSystemCanvas, 30.0.TenthsToWPFUnit());//! temp
-                    systemDistanceToPrevious += system.Size.Height  *1.4;
+                    if( partSystemsList.Count > precalculatedCoords.Count)
+                    {
+                        throw new NotImplementedException();
+                    }
+                    for (int i = 0; i < partSystemsList.Count; i++)
+                    {
+                        Canvas.SetTop(partSystemsList[i].PartSystemCanvas, precalculatedCoords[i].Y);
+                        Canvas.SetLeft(partSystemsList[i].PartSystemCanvas, precalculatedCoords[i].X);
+                    }
                 }
+                //foreach (var system in partSystemsList)
+                //{
+                //    Canvas.SetTop(system.PartSystemCanvas, systemDistanceToPrevious);
+                //    Canvas.SetLeft(system.PartSystemCanvas, 30.0.TenthsToWPFUnit());//! temp
+                //    systemDistanceToPrevious += system.Size.Height  *1.4;
+                //}
             }
         }
 

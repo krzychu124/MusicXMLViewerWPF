@@ -143,7 +143,7 @@ namespace MusicXMLScore.DrawingHelpers
             }
             return size;
         }
-        public Size GenerateContent(bool test)
+        public Size GenerateContent(bool test, LayoutSystemInfo systemLayout =null)
         {
             foreach (var measureSegment in PartMeasures)
             {
