@@ -26,7 +26,7 @@ namespace MusicXMLScore.LayoutControl
         List<double> systemsYPositions;
         List<double> systemsXPositions;
         public Point SystemPosition(int index) => new Point(systemsXPositions[index], systemsYPositions[index]);
-        public double SystemVerticalPosition(int index) =>  index < systemsYPositions.Count ? systemsYPositions[index] : 0.0;
+        public double SystemVerticalPosition(int index) => index < systemsYPositions.Count ? systemsYPositions[index] : 0.0;
         public double SystemHorizontalPosition(int index) => index < systemsXPositions.Count ? systemsXPositions[index] : 0.0;
         public bool StretchSystemsToWidth
         {
@@ -38,6 +38,45 @@ namespace MusicXMLScore.LayoutControl
             set
             {
                 stretchSystemsToWidth = value;
+            }
+        }
+
+        public double PageContentWidth
+        {
+            get
+            {
+                return pageContentWidth;
+            }
+
+            set
+            {
+                pageContentWidth = value;
+            }
+        }
+
+        public double DefaultStaffDistance
+        {
+            get
+            {
+                return defaultStaffDistance;
+            }
+
+            set
+            {
+                defaultStaffDistance = value;
+            }
+        }
+
+        internal List<LayoutSystemInfo> SystemDimensionsInfo
+        {
+            get
+            {
+                return systemDimensionsInfo;
+            }
+
+            set
+            {
+                systemDimensionsInfo = value;
             }
         }
 
@@ -94,7 +133,7 @@ namespace MusicXMLScore.LayoutControl
             }
         }
 
-        private void ArrangeSystems()
+        public void ArrangeSystems()
         {
             double currentX = 0.0;
             double currentY = 0.0;
@@ -105,10 +144,14 @@ namespace MusicXMLScore.LayoutControl
             }
             for (int i = 0; i < systemDimensionsInfo.Count; i++)
             {
+                if(i == 0)
+                {
+                    currentY = systemDistances[i];
+                }
                 systemsXPositions.Add(currentX);
                 systemsYPositions.Add(currentY);
                 currentY += systemDistances[i] + systemHeights[i];
-                currentX = systemDimensionsInfo[i].SystemWidth;
+                //currentX = systemDimensionsInfo[i].SystemWidth;
                 if (stretchSystemsToWidth)
                 {
                     if (currentX < pageContentWidth)
@@ -123,6 +166,7 @@ namespace MusicXMLScore.LayoutControl
         {
             GenerateSystemHeights();
             GenerateSystemDistances();
+            availableHeight = pageContentHeight;
             for (int i = 0; i < systemDistances.Count; i++)
             {
                 availableHeight -= systemDistances[i];
@@ -192,6 +236,29 @@ namespace MusicXMLScore.LayoutControl
             defaultSystemDistance = 2.5 * layout.PageProperties.StaffHeight.MMToTenths();
             defaultTopSystemDistance = 3 * layout.PageProperties.StaffHeight.MMToTenths();
             defaultStaffDistance = 1.7 * layout.PageProperties.StaffHeight.MMToTenths();
+        }
+
+        public List<Point> AllSystemsPositions()
+        {
+            List<Point> resultList = new List<Point>();
+            foreach (var index in systemDistances.Keys)
+            {
+                resultList.Add(this.SystemPosition(index));
+            }
+            return resultList;
+        }
+        public Dictionary<string, Point> AllMeasureCoords()
+        {
+            Dictionary<string, Point> coords = new Dictionary<string, Point>();
+            foreach (var item in systemDimensionsInfo)
+            {
+                foreach (var c in item.Measures)
+                {
+                    var kvpair = item.MeasureCoords(c.MeasureId);
+                    coords.Add(kvpair.Key, kvpair.Value);
+                }
+            }
+                return coords;
         }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace MusicXMLScore.LayoutControl
 { 
@@ -39,6 +40,21 @@ namespace MusicXMLScore.LayoutControl
             }
         }
 
+        internal List<SharedMeasureProperties> Measures
+        {
+            get
+            {
+                return measures;
+            }
+
+            set
+            {
+                measures = value;
+            }
+        }
+
+        public KeyValuePair<string, Point> MeasureCoords(string key) => new KeyValuePair<string, Point>(key, new Point(measureCoordsX[key], 0.0)); 
+
         public LayoutSystemInfo(List<SharedMeasureProperties> measuresOfSystem)
         {
             measures = measuresOfSystem;
@@ -52,12 +68,32 @@ namespace MusicXMLScore.LayoutControl
         {
             partStaffDistances = partDistances;
         }
+        public void GeneratePartDistances(double defaultStaffDistance)
+        {
+            partStaffDistances = new Dictionary<string, double>();
+            if (partHeights != null)
+            {
+                foreach (var item in partHeights)
+                {
+                    partStaffDistances.Add(item.Key, defaultStaffDistance);
+                }
+            }
+            else
+            {
+                Log.LoggIt.Log($"Part Heights did not initialized! Part Distances does not calculated properly using distance: {defaultStaffDistance}");
+                //! init/generate part heights dictionary
+            }
+        }
 
         public void CalculateSystemDimensions()
         {
             double heightParts = partHeights.Sum(x => x.Value);
-            double distances = partStaffDistances.Sum(x => x.Value);
+            double distances = partStaffDistances.Skip(1).Sum(x => x.Value);
             systemHeight = heightParts + distances;
+            if (measureSharedWidths == null)
+            {
+                GetSharedWidths();
+            }
             systemWidth = measureSharedWidths.Sum(x => x.Value);
         }
         private void GetSharedWidths()
@@ -71,7 +107,7 @@ namespace MusicXMLScore.LayoutControl
         private void GenerateMeasureXCoordinates()
         {
             double currentX = 0.0;
-            if (measureSharedWidths != null || measureSharedWidths.Count == 0)
+            if (measureSharedWidths == null || measureSharedWidths.Count == 0)
             {
                 Log.LoggIt.Log("no measures inside collection: X coordinates did not generated");
             }
@@ -103,7 +139,7 @@ namespace MusicXMLScore.LayoutControl
         private void GenerateMeasureYCoordinates()
         {
             double currentY = 0.0;
-            if (partStaffDistances != null || partStaffDistances.Count == 0)
+            if (partStaffDistances == null || partStaffDistances.Count == 0)
             {
                 Log.LoggIt.Log("no part staff distances specified inside collection: Y coordinates did not generated");
             }
