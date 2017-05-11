@@ -38,6 +38,9 @@ namespace MusicXMLScore.DrawingHelpers
         private DrawingVisualHost visualObject;
         private Dictionary<int, double[]> staffLinesYpositions = new Dictionary<int, double[]>();
         private Dictionary<int, double> avaliableIndexLinePositions = new Dictionary<int, double>();
+
+        //! test
+        public event EventHandler TestHandler = delegate { };
         #endregion Fields
 
         #region Constructors
@@ -56,6 +59,7 @@ namespace MusicXMLScore.DrawingHelpers
         }
         public MeasureDrawing(string measureId, string partId, double staffDistance, int stavesCount)
         {
+            TestHandler += OnWidthChanged;
             stavesDistance = staffDistance;
             this.stavesCount = (uint)stavesCount;
             layout = ViewModelLocator.Instance.Main.CurrentLayout;
@@ -144,11 +148,14 @@ namespace MusicXMLScore.DrawingHelpers
 
         private void GetMeasureProperties()
         {
+            visualObject = new DrawingVisualHost();
             measureSerializable = ViewModelLocator.Instance.Main.CurrentSelectedScore.Part.ElementAt(partId.GetPartIdIndex()).MeasuresByNumber[id];
+            //measureSerializable.WidthPropertyChanged += OnWidthChanged;
             measureHeight = layout.PageProperties.StaffHeight.MMToWPFUnit() * stavesCount + (stavesDistance.TenthsToWPFUnit() * (stavesCount - 1));
             measureWidth = measureSerializable.CalculatedWidth.TenthsToWPFUnit();
+            //measureSerializable.CalculatedWidth = measureWidth;
             size = new Size(measureWidth, measureHeight);
-            visualObject = new DrawingVisualHost();
+            
         }
 
         /// <summary>
@@ -158,7 +165,12 @@ namespace MusicXMLScore.DrawingHelpers
         {
             CreateVisualObject();//temp
         }
-
+        private void OnWidthChanged(object sender, EventArgs e)
+        {
+            ScorePartwisePartMeasureMusicXML m = sender as ScorePartwisePartMeasureMusicXML;
+            measureWidth = m.CalculatedWidth.TenthsToWPFUnit();
+            UpdateVisualObject();
+        }
         #endregion Methods
     }
 }
