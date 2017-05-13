@@ -14,9 +14,9 @@ namespace MusicXMLScore.LayoutControl
         private int pageIndex;
         private double pageContentWidth;
         private double pageContentHeight;
-        private bool stretchSystemsToWidth;
-
-        private double defaultStaffDistance;
+        private bool stretchSystemsToWidth = true;
+        private bool keepEqualMeasureCount = true;
+        
         private double defaultSystemDistance;
         private double defaultTopSystemDistance;
         Dictionary<int, double> systemDistances;
@@ -54,19 +54,6 @@ namespace MusicXMLScore.LayoutControl
             }
         }
 
-        public double DefaultStaffDistance
-        {
-            get
-            {
-                return defaultStaffDistance;
-            }
-
-            set
-            {
-                defaultStaffDistance = value;
-            }
-        }
-
         internal List<LayoutSystemInfo> SystemDimensionsInfo
         {
             get
@@ -88,10 +75,9 @@ namespace MusicXMLScore.LayoutControl
             GetPageContentWidth();
             availableHeight = pageContentHeight; //! CalculateAvailableHeight();
         }
-        public LayoutPageContentInfo(int pageIndex, double staffDistance, double systemDistance, double topSystemDistance)
+        public LayoutPageContentInfo(int pageIndex, double systemDistance, double topSystemDistance)
         {
             this.pageIndex = pageIndex;
-            defaultStaffDistance = staffDistance;
             defaultSystemDistance = systemDistance;
             defaultTopSystemDistance = topSystemDistance;
             GetPageContentHeight();
@@ -115,6 +101,7 @@ namespace MusicXMLScore.LayoutControl
         /// <returns>False if LayoutSystem can't fit on page and should be added to new page</returns>
         public bool AddSystemDimensionInfo(LayoutSystemInfo systemInfo)
         {
+            systemInfo.ArrangeSystem(StretchSystemsToWidth, PageContentWidth); //! stretch test
             if (systemDimensionsInfo == null)
             {
                 systemDimensionsInfo = new List<LayoutSystemInfo>();
@@ -127,6 +114,7 @@ namespace MusicXMLScore.LayoutControl
             {
                 //! need tests 
                 //? availableHeight -= systemInfo.SystemHeight + defaultSystemDistance.TenthsToWPFUnit();
+
                 systemDimensionsInfo.Add(systemInfo);
                 CalculateAvailableHeight();
                 return true;
@@ -135,6 +123,10 @@ namespace MusicXMLScore.LayoutControl
 
         public void ArrangeSystems()
         {
+            foreach (var system in systemDimensionsInfo)
+            {
+                system.ArrangeSystem(StretchSystemsToWidth, PageContentWidth);
+            }
             double currentX = 0.0;
             double currentY = 0.0;
             if (systemsXPositions == null || systemsYPositions == null)
@@ -152,10 +144,15 @@ namespace MusicXMLScore.LayoutControl
                 systemsYPositions.Add(currentY);
                 currentY += systemDistances[i] + systemHeights[i];
                 //currentX = systemDimensionsInfo[i].SystemWidth;
+                if (keepEqualMeasureCount)
+                {
+
+                }
                 if (stretchSystemsToWidth)
                 {
                     if (currentX < pageContentWidth)
                     {
+                        //! may sheck for newSystem element and then rearrange and stretch
                         //? systemDimensionsInfo[i].UpdateSystemWidth(pageContentWidth);
                     }
                 }
@@ -235,7 +232,6 @@ namespace MusicXMLScore.LayoutControl
             var layout = ViewModel. ViewModelLocator.Instance.Main.CurrentLayout;
             defaultSystemDistance = 2.5 * layout.PageProperties.StaffHeight.MMToTenths();
             defaultTopSystemDistance = 3 * layout.PageProperties.StaffHeight.MMToTenths();
-            defaultStaffDistance = 1.7 * layout.PageProperties.StaffHeight.MMToTenths();
         }
 
         public List<Point> AllSystemsPositions()
@@ -260,5 +256,7 @@ namespace MusicXMLScore.LayoutControl
             }
                 return coords;
         }
+
+
     }
 }

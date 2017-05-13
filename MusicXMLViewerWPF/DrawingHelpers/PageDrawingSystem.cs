@@ -111,10 +111,10 @@ namespace MusicXMLScore.DrawingHelpers
         public void ArrangeSystems(bool advancedLayout = false, List<Point> precalculatedCoords = null)
         {
             double systemDistanceToPrevious = 0.0;
+            double leftMargin = pageLayout.PageMargins.LeftMargin.TenthsToWPFUnit();
             if (!advancedLayout)
             {
                 var firstSystemPartProperties = partsProperties.ElementAt(0).Value;
-                double lMarginScore = pageLayout.PageMargins.LeftMargin.TenthsToWPFUnit();
                 systemDistanceToPrevious += pageLayout.PageMargins.TopMargin.TenthsToWPFUnit();
                 PartProperties currentPartProperties = ViewModelLocator.Instance.Main.CurrentPartsProperties.Values.FirstOrDefault();
                 foreach (var system in partSystemsList)
@@ -122,7 +122,7 @@ namespace MusicXMLScore.DrawingHelpers
                     double lMargin = 0.0;
 
                     int systemIndex = partSystemsList.IndexOf(system);
-                    lMargin = lMarginScore + currentPartProperties.SystemLayoutPerPage[pageIndex].ElementAt(system.SystemIndex).SystemMargins.LeftMargin.TenthsToWPFUnit();
+                    lMargin = leftMargin + currentPartProperties.SystemLayoutPerPage[pageIndex].ElementAt(system.SystemIndex).SystemMargins.LeftMargin.TenthsToWPFUnit();
                     if (systemIndex == 0)
                     {
                         systemDistanceToPrevious += firstSystemPartProperties.SystemLayoutPerPage.ElementAt(pageIndex).ElementAt(0).TopSystemDistance.TenthsToWPFUnit();
@@ -148,15 +148,9 @@ namespace MusicXMLScore.DrawingHelpers
                     for (int i = 0; i < partSystemsList.Count; i++)
                     {
                         Canvas.SetTop(partSystemsList[i].PartSystemCanvas, precalculatedCoords[i].Y);
-                        Canvas.SetLeft(partSystemsList[i].PartSystemCanvas, precalculatedCoords[i].X);
+                        Canvas.SetLeft(partSystemsList[i].PartSystemCanvas, precalculatedCoords[i].X + leftMargin);
                     }
                 }
-                //foreach (var system in partSystemsList)
-                //{
-                //    Canvas.SetTop(system.PartSystemCanvas, systemDistanceToPrevious);
-                //    Canvas.SetLeft(system.PartSystemCanvas, 30.0.TenthsToWPFUnit());//! temp
-                //    systemDistanceToPrevious += system.Size.Height  *1.4;
-                //}
             }
         }
 

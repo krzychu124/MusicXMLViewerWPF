@@ -14,6 +14,7 @@ namespace MusicXMLScore.LayoutControl
         private Dictionary<string, List<AntiCollisionHelper>> sharedACHelper;
         private Dictionary<int, double> sharedFractionPositions;
         private Tuple<double, double, double> attributesWidths;
+        public event EventHandler SharedWidthPropertyChanged = delegate{ };
         public double SharedWidth
         {
             get
@@ -24,7 +25,28 @@ namespace MusicXMLScore.LayoutControl
             set
             {
                 sharedWidth = value;
+                SharedWidthPropertyChanged.Invoke(value, EventArgs.Empty);
             }
+        }
+
+        private void OnSharedWidthChanged(object o, EventArgs e)
+        {
+            double newValue = (double)o;
+            UpdateSharedWidth(newValue); //! test
+        }
+
+        private void UpdateSharedWidth( double newWidth)
+        {
+            var list = sharedFractionPositions.SkipWhile(x => x.Key < 0).TakeWhile(x=>x.Key != sharedFractionPositions.LastOrDefault().Key);
+            double startingPosition = sharedFractionPositions[0];
+            double currentWidth = sharedFractionPositions.LastOrDefault().Value;
+            double difference = newWidth - currentWidth;
+            for (int i = 0; i < list.Count(); i++)
+            {
+                double corrected = (list.ElementAt(i).Value / currentWidth) * difference;
+                sharedFractionPositions[list.ElementAt(i).Key] = corrected;
+            }
+            sharedFractionPositions[sharedFractionPositions.LastOrDefault().Key] = newWidth;
         }
 
         public string MeasureId
@@ -59,6 +81,7 @@ namespace MusicXMLScore.LayoutControl
             sharedWidth = 0.0;
             sharedACHelper = new Dictionary<string, List<AntiCollisionHelper>>();
             sharedFractionPositions = new Dictionary<int, double>();
+            SharedWidthPropertyChanged += OnSharedWidthChanged;
         }
 
         private void CalculateWidth()

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MusicXMLScore.Converters;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,6 +12,7 @@ namespace MusicXMLScore.LayoutControl
     {
         private double systemHeight;
         private double systemWidth;
+        double defaultStaffDistance;
 
         //! distances between parts inside this system
         private Dictionary<string, double> partStaffDistances;
@@ -58,6 +60,12 @@ namespace MusicXMLScore.LayoutControl
         public LayoutSystemInfo(List<SharedMeasureProperties> measuresOfSystem)
         {
             measures = measuresOfSystem;
+            var layout = ViewModel.ViewModelLocator.Instance.Main.CurrentLayout;
+            defaultStaffDistance = 1.7 * layout.PageProperties.StaffHeight.MMToTenths();
+            var partProperties = ViewModel.ViewModelLocator.Instance.Main.CurrentPartsProperties;
+            var partHeights = partProperties.Select((a) => new { key = a.Key, value = a.Value.PartHeight }).ToDictionary(item => item.key, item => item.value);
+            AddPartHeights(partHeights);
+            GeneratePartDistances();
         }
         public void AddPartHeights(Dictionary<string, double> partHeights)
         {
@@ -68,7 +76,13 @@ namespace MusicXMLScore.LayoutControl
         {
             partStaffDistances = partDistances;
         }
-        public void GeneratePartDistances(double defaultStaffDistance)
+
+        public void ArrangeSystem(bool stretchLayout, double desiredWidth)
+        {
+            CalculateSystemDimensions(stretchLayout, desiredWidth);
+            GenerateCoords();
+        }
+        public void GeneratePartDistances()
         {
             partStaffDistances = new Dictionary<string, double>();
             if (partHeights != null)
@@ -80,12 +94,12 @@ namespace MusicXMLScore.LayoutControl
             }
             else
             {
-                Log.LoggIt.Log($"Part Heights did not initialized! Part Distances does not calculated properly using distance: {defaultStaffDistance}");
+                Log.LoggIt.Log($"Part Heights did not initialized! Part Distances does not calculated properly using distance: {defaultStaffDistance}", Log.LogType.Exception);
                 //! init/generate part heights dictionary
             }
         }
 
-        public void CalculateSystemDimensions()
+        public void CalculateSystemDimensions(bool stretchToWidth = false, double desiredWidth = 0.0)
         {
             double heightParts = partHeights.Sum(x => x.Value);
             double distances = partStaffDistances.Skip(1).Sum(x => x.Value);
@@ -95,6 +109,12 @@ namespace MusicXMLScore.LayoutControl
                 GetSharedWidths();
             }
             systemWidth = measureSharedWidths.Sum(x => x.Value);
+
+            if (stretchToWidth && systemWidth < desiredWidth)
+            {
+               UpdateSystemWidth(desiredWidth);
+            }
+           
         }
         private void GetSharedWidths()
         {
@@ -109,7 +129,7 @@ namespace MusicXMLScore.LayoutControl
             double currentX = 0.0;
             if (measureSharedWidths == null || measureSharedWidths.Count == 0)
             {
-                Log.LoggIt.Log("no measures inside collection: X coordinates did not generated");
+                Log.LoggIt.Log("no measures inside collection: X coordinates did not generated", Log.LogType.Exception);
             }
             else
             {
@@ -122,13 +142,24 @@ namespace MusicXMLScore.LayoutControl
             }
             if (currentX > systemWidth)
             {
-                Log.LoggIt.Log($"System width too small!!! Now is: {systemWidth}, should be {currentX}");
+                Log.LoggIt.Log($"System width too small!!! Now is: {systemWidth}, should be {currentX}", Log.LogType.Exception);
             }
         }
 
-        public void UpdateSystemWidth(double width)
+        public void UpdateSystemWidth(double desiredWidth)
         {
-            systemWidth = width;
+            double currentWidth = systemWidth;
+            double difference = desiredWidth - currentWidth;
+            double itemsCount = measureSharedWidths.Count;
+            double offset = difference / itemsCount;
+           // var keys = measureSharedWidths.Select(x=>x.Key);
+            foreach (var item in measures)
+            {
+                double correctedValue = (item.SharedWidth / desiredWidth) *difference;
+                item.SharedWidth = item.SharedWidth + offset;
+            }
+            GetSharedWidths();
+            systemWidth = desiredWidth;
         }
 
         public void UpdateSystemHeight(double height)
@@ -141,7 +172,7 @@ namespace MusicXMLScore.LayoutControl
             double currentY = 0.0;
             if (partStaffDistances == null || partStaffDistances.Count == 0)
             {
-                Log.LoggIt.Log("no part staff distances specified inside collection: Y coordinates did not generated");
+                Log.LoggIt.Log("no part staff distances specified inside collection: Y coordinates did not generated", Log.LogType.Exception);
             }
             else
             {
@@ -154,7 +185,7 @@ namespace MusicXMLScore.LayoutControl
             }
             if (currentY > systemHeight)
             {
-                Log.LoggIt.Log($"System height too small!!! Now is: {systemHeight}, should be {currentY}");
+                Log.LoggIt.Log($"System height too small!!! Now is: {systemHeight}, should be {currentY}", Log.LogType.Exception);
             }
         }
         public void GenerateCoords()

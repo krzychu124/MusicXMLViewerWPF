@@ -131,14 +131,18 @@ namespace MusicXMLScore.LayoutControl
             PagesCollector();
         }
 
+        /// <summary>
+        /// Arranges measure content (spacing, beams and later- others)
+        /// </summary>
         private void ArrangeAndStretchMeasuresContent()
         {
-            foreach (var item in measureSegmentsContainer.MeasureSegments)
+            foreach (var measureSegmentItem in measureSegmentsContainer.MeasureSegments)
             {
-                item.Value.ForEach((x) => { x.ArrangeUsingDurationTable(fractionPositionsPerMeasure[x.MeasureID]); });
-                foreach (var val in item.Value)
+                //! arranges measure content (measureSegmentItem as measureSegment of Part)
+                foreach (var val in measureSegmentItem.Value)
                 {
                     val.ArrangeUsingDurationTable(fractionPositionsPerMeasure[val.MeasureID]);
+                    //! updates beam of notes if any
                     if (val.BeamsController != null)
                     {
                         val.BeamsController.Draw(fractionPositionsPerMeasure[val.MeasureID]);
@@ -160,44 +164,43 @@ namespace MusicXMLScore.LayoutControl
 
         public void PagesCollector()
         {
-            int currentPageIndex = 0;
+            int firstPageIndex = 0;
             List<Tuple<string, double>> allMeasuresWidths = new List<Tuple<string, double>>();
             foreach (var measure in measureSegmentsContainer.MeasureSegments.FirstOrDefault().Value)
             {
                 allMeasuresWidths.Add(Tuple.Create(measure.MeasureID, measure.MinimalWidth));
             }
+
             List<string> unarrangedMeasures = new List<string>(allMeasuresWidths.Select(x=>x.Item1));
 
-            SystemsCollector(currentPageIndex, allMeasuresWidths, unarrangedMeasures);
+            SystemsCollector(firstPageIndex, unarrangedMeasures);
         }
-        public void SystemsCollector(int pageIndex, List<Tuple<string, double>>allMeasures, List<string> unarrangedMeasures)
+        public void SystemsCollector(int pageIndex,  List<string> unarrangedMeasures)
         {
-            List<Tuple<string, double>> allMeasuresWidths = allMeasures;
-            
+
+            //! collection of layout information about pages generated from score
             layoutPageInfo = new Dictionary<int, LayoutPageContentInfo>();
+
             LayoutPageContentInfo pageContent = new LayoutPageContentInfo(pageIndex);
             double currentWidth = 0.0;
-            double currentHeight = 0.0;
-            List<string> arrangedMeasures = new List<string>();
+            double currentHeight = 0.0; //! TODO horizontal layout spacing calculations
+
             List<SharedMeasureProperties> measuresToSystem = new List<SharedMeasureProperties>();
             for (int i = 0; i < unarrangedMeasures.Count; i++)
             {
                 
                 string measureId = unarrangedMeasures[i];
                 SharedMeasureProperties currentMeasureProperties = sharedMeasuresProps.Where(x => x.MeasureId == measureId).FirstOrDefault();
-                currentWidth += currentMeasureProperties.SharedWidth; //! allMeasuresWidths.Where(x => x.Item1 == measureId).FirstOrDefault().Item2;
+                currentWidth += currentMeasureProperties.SharedWidth; 
+                //! if calculated width would be to high, collected measures represents one system
                 if (currentWidth > pageContent.PageContentWidth)
                 {
-                    List<SharedMeasureProperties> tempCollection = new List<SharedMeasureProperties>(measuresToSystem);
-                    LayoutSystemInfo layoutSystem = new LayoutSystemInfo(tempCollection);
-                    var partProperties = ViewModelLocator.Instance.Main.CurrentPartsProperties;
-                    var partHeights = partProperties.Select((a) => new { key = a.Key, value = a.Value.PartHeight }).ToDictionary(item => item.key, item => item.value);
-                    layoutSystem.AddPartHeights(partHeights);
-                    layoutSystem.GeneratePartDistances(pageContent.DefaultStaffDistance);
-                    layoutSystem.CalculateSystemDimensions();
-                    layoutSystem.GenerateCoords();
-                    bool fitsInPage = pageContent.AddSystemDimensionInfo(layoutSystem);
-                    if (!fitsInPage)
+                    List<SharedMeasureProperties> sharedMeasuresCollection = new List<SharedMeasureProperties>(measuresToSystem);
+                    LayoutSystemInfo layoutSystem = new LayoutSystemInfo(sharedMeasuresCollection);
+
+                    bool systemFitsOnPage = pageContent.AddSystemDimensionInfo(layoutSystem);
+                    //! if this system won't fit inside page (too low heigh space available - add to new page and continue
+                    if (!systemFitsOnPage)
                     {
                         pageContent.ArrangeSystems();
                         layoutPageInfo.Add(pageIndex, pageContent);
@@ -210,28 +213,24 @@ namespace MusicXMLScore.LayoutControl
                 }
                 else
                 {
-                    if (currentMeasureProperties == null)
-                    {
-                        Log.LoggIt.Log($"Measure Id: {measureId} not found in SharedMeasureProperties");
-                    }
-                    else
+                    //! add measure to collection
+                    if (currentMeasureProperties != null)
                     {
                         measuresToSystem.Add(currentMeasureProperties);
                     }
+                    else
+                    {
+                        Log.LoggIt.Log($"Measure Id: {measureId} not found in SharedMeasureProperties");
+                    }
                 }
-               
+                //! if any measure left unarranged
                 if (i == (unarrangedMeasures.Count - 1) && measuresToSystem.Count != 0)
                 {
-                    List<SharedMeasureProperties> tempCollection = new List<SharedMeasureProperties>(measuresToSystem);
-                    LayoutSystemInfo layoutSystem = new LayoutSystemInfo(tempCollection);
-                    var partProperties = ViewModelLocator.Instance.Main.CurrentPartsProperties;
-                    var partHeights = partProperties.Select((a) => new { key = a.Key, value = a.Value.PartHeight }).ToDictionary(item => item.key, item => item.value);
-                    layoutSystem.AddPartHeights(partHeights);
-                    layoutSystem.GeneratePartDistances(pageContent.DefaultStaffDistance);
-                    layoutSystem.CalculateSystemDimensions();
-                    layoutSystem.GenerateCoords();
-                    bool fitsInPage = pageContent.AddSystemDimensionInfo(layoutSystem);
-                    if (!fitsInPage)
+                    List<SharedMeasureProperties> sharedMeasuresCollection = new List<SharedMeasureProperties>(measuresToSystem);
+                    LayoutSystemInfo layoutSystem = new LayoutSystemInfo(sharedMeasuresCollection);
+
+                    bool systemFitsOnPage = pageContent.AddSystemDimensionInfo(layoutSystem);
+                    if (!systemFitsOnPage)
                     {
                         pageContent.ArrangeSystems();
                         layoutPageInfo.Add(pageIndex, pageContent);
@@ -247,13 +246,14 @@ namespace MusicXMLScore.LayoutControl
                         layoutPageInfo.Add(pageIndex, pageContent);
                     }
                 }
+                //! if it is last measure and page not added to layoutPageInfo
                 if (i == (unarrangedMeasures.Count - 1) && layoutPageInfo.Count != pageIndex + 1)
                 {
                     pageContent.ArrangeSystems();
                     layoutPageInfo.Add(pageIndex, pageContent);
                 }
             }
-
+            //! -------------------------temp meaure coords update, todo refactor------------
             var partIDs = measureSegmentsContainer.PartIDsList;
             var partPropertiesTest = ViewModelLocator.Instance.Main.CurrentPartsProperties;
             var coords = layoutPageInfo.SelectMany(x => x.Value.AllMeasureCoords()).Distinct().ToDictionary(item =>item.Key,item=> item.Value);
@@ -261,6 +261,9 @@ namespace MusicXMLScore.LayoutControl
             {
                 partPropertiesTest[p].Coords = coords;
             }
+            //!todo --------------------------------------------------------------------------
+
+            //! sets collected pages into PageDrawingSystem which already has arrange (using updated coords dictionary in previous step) --looks awful now... toRefactor later
             foreach (var page in layoutPageInfo)
             {
                 List<PartsSystemDrawing> partSystemsTest = new List<PartsSystemDrawing>();
@@ -282,6 +285,7 @@ namespace MusicXMLScore.LayoutControl
                 AddPage(pdsTest.PageCanvas);
             }
         }
+
         private void GetOptimalStretch()
         {
             fractionPositionsPerMeasure = new Dictionary<string, Dictionary<int, double>>();
