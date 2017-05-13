@@ -87,7 +87,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
                     if (item.Item2 is NoteContainerItem)
                     {
                         var note = item.Item2 as NoteContainerItem;
-                        note.Stem.SetStaffOffset(top);
+                        note.Stem?.SetStaffOffset(top); //! bug fix (nullable check - stem could be null)
                     }
                     Canvas.SetTop(item.Item2.ItemCanvas as Canvas, top);
                 }

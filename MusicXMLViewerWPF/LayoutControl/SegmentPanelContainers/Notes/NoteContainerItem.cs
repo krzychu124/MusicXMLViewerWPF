@@ -145,8 +145,12 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
             GetSymbol();
             GetPitch();
             Draw();
-            stem = new StemItem(this);
-            hasBeams = noteItem.Any(x => x.Beam.Count != 0) ? true : false;
+            //! if note type/duration is quarter/crotchet or shorter
+            if ((int)noteType < 9)
+            {
+                stem = new StemItem(this);
+                hasBeams = noteItem.Any(x => x.Beam.Count != 0) ? true : false;
+            }
         }
 
         private void Draw()

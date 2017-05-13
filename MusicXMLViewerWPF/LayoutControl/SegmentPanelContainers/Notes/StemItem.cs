@@ -74,6 +74,12 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
                     bool hasBeam = note.NoteItem.FirstOrDefault().Beam.Count != 0 ? true : false;
                     CalculatePosition(note.PitchedPosition.FirstOrDefault().Value, hasBeam);
                 }
+                else
+                {
+                    CalculateDirection();
+                    bool hasBeam = note.NoteItem.FirstOrDefault().Beam.Count != 0 ? true : false;
+                    CalculatePosition(note.PitchedPosition.FirstOrDefault().Value, hasBeam);
+                }
             }
             else
             {
@@ -97,6 +103,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
                         }
                         CalculatePosition(pitchedPosition, hasBeam);
                     }
+                    //Todo add stem direction calculations if note is chord 
                 }
             }
         }
@@ -253,6 +260,26 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
         private void GetDirection(StemMusicXML stem)
         {
             direction = stem.Value;
+        }
+        private void CalculateDirection(bool isChord = false)
+        {
+            if (isChord)
+            {
+
+            }
+            else
+            {
+                var pitch = note.PitchedPosition.FirstOrDefault().Value;
+                //! if lower than middle line set stem up
+                if (pitch > 4)
+                {
+                    direction = StemValueMusicXML.up;
+                }
+                else
+                {
+                    direction = StemValueMusicXML.down;
+                }
+            }
         }
 
         private void Draw()
