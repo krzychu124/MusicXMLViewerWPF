@@ -12,6 +12,8 @@ namespace MusicXMLScore.Helpers
     {
         double panelWidth = 0.0;
         double panelHeight = 0.0;
+        double horizontalSpacing = 20;
+        double verticalSpacing = 30;
         protected override Size MeasureOverride(Size availableSize)
         {
             Size panelSize = availableSize;
@@ -32,8 +34,8 @@ namespace MusicXMLScore.Helpers
             }
             if (InternalChildren.Count > 1)
             {
-                panelWidth = panelWidth * 2 + 20;
-                height = height * (((InternalChildren.Count -1) /2) +1);
+                panelWidth = panelWidth * 2 +(horizontalSpacing *2);
+                height = height * (((InternalChildren.Count -1) /2) +1) + ((InternalChildren.Count /2) * verticalSpacing);
             }
             panelHeight = height;
             return new Size(panelWidth, height);
@@ -54,13 +56,13 @@ namespace MusicXMLScore.Helpers
                 {
                     child.Arrange(new Rect(currentLeft, currentTop, currentWidth, currentHeight));
                     
-                    currentTop += currentHeight + 20;
+                    currentTop += currentHeight + verticalSpacing;
                     currentLeft = 0;
                 }
                 else
                 {
                     child.Arrange(new Rect(currentLeft, currentTop, currentWidth, currentHeight));
-                    currentLeft += currentWidth + 20;
+                    currentLeft += currentWidth + horizontalSpacing;
                 }
                 
             }

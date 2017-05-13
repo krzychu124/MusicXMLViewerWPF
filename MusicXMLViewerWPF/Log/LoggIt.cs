@@ -99,10 +99,21 @@ namespace MusicXMLScore.Log
                     Logger le = new Logger(logtype, memberName, message, date);
                     Alllog.Add(le);
                     Exceptionslog.Add(le);
+                    ConsoleWrite(message, memberName);
                     break;
                 default:
                     break;
             }
+        }
+
+        /// <summary>
+        /// Log to console
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="memberName"></param>
+        private static void ConsoleWrite(string message, string memberName)
+        {
+            Console.WriteLine($"{memberName}: {message}");
         }
     }
 

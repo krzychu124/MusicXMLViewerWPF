@@ -18,7 +18,7 @@ namespace MusicXMLScore.Model
         private double width;
         private bool widthSpecified;
         private double calculatedWidth;
-
+        public event EventHandler WidthPropertyChanged = delegate { };
 
         [XmlAttribute("number")]
         public string Number
@@ -145,12 +145,18 @@ namespace MusicXMLScore.Model
             set
             {
                 calculatedWidth = value;
+                WidthPropertyChanged.Invoke(this, EventArgs.Empty);
             }
         }
 
         public ScorePartwisePartMeasureMusicXML()
         {
-
+            //WidthPropertyChanged += OnWidthChanged;
+        }
+        private void OnWidthChanged(object sender, EventArgs e)
+        {
+            ScorePartwisePartMeasureMusicXML s = (ScorePartwisePartMeasureMusicXML)sender;
+            Console.WriteLine(s.CalculatedWidth.ToString());
         }
     }
 }

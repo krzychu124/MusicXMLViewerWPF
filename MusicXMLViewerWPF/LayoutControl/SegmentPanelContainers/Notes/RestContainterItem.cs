@@ -24,6 +24,10 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
         private double itemWidth = 0.0;
         private double itemWidthMin = 0.0;
         private double itemWidthOpt = 0.0; 
+        private double itemLeftMargin;
+        private double itemRightMargin;
+        private double horizontalOffset = 0.0;
+        private double verticalOffset = 0.0;
         private bool measureRest = false;
         private string symbol;
         private string partId;
@@ -135,6 +139,58 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
             }
         }
 
+        public double ItemLeftMargin
+        {
+            get
+            {
+                return itemLeftMargin;
+            }
+
+            private set
+            {
+                itemLeftMargin = value;
+            }
+        }
+
+        public double ItemRightMargin
+        {
+            get
+            {
+                return itemRightMargin;
+            }
+
+            private set
+            {
+                itemRightMargin = value;
+            }
+        }
+
+        public double HorizontalOffset
+        {
+            get
+            {
+                return horizontalOffset;
+            }
+
+            set
+            {
+                horizontalOffset = value;
+            }
+        }
+
+        public double VerticalOffset
+        {
+            get
+            {
+                return verticalOffset;
+            }
+
+            set
+            {
+                verticalOffset = value;
+            }
+        }
+
         public RestContainterItem(NoteMusicXML note, int itemIndex, string partId, string measureId, string staffId)
         {
             itemCanvas = new Canvas();
@@ -236,6 +292,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
             double leftFreeSpace = restWidth * 0.05;
             double dotSpaces = dotWidth * 0.25;
             itemWidthMin = leftFreeSpace + restWidth + (dotWidth + dotSpaces) * dotCount;
+            itemWidth = itemWidthMin;
         }
         private void CalculateOptWidth()
         {
@@ -276,6 +333,12 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
                     return 4;
                 }
             }
+        }
+
+        public void SetItemMargins(double left, double right)
+        {
+            ItemLeftMargin = left;
+            ItemRightMargin = right;
         }
     }
 }

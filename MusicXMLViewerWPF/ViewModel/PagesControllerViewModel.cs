@@ -13,6 +13,7 @@ using MusicXMLScore.Helpers;
 using System.Xml.Serialization;
 using MusicXMLScore.Model;
 using System.IO;
+using MusicXMLScore.LayoutControl;
 
 namespace MusicXMLScore.ViewModel
 {
@@ -52,7 +53,7 @@ namespace MusicXMLScore.ViewModel
         private ObservableCollection<UIElement> pageCollection;
         private ScorePartwiseMusicXML partwise;
         private string title = "";
-
+        private AdvancedMeasureLayout advancedLayout;
         #endregion Fields
 
         #region Constructors
@@ -105,10 +106,22 @@ namespace MusicXMLScore.ViewModel
             partwise = spmXML;
             PagesCollection = new ObservableCollection<UIElement>();
             DrawingHelpers.PartProperties pp = ViewModelLocator.Instance.Main.CurrentPartsProperties[spmXML.Part.ElementAt(0).Id];
-            //AddPageToCollection(spmXML);
-            foreach (var pages in pp.PartSysemsInPages)
+            bool autoLayoutSupport = ViewModelLocator.Instance.Main.CurrentScoreProperties.AutoLayoutSupportByScore;
+            //autoLayoutSupport = false;
+            if (autoLayoutSupport)
             {
-                AddPageToCollection(spmXML);
+                foreach (var pages in pp.PartSysemsInPages)
+                {
+                    AddPageToCollection(spmXML);
+                }
+            }
+            else
+            {
+                advancedLayout = new AdvancedMeasureLayout(partwise);
+                //advancedLayout.AddBlankPage();
+                advancedLayout.GenerateMeasureSegments();
+                advancedLayout.FindOptimalMeasureWidths();
+                PagesCollection = advancedLayout.PagesCollection;
             }
         }
 

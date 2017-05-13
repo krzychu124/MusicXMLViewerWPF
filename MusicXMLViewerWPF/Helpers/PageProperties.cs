@@ -77,18 +77,14 @@ namespace MusicXMLScore.Helpers
             }
         }
 
-        //public List<PageMarginsMusicXML> PageMargins
-        //{
-        //    get
-        //    {
-        //        return pageMargins;
-        //    }
-
-        //    set
-        //    {
-        //        pageMargins = value;
-        //    }
-        //}
+        /// <summary>
+        /// PageContent Height in WPF Units
+        /// </summary>
+        /// <returns>Calculated available page content height (in WPFUnits)</returns>
+        public double GetContentHeight()
+        {
+            return pageDimensions.GetPageDimensionsInTenths().Y.TenthsToWPFUnit() - (pageMarginBoth.TopMargin.TenthsToWPFUnit() + pageMarginBoth.BottomMargin.TenthsToWPFUnit());
+        }
 
         public PageMarginsMusicXML PageMarginEven
         {
@@ -232,6 +228,16 @@ namespace MusicXMLScore.Helpers
                 avaliableIndexLinePositions.Add(i, i * halfLineSpacing);
             }
         }
+
+        /// <summary>
+        /// Calculates Page content width available
+        /// </summary>
+        /// <returns>Available content width (page width without margins) (in WPFUnits)</returns>
+        public double GetContentWidth()
+        {
+            return pageDimensions.GetPageDimensionsInTenths().X.TenthsToWPFUnit() - (pageMarginBoth.LeftMargin.TenthsToWPFUnit() + pageMarginBoth.RightMargin.TenthsToWPFUnit());
+        }
+
         private void SetPageMargins(List<PageMarginsMusicXML> marginsList)
         {
             if (marginsList == null)

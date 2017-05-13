@@ -9,6 +9,9 @@ using System.Threading.Tasks;
 using System.Windows.Controls;
 using MusicXMLScore.Converters;
 using MusicXMLScore.LayoutControl.SegmentPanelContainers.Attributes;
+using System.Windows;
+using System.Windows.Media;
+using MusicXMLScore.Helpers;
 
 namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
 {
@@ -23,13 +26,15 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
         private string partId;
         private int staveNumber;
         private int staffsNumber;
+        private Canvas temporaryBarline;
+        private Canvas temporaryStartBarline;
+
         internal List<Tuple<int, IMeasureItemVisual>> ItemsWithPostition
         {
             get
             {
                 return itemsWithPosition;
             }
-
             set
             {
                 itemsWithPosition = value;
@@ -71,69 +76,6 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
             }
         }
 
-        //? ---------------- Refactored-----------------------
-        public MeasureItemsContainer(ScorePartwisePartMeasureMusicXML measure, string partId, int numberOfStave)
-        {
-            measureItemsVisuals = new List<IMeasureItemVisual>();
-            notesList = new List<NoteMusicXML>();
-            this.measure = measure;
-            measureId = measure.Number;
-            this.partId = partId;
-            staveNumber = numberOfStave;
-            notesList = measure.Items.OfType<NoteMusicXML>().ToList();
-            List<NoteMusicXML> chordListTemp = new List<NoteMusicXML>();
-            for (int i = 0; i < notesList.Count; i++)
-            {
-                NoteChoiceTypeMusicXML noteType = notesList[i].GetNoteType();
-                NoteChoiceTypeMusicXML tempChoice = NoteChoiceTypeMusicXML.none;
-                string staff = "1";
-                if (int.Parse(notesList[i].Staff) != staveNumber)
-                {
-                    continue;
-                }
-                if (notesList[i].ItemsElementName.Contains(NoteChoiceTypeMusicXML.rest))
-                {
-                    if (chordListTemp.Count != 0)
-                    {
-                        staff = chordListTemp.ElementAt(0).Staff;
-                        NoteContainerItem note = new NoteContainerItem(chordListTemp, i, partId, measure.Number, staff);
-                        AddNote(note);
-                        chordListTemp.Clear();
-                    }
-                    RestContainterItem rest = new RestContainterItem(notesList[i], i, partId, measure.Number, staff);
-                    AddRest(rest);
-                    continue;
-                }
-                if (notesList[i].ItemsElementName.Contains(NoteChoiceTypeMusicXML.chord))
-                {
-                    chordListTemp.Add(notesList[i]);
-                }
-                else
-                {
-                    if (chordListTemp.Count != 0)
-                    {
-                        staff = chordListTemp.ElementAt(0).Staff;
-                        NoteContainerItem note = new NoteContainerItem(chordListTemp, i, partId, measure.Number, staff);
-                        AddNote(note);
-                        chordListTemp.Clear();
-                        chordListTemp.Add(notesList[i]);
-                    }
-                    else
-                    {
-                        chordListTemp.Add(notesList[i]);
-                    }
-                    tempChoice = noteType;
-                }
-                if (chordListTemp.Count != 0 && i+1 == notesList.Count)
-                {
-                    staff = chordListTemp.ElementAt(0).Staff;
-                    NoteContainerItem note = new NoteContainerItem(chordListTemp, i, partId, measure.Number, staff);
-                    AddNote(note);
-                    chordListTemp.Clear();
-                }
-            }
-        }
-
         internal void ArrangeStaffs(double staffDistance)
         {
             for (int i = 0; i < itemsPositionsPerStaff.Count; i++)
@@ -150,6 +92,9 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
                     Canvas.SetTop(item.Item2.ItemCanvas as Canvas, top);
                 }
             }
+            double tempHeight = staffsNumber == 1 ? 0.0 : staffDistance; //! temp
+            DrawTempBarline(tempHeight + 40.0.TenthsToWPFUnit()); //! Temp barline (black)
+            DrawTempStartBarline(tempHeight + 40.0.TenthsToWPFUnit()); //! Temp 0.X position barline (red)
         }
 
         public void ArrangeUsingDurationTable(Dictionary<int, double> durationTable)
@@ -166,7 +111,10 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
                 {
                     foreach (var c in clef)
                     {
-                        ArrangeAttributes(c as ClefContainerItem, new Dictionary<string, double>(), durationTable[-3]);
+                        if (durationTable.ContainsKey(-3))
+                        {
+                            ArrangeAttributes(c as ClefContainerItem, new Dictionary<string, double>(), durationTable[-3]);
+                        }
                     }
                 }
                 //! ------------------ Key Signatures position set--------------------
@@ -175,7 +123,10 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
                 {
                     foreach (var item in key)
                     {
-                        ArrangeAttributes(item as KeyContainerItem, new Dictionary<string, double>(), durationTable[-2]);
+                        if (durationTable.ContainsKey(-2))
+                        {
+                            ArrangeAttributes(item as KeyContainerItem, new Dictionary<string, double>(), durationTable[-2]);
+                        }
                     }
                 }
                 //! ------------------ Time Signatures position set--------------------
@@ -184,7 +135,10 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
                 {
                     foreach (var item in time)
                     {
-                        ArrangeAttributes(item as TimeSignatureContainerItem, new Dictionary<string, double>(), durationTable[-1]);
+                            if (durationTable.ContainsKey(-1))
+                            {
+                                ArrangeAttributes(item as TimeSignatureContainerItem, new Dictionary<string, double>(), durationTable[-1]);
+                            }
                     }
                 }
             }
@@ -195,7 +149,6 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
                 int notesCount = item.Value.Select(x => x.Item2).Where(x => x as INoteItemVisual != null).Count();
                 notesPerStaff.Add(item.Key, notesCount);
             }
-
             //! ------------------ Note items and additional Attribute items position set--------------------
             foreach (var item in itemsWithPosition)
             {
@@ -228,8 +181,40 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
                     SetLeft(item.Item2.ItemCanvas as Canvas, durationTable[item.Item1] - item.Item2.ItemWidth);
                 }
             }
+            SetLeft(temporaryBarline, durationTable.LastOrDefault().Value); //! Temp barline position test to end of measure (advanced layout visual helper)
         }
-
+        private void DrawTempBarline(double staffHeight)
+        {
+            temporaryBarline = new Canvas();
+            Point p1 = new Point();
+            Point p2 = new Point(0,staffHeight);
+            Pen pen = new Pen(Brushes.Black, 1.5.TenthsToWPFUnit());
+            DrawingVisual dv = new DrawingVisual();
+            using (DrawingContext dc = dv.RenderOpen())
+            {
+                dc.DrawLine(pen, p1, p2);
+            }
+            DrawingVisualHost dvh = new DrawingVisualHost();
+            dvh.AddVisual(dv);
+            temporaryBarline.Children.Add(dvh);
+            Children.Add(temporaryBarline);
+        }
+        private void DrawTempStartBarline(double staffHeight)
+        {
+            temporaryStartBarline = new Canvas();
+            Point p1 = new Point();
+            Point p2 = new Point(0, staffHeight * 1.2);
+            Pen pen = new Pen(Brushes.Red, 1.5.TenthsToWPFUnit());
+            DrawingVisual dv = new DrawingVisual();
+            using (DrawingContext dc = dv.RenderOpen())
+            {
+                dc.DrawLine(pen, p1, p2);
+            }
+            DrawingVisualHost dvh = new DrawingVisualHost();
+            dvh.AddVisual(dv);
+            temporaryStartBarline.Children.Add(dvh);
+            Children.Add(temporaryStartBarline);
+        }
         public List<int> GetDurationIndexes()
         {
             return itemsWithPosition.Select(x => x.Item1).Distinct().ToList();
@@ -244,9 +229,9 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
             {
                 case 0:
                     ClefContainerItem clef = attributeVisual as ClefContainerItem;
-                    width += attributesLayout.ClefLeftOffset.TenthsToWPFUnit();
+                    width += clef.ItemLeftMargin; //attributesLayout.ClefLeftOffset.TenthsToWPFUnit();
                     SetLeft(clef.ItemCanvas, width);
-                    width += clef.ItemWidth + attributesLayout.ClefRightOffset.TenthsToWPFUnit();
+                    width += clef.ItemWidth + clef.ItemRightMargin;// attributesLayout.ClefRightOffset.TenthsToWPFUnit();
                     break;
                 case 1:
                     KeyContainerItem key = attributeVisual as KeyContainerItem;
@@ -265,6 +250,12 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
             return width;
         }
 
+        public double GetMinimalContentWidth()
+        {
+            var perStaffMinWidth = itemsPositionsPerStaff.Select(x => x.Value).Select(z => z.Where(y=>y.Item1 !=0 ||!(y.Item1 == 0 && y.Item2 is IAttributeItemVisual)).Select(x => x.Item2.ItemLeftMargin + x.Item2.ItemRightMargin + x.Item2.ItemWidth /*+ (x.Item2 is INoteItemVisual? 2.0.TenthsToWPFUnit():0.0)*/).Sum()).Max();
+            return perStaffMinWidth;
+        }
+
         public void AppendNoteWithStaffNumber(NoteContainerItem note, int cursorPosition, string voice, string staffNumber)
         {
             Tuple<int, IMeasureItemVisual> noteVisual = new Tuple<int, IMeasureItemVisual>(cursorPosition, note);
@@ -272,12 +263,6 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
             itemsWithPosition.Add(noteVisual);
             itemsPositionsPerStaff[staffNumber].Add(noteVisual);
         }
-        //public void AppendNote(NoteContainerItem note, int cursorPosition, string voice = "1", string staffNumber = "1")
-        //{
-        //    Tuple<int, IMeasureItemVisual> noteVisual = new Tuple<int, IMeasureItemVisual>(cursorPosition, note);
-        //    AddNote(note);
-        //    itemsWithPosition.Add(noteVisual);
-        //}
         public void AppendRestWithStaffNumber(RestContainterItem rest, int cursorPosition, string voice, string staffNumber)
         {
             Tuple<int, IMeasureItemVisual> restVisual = new Tuple<int, IMeasureItemVisual>(cursorPosition, rest);
@@ -285,12 +270,6 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
             itemsWithPosition.Add(restVisual);
             itemsPositionsPerStaff[staffNumber].Add(restVisual);
         }
-        //public void AppendRest(RestContainterItem rest, int cursorPosition, string voice = "1")
-        //{
-        //    Tuple<int, IMeasureItemVisual> restVisual = new Tuple<int, IMeasureItemVisual>(cursorPosition, rest);
-        //    AddRest(rest);
-        //    itemsWithPosition.Add(restVisual);
-        //}
         public void AppendAttributeWithStaffNumber(IAttributeItemVisual attributeItem, int cursorPosition, string staffNumber)
         {
             Tuple<int, IMeasureItemVisual> attributesVisual = new Tuple<int, IMeasureItemVisual>(cursorPosition, attributeItem);
@@ -298,12 +277,6 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
             itemsWithPosition.Add(attributesVisual);
             itemsPositionsPerStaff[staffNumber].Add(attributesVisual);
         }
-        //public void AppendAttribute(IAttributeItemVisual attributeItem, int cursorPosition)//temp
-        //{
-        //    Tuple<int, IMeasureItemVisual> attributesVisual = new Tuple<int, IMeasureItemVisual>(cursorPosition, attributeItem);
-        //    AddAttribute(attributeItem);
-        //    itemsWithPosition.Add(attributesVisual);
-        //}
         public void AddNote(NoteContainerItem noteVisual)
         {
             measureItemsVisuals.Add(noteVisual);

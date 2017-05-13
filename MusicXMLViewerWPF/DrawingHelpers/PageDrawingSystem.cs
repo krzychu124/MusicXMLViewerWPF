@@ -1,6 +1,7 @@
 ﻿using MusicXMLScore.Converters;
 using MusicXMLScore.ViewModel;
 using MusicXMLViewerWPF;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
@@ -34,11 +35,20 @@ namespace MusicXMLScore.DrawingHelpers
 
             pageDimensions = pageLayout.PageProperties.PageDimensions.Dimensions;
             PageCanvas = new Canvas() { Width = pageDimensions.Width, Height = pageDimensions.Height };
+
             GenerateMeasuresRangePerSystem();
             GetFirstMeasureDistancesPerSystem();
             AddAllPartsToDrawing();
             AddPartsSystem();
             ArrangeSystems();
+        }
+        public PageDrawingSystem(int pageIndex)
+        {
+            this.pageIndex = pageIndex;
+            pageLayout = ViewModelLocator.Instance.Main.CurrentLayout;
+
+            pageDimensions = pageLayout.PageProperties.PageDimensions.Dimensions;
+            PageCanvas = new Canvas() { Width = pageDimensions.Width, Height = pageDimensions.Height };
         }
 
         #endregion Constructors
@@ -85,29 +95,62 @@ namespace MusicXMLScore.DrawingHelpers
                 }
             }
         }
+        public void AddPartsSytem(List<PartsSystemDrawing> partSystemsCollection)
+        {
+            partSystemsList = new List<PartsSystemDrawing>();
+            foreach (var partSys in partSystemsCollection)
+            {
+                partSystemsList.Add(partSys);
+                if (partSys.PartSystemCanvas != null)
+                {
+                    PageCanvas.Children.Add(partSys.PartSystemCanvas);
+                }
+            }
+        }
 
-        private void ArrangeSystems()
+        public void ArrangeSystems(bool advancedLayout = false, List<Point> precalculatedCoords = null)
         {
             double systemDistanceToPrevious = 0.0;
-            var firstSystemPartProperties = partsProperties.ElementAt(0).Value;
-            double lMarginScore = pageLayout.PageMargins.LeftMargin.TenthsToWPFUnit();
-            systemDistanceToPrevious += pageLayout.PageMargins.TopMargin.TenthsToWPFUnit();
-            PartProperties currentPartProperties = ViewModelLocator.Instance.Main.CurrentPartsProperties.Values.FirstOrDefault();
-            foreach (var system in partSystemsList)
+            double leftMargin = pageLayout.PageMargins.LeftMargin.TenthsToWPFUnit();
+            if (!advancedLayout)
             {
-                int systemIndex = partSystemsList.IndexOf(system);
-                double lMargin = lMarginScore + currentPartProperties.SystemLayoutPerPage[pageIndex].ElementAt(system.SystemIndex).SystemMargins.LeftMargin.TenthsToWPFUnit();
-                if (systemIndex == 0)
+                var firstSystemPartProperties = partsProperties.ElementAt(0).Value;
+                systemDistanceToPrevious += pageLayout.PageMargins.TopMargin.TenthsToWPFUnit();
+                PartProperties currentPartProperties = ViewModelLocator.Instance.Main.CurrentPartsProperties.Values.FirstOrDefault();
+                foreach (var system in partSystemsList)
                 {
-                    systemDistanceToPrevious += firstSystemPartProperties.SystemLayoutPerPage.ElementAt(pageIndex).ElementAt(0).TopSystemDistance.TenthsToWPFUnit();
+                    double lMargin = 0.0;
+
+                    int systemIndex = partSystemsList.IndexOf(system);
+                    lMargin = leftMargin + currentPartProperties.SystemLayoutPerPage[pageIndex].ElementAt(system.SystemIndex).SystemMargins.LeftMargin.TenthsToWPFUnit();
+                    if (systemIndex == 0)
+                    {
+                        systemDistanceToPrevious += firstSystemPartProperties.SystemLayoutPerPage.ElementAt(pageIndex).ElementAt(0).TopSystemDistance.TenthsToWPFUnit();
+                    }
+                    if (systemIndex != 0)
+                    {
+                        systemDistanceToPrevious += firstSystemPartProperties.SystemLayoutPerPage.ElementAt(pageIndex).ElementAt(systemIndex).SystemDistance.TenthsToWPFUnit();
+                    }
+
+                    Canvas.SetTop(system.PartSystemCanvas, systemDistanceToPrevious);
+                    Canvas.SetLeft(system.PartSystemCanvas, lMargin);
+                    systemDistanceToPrevious += system.Size.Height;
                 }
-                if (systemIndex != 0)
+            }
+            else
+            {
+                if (precalculatedCoords != null)
                 {
-                    systemDistanceToPrevious += firstSystemPartProperties.SystemLayoutPerPage.ElementAt(pageIndex).ElementAt(systemIndex).SystemDistance.TenthsToWPFUnit();
+                    if( partSystemsList.Count > precalculatedCoords.Count)
+                    {
+                        throw new NotImplementedException();
+                    }
+                    for (int i = 0; i < partSystemsList.Count; i++)
+                    {
+                        Canvas.SetTop(partSystemsList[i].PartSystemCanvas, precalculatedCoords[i].Y);
+                        Canvas.SetLeft(partSystemsList[i].PartSystemCanvas, precalculatedCoords[i].X + leftMargin);
+                    }
                 }
-                Canvas.SetTop(system.PartSystemCanvas, systemDistanceToPrevious);
-                Canvas.SetLeft(system.PartSystemCanvas, lMargin);
-                systemDistanceToPrevious += system.Size.Height;
             }
         }
 
