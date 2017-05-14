@@ -146,7 +146,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
             GetPitch();
             Draw();
             //! if note type/duration is quarter/crotchet or shorter
-            if ((int)noteType < 9)
+            if ((int)noteType < 10)
             {
                 stem = new StemItem(this);
                 hasBeams = noteItem.Any(x => x.Beam.Count != 0) ? true : false;
@@ -356,6 +356,11 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
             ItemCanvas.Children.Add(flagHost);
         }
 
+        /// <summary>
+        /// Sets ledger lines positions 
+        /// </summary>
+        /// <param name="count">Number of lines</param>
+        /// <param name="above">True if ledger lines are above staff line</param>
         private void SetLedgerLinesPositions(int count, bool above = false)
         {
             if (above)
@@ -514,6 +519,9 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
             }
         }
 
+        /// <summary>
+        /// Collection of Note Pitches. Key is index of chord, Value is pitch index 
+        /// </summary>
         public Dictionary<int, int> PitchedPosition
         {
             get

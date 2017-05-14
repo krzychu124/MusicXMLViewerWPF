@@ -164,7 +164,7 @@ namespace MusicXMLScore.LayoutControl
 
         private void CalculateFractionStretch(List<AntiCollisionHelper> acHelper)
         {
-            double tempItemMinWidth = 20.0.TenthsToWPFUnit(); //! temp
+            double tempItemMinWidth = 21.0.TenthsToWPFUnit(); //! temp
             foreach (var item in acHelper)
             {
                 item.FractionStretch = item.SpacingFactor * tempItemMinWidth;
