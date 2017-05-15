@@ -14,10 +14,20 @@ namespace MusicXMLScore.Converters
 {
     public static class ExtensionMethods
     {
+        /// <summary>
+        /// Gets WPFUnit - Millimeter conversion factor
+        /// </summary>
+        /// <returns></returns>
         public static double PxPerMM()
         {
             return 141 / 25.4; //? 141
         }
+
+        /// <summary>
+        /// Converst MusicXML Tenths to Millimeters
+        /// </summary>
+        /// <param name="tenths"></param>
+        /// <returns></returns>
         public static double TenthsToMM(this double tenths)
         {
             double converterFactor = ViewModelLocator.Instance.Main.CurrentPageLayout.ConverterFactor;
@@ -25,6 +35,11 @@ namespace MusicXMLScore.Converters
             return result;
         }
 
+        /// <summary>
+        /// Converts Millimeters to MusicXML Tenths
+        /// </summary>
+        /// <param name="MM"></param>
+        /// <returns></returns>
         public static double MMToTenths(this double MM)
         {
             double converterFactor = ViewModelLocator.Instance.Main.CurrentPageLayout.ConverterFactor;
@@ -35,6 +50,11 @@ namespace MusicXMLScore.Converters
             return MM / converterFactor;
         }
 
+        /// <summary>
+        /// Converts MusicXML Tenths to WPFUnits(highly related to DPI)
+        /// </summary>
+        /// <param name="tenths"></param>
+        /// <returns></returns>
         public static double TenthsToWPFUnit(this double tenths)
         {
             double converterFactor = ViewModelLocator.Instance.Main.CurrentPageLayout.ConverterFactor;
@@ -42,6 +62,11 @@ namespace MusicXMLScore.Converters
             return result;
         }
 
+        /// <summary>
+        /// Converts WPFUnit to MusicXML Tenths
+        /// </summary>
+        /// <param name="WPFUnit"></param>
+        /// <returns></returns>
         public static double WPFUnitToTenths(this double WPFUnit)
         {
             if (WPFUnit == 0)
@@ -55,14 +80,32 @@ namespace MusicXMLScore.Converters
         {
             return WPFUnit * PxPerMM(); //! to test
         }
+        
+        /// <summary>
+        /// Converts Millimeters to WPFUnits
+        /// </summary>
+        /// <param name="MM"></param>
+        /// <returns></returns>
         public static double MMToWPFUnit(this double MM)
         {
             return MM * PxPerMM(); //! to test
         }
+
+        /// <summary>
+        /// Converts Millimeters to Inches
+        /// </summary>
+        /// <param name="MM"></param>
+        /// <returns></returns>
         public static double MMToInch(this double MM)
         {
             return MM / 25.4;
         }
+
+        /// <summary>
+        /// Extension method, search for layout elements inside Part object and convers them to list of pages
+        /// </summary>
+        /// <param name="part"></param>
+        /// <returns>Collection of Pages(Collections of system(first measure number, last measure number)</returns>
         public static List<List<Tuple<string, string>>> TryGetLinesPerPage(this ScorePartwisePartMusicXML part)
         {
             List<Tuple<string, string>> measuresPerLine = new List<Tuple<string, string>>();
@@ -100,13 +143,11 @@ namespace MusicXMLScore.Converters
                             linesPerPage.Add(new List<Tuple<string, string>>(measuresPerLine));
                             measuresPerLine.Clear();
                             fistNumber = measure.Number;
-                            //measuresPerLine.Add(measure.Number);
                         }
                     }
                     if (part.Measure.IndexOf(measure) == 0)
                     {
                         fistNumber = measure.Number;
-                        //measuresPerLine.Add(measure.Number);
                     }
                     if (part.Measure.IndexOf(measure) == part.Measure.Count - 1)
                     {
@@ -124,7 +165,6 @@ namespace MusicXMLScore.Converters
                     if (part.Measure.IndexOf(measure) == 0)
                     {
                         fistNumber = measure.Number;
-                        //measuresPerLine.Add(measure.Number);
                     }
                     if (part.Measure.IndexOf(measure) == part.Measure.Count - 1)
                     {
@@ -141,6 +181,12 @@ namespace MusicXMLScore.Converters
             }
             return linesPerPage;
         }
+
+        /// <summary>
+        /// Search for new-page layout element of measure to calculate Pages count (if loaded score supports layout elements and elements were set)
+        /// </summary>
+        /// <param name="part"></param>
+        /// <returns></returns>
         public static int TryGetNumberOfPages(this ScorePartwisePartMusicXML part)
         {
             int result = 1;
@@ -159,6 +205,11 @@ namespace MusicXMLScore.Converters
             return result;
         }
 
+        /// <summary>
+        /// Gets Parts Id list
+        /// </summary>
+        /// <param name="score"></param>
+        /// <returns>Collection of Part Id</returns>
         public static List<string> TryGetEveryPartId(this ScorePartwiseMusicXML score)
         {
             List<string> result = new List<string>();
@@ -171,6 +222,13 @@ namespace MusicXMLScore.Converters
             }
             return result;
         }
+
+        /// <summary>
+        /// Generates measure Number between rangeOfMeasures(first,last) of selected Part object
+        /// </summary>
+        /// <param name="part"></param>
+        /// <param name="rangeOfMeasures"></param>
+        /// <returns>Collection of measure Numbers between first and last measure Number of range</returns>
         public static List<string> TryGetMeasuresIdRange(this ScorePartwisePartMusicXML part, Tuple<string, string> rangeOfMeasures)
         {
             List<string> measuresRange = new List<string>();
@@ -180,6 +238,8 @@ namespace MusicXMLScore.Converters
             measuresRange = part.Measure.GetRange(startindex, count).Select(i=>i.Number).ToList();
             return measuresRange;
         }
+
+        [Obsolete("Refactored")]
         public static Point GetMeasurePosition(this ScorePartwisePartMeasureMusicXML measure, Dictionary<string, Point> measureCoordsList)
         {
             Point position = new Point();
@@ -192,12 +252,19 @@ namespace MusicXMLScore.Converters
             }
             return position;
         }
-        public static double GetLargestWidth(this ScorePartwiseMusicXML score, string measureId)
+
+        /// <summary>
+        /// Finds Largest measure width of passed measureNumber among all parts of Score
+        /// </summary>
+        /// <param name="score"></param>
+        /// <param name="measureNumber"></param>
+        /// <returns>Largest Measure width among all parts</returns>
+        public static double GetLargestWidth(this ScorePartwiseMusicXML score, string measureNumber)
         {
-            double result = score.Part.ElementAt(0).GetMeasureUsingId(measureId).Width;
+            double result = score.Part.ElementAt(0).GetMeasureUsingId(measureNumber).Width;
             foreach (var part in score.Part)
             {
-                double width = part.GetMeasureUsingId(measureId).Width;
+                double width = part.GetMeasureUsingId(measureNumber).Width;
                 if (width > result)
                 {
                     result = width;
@@ -205,12 +272,24 @@ namespace MusicXMLScore.Converters
             }
             return result;
         }
-        public static ScorePartwisePartMeasureMusicXML GetMeasureUsingId(this ScorePartwisePartMusicXML part, string measureId)
+
+        /// <summary>
+        /// Search for measure object in this part using measure Number
+        /// </summary>
+        /// <param name="part">Selected Part for searching</param>
+        /// <param name="measureNumber">Number value (unique for each measure inside one part)</param>
+        /// <returns></returns>
+        public static ScorePartwisePartMeasureMusicXML GetMeasureUsingId(this ScorePartwisePartMusicXML part, string measureNumber)
         {
-            var measure = part.Measure.Select(i => i).Where(i => i.Number == measureId).FirstOrDefault();
+            var measure = part.Measure.Select(i => i).Where(i => i.Number == measureNumber).FirstOrDefault();
             return measure;
         }
-        public static void SetLargestWidth(this ScorePartwiseMusicXML score)
+
+        /// <summary>
+        /// Find and set largest measure width among all parts 
+        /// </summary>
+        /// <param name="score"></param>
+        public static void SetLargestMeasureWidth(this ScorePartwiseMusicXML score)
         {
             foreach (var measure in score.Part.ElementAt(0).Measure)
             {
@@ -227,6 +306,8 @@ namespace MusicXMLScore.Converters
                 }
             }
         }
+        
+        [Obsolete("Refactored")]
         public static Dictionary<string, DrawingHelpers.PartProperties> CorrectCoords(this Dictionary<string, DrawingHelpers.PartProperties> pp)
         {
             Dictionary<string, DrawingHelpers.PartProperties> result = new Dictionary<string, DrawingHelpers.PartProperties>();
@@ -258,6 +339,13 @@ namespace MusicXMLScore.Converters
 
             return result;
         }
+
+        /// <summary>
+        /// Aggregates all measure widths of selected part Id
+        /// </summary>
+        /// <param name="measuresIds">Collection of measure Id's</param>
+        /// <param name="partId">Selected part ID</param>
+        /// <returns>Aggregated measure width</returns>
         public static double CalculateWidth(this List<string> measuresIds, string partId)
         {
             double result = 0.0;
@@ -269,16 +357,33 @@ namespace MusicXMLScore.Converters
 
             return result;
         }
+
+        /// <summary>
+        /// Gets index of part using part Id
+        /// </summary>
+        /// <param name="partID"></param>
+        /// <returns></returns>
         public static int GetPartIdIndex(this string partID)
         {
             return ViewModelLocator.Instance.Main.CurrentSelectedScore.Part.IndexOf(ViewModelLocator.Instance.Main.CurrentSelectedScore.Part.Where(i => i.Id == partID).FirstOrDefault());
         }
+
+        /// <summary>
+        /// Gets measure index using measure Id (unique Number) 
+        /// </summary>
+        /// <param name="measureId"></param>
+        /// <returns></returns>
         public static int GetMeasureIdIndex(this string measureId)
         {
             var measure = ViewModelLocator.Instance.Main.CurrentSelectedScore.Part.ElementAt(0).MeasuresByNumber[measureId];
             return ViewModelLocator.Instance.Main.CurrentSelectedScore.Part.ElementAt(0).Measure.IndexOf(measure);
         }
 
+        /// <summary>
+        /// Finds index of char symbol from GlyphMap
+        /// </summary>
+        /// <param name="symbolCharacter"></param>
+        /// <returns></returns>
         public static ushort GetGlyphIndexOfCharacter(this string symbolCharacter)
         {
             int symbol = (int)symbolCharacter.ToCharArray().FirstOrDefault();
@@ -288,8 +393,9 @@ namespace MusicXMLScore.Converters
             glyph.CharacterToGlyphMap.TryGetValue(symbol, out glyphindex);
             return glyphindex;
         }
+
         /// <summary>
-        /// Get index of type from this Array[Type] to find value in Array[Type.Value], more or less ;)
+        /// Gets index of type from this Array[Type] to find value in Array[Type.Value], more or less ;)
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="array"></param>
@@ -306,6 +412,12 @@ namespace MusicXMLScore.Converters
             }
             return -1;
         }
+
+        /// <summary>
+        /// Calculates visual width of passed characters array
+        /// </summary>
+        /// <param name="array"></param>
+        /// <returns></returns>
         public static double[] GetCharsVisualWidth(this char[] array)
         {
             double[] widths = new double[array.Length];
