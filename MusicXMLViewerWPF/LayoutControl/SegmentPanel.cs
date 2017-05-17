@@ -1,5 +1,6 @@
 ﻿using MusicXMLScore.Converters;
 using MusicXMLScore.DrawingHelpers;
+using MusicXMLScore.Helpers;
 using MusicXMLScore.LayoutControl.SegmentPanelContainers;
 using System;
 using System.Collections.Generic;
@@ -25,6 +26,21 @@ namespace MusicXMLScore.LayoutControl
         private int systemIndex = 0;
         private int pageIndex;
         private string measureId;
+        private List<DrawingVisualHost> beams;
+
+        public List<DrawingVisualHost> Beams
+        {
+            get
+            {
+                return beams;
+            }
+
+            set
+            {
+                beams = value;
+            }
+        }
+
         public SegmentPanel(string partID, string measureId, int systemIndex, int pageIndex)
         {
             this.partID = partID;

@@ -97,7 +97,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
             DrawTempStartBarline(tempHeight + 40.0.TenthsToWPFUnit()); //! Temp 0.X position barline (red)
         }
 
-        public void ArrangeUsingDurationTable(Dictionary<int, double> durationTable)
+        public void ArrangeUsingDurationTable(Dictionary<int, double> durationTable, bool update = false)
         {
             //-----------------
             // Keys: -3, -2, -1 used for attributes: clef, key and time
@@ -172,6 +172,14 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
                             continue; //! skip further conditions
                         }
                     }
+                    if (update)
+                    {
+                        if (note is NoteContainerItem)
+                        {
+                            var noteObject = item.Item2 as NoteContainerItem;
+                            noteObject.UpdateStemsAndBeams();
+                        }
+                    }
                     SetLeft(item.Item2.ItemCanvas as Canvas, durationTable[item.Item1]);
                 }
 
@@ -229,21 +237,21 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
             {
                 case 0:
                     ClefContainerItem clef = attributeVisual as ClefContainerItem;
-                    width += clef.ItemLeftMargin; //attributesLayout.ClefLeftOffset.TenthsToWPFUnit();
+                    width += clef.ItemLeftMargin; 
                     SetLeft(clef.ItemCanvas, width);
-                    width += clef.ItemWidth + clef.ItemRightMargin;// attributesLayout.ClefRightOffset.TenthsToWPFUnit();
+                    width += clef.ItemWidth + clef.ItemRightMargin;
                     break;
                 case 1:
                     KeyContainerItem key = attributeVisual as KeyContainerItem;
-                    width += attributesLayout.KeySigLeftOffset;
+                    width += key.ItemLeftMargin;
                     SetLeft(key.ItemCanvas, width);
-                    width += key.ItemWidth + (key.ItemWidth != 0 ? attributesLayout.KeySigRightOffset.TenthsToWPFUnit() : 0);
+                    width += key.ItemWidth + (key.ItemWidth != 0 ? key.ItemRightMargin: 0);
                     break;
                 case 2:
                     TimeSignatureContainerItem timeSig = attributeVisual as TimeSignatureContainerItem;
-                    width += attributesLayout.TimeSigLeftOffset.TenthsToWPFUnit();
+                    width += timeSig.ItemLeftMargin;
                     SetLeft(timeSig.ItemCanvas, width);
-                    width += timeSig.ItemWidth + attributesLayout.TimeSigRightOffset.TenthsToWPFUnit();
+                    width += timeSig.ItemWidth + timeSig.ItemRightMargin;
                     break;
             }
 
