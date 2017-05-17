@@ -151,7 +151,7 @@ namespace MusicXMLScore.LayoutControl
             List<NoteMusicXML> temporaryChordList = new List<NoteMusicXML>();
             int chordDuration = 0;
             string tempStaffNumber = "1";
-            for (int i = 0; i < measure.Items.Length; i++)
+            for (int i = 0; i < measure.Items.Length; i++) //Todo improve algorithm
             {
                 if (temporaryChordList.Count != 0)
                 {
@@ -159,6 +159,7 @@ namespace MusicXMLScore.LayoutControl
                     {
                         if (measure.Items[i] is DirectionMusicXML)
                         {
+                            //! Todo music direction feature
                             //continue; // bugfix => when chorded notes sequence is splited by direction items 
                         }
 
@@ -180,7 +181,7 @@ namespace MusicXMLScore.LayoutControl
                     AttributesMusicXML a = (AttributesMusicXML)measureItems[i];
                     if (CheckIfElementsOtherThanClefKeyTime(a, durationCursor))
                     {
-
+                        //Todo refactor
                     }
                 }
                 if (typeName == nameof(BackupMusicXML))
@@ -239,7 +240,6 @@ namespace MusicXMLScore.LayoutControl
                                 temporaryChordList.Add(note);
 
                             }
-                            //temporaryChordList.Add(note);
                         }
                         else
                         {
