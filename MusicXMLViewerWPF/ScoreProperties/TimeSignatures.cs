@@ -40,7 +40,7 @@ namespace MusicXMLScore.ScoreProperties
         private void GenerateTimeSignaturesPerMeasure() //TODO_Later refactor to no cloning, but finding first going back from measure.Number, which provide only clef changes in dictionary
         {
             var firstPart = score.Part.FirstOrDefault();
-            TimeMusicXML currentTimeSignature = new TimeMusicXML();
+            TimeMusicXML currentTimeSignature = new TimeMusicXML() { TimeSymbol = TimeSymbolMusicXML.common, TimeSymbolSpecified = true } ;
             foreach (var measure in firstPart.Measure)
             {
                 if (measure.Items.OfType<AttributesMusicXML>().FirstOrDefault() != null)

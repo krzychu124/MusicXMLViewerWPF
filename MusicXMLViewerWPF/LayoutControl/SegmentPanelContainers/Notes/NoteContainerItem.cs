@@ -85,7 +85,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
         public NoteContainerItem(List<NoteMusicXML> chordList, int fractionPosition, string partId, string measureId, string staffId)
         {
             layoutStyle = ViewModel.ViewModelLocator.Instance.Main.CurrentLayout.LayoutStyle;
-            noteItem = chordList;
+            noteItem = new List<NoteMusicXML>(chordList);
             isChordNote = true;
             this.fractionPosition = fractionPosition;
             SetVisualType();
@@ -96,17 +96,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
             //hasBeams = false; // temp testing 
 
             InitNoteProperties();
-            if (hasBeams)
-            {
-                 InitBeams();
-            }
-            else
-            {
-                if ((int)noteType < 8)
-                {
-                    DrawFlag();
-                }
-            }
+            InitBeams();
         }
         
         private void DrawFlag()
@@ -124,16 +114,39 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
             AddFlag(flagHost);
         }
 
-        private void InitBeams()
+        private void InitBeams(bool update = false)
         {
-            string voice = noteItem.Where(x => x.Voice != null).Select(x => x.Voice).FirstOrDefault();
-            beams = new BeamItem(noteItem.SelectMany(x => x.Beam).ToList(), voice, fractionPosition, stem);
+            if (hasBeams)
+            {
+                if (update)
+                {
+                    if (NoteItem.Count != 0)
+                    {
+                        InitStem();
+                    }
+                }
+                string voice = noteItem.Where(x => x.Voice != null).Select(x => x.Voice).FirstOrDefault();
+                beams = new BeamItem(noteItem.SelectMany(x => x.Beam).ToList(), voice, fractionPosition, stem);
+            }
+            else
+            {
+                if ((int)noteType < 8)
+                {
+                    DrawFlag();
+                }
+            }
+            
+        }
+        public void UpdateStemsAndBeams()
+        {
+            InitBeams(true); //! temp,test
         }
 
         private void SetVisualType()
         {
             noteVisualType = noteItem.ElementAt(0).ItemsElementName.Contains(NoteChoiceTypeMusicXML.grace) ? NoteChoiceTypeMusicXML.grace :
                 noteItem.ElementAt(0).ItemsElementName.Contains(NoteChoiceTypeMusicXML.cue) ? NoteChoiceTypeMusicXML.cue : NoteChoiceTypeMusicXML.chord;
+
             noteAdditionalType = noteItem.ElementAt(0).ItemsElementName.Contains(NoteChoiceTypeMusicXML.pitch) ? NoteChoiceTypeMusicXML.pitch : NoteChoiceTypeMusicXML.unpitched;
         }
         private void InitNoteProperties()
@@ -145,10 +158,22 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
             GetSymbol();
             GetPitch();
             Draw();
-            stem = new StemItem(this);
-            hasBeams = noteItem.Any(x => x.Beam.Count != 0) ? true : false;
+            InitStem();
         }
 
+        private void InitStem()
+        {
+            //! in note type/duration is half/semibreve or shorter
+            if ((int)noteType < 10)
+            {
+                stem = new StemItem(this);
+                //! if note type/duration is quarter/crotchet or shorter
+                if (((int)noteType < 9))
+                {
+                    hasBeams = noteItem.Any(x => x.Beam.Count != 0) ? true : false;
+                }
+            }
+        }
         private void Draw()
         {
             isSmall = noteVisualType == NoteChoiceTypeMusicXML.cue || noteVisualType == NoteChoiceTypeMusicXML.grace ? true : false;
@@ -156,6 +181,11 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
             int index = 0;
             foreach (var note in noteItem)
             {
+                if (note.Voice == null)
+                {
+                    Log.LoggIt.Log($"Missing note voice element, setting to default", Log.LogType.Warning);
+                    note.Voice = "1"; //! voice set to "1" if null- bugfix
+                }
                 color = ViewModel.ViewModelLocator.Instance.Main.CurrentLayout.LayoutStyle.Colors[int.Parse(note.Voice)];
                 noteVisualHost.AddCharacterGlyph(new Point(0, pitchedValue[index]), symbol, isSmall, color);
                 if (note.Accidental != null)
@@ -352,6 +382,11 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
             ItemCanvas.Children.Add(flagHost);
         }
 
+        /// <summary>
+        /// Sets ledger lines positions 
+        /// </summary>
+        /// <param name="count">Number of lines</param>
+        /// <param name="above">True if ledger lines are above staff line</param>
         private void SetLedgerLinesPositions(int count, bool above = false)
         {
             if (above)
@@ -413,7 +448,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
                     pitchedValue.Add(pitchIndex, staffLine[pitchedPosition[pitchIndex]]);
                 }
             }
-            if (altered.Any(x=>x.Value == true))//bug fix - all chorded notes should have been altered if any
+            if (altered.Any(x=>x.Value == true))//bug fix - all chorded notes should have been altered if any (octave shift)
             {
                 for (int i = 0; i < altered.Count; i++)
                 {
@@ -510,6 +545,9 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
             }
         }
 
+        /// <summary>
+        /// Collection of Note Pitches. Key is index of chord, Value is pitch index 
+        /// </summary>
         public Dictionary<int, int> PitchedPosition
         {
             get

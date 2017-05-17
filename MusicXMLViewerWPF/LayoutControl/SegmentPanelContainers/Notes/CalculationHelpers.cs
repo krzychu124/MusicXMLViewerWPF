@@ -88,6 +88,12 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
             return (x != 0) && ((x & (x - 1)) == 0);
         }
 
+        /// <summary>
+        /// Converts pitch value from PitchMusciXML object into index of position at staff line using clef info
+        /// </summary>
+        /// <param name="pitch">PitchMusicXML object to convert</param>
+        /// <param name="clef">ClefMusisXML object as helper for calculations</param>
+        /// <returns>Index of position at Staff Line </returns>
         public static int GetPitchIndexStaffLine(this Model.MeasureItems.PitchMusicXML pitch, Model.MeasureItems.Attributes.ClefMusicXML clef)
         {
             int pitchOctave = int.Parse(pitch.Octave);

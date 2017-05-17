@@ -107,6 +107,7 @@
     <Compile Include="Helpers\ComparisonHelpers.cs" />
     <Compile Include="Helpers\CustomPartsSegmentPanel.cs" />
     <Compile Include="Helpers\MusicSymbols.cs" />
+    <Compile Include="Helpers\ObservableDictionary.cs" />
     <Compile Include="Helpers\PageProperties.cs" />
     <Compile Include="Helpers\SimpleWrapPanel.cs" />
     <Compile Include="LayoutControl\AdvancedLayoutHelpers\LayoutPageContentInfo.cs" />

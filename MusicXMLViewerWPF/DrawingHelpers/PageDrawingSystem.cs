@@ -111,7 +111,7 @@ namespace MusicXMLScore.DrawingHelpers
         public void ArrangeSystems(bool advancedLayout = false, List<Point> precalculatedCoords = null)
         {
             double systemDistanceToPrevious = 0.0;
-            double leftMargin = pageLayout.PageMargins.LeftMargin.TenthsToWPFUnit();
+            double leftMarginScore = pageLayout.PageMargins.LeftMargin.TenthsToWPFUnit();
             if (!advancedLayout)
             {
                 var firstSystemPartProperties = partsProperties.ElementAt(0).Value;
@@ -122,7 +122,7 @@ namespace MusicXMLScore.DrawingHelpers
                     double lMargin = 0.0;
 
                     int systemIndex = partSystemsList.IndexOf(system);
-                    lMargin = leftMargin + currentPartProperties.SystemLayoutPerPage[pageIndex].ElementAt(system.SystemIndex).SystemMargins.LeftMargin.TenthsToWPFUnit();
+                    lMargin = leftMarginScore + currentPartProperties.SystemLayoutPerPage[pageIndex].ElementAt(system.SystemIndex).SystemMargins.LeftMargin.TenthsToWPFUnit();
                     if (systemIndex == 0)
                     {
                         systemDistanceToPrevious += firstSystemPartProperties.SystemLayoutPerPage.ElementAt(pageIndex).ElementAt(0).TopSystemDistance.TenthsToWPFUnit();
@@ -148,7 +148,7 @@ namespace MusicXMLScore.DrawingHelpers
                     for (int i = 0; i < partSystemsList.Count; i++)
                     {
                         Canvas.SetTop(partSystemsList[i].PartSystemCanvas, precalculatedCoords[i].Y);
-                        Canvas.SetLeft(partSystemsList[i].PartSystemCanvas, precalculatedCoords[i].X + leftMargin);
+                        Canvas.SetLeft(partSystemsList[i].PartSystemCanvas, precalculatedCoords[i].X + leftMarginScore);
                     }
                 }
             }

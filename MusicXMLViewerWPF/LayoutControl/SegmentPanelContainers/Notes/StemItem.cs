@@ -74,29 +74,39 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
                     bool hasBeam = note.NoteItem.FirstOrDefault().Beam.Count != 0 ? true : false;
                     CalculatePosition(note.PitchedPosition.FirstOrDefault().Value, hasBeam);
                 }
+                else
+                {
+                    CalculateDirection();
+                    bool hasBeam = note.NoteItem.FirstOrDefault().Beam.Count != 0 ? true : false;
+                    CalculatePosition(note.PitchedPosition.FirstOrDefault().Value, hasBeam);
+                }
             }
             else
             {
                 var notes = note.NoteItem.Where(noteItem => noteItem.IsGrace() == false);
+                //! check for stem element to get direction
+                if (notes.FirstOrDefault().Stem != null)
+                {
+                    GetDirection(notes.FirstOrDefault().Stem);
+                }
+                else
+                {
+                    CalculateDirection(true);
+                }
+
                 foreach (var noteItem in notes)
                 {
-                    //var noteItem = note;
-                    var stem = noteItem.Stem;
-                    if (stem != null) //! if stem is set for current Note
+                    bool hasBeam = note.NoteItem.FirstOrDefault().Beam.Count != 0 ? true : false;
+                    int pitchedPosition = 0;
+                    if (isDown)
                     {
-                        GetDirection(stem);
-                        bool hasBeam = note.NoteItem.FirstOrDefault().Beam.Count != 0 ? true : false;
-                        int pitchedPosition = 0;
-                        if (isDown)
-                        {
-                            pitchedPosition = note.PitchedPosition.Max(x => x.Value);
-                        }
-                        else
-                        {
-                            pitchedPosition = note.PitchedPosition.Min(x => x.Value);
-                        }
-                        CalculatePosition(pitchedPosition, hasBeam);
+                        pitchedPosition = note.PitchedPosition.Max(x => x.Value);
                     }
+                    else
+                    {
+                        pitchedPosition = note.PitchedPosition.Min(x => x.Value);
+                    }
+                    CalculatePosition(pitchedPosition, hasBeam);
                 }
             }
         }
@@ -253,6 +263,95 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
         private void GetDirection(StemMusicXML stem)
         {
             direction = stem.Value;
+        }
+        private void CalculateDirection(bool isChord = false)
+        {
+            if (!isChord)
+            {
+                //! Get first pitch (if not chord there is only one pitch 
+                var pitch = note.PitchedPosition.FirstOrDefault().Value;
+                SetDirection(pitch);
+            }
+            else
+            {
+                //! gets indexes of notes excudes grace notes
+                var indexes = note.NoteItem.Select((x, i) => new { note = x, index = i }).Where(x => x.note.IsGrace() == false).Select(x=>x.index).ToList();
+                //! select pitches using indexes
+                var pitches = indexes.Select(x => note.PitchedPosition[x]);
+                //? var pitches = note.PitchedPosition.Select(x => x.Value); Previous version (grace notes not excluded)
+
+                //! staff line indexes are nubered from 0 from first staff upper staff line
+                //! positive if notehead placed below this line
+                //! negative if notehead is placed above first staff line of staffLine(ledger lines)
+                //! if all noteheads are placed above middle line - direction down
+                if (pitches.Max() < 5)
+                {
+                    direction = StemValueMusicXML.down;
+                    return;
+                }
+                //! if all noteheds below middle staff line
+                if (pitches.Min() > 4)
+                {
+                    direction = StemValueMusicXML.up;
+                    return;
+                }
+
+                //! none of previous continue calculations
+
+                int[] distanceToMid = new int[pitches.Count()];
+                for (int i = 0; i < pitches.Count(); i++)
+                {
+                    distanceToMid[i] = Math.Abs(pitches.ElementAt(i) - 4);
+                }
+                var maxDistCount = distanceToMid.Select(x => x).Where(x => x == distanceToMid.Max()).Count();
+                if (maxDistCount == 0)
+                {
+                    Log.LoggIt.Log("Chorded notes stem direction calculation exception! Max distance to middle line equals 0", Log.LogType.Exception);
+                    throw new NotImplementedException();//! temp debug only
+                }
+                //! If if two noteheads are placed in same distance from middle line, set direction to down;
+                if (maxDistCount == 2)
+                {
+                    //! sum up notehead above and below
+                    var aboveMiddle = pitches.Select(x => x).Where(x => x > 4).Count();
+                    var belowMiddle = pitches.Select(x => x).Where(x => x < 4).Count();
+                    //! find which direction has more noteheads 
+
+                    if (aboveMiddle > belowMiddle)
+                    {
+                        direction = StemValueMusicXML.down;
+                    }
+                    if (aboveMiddle < belowMiddle)
+                    {
+                        direction = StemValueMusicXML.up;
+                    }
+                    //! if equal set stem direction down
+                    else
+                    {
+                        direction = StemValueMusicXML.down;
+                    }
+                }
+                else
+                {
+                    //! Gets max distance index to retrive pitch and set direction 
+                    SetDirection(pitches.ElementAt(Array.IndexOf(distanceToMid, distanceToMid.Max())));
+                }
+            }
+        }
+        /// <summary>
+        /// Compares pitch pitch middle staff line pitch. If lower, direction is up
+        /// </summary>
+        /// <param name="pitch"></param>
+        private void SetDirection(int pitch)
+        {
+            if (pitch > 4)
+            {
+                direction = StemValueMusicXML.up;
+            }
+            else
+            {
+                direction = StemValueMusicXML.down;
+            }
         }
 
         private void Draw()

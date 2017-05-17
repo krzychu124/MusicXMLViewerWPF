@@ -1,20 +1,25 @@
 ﻿using MusicXMLScore.Converters;
+using MusicXMLScore.Helpers;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace MusicXMLScore.LayoutControl
 {
-    class SharedMeasureProperties
+    class SharedMeasureProperties :INotifyPropertyChanged
     {
         private string measureId;
         private double sharedWidth;
         private Dictionary<string, List<AntiCollisionHelper>> sharedACHelper;
-        private Dictionary<int, double> sharedFractionPositions;
+        private ObservableDictionary<int, double> sharedFractionPositions;
+        private ObservableDictionary<int, FractionHelper> sharedFractions;
         private Tuple<double, double, double> attributesWidths;
-        public event EventHandler SharedWidthPropertyChanged = delegate{ };
+        public event PropertyChangedEventHandler PropertyChanged = delegate{ };
+        public event EventHandler FractionPositionsChanged;
         public double SharedWidth
         {
             get
@@ -24,29 +29,42 @@ namespace MusicXMLScore.LayoutControl
 
             set
             {
-                sharedWidth = value;
-                SharedWidthPropertyChanged.Invoke(value, EventArgs.Empty);
+                if (value != sharedWidth)
+                {
+                    sharedWidth = value;
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SharedWidth)));
+                }
             }
         }
 
-        private void OnSharedWidthChanged(object o, EventArgs e)
+        private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            double newValue = (double)o;
-            UpdateSharedWidth(newValue); //! test
-        }
-
-        private void UpdateSharedWidth( double newWidth)
-        {
-            var list = sharedFractionPositions.SkipWhile(x => x.Key < 0).TakeWhile(x=>x.Key != sharedFractionPositions.LastOrDefault().Key);
-            double startingPosition = sharedFractionPositions[0];
-            double currentWidth = sharedFractionPositions.LastOrDefault().Value;
-            double difference = newWidth - currentWidth;
-            for (int i = 0; i < list.Count(); i++)
+            switch (e.PropertyName)
             {
-                double corrected = (list.ElementAt(i).Value / currentWidth) * difference;
-                sharedFractionPositions[list.ElementAt(i).Key] = corrected;
+                case nameof(SharedWidth):
+                    UpdateSharedWidth(SharedWidth);
+                    UpdateMeasureObjectWidth();
+                    break;
+                default:
+                    Log.LoggIt.Log($"No action implemented for {e.PropertyName} property");
+                    break;
             }
-            sharedFractionPositions[sharedFractionPositions.LastOrDefault().Key] = newWidth;
+        }
+        
+        private void UpdateSharedWidth(double newWidth)
+        {
+            var list = sharedFractions.SkipWhile(x => x.Key < 0);
+            double startingPosition = sharedFractions[0].Position;
+            double currentWidth = sharedFractions.LastOrDefault().Value.Position;
+            double difference = newWidth - currentWidth;
+            double dif = difference / (double)list.Count();
+            for (int i = 1; i < list.Count(); i++)
+            {
+                sharedFractions[list.ElementAt(i).Key].Position = sharedFractions[list.ElementAt(i).Key].Position + dif *i;
+            }
+            sharedFractions[sharedFractions.LastOrDefault().Key].Position = newWidth; //! update last position (used as measure width)
+            //! notify about changes
+            FractionPositionsChanged?.Invoke(this, EventArgs.Empty);
         }
 
         public string MeasureId
@@ -62,16 +80,17 @@ namespace MusicXMLScore.LayoutControl
             }
         }
 
-        public Dictionary<int, double> SharedFractionPositions
+        internal ObservableDictionary<int, FractionHelper> SharedFractions
         {
             get
             {
-                return sharedFractionPositions;
+                return sharedFractions;
             }
 
             set
             {
-                sharedFractionPositions = value;
+                sharedFractions = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SharedFractions)));
             }
         }
 
@@ -80,13 +99,14 @@ namespace MusicXMLScore.LayoutControl
             this.measureId = measureId;
             sharedWidth = 0.0;
             sharedACHelper = new Dictionary<string, List<AntiCollisionHelper>>();
-            sharedFractionPositions = new Dictionary<int, double>();
-            SharedWidthPropertyChanged += OnSharedWidthChanged;
+            sharedFractionPositions = new ObservableDictionary<int, double>();
+            sharedFractions = new ObservableDictionary<int, FractionHelper>();//! test
+            PropertyChanged += OnPropertyChanged;
         }
 
         private void CalculateWidth()
         {
-            sharedWidth = sharedFractionPositions.LastOrDefault().Value;
+            sharedWidth = sharedFractions.LastOrDefault().Value.Position;
         }
 
         public void AddAntiCollisionHelper(string partId, AntiCollisionHelper acHelper)
@@ -120,55 +140,119 @@ namespace MusicXMLScore.LayoutControl
             double maxClef = attributesWidths.Item1;
             double maxKey = attributesWidths.Item2;
             double maxTime = attributesWidths.Item3;
-            sharedFractionPositions.Add(-3, 0);
-            sharedFractionPositions.Add(-2, maxClef);
-            sharedFractionPositions.Add(-1, maxKey + maxClef);
-            if (sharedFractionPositions.ContainsKey(0))
+
+            sharedFractions.Add(-3, new FractionHelper(-3,0));
+            sharedFractions.Add(-2, new FractionHelper(-2, maxClef));
+            sharedFractions.Add(-1, new FractionHelper(-1, maxKey + maxClef));
+            if (sharedFractions.ContainsKey(0))
             {
-                sharedFractionPositions[0] = maxClef + maxKey + maxTime;
-            }
-            else
-            {
-                sharedFractionPositions.Add(0, maxClef + maxKey + maxTime);
+                sharedFractions[0].Position = maxClef + maxKey + maxTime;
+            }                 
+            else              
+            {                 
+                sharedFractions.Add(0, new FractionHelper(0, maxClef + maxKey + maxTime));
             }
         }
         public void GenerateFractionPositions()
         {
-            var grouppedFractions = sharedACHelper.SelectMany(x => x.Value).OrderBy(x => x.FactionPosition).GroupBy(x => x.FactionPosition).Select(x => x.ToList()).ToList(); //! not tested
+            var grouppedFractions = sharedACHelper.SelectMany(x => x.Value).OrderBy(x => x.FactionPosition).GroupBy(x => x.FactionPosition).Select(x => x.ToList()).ToList(); 
+            //! left margin of content 
             double minWidth = 10.0.TenthsToWPFUnit();
-            if (sharedFractionPositions.ContainsKey(0))
+
+            if (sharedFractions.ContainsKey(0))
             {
-                minWidth += sharedFractionPositions[0];
+                minWidth += sharedFractions[0].Position;
             }
+
             foreach (var item in grouppedFractions)
             {
                 var min = item.Aggregate((c, d) => c.FractionDuration < d.FractionDuration ? c : d);
                 minWidth += min.FractionStretch;
                 if (item.Any(x => x.LeftMinWidth != 0))
                 {
-                    minWidth += item.Max(x => x.LeftMinWidth); //! temp
+                    minWidth += item.Max(x => x.LeftMinWidth); //! temporary left margin
                 }
-                if (min.FactionPosition == 0 && sharedFractionPositions.ContainsKey(0))
+
+                if (min.FactionPosition == 0 && sharedFractions.ContainsKey(0))
                 {
-                    sharedFractionPositions[0] = minWidth - min.FractionStretch;
+                    sharedFractions[0].Position = minWidth - min.FractionStretch;
                 }
                 else
                 {
-                    sharedFractionPositions.Add(min.FactionPosition, minWidth - min.FractionStretch);
+                    sharedFractions.Add(min.FactionPosition, new FractionHelper(min.FactionPosition, minWidth - min.FractionStretch));
                 }
-                minWidth += item.Max(x => x.RightMinWidth); //! temp
+                minWidth += item.Max(x => x.RightMinWidth); //! temporary right margin
             }
-            sharedFractionPositions.Add(sharedFractionPositions.Max(x => x.Key) + 1, minWidth);
+            sharedFractions.Add(sharedFractions.Max(x => x.Key) + 1, new FractionHelper(sharedFractions.Max(x => x.Key) + 1, minWidth));
             CalculateWidth();
         }
 
         private void CalculateFractionStretch(List<AntiCollisionHelper> acHelper)
         {
-            double tempItemMinWidth = 20.0.TenthsToWPFUnit(); //! temp
+            double itemMinWidth = 21.0.TenthsToWPFUnit(); //! minimal item width
             foreach (var item in acHelper)
             {
-                item.FractionStretch = item.SpacingFactor * tempItemMinWidth;
+                //! spacing factor never lower than 1, min stretch is equal to itemMinWidth
+                item.FractionStretch = item.SpacingFactor * itemMinWidth;
             }
+        }
+        private void UpdateMeasureObjectWidth()
+        {
+            var keys = sharedACHelper.Select(x => x.Key);
+            var test = keys.Select(x => ViewModel.ViewModelLocator.Instance.Main.CurrentSelectedScore.Part.Where(k => k.Id == x).FirstOrDefault().MeasuresByNumber[MeasureId]);
+            foreach (var item in test)
+            {
+                item.CalculatedWidth = SharedWidth.WPFUnitToTenths();
+            }
+        }
+    }
+
+    [DebuggerDisplay("Fraction: {Fraction} Position: {Position}")]
+    class FractionHelper : INotifyPropertyChanged
+    {
+        private int fraction;
+        private double position;
+
+        public int Fraction
+        {
+            get
+            {
+                return fraction;
+            }
+
+            set
+            {
+                fraction = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Fraction)));
+            }
+        }
+
+        public double Position
+        {
+            get
+            {
+                return position;
+            }
+
+            set
+            {
+                position = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Position)));
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged = delegate { };
+
+        public FractionHelper(int fraction, double position)
+        {
+            PropertyChanged += OnPropertyChanged;
+            this.fraction = fraction;
+            this.position = position;
+           
+        }
+
+        private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
         }
     }
 }

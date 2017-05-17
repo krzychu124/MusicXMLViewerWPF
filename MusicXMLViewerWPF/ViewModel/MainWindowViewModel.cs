@@ -18,6 +18,7 @@ using System.Collections;
 using MusicXMLScore.Converters;
 using MusicXMLScore.DrawingHelpers;
 using MusicXMLScore.ScoreProperties;
+using System.Linq;
 
 namespace MusicXMLScore.ViewModel
 {
@@ -249,7 +250,7 @@ namespace MusicXMLScore.ViewModel
         private void OnOldViewCommand()
         {
         }
-
+        [STAThread]
         private void OnOpenFileCommand(object parameter) //! For now xml file load avaliable only
         {
             string filedestination;
@@ -278,7 +279,7 @@ namespace MusicXMLScore.ViewModel
             sw.Start();
             ScorePartwiseMusicXML xml = TempMethod<ScorePartwiseMusicXML>(filedestination);
             xml.InitPartsDictionaries();
-            xml.SetLargestWidth();
+            xml.SetLargestMeasureWidth();
             sw.Stop();
             Log.LoggIt.Log($"XML file deserialization to ScorePartwise object in : {sw.ElapsedMilliseconds} ms", Log.LogType.Exception);
             sw = new Stopwatch();
@@ -319,11 +320,15 @@ namespace MusicXMLScore.ViewModel
 
         private void OnTestButtonCommand()
         {
-            LayoutStyle.Layout layout = new LayoutStyle.Layout();
-            XmlSerializer xml = new XmlSerializer(layout.GetType());
-            TextWriter txtw = new StreamWriter(@".\DefaultLayoutStyle.xml");
-            xml.Serialize(txtw, layout);
-            txtw.Close(); 
+            //changed measure width (visual update test)
+            string partId = CurrentSelectedScore.Part.FirstOrDefault().Id;
+            string id = "3";
+            CurrentSelectedScore.Part.ElementAt(partId.GetPartIdIndex()).MeasuresByNumber[id].CalculatedWidth = 40;
+            //LayoutStyle.Layout layout = new LayoutStyle.Layout();
+            //XmlSerializer xml = new XmlSerializer(layout.GetType());
+            //TextWriter txtw = new StreamWriter(@".\DefaultLayoutStyle.xml");
+            //xml.Serialize(txtw, layout);
+            //txtw.Close(); 
         }
         private void SaveDefaultPageProperties(PageProperties pp)
         {

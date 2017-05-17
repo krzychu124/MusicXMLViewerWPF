@@ -1,13 +1,14 @@
 ﻿using MusicXMLScore.Model.Helpers.SimpleTypes;
 using MusicXMLScore.Model.MeasureItems;
 using System;
+using System.ComponentModel;
 using System.Xml.Serialization;
 
 namespace MusicXMLScore.Model
 {
     [Serializable]
     [XmlType(AnonymousType =true)]
-    public class ScorePartwisePartMeasureMusicXML
+    public class ScorePartwisePartMeasureMusicXML : INotifyPropertyChanged
     {
         private object[] items;
         private string number;
@@ -18,7 +19,7 @@ namespace MusicXMLScore.Model
         private double width;
         private bool widthSpecified;
         private double calculatedWidth;
-        public event EventHandler WidthPropertyChanged = delegate { };
+        public event PropertyChangedEventHandler PropertyChanged = delegate { };
 
         [XmlAttribute("number")]
         public string Number
@@ -145,18 +146,24 @@ namespace MusicXMLScore.Model
             set
             {
                 calculatedWidth = value;
-                WidthPropertyChanged.Invoke(this, EventArgs.Empty);
+                PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(CalculatedWidth)));
             }
         }
 
         public ScorePartwisePartMeasureMusicXML()
         {
-            //WidthPropertyChanged += OnWidthChanged;
+            PropertyChanged += OnPropertyChanged;
         }
-        private void OnWidthChanged(object sender, EventArgs e)
+        private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            ScorePartwisePartMeasureMusicXML s = (ScorePartwisePartMeasureMusicXML)sender;
-            Console.WriteLine(s.CalculatedWidth.ToString());
+            switch (e.PropertyName)
+            {
+                case nameof(CalculatedWidth):
+                    Console.WriteLine(CalculatedWidth);
+                    break;
+                default:
+                    break;
+            }
         }
     }
 }

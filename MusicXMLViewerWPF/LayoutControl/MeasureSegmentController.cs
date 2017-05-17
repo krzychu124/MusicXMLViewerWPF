@@ -12,6 +12,7 @@ using MusicXMLScore.LayoutControl.SegmentPanelContainers;
 using MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes;
 using MusicXMLScore.Helpers;
 using System.Windows.Controls;
+using System.Collections.ObjectModel;
 
 namespace MusicXMLScore.LayoutControl
 {
@@ -81,7 +82,7 @@ namespace MusicXMLScore.LayoutControl
             {
                 minimalWidth = value;
                 int partIndex = ViewModel.ViewModelLocator.Instance.Main.CurrentSelectedScore.Part.FindIndex(x => x.Id == partId);
-                ViewModel.ViewModelLocator.Instance.Main.CurrentSelectedScore.Part.ElementAt(partIndex).MeasuresByNumber[measureID].CalculatedWidth = minimalWidth.WPFUnitToTenths();
+                ViewModel.ViewModelLocator.Instance.Main.CurrentSelectedScore.Part.ElementAt(partIndex).Measure.Where(x=>x.Number== measureID).FirstOrDefault().CalculatedWidth = minimalWidth.WPFUnitToTenths();
             }
         }
 
@@ -150,7 +151,7 @@ namespace MusicXMLScore.LayoutControl
             List<NoteMusicXML> temporaryChordList = new List<NoteMusicXML>();
             int chordDuration = 0;
             string tempStaffNumber = "1";
-            for (int i = 0; i < measure.Items.Length; i++)
+            for (int i = 0; i < measure.Items.Length; i++) //Todo improve algorithm
             {
                 if (temporaryChordList.Count != 0)
                 {
@@ -158,6 +159,7 @@ namespace MusicXMLScore.LayoutControl
                     {
                         if (measure.Items[i] is DirectionMusicXML)
                         {
+                            //! Todo music direction feature
                             //continue; // bugfix => when chorded notes sequence is splited by direction items 
                         }
 
@@ -179,7 +181,7 @@ namespace MusicXMLScore.LayoutControl
                     AttributesMusicXML a = (AttributesMusicXML)measureItems[i];
                     if (CheckIfElementsOtherThanClefKeyTime(a, durationCursor))
                     {
-
+                        //Todo refactor
                     }
                 }
                 if (typeName == nameof(BackupMusicXML))
@@ -238,7 +240,6 @@ namespace MusicXMLScore.LayoutControl
                                 temporaryChordList.Add(note);
 
                             }
-                            //temporaryChordList.Add(note);
                         }
                         else
                         {
@@ -354,9 +355,9 @@ namespace MusicXMLScore.LayoutControl
                 }
             }
         }
-        public void ArrangeUsingDurationTable(Dictionary<int, double> durationTable)
+        public void ArrangeUsingDurationTable(Dictionary<int, double> durationTable, bool update = false)
         {
-            measureItemsContainer.ArrangeUsingDurationTable(durationTable);
+            measureItemsContainer.ArrangeUsingDurationTable(durationTable, update);
         }
 
         private void ArrangeContainers(double availableWidth, int maxDuration)
@@ -459,8 +460,22 @@ namespace MusicXMLScore.LayoutControl
         }
         public void AddBeams(List<DrawingVisualHost> beams)
         {
+            if (segmentPanel.Beams == null) 
+            {
+                segmentPanel.Beams = new List<DrawingVisualHost>();
+            }
+            if (segmentPanel.Beams.Count != 0)
+            {
+                //! if not empty - remove beams to update
+                foreach (var item in segmentPanel.Beams)
+                {
+                    segmentPanel.Children.Remove(item);
+                }
+                segmentPanel.Beams.Clear();
+            }
             foreach (var item in beams)
             {
+                segmentPanel.Beams.Add(item); //! reference used for update 
                 segmentPanel.Children.Add(item);
             }
         }

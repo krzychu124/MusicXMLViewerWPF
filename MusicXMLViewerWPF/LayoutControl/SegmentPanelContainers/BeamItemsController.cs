@@ -38,7 +38,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
         {
             this.beams = beams;
         }
-
+        
         private void GenerateBeams()
         {
             var voices = beams.Select(x => x.Voice).Distinct().ToList();
@@ -92,7 +92,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
             {
                 foreach (var beamSegment in item)
                 {
-                    beamSegment.Draw(durationTable);
+                    beamSegment.Draw(positionPerFractionTable);
                     beamsVisuals.AddRange(beamSegment.BeamVisuals);
                 }
             }
