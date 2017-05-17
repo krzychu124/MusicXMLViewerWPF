@@ -181,6 +181,11 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
             int index = 0;
             foreach (var note in noteItem)
             {
+                if (note.Voice == null)
+                {
+                    Log.LoggIt.Log($"Missing note voice element, setting to default", Log.LogType.Warning);
+                    note.Voice = "1"; //! voice set to "1" if null- bugfix
+                }
                 color = ViewModel.ViewModelLocator.Instance.Main.CurrentLayout.LayoutStyle.Colors[int.Parse(note.Voice)];
                 noteVisualHost.AddCharacterGlyph(new Point(0, pitchedValue[index]), symbol, isSmall, color);
                 if (note.Accidental != null)
