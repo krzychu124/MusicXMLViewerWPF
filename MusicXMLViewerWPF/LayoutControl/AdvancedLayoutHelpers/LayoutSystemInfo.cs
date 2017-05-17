@@ -140,7 +140,7 @@ namespace MusicXMLScore.LayoutControl
                     currentX += item.Value;
                 }
             }
-            if (currentX > systemWidth)
+            if (currentX > systemWidth && !(currentX == systemWidth))
             {
                 Log.LoggIt.Log($"System width too small!!! Now is: {systemWidth}, should be {currentX}", Log.LogType.Exception);
             }
@@ -148,14 +148,14 @@ namespace MusicXMLScore.LayoutControl
 
         public void UpdateSystemWidth(double desiredWidth)
         {
-            double currentWidth = systemWidth;
+            double currentWidth = measureSharedWidths.Sum(x => x.Value);// systemWidth;
             double difference = desiredWidth - currentWidth;
             double itemsCount = measureSharedWidths.Count;
             double offset = difference / itemsCount;
            // var keys = measureSharedWidths.Select(x=>x.Key);
             foreach (var item in measures)
             {
-                double correctedValue = (item.SharedWidth / desiredWidth) *difference;
+                //double correctedValue = (item.SharedWidth / desiredWidth) *difference;
                 item.SharedWidth = item.SharedWidth + offset;
             }
             GetSharedWidths();
@@ -183,7 +183,7 @@ namespace MusicXMLScore.LayoutControl
                     currentY += item.Value + partHeights[item.Key];
                 }
             }
-            if (currentY > systemHeight)
+            if (currentY > systemHeight && !(currentY == systemHeight))
             {
                 Log.LoggIt.Log($"System height too small!!! Now is: {systemHeight}, should be {currentY}", Log.LogType.Exception);
             }

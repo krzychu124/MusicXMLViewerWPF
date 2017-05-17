@@ -1,6 +1,7 @@
 ﻿using MusicXMLScore.Converters;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,7 +9,7 @@ using System.Windows;
 
 namespace MusicXMLScore.LayoutControl
 {
-    class LayoutPageContentInfo
+    class LayoutPageContentInfo : INotifyPropertyChanged
     {
         //! missing custom system distance setter
         private int pageIndex;
@@ -28,6 +29,7 @@ namespace MusicXMLScore.LayoutControl
         public Point SystemPosition(int index) => new Point(systemsXPositions[index], systemsYPositions[index]);
         public double SystemVerticalPosition(int index) => index < systemsYPositions.Count ? systemsYPositions[index] : 0.0;
         public double SystemHorizontalPosition(int index) => index < systemsXPositions.Count ? systemsXPositions[index] : 0.0;
+        public event PropertyChangedEventHandler PropertyChanged = delegate { };
         public bool StretchSystemsToWidth
         {
             get
@@ -37,6 +39,7 @@ namespace MusicXMLScore.LayoutControl
 
             set
             {
+
                 stretchSystemsToWidth = value;
             }
         }
@@ -63,7 +66,11 @@ namespace MusicXMLScore.LayoutControl
 
             set
             {
-                systemDimensionsInfo = value;
+                if (systemDimensionsInfo != value)
+                {
+                    systemDimensionsInfo = value;
+                    PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(SystemDimensionsInfo)));
+                }
             }
         }
 
@@ -74,7 +81,23 @@ namespace MusicXMLScore.LayoutControl
             GetPageContentHeight();
             GetPageContentWidth();
             availableHeight = pageContentHeight; //! CalculateAvailableHeight();
+            PropertyChanged += LayoutPageContentInfo_PropertyChangedHandler;
         }
+
+        private void LayoutPageContentInfo_PropertyChangedHandler(object sender, PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case nameof(StretchSystemsToWidth):
+                    this.ArrangeSystems();
+                    break;
+                default:
+                    Log.LoggIt.Log($"No action for changed property {e.PropertyName}", Log.LogType.Exception);
+                    break;
+            }
+        }
+        
+
         public LayoutPageContentInfo(int pageIndex, double systemDistance, double topSystemDistance)
         {
             this.pageIndex = pageIndex;
@@ -83,6 +106,7 @@ namespace MusicXMLScore.LayoutControl
             GetPageContentHeight();
             GetPageContentWidth();
             availableHeight = pageContentHeight; //! CalculateAvailableHeight();
+            PropertyChanged += LayoutPageContentInfo_PropertyChangedHandler;
         }
         /// <summary>
         /// Adds Complete Collection of LayoutSystemInfo to LayoutPageContent

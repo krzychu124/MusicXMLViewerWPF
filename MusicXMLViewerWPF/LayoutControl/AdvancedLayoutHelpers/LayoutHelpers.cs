@@ -44,7 +44,7 @@ namespace MusicXMLScore.LayoutControl
                 Tuple<double, double> currentPositionPair = positions[positionIndex[i]];
                 double currentPosition = currentPositionPair.Item1;
                 double correctedSpacing = (currentPositionPair.Item2 / currentFullWidth) * difference;
-
+                
                 if (i == 0)
                 {
                     Tuple<double, double> t = Tuple.Create(currentPosition, correctedSpacing + currentPositionPair.Item2);

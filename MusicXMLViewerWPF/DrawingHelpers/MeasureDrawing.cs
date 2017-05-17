@@ -12,18 +12,17 @@ using MusicXMLScore.Model;
 using MusicXMLScore.Converters;
 using MusicXMLScore.Model.MeasureItems;
 using MusicXMLScore.Model.MeasureItems.Attributes;
+using System.ComponentModel;
 
 namespace MusicXMLScore.DrawingHelpers
 {
-    class MeasureDrawing : IDrawableObjectBase
+    class MeasureDrawing : IDrawableObjectBase, INotifyPropertyChanged
     {
-
+        //TODO Refactor and move to MeasureSegmentController
         #region Fields
         
-        private bool clefVisible = false;
         private string id;
         private bool invalidated = false;
-        private bool keyVisible = false;
         private LayoutControl.LayoutGeneral layout;
         private double measureHeight = 60.0;
         private ScorePartwisePartMeasureMusicXML measureSerializable;
@@ -34,32 +33,19 @@ namespace MusicXMLScore.DrawingHelpers
         private double[] staffLinesCoords;
         private uint stavesCount = 1;
         private double stavesDistance = 0.0;
-        private bool timeSigVisible = false;
         private DrawingVisualHost visualObject;
         private Dictionary<int, double[]> staffLinesYpositions = new Dictionary<int, double[]>();
         private Dictionary<int, double> avaliableIndexLinePositions = new Dictionary<int, double>();
 
         //! test
-        public event EventHandler TestHandler = delegate { };
+        public event PropertyChangedEventHandler PropertyChanged = delegate { };
         #endregion Fields
 
         #region Constructors
-
-        public MeasureDrawing()
-        {
-        }
-        public MeasureDrawing(ScorePartwisePartMeasureMusicXML measure, LayoutControl.LayoutGeneral layout, string id)
-        {
-            partId = id;
-            this.id = measure.Number;
-            measureWidth = measure.CalculatedWidth;
-            measureHeight = ViewModelLocator.Instance.Main.CurrentPageLayout.StaffHeight.MMToWPFUnit();
-            this.layout = layout;
-            CreateVisualObjectChilds();
-        }
+        
         public MeasureDrawing(string measureId, string partId, double staffDistance, int stavesCount)
         {
-            TestHandler += OnWidthChanged;
+            //PropertyChanged += OnWidthChanged;
             stavesDistance = staffDistance;
             this.stavesCount = (uint)stavesCount;
             layout = ViewModelLocator.Instance.Main.CurrentLayout;
@@ -68,12 +54,10 @@ namespace MusicXMLScore.DrawingHelpers
             this.partId = partId;
 
             GetMeasureProperties();
-            //CreateStaffLine();
+            //! CreateStaffLine();
             CreateVisualObject();
         }
-
         
-
         #endregion Constructors
 
         #region Properties
@@ -88,15 +72,15 @@ namespace MusicXMLScore.DrawingHelpers
                 }
                 return visualObject;
             }
+            private set
+            {
+                visualObject = value;
+                PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(BaseObjectVisual)));
+            }
         }
 
         public bool Invalidated { get { return invalidated; } private set { invalidated = value; } }
-
-        public PageProperties PageProperties
-        {
-            get { return pageProperies; }
-        }
-
+        
         #endregion Properties
 
         #region Methods
@@ -122,6 +106,10 @@ namespace MusicXMLScore.DrawingHelpers
             Point p = new Point(0, layout.PageProperties.StaffHeight.MMToWPFUnit());
             staffLinesCoords = new double[stavesCount];
             staffLinesYpositions = new Dictionary<int, double[]>();
+            if (visualObject.Count != 0)
+            {
+                visualObject.ClearVisuals();
+            }
             for (uint i = 0; i < stavesCount; i++)
             {
                 p.Y += (stavesDistance.TenthsToWPFUnit() + layout.PageProperties.StaffHeight.MMToWPFUnit()) * i;
@@ -149,13 +137,13 @@ namespace MusicXMLScore.DrawingHelpers
         private void GetMeasureProperties()
         {
             visualObject = new DrawingVisualHost();
-            measureSerializable = ViewModelLocator.Instance.Main.CurrentSelectedScore.Part.ElementAt(partId.GetPartIdIndex()).MeasuresByNumber[id];
-            //measureSerializable.WidthPropertyChanged += OnWidthChanged;
+            measureSerializable = ViewModelLocator.Instance.Main.CurrentSelectedScore.Part.ElementAt(partId.GetPartIdIndex()).Measure.Where(x=>x.Number ==id).FirstOrDefault();
+            measureSerializable.PropertyChanged += OnWidthChanged;
+
             measureHeight = layout.PageProperties.StaffHeight.MMToWPFUnit() * stavesCount + (stavesDistance.TenthsToWPFUnit() * (stavesCount - 1));
             measureWidth = measureSerializable.CalculatedWidth.TenthsToWPFUnit();
-            //measureSerializable.CalculatedWidth = measureWidth;
+
             size = new Size(measureWidth, measureHeight);
-            
         }
 
         /// <summary>
@@ -163,13 +151,18 @@ namespace MusicXMLScore.DrawingHelpers
         /// </summary>
         private void UpdateVisualObject()
         {
-            CreateVisualObject();//temp
+            CreateVisualObject();
         }
-        private void OnWidthChanged(object sender, EventArgs e)
+        
+        private void OnWidthChanged(object sender, PropertyChangedEventArgs e)
         {
-            ScorePartwisePartMeasureMusicXML m = sender as ScorePartwisePartMeasureMusicXML;
-            measureWidth = m.CalculatedWidth.TenthsToWPFUnit();
-            UpdateVisualObject();
+            if (e.PropertyName == nameof(ScorePartwisePartMeasureMusicXML.CalculatedWidth))
+            {
+                //! Update staff Line visual if measure width changed
+                ScorePartwisePartMeasureMusicXML m = sender as ScorePartwisePartMeasureMusicXML;
+                measureWidth = m.CalculatedWidth.TenthsToWPFUnit();
+                UpdateVisualObject();
+            }
         }
         #endregion Methods
     }
