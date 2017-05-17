@@ -250,7 +250,7 @@ namespace MusicXMLScore.ViewModel
         private void OnOldViewCommand()
         {
         }
-
+        [STAThread]
         private void OnOpenFileCommand(object parameter) //! For now xml file load avaliable only
         {
             string filedestination;
