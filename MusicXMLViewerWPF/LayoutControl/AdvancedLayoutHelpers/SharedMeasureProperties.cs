@@ -202,7 +202,7 @@ namespace MusicXMLScore.LayoutControl
             var test = keys.Select(x => ViewModel.ViewModelLocator.Instance.Main.CurrentSelectedScore.Part.Where(k => k.Id == x).FirstOrDefault().MeasuresByNumber[MeasureId]);
             foreach (var item in test)
             {
-                item.CalculatedWidth = SharedWidth;
+                item.CalculatedWidth = SharedWidth.WPFUnitToTenths();
             }
         }
     }

@@ -416,7 +416,6 @@ namespace MusicXMLScore.DrawingHelpers
                 }
             }
             GenerateClefPerStaffDictionary();
-
         }
 
         public ClefChanges GetCurrentClef(string staffNumber, string measureNumber)

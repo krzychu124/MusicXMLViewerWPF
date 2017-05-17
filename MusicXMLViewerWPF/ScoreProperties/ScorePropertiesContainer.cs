@@ -63,7 +63,10 @@ namespace MusicXMLScore.ScoreProperties
             ScoreProperties scoreProperties = new ScoreProperties(score);
             scorePropertiesContainer.Add(score.ID, scoreProperties);
             SelectScore(score.ID);
-            CurrentScoreProperties.AddAttributes();
+            if (AutoLayoutSupported)
+            {
+                CurrentScoreProperties.AddAttributes();
+            }
             //scoreProperties.Init();
         }
         public void RemoveScore(string scoreID)
