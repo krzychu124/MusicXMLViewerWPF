@@ -271,7 +271,6 @@ namespace MusicXMLScore.ViewModel
                     return; //! return with no action, eg. OpenFileDialog Cancel/Close button clicked
                 }
             }
-            XmlDataProvider dataprovider = new XmlDataProvider() { Source = new Uri(filedestination, UriKind.RelativeOrAbsolute), XPath = "./*" };
 
             Log.LoggIt.Log($"File {filedestination} been loaded", Log.LogType.Info);
             var sw = new Stopwatch();
@@ -305,7 +304,7 @@ namespace MusicXMLScore.ViewModel
                 TabsCreated.Add(newTab);
                 SelectedTabItem = newTab;
                 sw.Stop();
-                Log.LoggIt.Log($"Drawing ScorePartwise object in : {sw.ElapsedMilliseconds} ms", Log.LogType.Exception);
+                //Log.LoggIt.Log($"Drawing ScorePartwise object in : {sw.ElapsedMilliseconds} ms", Log.LogType.Exception);
                 IsBlank = false;
             }
             sw.Stop();

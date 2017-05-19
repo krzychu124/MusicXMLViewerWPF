@@ -184,7 +184,7 @@ namespace MusicXMLScore.ScoreProperties
                 else
                 {
                     //get last clef object with fractionPostion lower or equal than this Item.fracitonPosition
-                    clef = clefsChanges[measureId].ClefsChanges.Where(x => x.Item2 <= fractionPosition).LastOrDefault().Item3;
+                    clef = clefsChanges[measureId].ClefsChanges.Where(x => x.Item2 <= fractionPosition).LastOrDefault()?.Item3;
                 }
             }
             else

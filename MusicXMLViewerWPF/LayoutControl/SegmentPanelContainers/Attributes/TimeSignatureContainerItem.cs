@@ -135,7 +135,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Attributes
                         symbol = MusicSymbols.CutTime;
                         break;
                     default:
-                        symbol = "*";
+                        symbol = "";
                         break;
                 }
             }

@@ -160,7 +160,7 @@ namespace MusicXMLScore.LayoutControl
                         if (measure.Items[i] is DirectionMusicXML)
                         {
                             //! Todo music direction feature
-                            //continue; // bugfix => when chorded notes sequence is splited by direction items 
+                            continue; // bugfix => when chorded notes sequence is splited by direction items 
                         }
 
                         var noteContainer = GenerateNoteContainerFromChords(temporaryChordList, durationCursor, partID, measure.Number, tempStaffNumber);
@@ -394,7 +394,15 @@ namespace MusicXMLScore.LayoutControl
                     }
                     if (attribute is TimeSignatureContainerItem)
                     {
-                        times.Add(item.Key, attribute as TimeSignatureContainerItem);
+                        if (times.ContainsKey(item.Key))
+                        {
+                            Log.LoggIt.Log($"Argument exception key {item.Key}", Log.LogType.Exception);
+                            times[item.Key] = attribute as TimeSignatureContainerItem;
+                        }
+                        else
+                        {
+                            times.Add(item.Key, attribute as TimeSignatureContainerItem);
+                        }
                     }
                 }
             }

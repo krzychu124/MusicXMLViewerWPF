@@ -308,7 +308,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
                 case AccidentalValueMusicXML.naturalflat:
                     return MusicSymbols.NaturalFlat;
                 default:
-                    return "AccMissing";
+                    return "";
             }
         }
 
