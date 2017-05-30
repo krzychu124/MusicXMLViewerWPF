@@ -13,6 +13,7 @@
       - [x] **Basic Measures Layout Arrange System** _(files **with** new-page, new-system elements support)_
       - [ ] **Advanced Measures Layout Arrange System** _(files **without** new-page, new system elements)_ **WiP**
       
+      #### Currently suspended due to necessary improvements in arrangement of measures:
       - [ ] **Notes drawing:**
         - [x] NoteHeads - other than standard skipped for now
         - [x] NoteChords
