@@ -1,4 +1,5 @@
-﻿using MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes;
+﻿//#define VISUALDEBUG 
+using MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes;
 using MusicXMLScore.Model;
 using MusicXMLScore.Model.MeasureItems;
 using System;
@@ -21,7 +22,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
         private List<NoteMusicXML> notesList;
         private List<Tuple<int, IMeasureItemVisual>> itemsWithPosition;
         private Dictionary<string, List<Tuple<int, IMeasureItemVisual>>> itemsPositionsPerStaff;
-        private ScorePartwisePartMeasureMusicXML measure;
+        private ScorePartwisePartMeasureMusicXML measure; //! Todo refactor/remove
         private string measureId = "";
         private string partId;
         private int staveNumber;
@@ -94,14 +95,16 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
             }
             double tempHeight = staffsNumber == 1 ? 0.0 : staffDistance; //! temp
             DrawTempBarline(tempHeight + 40.0.TenthsToWPFUnit()); //! Temp barline (black)
+#if VISUALDEBUG
             DrawTempStartBarline(tempHeight + 40.0.TenthsToWPFUnit()); //! Temp 0.X position barline (red)
+#endif
         }
 
         public void ArrangeUsingDurationTable(Dictionary<int, double> durationTable, bool update = false)
         {
-            //-----------------
-            // Keys: -3, -2, -1 used for attributes: clef, key and time
-            //-----------------
+            //! -----------------
+            //! Keys: -3, -2, -1 used for attributes: clef, key and time
+            //! -----------------
             var measureBeginningAttributes = itemsWithPosition.Where(x => x.Item1 == 0 && x.Item2 is IAttributeItemVisual).Select(x => x.Item2).ToList();
             if (measureBeginningAttributes.Count != 0)
             { 
@@ -168,7 +171,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
                             //! calculate center position taking into account possible attributes width
                             //! durationTable contains Measure width atl highest key position
                             double centeredPosition = ((durationTable.Values.Max() - durationTable[0]) / 2.0) + durationTable[0];
-                            SetLeft(item.Item2.ItemCanvas as Canvas, centeredPosition);
+                            SetLeft(item.Item2.ItemCanvas as Canvas, centeredPosition - (note.ItemWidth/2));
                             continue; //! skip further conditions
                         }
                     }
@@ -207,11 +210,16 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
             temporaryBarline.Children.Add(dvh);
             Children.Add(temporaryBarline);
         }
+
+        /// <summary>
+        /// Visual red barline drawn at the beginning of measure
+        /// </summary>
+        /// <param name="staffHeight">Staff Line height (WPFUnits)</param>
         private void DrawTempStartBarline(double staffHeight)
         {
             temporaryStartBarline = new Canvas();
             Point p1 = new Point();
-            Point p2 = new Point(0, staffHeight * 1.2);
+            Point p2 = new Point(0, staffHeight); 
             Pen pen = new Pen(Brushes.Red, 1.5.TenthsToWPFUnit());
             DrawingVisual dv = new DrawingVisual();
             using (DrawingContext dc = dv.RenderOpen())
@@ -222,6 +230,13 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
             dvh.AddVisual(dv);
             temporaryStartBarline.Children.Add(dvh);
             Children.Add(temporaryStartBarline);
+        }
+        public void RemoveTempStartBarline()
+        {
+            if (Children.Contains(temporaryStartBarline))
+            {
+                Children.Remove(temporaryStartBarline);
+            }
         }
         public List<int> GetDurationIndexes()
         {

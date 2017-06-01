@@ -53,15 +53,15 @@
                     <MenuItem Header="Select Region"/>
                     <MenuItem Header="Select All"/>
                 </MenuItem>
-                <MenuItem Header="View">
+                <MenuItem Header="View" IsEnabled="False">
                     <MenuItem Header="Logger" IsCheckable="True" IsEnabled="False"/>
                     <MenuItem Header="OldView (Deprecated-Unsupported)" Command="{Binding OldViewCommand}"/>
                 </MenuItem>
-                <MenuItem Header="Add">
-                    <MenuItem Header="Measure" Command="{Binding AddMeasureCommand}"/>
-                    <MenuItem Header="Text" IsEnabled="False"/>
-                    <MenuItem Header="Frame" IsEnabled="False"/>
-                    <MenuItem Header="Test" Command="{Binding TestButtonCommand}"/>
+                <MenuItem Header="Test">
+                    <MenuItem Header="Test Stretch All Systems"  Command="{Binding TestButton2Command}"/>
+                    <MenuItem Header="Test Stretch Last System" Command="{Binding TestButtonCommand}"/>
+                    <MenuItem Header="None" IsEnabled="False"/>
+                    <MenuItem Header="None" IsEnabled="False"/>
                 </MenuItem>
                 <MenuItem Header="Layout" IsEnabled="False">
                     <MenuItem Header="Page Settings" />
@@ -74,7 +74,7 @@
                     <MenuItem Header="Save Style"/>
                 </MenuItem>
                 <MenuItem Header="Help" IsEnabled="True">
-                    <MenuItem Header="Get Help" Click="MenuItem_Click"/>
+                    <MenuItem Header="Get DPI" Click="MenuItem_Click"/>
                 </MenuItem>
             </Menu>
         </DockPanel>

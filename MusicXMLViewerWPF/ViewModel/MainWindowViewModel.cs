@@ -43,6 +43,7 @@ namespace MusicXMLScore.ViewModel
             AddMeasureCommand = new RelayCommand(OnAddMeasure);
             CloseFileCommand = new RelayCommand(OnCloseFile, () => IsBlank ==false ? true : false);
             TestButtonCommand = new RelayCommand(OnTestButtonCommand);
+            TestButton2Command = new RelayCommand(OnTestButton2Command);
             ExitCommand = new RelayCommand(OnExitApp);
             NewCustomScoreCreatorCommand = new RelayCommand(OnNewCustomScoreCreator);
             NewDefaultScoreCreatorCommand = new RelayCommand(OnNewDefaultScoreCreator);
@@ -111,6 +112,7 @@ namespace MusicXMLScore.ViewModel
         }
         public ObservableCollection<TabItem> TabsCreated { get { return tabscreated; } set { if (value != null) { tabscreated = value; } } }
         public RelayCommand TestButtonCommand { get; set; }
+        public RelayCommand TestButton2Command { get; set; }
         internal Dictionary<string, PartProperties> CurrentPartsProperties { get { return ScoreProperties.CurrentScoreProperties.PartProperties;/*currentpartPropertiesContainer;*/ } /*set { currentpartPropertiesContainer = value; }*/ }
         internal ScoreProperties.ScoreProperties CurrentScoreProperties {  get { return scoreProperties.CurrentScoreProperties;  } }
         internal ScorePropertiesContainer ScoreProperties
@@ -250,6 +252,7 @@ namespace MusicXMLScore.ViewModel
         private void OnOldViewCommand()
         {
         }
+
         [STAThread]
         private void OnOpenFileCommand(object parameter) //! For now xml file load avaliable only
         {
@@ -271,7 +274,6 @@ namespace MusicXMLScore.ViewModel
                     return; //! return with no action, eg. OpenFileDialog Cancel/Close button clicked
                 }
             }
-            XmlDataProvider dataprovider = new XmlDataProvider() { Source = new Uri(filedestination, UriKind.RelativeOrAbsolute), XPath = "./*" };
 
             Log.LoggIt.Log($"File {filedestination} been loaded", Log.LogType.Info);
             var sw = new Stopwatch();
@@ -305,7 +307,7 @@ namespace MusicXMLScore.ViewModel
                 TabsCreated.Add(newTab);
                 SelectedTabItem = newTab;
                 sw.Stop();
-                Log.LoggIt.Log($"Drawing ScorePartwise object in : {sw.ElapsedMilliseconds} ms", Log.LogType.Exception);
+                //Log.LoggIt.Log($"Drawing ScorePartwise object in : {sw.ElapsedMilliseconds} ms", Log.LogType.Exception);
                 IsBlank = false;
             }
             sw.Stop();
@@ -320,25 +322,38 @@ namespace MusicXMLScore.ViewModel
 
         private void OnTestButtonCommand()
         {
+            //! switch stretch setting of last system 
+            if (CurrentLayout.LayoutStyle.PageStyle.StretchLastSystemOnPage)
+            {
+                CurrentLayout.LayoutStyle.PageStyle.StretchLastSystemOnPage= false;
+            }
+            else
+            {
+                CurrentLayout.LayoutStyle.PageStyle.StretchLastSystemOnPage = true;
+            }
             //changed measure width (visual update test)
-            string partId = CurrentSelectedScore.Part.FirstOrDefault().Id;
-            string id = "3";
-            CurrentSelectedScore.Part.ElementAt(partId.GetPartIdIndex()).MeasuresByNumber[id].CalculatedWidth = 40;
+            //string partId = CurrentSelectedScore.Part.FirstOrDefault().Id;
+            //string id = "3";
+            //CurrentSelectedScore.Part.ElementAt(partId.GetPartIdIndex()).MeasuresByNumber[id].CalculatedWidth = 40;
             //LayoutStyle.Layout layout = new LayoutStyle.Layout();
             //XmlSerializer xml = new XmlSerializer(layout.GetType());
             //TextWriter txtw = new StreamWriter(@".\DefaultLayoutStyle.xml");
             //xml.Serialize(txtw, layout);
             //txtw.Close(); 
         }
-        private void SaveDefaultPageProperties(PageProperties pp)
+        private void OnTestButton2Command()
         {
-            using (var stream = File.Create(@".\defaultPage.xml"))
+            //! switch stretch setting of last system 
+            if (CurrentLayout.LayoutStyle.PageStyle.StretchSystemToPageWidth)
             {
-                var formatter = new System.Runtime.Serialization.Formatters.Soap.SoapFormatter(); //! new BinaryFormatter();
-                formatter.Serialize(stream, pp);
+                CurrentLayout.LayoutStyle.PageStyle.StretchSystemToPageWidth = false;
+            }
+            else
+            {
+                CurrentLayout.LayoutStyle.PageStyle.StretchSystemToPageWidth = true;
             }
         }
 
-        #endregion Methods
-    }
+            #endregion Methods
+        }
 }

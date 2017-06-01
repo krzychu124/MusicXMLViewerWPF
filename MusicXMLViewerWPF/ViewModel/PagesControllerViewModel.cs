@@ -77,7 +77,7 @@ namespace MusicXMLScore.ViewModel
         #region Properties
 
         public string Header { get { return header; } private set { header = value; } }
-        public string ID { get { return id; } }
+        public string ID { get { return Partwise?.ID; } }
         public bool IsBlank { get { return isBlank; } set { Set(nameof(IsBlank), ref isBlank, value); } }
         public ObservableCollection<UIElement> PagesCollection { get { return pageCollection; } set { pageCollection = value; } }
         public ScorePartwiseMusicXML Partwise

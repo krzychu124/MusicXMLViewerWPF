@@ -41,21 +41,12 @@ namespace MusicXMLScore
 
             var dpiX = (int)dpiXProperty.GetValue(null, null);
             var dpiY = (int)dpiYProperty.GetValue(null, null);
-
-
-            //double dpiX =0;
-            //double dpiY =0;
-            //PresentationSource presentationsource = PresentationSource.FromVisual(this);
-
-            //if (presentationsource != null) // make sure it's connected
-            //{
-            //    dpiX = 96.0 * presentationsource.CompositionTarget.TransformToDevice.M11;
-            //    dpiY = 96.0 * presentationsource.CompositionTarget.TransformToDevice.M22;
-            //}
+            
             IntPtr hdc = GetDC(IntPtr.Zero);
             Console.WriteLine(GetDeviceCaps(hdc, LOGPIXELSX));
             Console.WriteLine(GetDeviceCaps(hdc, LOGPIXELSY));
             Console.WriteLine($"Current dpi: {dpiX}, {dpiY}");
+            MessageBox.Show($"Current dpi: {dpiX}, {dpiY}", "DPI", MessageBoxButton.OK);
         }
 
         private void MenuItem_Click(object sender, RoutedEventArgs e)
