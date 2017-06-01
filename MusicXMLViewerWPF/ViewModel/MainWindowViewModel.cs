@@ -250,6 +250,7 @@ namespace MusicXMLScore.ViewModel
         private void OnOldViewCommand()
         {
         }
+
         [STAThread]
         private void OnOpenFileCommand(object parameter) //! For now xml file load avaliable only
         {
@@ -319,23 +320,24 @@ namespace MusicXMLScore.ViewModel
 
         private void OnTestButtonCommand()
         {
+            //! switch stretch setting of last system 
+            if (CurrentLayout.LayoutStyle.PageStyle.StretchLastSystemOnPage)
+            {
+                CurrentLayout.LayoutStyle.PageStyle.StretchLastSystemOnPage= false;
+            }
+            else
+            {
+                CurrentLayout.LayoutStyle.PageStyle.StretchLastSystemOnPage = true;
+            }
             //changed measure width (visual update test)
-            string partId = CurrentSelectedScore.Part.FirstOrDefault().Id;
-            string id = "3";
-            CurrentSelectedScore.Part.ElementAt(partId.GetPartIdIndex()).MeasuresByNumber[id].CalculatedWidth = 40;
+            //string partId = CurrentSelectedScore.Part.FirstOrDefault().Id;
+            //string id = "3";
+            //CurrentSelectedScore.Part.ElementAt(partId.GetPartIdIndex()).MeasuresByNumber[id].CalculatedWidth = 40;
             //LayoutStyle.Layout layout = new LayoutStyle.Layout();
             //XmlSerializer xml = new XmlSerializer(layout.GetType());
             //TextWriter txtw = new StreamWriter(@".\DefaultLayoutStyle.xml");
             //xml.Serialize(txtw, layout);
             //txtw.Close(); 
-        }
-        private void SaveDefaultPageProperties(PageProperties pp)
-        {
-            using (var stream = File.Create(@".\defaultPage.xml"))
-            {
-                var formatter = new System.Runtime.Serialization.Formatters.Soap.SoapFormatter(); //! new BinaryFormatter();
-                formatter.Serialize(stream, pp);
-            }
         }
 
         #endregion Methods
