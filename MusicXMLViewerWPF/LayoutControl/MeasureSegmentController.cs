@@ -12,6 +12,7 @@ using MusicXMLScore.LayoutControl.SegmentPanelContainers;
 using MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes;
 using MusicXMLScore.Helpers;
 using System.Windows.Controls;
+using System.Collections.ObjectModel;
 
 namespace MusicXMLScore.LayoutControl
 {

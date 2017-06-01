@@ -26,10 +26,8 @@ namespace MusicXMLScore.LayoutControl
         private ObservableDictionary<string, ObservableDictionary<int, FractionHelper>> fractionPositionHelper;
         List<SharedMeasureProperties> sharedMeasuresProps = new List<SharedMeasureProperties>();
         Dictionary<int, LayoutPageContentInfo> layoutPageInfo;
-
-        private bool ignoreLayoutLoadedFromFile = false; //! ignores layout elements loaded from file (new-page, new-system) //WiP
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
-        
+        private bool updateMeasures = false;
         public ObservableCollection<UIElement> PagesCollection
         {
             get
@@ -40,6 +38,21 @@ namespace MusicXMLScore.LayoutControl
             set
             {
                 pagesCollection = value;
+            }
+        }
+
+        public bool UpdateMeasures
+        {
+            get
+            {
+                return updateMeasures;
+            }
+
+            set
+            {
+                updateMeasures = value;
+                PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(UpdateMeasures)));
+                updateMeasures = false;
             }
         }
 
@@ -54,20 +67,6 @@ namespace MusicXMLScore.LayoutControl
             {
                 fractionPositionHelper = value;
                 PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(FractionPositionHelper)));
-            }
-        }
-
-        public bool IgnoreLayoutLoadedFromFile
-        {
-            get
-            {
-                return ignoreLayoutLoadedFromFile;
-            }
-
-            set
-            {
-                ignoreLayoutLoadedFromFile = value;
-                PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(IgnoreLayoutLoadedFromFile)));
             }
         }
 
@@ -187,7 +186,7 @@ namespace MusicXMLScore.LayoutControl
         }
 
         /// <summary>
-        /// Arranges measure content (spacing, beams and later, others)
+        /// Arranges measure content (spacing, beams and later- others)
         /// </summary>
         private void ArrangeAndStretchMeasuresContent(string measureNumber = null)
         {
@@ -333,7 +332,7 @@ namespace MusicXMLScore.LayoutControl
                     layoutPageInfo.Add(pageIndex, pageContent);
                 }
             }
-            //! -------------------------temp meaure coords update, todo refactor------------ High priority!!!
+            //! -------------------------temp meaure coords update, todo refactor------------
             var partIDs = measureSegmentsContainer.PartIDsList;
             var partPropertiesTest = ViewModelLocator.Instance.Main.CurrentPartsProperties;
             var coords = layoutPageInfo.SelectMany(x => x.Value.AllMeasureCoords()).Distinct().ToDictionary(item =>item.Key,item=> item.Value);

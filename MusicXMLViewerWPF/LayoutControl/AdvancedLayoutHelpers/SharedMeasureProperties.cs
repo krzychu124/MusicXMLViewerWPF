@@ -14,7 +14,6 @@ namespace MusicXMLScore.LayoutControl
     {
         private string measureId;
         private double sharedWidth;
-        private double minimalSharedWidth;
         private Dictionary<string, List<AntiCollisionHelper>> sharedACHelper;
         private ObservableDictionary<int, double> sharedFractionPositions;
         private ObservableDictionary<int, FractionHelper> sharedFractions;
@@ -95,19 +94,6 @@ namespace MusicXMLScore.LayoutControl
             }
         }
 
-        public double MinimalSharedWidth
-        {
-            get
-            {
-                return minimalSharedWidth;
-            }
-
-            private set
-            {
-                minimalSharedWidth = value;
-            }
-        }
-
         public SharedMeasureProperties(string measureId)
         {
             this.measureId = measureId;
@@ -121,13 +107,6 @@ namespace MusicXMLScore.LayoutControl
         private void CalculateWidth()
         {
             sharedWidth = sharedFractions.LastOrDefault().Value.Position;
-            double contentWidth = sharedWidth - sharedFractions[0].Position;
-            var measureLayoutStyle = ViewModel.ViewModelLocator.Instance.Main.CurrentLayout.LayoutStyle.MeasureStyle;
-            if (contentWidth < measureLayoutStyle.MinMeasureContentWidth.TenthsToWPFUnit())
-            {
-                sharedWidth = sharedFractions[0].Position + measureLayoutStyle.MinMeasureContentWidth.TenthsToWPFUnit();
-            }
-            MinimalSharedWidth = sharedWidth; //! test
         }
 
         public void AddAntiCollisionHelper(string partId, AntiCollisionHelper acHelper)
