@@ -21,7 +21,7 @@ namespace MusicXMLScore.LayoutStyle
         private double keySigSpacingOffset = 2;
 
         private double maxMeasureWidth = 300;
-        private double minMeasureWidth = 70;
+        private double minMeasureContentWidth = 80;
         
         private double smallClefSize = 80;
 
@@ -126,16 +126,16 @@ namespace MusicXMLScore.LayoutStyle
             }
         }
 
-        public double MinMeasureWidth
+        public double MinMeasureContentWidth
         {
             get
             {
-                return minMeasureWidth;
+                return minMeasureContentWidth;
             }
 
             set
             {
-                minMeasureWidth = value;
+                minMeasureContentWidth = value;
             }
         }
 
