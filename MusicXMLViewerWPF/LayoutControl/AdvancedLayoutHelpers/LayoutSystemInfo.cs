@@ -26,6 +26,8 @@ namespace MusicXMLScore.LayoutControl
         private Dictionary<string, double> measureCoordsX;
         //! measures Y Coordinates inside system
         private Dictionary<string, double> measureCoordsY;
+
+        private Dictionary<string, double> measureMinSharedWidth;
         public double SystemHeight
         {
             get
@@ -77,9 +79,9 @@ namespace MusicXMLScore.LayoutControl
             partStaffDistances = partDistances;
         }
 
-        public void ArrangeSystem(bool stretchLayout, double desiredWidth)
+        public void ArrangeSystem(bool stretchMeasures, double desiredWidth)
         {
-            CalculateSystemDimensions(stretchLayout, desiredWidth);
+            CalculateSystemDimensions(stretchMeasures, desiredWidth);
             GenerateCoords();
         }
         public void GeneratePartDistances()
@@ -99,7 +101,7 @@ namespace MusicXMLScore.LayoutControl
             }
         }
 
-        public void CalculateSystemDimensions(bool stretchToWidth = false, double desiredWidth = 0.0)
+        public void CalculateSystemDimensions(bool stretchMeasuresToWidth = false, double desiredWidth = 0.0)
         {
             double heightParts = partHeights.Sum(x => x.Value);
             double distances = partStaffDistances.Skip(1).Sum(x => x.Value);
@@ -107,14 +109,20 @@ namespace MusicXMLScore.LayoutControl
             if (measureSharedWidths == null)
             {
                 GetSharedWidths();
+                GetMinSharedWidths();
             }
             systemWidth = measureSharedWidths.Sum(x => x.Value);
 
-            if (stretchToWidth && systemWidth < desiredWidth)
+            if (stretchMeasuresToWidth && systemWidth < desiredWidth)
             {
                UpdateSystemWidth(desiredWidth);
             }
-           
+            //! test ------------
+            if (!stretchMeasuresToWidth) 
+            {
+                systemWidth = measureMinSharedWidth.Sum(x => x.Value); //! update anyway
+                UpdateSystemWidth(systemWidth);
+            }
         }
         private void GetSharedWidths()
         {
@@ -122,6 +130,14 @@ namespace MusicXMLScore.LayoutControl
             foreach (var measure in measures)
             {
                 measureSharedWidths.Add(measure.MeasureId, measure.SharedWidth);
+            }
+        }
+        private void GetMinSharedWidths()
+        {
+            measureMinSharedWidth = new Dictionary<string, double>();
+            foreach (var measure in measures)
+            {
+                measureMinSharedWidth.Add(measure.MeasureId, measure.MinimalSharedWidth);
             }
         }
         private void GenerateMeasureXCoordinates()
@@ -148,14 +164,12 @@ namespace MusicXMLScore.LayoutControl
 
         public void UpdateSystemWidth(double desiredWidth)
         {
-            double currentWidth = measureSharedWidths.Sum(x => x.Value);// systemWidth;
+            double currentWidth = measureSharedWidths.Sum(x => x.Value);
             double difference = desiredWidth - currentWidth;
             double itemsCount = measureSharedWidths.Count;
             double offset = difference / itemsCount;
-           // var keys = measureSharedWidths.Select(x=>x.Key);
             foreach (var item in measures)
             {
-                //double correctedValue = (item.SharedWidth / desiredWidth) *difference;
                 item.SharedWidth = item.SharedWidth + offset;
             }
             GetSharedWidths();

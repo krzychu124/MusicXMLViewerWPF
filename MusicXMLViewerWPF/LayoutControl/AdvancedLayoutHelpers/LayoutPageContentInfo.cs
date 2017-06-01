@@ -15,8 +15,8 @@ namespace MusicXMLScore.LayoutControl
         private int pageIndex;
         private double pageContentWidth;
         private double pageContentHeight;
-        private bool stretchSystemsToWidth = true;
-        private bool keepEqualMeasureCount = true;
+        //private bool keepEqualMeasureCount = true; //!todo implementation
+        private int lastSystemIndex;
         
         private double defaultSystemDistance;
         private double defaultTopSystemDistance;
@@ -26,23 +26,11 @@ namespace MusicXMLScore.LayoutControl
         double availableHeight;
         List<double> systemsYPositions;
         List<double> systemsXPositions;
+        private LayoutStyle.PageLayoutStyle pageLayoutStyle;
         public Point SystemPosition(int index) => new Point(systemsXPositions[index], systemsYPositions[index]);
         public double SystemVerticalPosition(int index) => index < systemsYPositions.Count ? systemsYPositions[index] : 0.0;
         public double SystemHorizontalPosition(int index) => index < systemsXPositions.Count ? systemsXPositions[index] : 0.0;
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
-        public bool StretchSystemsToWidth
-        {
-            get
-            {
-                return stretchSystemsToWidth;
-            }
-
-            set
-            {
-
-                stretchSystemsToWidth = value;
-            }
-        }
 
         public double PageContentWidth
         {
@@ -73,7 +61,6 @@ namespace MusicXMLScore.LayoutControl
                 }
             }
         }
-
         public LayoutPageContentInfo(int pageIndex)
         {
             this.pageIndex = pageIndex;
@@ -81,6 +68,8 @@ namespace MusicXMLScore.LayoutControl
             GetPageContentHeight();
             GetPageContentWidth();
             availableHeight = pageContentHeight; //! CalculateAvailableHeight();
+            pageLayoutStyle = ViewModel.ViewModelLocator.Instance.Main.CurrentLayout.LayoutStyle.PageStyle;
+            pageLayoutStyle.PropertyChanged += LayoutPageContentInfo_PropertyChangedHandler;
             PropertyChanged += LayoutPageContentInfo_PropertyChangedHandler;
         }
 
@@ -88,8 +77,17 @@ namespace MusicXMLScore.LayoutControl
         {
             switch (e.PropertyName)
             {
-                case nameof(StretchSystemsToWidth):
-                    this.ArrangeSystems();
+                case nameof(LayoutStyle.PageLayoutStyle.StretchSystemToPageWidth):
+                    if (sender is LayoutStyle.PageLayoutStyle)
+                    {
+                        this.ArrangeSystems();
+                    }
+                    break;
+                case nameof(LayoutStyle.PageLayoutStyle.StretchLastSystemOnPage):
+                    if (sender is LayoutStyle.PageLayoutStyle)
+                    {
+                        this.ArrangeSystems();
+                    }
                     break;
                 default:
                     Log.LoggIt.Log($"No action for changed property {e.PropertyName}", Log.LogType.Exception);
@@ -97,6 +95,15 @@ namespace MusicXMLScore.LayoutControl
             }
         }
         
+        private bool SystemStretchedToWidth()
+        {
+            return pageLayoutStyle.StretchSystemToPageWidth;
+        }
+
+        private bool LastSystemStretched()
+        {
+            return pageLayoutStyle.StretchLastSystemOnPage;
+        }
 
         public LayoutPageContentInfo(int pageIndex, double systemDistance, double topSystemDistance)
         {
@@ -125,7 +132,7 @@ namespace MusicXMLScore.LayoutControl
         /// <returns>False if LayoutSystem can't fit on page and should be added to new page</returns>
         public bool AddSystemDimensionInfo(LayoutSystemInfo systemInfo)
         {
-            systemInfo.ArrangeSystem(StretchSystemsToWidth, PageContentWidth); //! stretch test
+            systemInfo.ArrangeSystem(SystemStretchedToWidth(), PageContentWidth); //! stretch test
             if (systemDimensionsInfo == null)
             {
                 systemDimensionsInfo = new List<LayoutSystemInfo>();
@@ -136,31 +143,40 @@ namespace MusicXMLScore.LayoutControl
             }
             else
             {
-                //! need tests 
+                //!todo  need tests 
                 //? availableHeight -= systemInfo.SystemHeight + defaultSystemDistance.TenthsToWPFUnit();
 
                 systemDimensionsInfo.Add(systemInfo);
+                lastSystemIndex = systemDimensionsInfo.Count - 1;
                 CalculateAvailableHeight();
                 return true;
             }
+            
         }
 
         public void ArrangeSystems()
         {
+            int index = 0;
             foreach (var system in systemDimensionsInfo)
             {
-                system.ArrangeSystem(StretchSystemsToWidth, PageContentWidth);
+                if (index == lastSystemIndex && !LastSystemStretched()) //! is last system in page
+                {
+                    system.ArrangeSystem(false, PageContentWidth);
+                }
+                else
+                {
+                    system.ArrangeSystem(SystemStretchedToWidth(), PageContentWidth);
+                }
+                index++;
             }
             double currentX = 0.0;
             double currentY = 0.0;
-            if (systemsXPositions == null || systemsYPositions == null)
-            {
-                systemsXPositions = new List<double>();
-                systemsYPositions = new List<double>();
-            }
+            systemsXPositions = new List<double>();
+            systemsYPositions = new List<double>();
+
             for (int i = 0; i < systemDimensionsInfo.Count; i++)
             {
-                if(i == 0)
+                if (i == 0)
                 {
                     currentY = systemDistances[i];
                 }
@@ -168,18 +184,6 @@ namespace MusicXMLScore.LayoutControl
                 systemsYPositions.Add(currentY);
                 currentY += systemDistances[i] + systemHeights[i];
                 //currentX = systemDimensionsInfo[i].SystemWidth;
-                if (keepEqualMeasureCount)
-                {
-
-                }
-                if (stretchSystemsToWidth)
-                {
-                    if (currentX < pageContentWidth)
-                    {
-                        //! may sheck for newSystem element and then rearrange and stretch
-                        //? systemDimensionsInfo[i].UpdateSystemWidth(pageContentWidth);
-                    }
-                }
             }
         }
 

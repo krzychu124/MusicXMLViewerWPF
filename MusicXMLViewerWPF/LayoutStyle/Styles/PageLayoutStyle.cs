@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -7,12 +8,12 @@ using System.Threading.Tasks;
 namespace MusicXMLScore.LayoutStyle
 {
     [Serializable]
-    public class PageLayoutStyle
+    public class PageLayoutStyle : INotifyPropertyChanged
     {
         private PageMargins oddMargins;
         private PageMargins evenMargins;
         /// <summary>
-        /// While TwoSided false - EvenMargins doesn't take into account
+        /// While TwoSided false - EvenMargins ignored
         /// </summary>
         private bool twoSided = false;
         #region SystemLayout
@@ -20,7 +21,12 @@ namespace MusicXMLScore.LayoutStyle
         private bool displayCourtesyKey = false;
         private bool displayClefEachSystem = true;
         private bool displayKeyEachSystem = true;
-        
+
+        private bool stretchSystemToPageWidth = true;
+        private bool stretchLastSystemOnPage = true;
+
+        public event PropertyChangedEventHandler PropertyChanged = delegate { };
+
         public PageMargins OddMargins
         {
             get
@@ -109,6 +115,40 @@ namespace MusicXMLScore.LayoutStyle
             set
             {
                 displayKeyEachSystem = value;
+            }
+        }
+
+        public bool StretchLastSystemOnPage
+        {
+            get
+            {
+                return stretchLastSystemOnPage;
+            }
+
+            set
+            {
+                if (stretchLastSystemOnPage != value)
+                {
+                    stretchLastSystemOnPage = value;
+                    PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(StretchLastSystemOnPage)));
+                }
+            }
+        }
+
+        public bool StretchSystemToPageWidth
+        {
+            get
+            {
+                return stretchSystemToPageWidth;
+            }
+
+            set
+            {
+                if (stretchSystemToPageWidth != value)
+                {
+                    stretchSystemToPageWidth = value;
+                    PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(StretchSystemToPageWidth)));
+                }
             }
         }
         #endregion
