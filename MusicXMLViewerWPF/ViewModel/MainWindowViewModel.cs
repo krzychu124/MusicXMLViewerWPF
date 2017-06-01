@@ -43,6 +43,7 @@ namespace MusicXMLScore.ViewModel
             AddMeasureCommand = new RelayCommand(OnAddMeasure);
             CloseFileCommand = new RelayCommand(OnCloseFile, () => IsBlank ==false ? true : false);
             TestButtonCommand = new RelayCommand(OnTestButtonCommand);
+            TestButton2Command = new RelayCommand(OnTestButton2Command);
             ExitCommand = new RelayCommand(OnExitApp);
             NewCustomScoreCreatorCommand = new RelayCommand(OnNewCustomScoreCreator);
             NewDefaultScoreCreatorCommand = new RelayCommand(OnNewDefaultScoreCreator);
@@ -111,6 +112,7 @@ namespace MusicXMLScore.ViewModel
         }
         public ObservableCollection<TabItem> TabsCreated { get { return tabscreated; } set { if (value != null) { tabscreated = value; } } }
         public RelayCommand TestButtonCommand { get; set; }
+        public RelayCommand TestButton2Command { get; set; }
         internal Dictionary<string, PartProperties> CurrentPartsProperties { get { return ScoreProperties.CurrentScoreProperties.PartProperties;/*currentpartPropertiesContainer;*/ } /*set { currentpartPropertiesContainer = value; }*/ }
         internal ScoreProperties.ScoreProperties CurrentScoreProperties {  get { return scoreProperties.CurrentScoreProperties;  } }
         internal ScorePropertiesContainer ScoreProperties
@@ -339,7 +341,19 @@ namespace MusicXMLScore.ViewModel
             //xml.Serialize(txtw, layout);
             //txtw.Close(); 
         }
+        private void OnTestButton2Command()
+        {
+            //! switch stretch setting of last system 
+            if (CurrentLayout.LayoutStyle.PageStyle.StretchSystemToPageWidth)
+            {
+                CurrentLayout.LayoutStyle.PageStyle.StretchSystemToPageWidth = false;
+            }
+            else
+            {
+                CurrentLayout.LayoutStyle.PageStyle.StretchSystemToPageWidth = true;
+            }
+        }
 
-        #endregion Methods
-    }
+            #endregion Methods
+        }
 }
