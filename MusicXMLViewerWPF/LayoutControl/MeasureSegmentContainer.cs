@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MusicXMLViewerWPF;
 
 namespace MusicXMLScore.LayoutControl
 {
@@ -44,7 +45,7 @@ namespace MusicXMLScore.LayoutControl
             }
         }
 
-        public void InitPartIDs(List<string> partIDsList)
+        private void InitPartIDs(List<string> partIDsList)
         {
             foreach (var partId in partIDsList)
             {
@@ -80,6 +81,36 @@ namespace MusicXMLScore.LayoutControl
             foreach (var item in partIDs)//! temp test, updates measures widths
             {
                 ViewModel.ViewModelLocator.Instance.Main.CurrentPartsProperties[item].SetSystemMeasureRanges();
+            }
+        }
+
+        internal void GenerateMeasureSegments(ScorePartwiseMusicXML scoreFile, bool allParts = true, List<string>partIDs = null)
+        {
+            if (!allParts)
+            {
+                if (partIDs != null)
+                {
+                    InitPartIDs(partIDs);
+                }
+                else
+                {
+                    Log.LoggIt.Log("List of part ID's was empty. Generated Measure Segments for all parts instead");
+                    InitPartIDs(scoreFile.Part.Select(x => x.Id).ToList());
+                }
+            }
+            else
+            {
+                InitPartIDs(scoreFile.Part.Select(x => x.Id).ToList());
+            }
+
+            foreach (var part in scoreFile.Part)
+            {
+                int stavesCount = part.GetStavesCount();
+                foreach (var measure in part.Measure)
+                {
+                    MeasureSegmentController measureSegmentController = new MeasureSegmentController(measure, part.Id, stavesCount);
+                    this.AddMeasureSegmentController(measureSegmentController, part.Id);
+                }
             }
         }
     }
