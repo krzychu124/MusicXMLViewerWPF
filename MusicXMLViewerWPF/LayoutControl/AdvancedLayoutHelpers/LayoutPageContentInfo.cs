@@ -12,26 +12,41 @@ namespace MusicXMLScore.LayoutControl
     class LayoutPageContentInfo : INotifyPropertyChanged
     {
         //! missing custom system distance setter
-        private int pageIndex;
-        private double pageContentWidth;
-        private double pageContentHeight;
+        private int pageIndex; //! index of page
+        private double pageContentWidth; //! width available for content (page width - margins)
+        private double pageContentHeight; //! height available for content (page height - margins)
         //private bool keepEqualMeasureCount = true; //!todo implementation
-        private int lastSystemIndex;
+        private int lastSystemIndex; //! index of last added system 
         
         private double defaultSystemDistance;
         private double defaultTopSystemDistance;
-        Dictionary<int, double> systemDistances;
-        Dictionary<int, double> systemHeights;
-        List<LayoutSystemInfo> systemDimensionsInfo;
-        double availableHeight;
-        List<double> systemsYPositions;
-        List<double> systemsXPositions;
+        private Dictionary<int, double> systemDistances;
+        private Dictionary<int, double> systemHeights;
+        private List<LayoutSystemInfo> systemDimensionsInfo;
+        private double availableHeight;
+        private List<double> systemsYPositions;
+        private List<double> systemsXPositions;
         private LayoutStyle.PageLayoutStyle pageLayoutStyle;
-        public Point SystemPosition(int index) => new Point(systemsXPositions[index], systemsYPositions[index]);
-        public double SystemVerticalPosition(int index) => index < systemsYPositions.Count ? systemsYPositions[index] : 0.0;
-        public double SystemHorizontalPosition(int index) => index < systemsXPositions.Count ? systemsXPositions[index] : 0.0;
-        public event PropertyChangedEventHandler PropertyChanged = delegate { };
 
+        /// <summary>
+        /// System position on page
+        /// </summary>
+        /// <param name="index">Index of system</param>
+        /// <returns></returns>
+        public Point SystemPosition(int index) => new Point(systemsXPositions[index], systemsYPositions[index]);
+        public double SystemVerticalPosition(uint index) => index < systemsYPositions.Count ? systemsYPositions[(int)index] : 0.0;
+        public double SystemHorizontalPosition(uint index) => index < systemsXPositions.Count ? systemsXPositions[(int)index] : 0.0;
+
+        /// <summary>
+        /// Number of systems generated inside page
+        /// </summary>
+        public int SystemsCount => systemDimensionsInfo?.Count ?? 0;
+
+        public event PropertyChangedEventHandler PropertyChanged = delegate { };
+        
+        /// <summary>
+        /// Page width without margins (L+R)
+        /// </summary>
         public double PageContentWidth
         {
             get
@@ -45,6 +60,9 @@ namespace MusicXMLScore.LayoutControl
             }
         }
 
+        /// <summary>
+        /// Systems layout information collection
+        /// </summary>
         internal List<LayoutSystemInfo> SystemDimensionsInfo
         {
             get
@@ -61,6 +79,23 @@ namespace MusicXMLScore.LayoutControl
                 }
             }
         }
+
+        /// <summary>
+        /// Index of current page
+        /// </summary>
+        public int PageIndex
+        {
+            get
+            {
+                return pageIndex;
+            }
+
+            set
+            {
+                pageIndex = value;
+            }
+        }
+
         public LayoutPageContentInfo(int pageIndex)
         {
             this.pageIndex = pageIndex;
@@ -95,11 +130,19 @@ namespace MusicXMLScore.LayoutControl
             }
         }
         
+        /// <summary>
+        /// Returns true if All Systems should be stretched to fill page content width
+        /// </summary>
+        /// <returns></returns>
         private bool SystemStretchedToWidth()
         {
             return pageLayoutStyle.StretchSystemToPageWidth;
         }
 
+        /// <summary>
+        /// Returns true if last system on page should be stretched to fill page content width
+        /// </summary>
+        /// <returns></returns>
         private bool LastSystemStretched()
         {
             return pageLayoutStyle.StretchLastSystemOnPage;
@@ -187,6 +230,9 @@ namespace MusicXMLScore.LayoutControl
             }
         }
 
+        /// <summary>
+        /// Recalculates height of unused space on page 
+        /// </summary>
         private void CalculateAvailableHeight()
         {
             GenerateSystemHeights();
@@ -204,16 +250,25 @@ namespace MusicXMLScore.LayoutControl
             }
         }
 
+        /// <summary>
+        /// Sets page content width
+        /// </summary>
         private void GetPageContentWidth()
         {
             pageContentWidth = ViewModel.ViewModelLocator.Instance.Main.CurrentPageLayout.GetContentWidth();
         }
 
+        /// <summary>
+        /// Sets page content height
+        /// </summary>
         private void GetPageContentHeight()
         {
             pageContentHeight = ViewModel.ViewModelLocator.Instance.Main.CurrentPageLayout.GetContentHeight();
         }
 
+        /// <summary>
+        /// Generates heights of all systems added to page
+        /// </summary>
         private void GenerateSystemHeights()
         {
             if (systemHeights == null)
@@ -231,7 +286,11 @@ namespace MusicXMLScore.LayoutControl
                 systemHeights.Add(index, system.SystemHeight);
             }
         }
-        private void GenerateSystemDistances()
+
+        /// <summary>
+        /// Generates distance between systems
+        /// </summary>
+        private void GenerateSystemDistances()// todo add option to get distances from loaded score (if some available)
         {
             if (systemDistances == null)
             {
@@ -255,6 +314,10 @@ namespace MusicXMLScore.LayoutControl
                 }
             }
         }
+
+        /// <summary>
+        /// Calculates and sets user default distances between systems on page
+        /// </summary>
         private void SetDefaultDistances()
         {
             var layout = ViewModel. ViewModelLocator.Instance.Main.CurrentLayout;
@@ -262,6 +325,10 @@ namespace MusicXMLScore.LayoutControl
             defaultTopSystemDistance = 3 * layout.PageProperties.StaffHeight.MMToTenths();
         }
 
+        /// <summary>
+        /// Generates positions of every system on page
+        /// </summary>
+        /// <returns>Collection of positions of every system on page</returns>
         public List<Point> AllSystemsPositions()
         {
             List<Point> resultList = new List<Point>();
@@ -271,6 +338,11 @@ namespace MusicXMLScore.LayoutControl
             }
             return resultList;
         }
+
+        /// <summary>
+        /// Generates measures positions on page (id/Number as key)
+        /// </summary>
+        /// <returns>Positions of all measures on page</returns>
         public Dictionary<string, Point> AllMeasureCoords()
         {
             Dictionary<string, Point> coords = new Dictionary<string, Point>();
@@ -278,8 +350,9 @@ namespace MusicXMLScore.LayoutControl
             {
                 foreach (var c in item.Measures)
                 {
-                    var kvpair = item.MeasureCoords(c.MeasureId);
-                    coords.Add(kvpair.Key, kvpair.Value);
+                    string measureID = c.MeasureId;
+                    Point measureCoords = item.FirstPartMeasureCoords(measureID);
+                    coords.Add(measureID, measureCoords);
                 }
             }
                 return coords;
