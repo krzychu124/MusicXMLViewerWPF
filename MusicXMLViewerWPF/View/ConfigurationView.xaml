@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MusicXMLScore.ViewModel"
         mc:Ignorable="d"
-        Title="ConfigurationView" Height="498.974" Width="500.653" MinHeight="500" MinWidth="510">
+        Title="ConfigurationView - Test" Height="498.974" Width="500.653" MinHeight="500" MinWidth="510">
     <Grid>
         <!--<local:PageSettingsView HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="258" Height="243"/>-->
         <Grid.RowDefinitions>

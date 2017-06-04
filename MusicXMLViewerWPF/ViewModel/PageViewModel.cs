@@ -23,7 +23,7 @@ namespace MusicXMLScore.ViewModel
     class PageViewModel : ViewModelBase 
     {
         #region Private Fiels
-        private ObservableCollection<UIElement> partsSegments = new ObservableCollection<UIElement>();
+        private ObservableCollection<UIElement> pageCanvas = new ObservableCollection<UIElement>();
         private DrawingVisualHost page = new DrawingVisualHost();
         private double pageHeight = 0.0;
         private double pageWidth = 0.0;
@@ -54,7 +54,8 @@ namespace MusicXMLScore.ViewModel
             Point dimensions = ViewModelLocator.Instance.Main.CurrentPageLayout.PageDimensions.GetPageDimensionsInPx();
             PageWidth = dimensions.X;
             PageHeight = dimensions.Y;
-            PartsSegments.Add(page);
+            page.Background = Brushes.WhiteSmoke;
+            PageCanvas.Add(page);
         }
         public PageViewModel(ScorePartwiseMusicXML scorePartwise, int index)
         {
@@ -63,12 +64,12 @@ namespace MusicXMLScore.ViewModel
             Point dimensions = ViewModelLocator.Instance.Main.CurrentPageLayout.PageDimensions.GetPageDimensionsInPx();
             PageWidth = dimensions.X;
             PageHeight = dimensions.Y;
-            PartsSegments.Add(newPage.PageCanvas);
+            PageCanvas.Add(newPage.PageCanvas);
         }
         #endregion
 
         #region Properties
-        public ObservableCollection<UIElement> PartsSegments { get { return partsSegments; } set { partsSegments = value; } }
+        public ObservableCollection<UIElement> PageCanvas { get { return pageCanvas; } set { pageCanvas = value; } }
         public DrawingVisualHost Page { get { return page; } set { Set(nameof(Page), ref page, value); } }
         public RelayCommand TestCommand { get; set; }
         public double PageHeight { get { return pageHeight; } set { Set(nameof(PageHeight), ref pageHeight, value); } }
@@ -78,7 +79,7 @@ namespace MusicXMLScore.ViewModel
         #region Methods
         private void AddPartSegment()
         {
-            PartsSegments.Add(page);
+            PageCanvas.Add(page);
         }
         
         #endregion
