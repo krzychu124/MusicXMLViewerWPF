@@ -24,11 +24,11 @@ namespace MusicXMLScore.ViewModel
 {
     public class MainWindowViewModel : ViewModelBase //TODO_I closing all tabitems cause binding break
     {
+
         #region Fields
 
         private static Hashtable serializers = new Hashtable();
-        private bool isBlank = true;
-        private Orientation orientation = Orientation.Horizontal;
+        private bool allTabsClosed = true;
         private ScorePropertiesContainer scoreProperties = new ScorePropertiesContainer();
         private TabItem selectedTabItem;
         private ObservableCollection<TabItem> tabscreated = new ObservableCollection<TabItem>();
@@ -40,16 +40,15 @@ namespace MusicXMLScore.ViewModel
         public MainWindowViewModel()
         {
             PropertyChanged += MainWindowViewModel_PropertyChanged;
-            AddMeasureCommand = new RelayCommand(OnAddMeasure);
-            CloseFileCommand = new RelayCommand(OnCloseFile, () => IsBlank ==false ? true : false);
+            CloseFileCommand = new RelayCommand(OnCloseFile, () => AllTabsClosed ==false ? true : false);
             TestButtonCommand = new RelayCommand(OnTestButtonCommand);
             TestButton2Command = new RelayCommand(OnTestButton2Command);
             ExitCommand = new RelayCommand(OnExitApp);
             NewCustomScoreCreatorCommand = new RelayCommand(OnNewCustomScoreCreator);
             NewDefaultScoreCreatorCommand = new RelayCommand(OnNewDefaultScoreCreator);
-            OldViewCommand = new RelayCommand(OnOldViewCommand, () => false);
             OpenFileCommand = new RelayCommand<string>(s => OnOpenFileCommand(s));
             OpenOptionsWindowCommand = new RelayCommand(OnOpenOptionWindow);
+
             CreateBlankTab();
             CacheXMLSerializer();
         }
@@ -59,40 +58,30 @@ namespace MusicXMLScore.ViewModel
         #region Properties
 
         public RelayCommand AddMeasureCommand { get; set; }
+        public bool AllTabsClosed
+        {
+            get
+            {
+                return allTabsClosed;
+            }
+
+            set
+            {
+                Set(() => AllTabsClosed, ref allTabsClosed, value);
+                CloseFileCommand.RiseCanExecuteChanged();
+            }
+        }
+
         public RelayCommand CloseFileCommand { get; set; }
         public LayoutControl.LayoutGeneral CurrentLayout { get { return ScoreProperties.CurrentLayoutProperties; } }
         public PageProperties CurrentPageLayout { get { return ScoreProperties.CurrentLayoutProperties.PageProperties;} }
         public ScorePartwiseMusicXML CurrentSelectedScore { get { return ScoreProperties.CurrentScoreProperties.Score; } }
         public RelayCommand ExitCommand { get; set; }
-        public bool IsBlank
-        {
-            get
-            {
-                return isBlank;
-            }
-
-            set
-            {
-                Set(() => IsBlank, ref isBlank, value);
-                CloseFileCommand.RiseCanExecuteChanged();
-            }
-        }
         public RelayCommand NewCustomScoreCreatorCommand { get; set; }
         public RelayCommand NewDefaultScoreCreatorCommand { get; set; }
         public RelayCommand OldViewCommand { get; set; }
         public RelayCommand<string> OpenFileCommand { get; set; }
         public RelayCommand OpenOptionsWindowCommand { get; set; }
-        public Orientation Orientation
-        {
-            get { return orientation; }
-            set
-            {
-                if (orientation != value)
-                {
-                    Set(() => Orientation, ref orientation, value);
-                }
-            }
-        }
         public TabItem SelectedTabItem
         {
             get { return selectedTabItem; }
@@ -100,7 +89,7 @@ namespace MusicXMLScore.ViewModel
             {
                 if (SelectedTabItem != null)
                 {
-                    if (value != null)
+                    if (value != null)//! switch current selected score to score of SelectedTab
                     {
                         PagesControllerViewModel pcvm = (PagesControllerViewModel)value.DataContext;
                         ScoreProperties.SelectScore(pcvm.ID);
@@ -111,8 +100,8 @@ namespace MusicXMLScore.ViewModel
             }
         }
         public ObservableCollection<TabItem> TabsCreated { get { return tabscreated; } set { if (value != null) { tabscreated = value; } } }
-        public RelayCommand TestButtonCommand { get; set; }
         public RelayCommand TestButton2Command { get; set; }
+        public RelayCommand TestButtonCommand { get; set; }
         internal Dictionary<string, PartProperties> CurrentPartsProperties { get { return ScoreProperties.CurrentScoreProperties.PartProperties;/*currentpartPropertiesContainer;*/ } /*set { currentpartPropertiesContainer = value; }*/ }
         internal ScoreProperties.ScoreProperties CurrentScoreProperties {  get { return scoreProperties.CurrentScoreProperties;  } }
         internal ScorePropertiesContainer ScoreProperties
@@ -131,7 +120,7 @@ namespace MusicXMLScore.ViewModel
 
         #region Methods
 
-        public static T TempMethod<T>(string parameter) where T : new()
+        public static T DeserializeFile<T>(string parameter) where T : new()
         {
             TextReader reader = null;
             try
@@ -142,7 +131,15 @@ namespace MusicXMLScore.ViewModel
                     serializer = new XmlSerializer(typeof(T));
                 }
                 reader = new StreamReader(parameter);
-                return (T)serializer.Deserialize(reader);
+                var result = (T)serializer.Deserialize(reader);
+                if(result is ScorePartwiseMusicXML)
+                {
+                    ScorePartwiseMusicXML score = result as ScorePartwiseMusicXML;
+                    score.InitPartsDictionaries();
+                    score.SetLargestMeasureWidth();
+                }
+                
+                return result;
             }
             catch (Exception ex)
             {
@@ -169,7 +166,7 @@ namespace MusicXMLScore.ViewModel
         {
             string header = "New Document";
             TabItem tab = new TabItem() { Header = header, Content = new PagesControllerView(), DataContext = new PagesControllerViewModel() };
-            IsBlank = true;
+            AllTabsClosed = true;
             TabsCreated.Add(tab);
             SelectedTabItem = tab;
         }
@@ -179,33 +176,14 @@ namespace MusicXMLScore.ViewModel
             scoreProperties.AddScore(score);
         }
 
-        private void LoadDefaultPageProperties()
-        {
-            using (var stream = File.OpenRead(@".\defaultPage.xml"))
-            {
-                var formatter = new System.Runtime.Serialization.Formatters.Soap.SoapFormatter(); //! new BinaryFormatter();
-                PageProperties pp2 = (PageProperties)formatter.Deserialize(stream);
-            }
-        }
-
         private void MainWindowViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == "XmlFileLoaded")
             {
                 CloseFileCommand.RiseCanExecuteChanged();
             }
-            if (e.PropertyName == "SelectedTabItem")
-            {
-                //XmlFileLoaded = true;
-            }
         }
-        private void OnAddMeasure()
-        {
-            int i = TabsCreated.Count + 1;
-            TabItem ti = new TabItem() { Header = "Tab " + i, Content = new PagesControllerView(), DataContext = new PagesControllerViewModel() };
-            TabsCreated.Add(ti);
-            SelectedTabItem = ti;
-        }
+        
         private void OnCloseFile()
         {
             var name = SelectedTabItem.DataContext as ViewModel.PagesControllerViewModel;
@@ -248,10 +226,7 @@ namespace MusicXMLScore.ViewModel
                 SelectedTabItem = tab;
             }
         }
-
-        private void OnOldViewCommand()
-        {
-        }
+        
 
         [STAThread]
         private void OnOpenFileCommand(object parameter) //! For now xml file load avaliable only
@@ -276,48 +251,51 @@ namespace MusicXMLScore.ViewModel
             }
 
             Log.LoggIt.Log($"File {filedestination} been loaded", Log.LogType.Info);
-            var sw = new Stopwatch();
-            sw = new Stopwatch();
-            sw.Start();
-            ScorePartwiseMusicXML xml = TempMethod<ScorePartwiseMusicXML>(filedestination);
-            xml.InitPartsDictionaries();
-            xml.SetLargestMeasureWidth();
-            sw.Stop();
-            Log.LoggIt.Log($"XML file deserialization to ScorePartwise object in : {sw.ElapsedMilliseconds} ms", Log.LogType.Exception);
-            sw = new Stopwatch();
-            sw.Start();
-            var vm = (PagesControllerViewModel)SelectedTabItem.DataContext;
-            if (vm.IsBlank) //! check if currently selected tab is blank
+           
+            ScorePartwiseMusicXML xml = DeserializeFile<ScorePartwiseMusicXML>(filedestination);
+            
+            var pagesControllerVM = (PagesControllerViewModel)SelectedTabItem.DataContext;
+            if (pagesControllerVM.IsBlank) //! check if currently selected tab is blank/empty then add loaded file to it
             {
-                GenerateLayout(xml);//! 02.03 GenerateLayout(musicscore);
-                vm.AddScorePartwise(xml);
-                SelectedTabItem.Template = null;
+                GenerateLayout(xml);
+                pagesControllerVM.AddScorePartwise(xml);
+
+                SelectedTabItem.Template = null; //bugfix - if last tab removed, binding error: "cannot find source for binding..."
                 TabsCreated.Remove(SelectedTabItem);
-                TabItem newTab = new TabItem() { Header = filedestination, Content = new PagesControllerView(), DataContext = vm };
+                TabItem newTab = new TabItem() { Header = filedestination, Content = new PagesControllerView(), DataContext = pagesControllerVM };
                 TabsCreated.Add(newTab);
                 SelectedTabItem = newTab;
-                IsBlank = false;
+                AllTabsClosed = false;
             }
-            else
+            else //! if not empty, create new tab add loaded file and select
             {
-                GenerateLayout(xml);//! 02.03 GenerateLayout(musicscore);
-                PagesControllerViewModel pcvm = new PagesControllerViewModel();
-                pcvm.AddScorePartwise(xml);
-                TabItem newTab = new TabItem() { Header = filedestination, Tag = xml.ID, Content = new PagesControllerView(), DataContext = pcvm };
+                GenerateLayout(xml);
+                PagesControllerViewModel pagesControllerNew = new PagesControllerViewModel();
+                pagesControllerNew.AddScorePartwise(xml);
+                TabItem newTab = new TabItem() { Header = filedestination, Tag = xml.ID, Content = new PagesControllerView(), DataContext = pagesControllerNew };
                 TabsCreated.Add(newTab);
                 SelectedTabItem = newTab;
-                sw.Stop();
-                //Log.LoggIt.Log($"Drawing ScorePartwise object in : {sw.ElapsedMilliseconds} ms", Log.LogType.Exception);
-                IsBlank = false;
+                AllTabsClosed = false;
             }
-            sw.Stop();
-            Log.LoggIt.Log($"Drawing ScorePartwise object in : {sw.ElapsedMilliseconds} ms", Log.LogType.Exception);
         }
 
         private void OnOpenOptionWindow()
         {
             ViewModel.ConfigurationView optionswindow = new ViewModel.ConfigurationView();
             optionswindow.ShowDialog();
+        }
+
+        private void OnTestButton2Command()
+        {
+            //! switch stretch setting of all system 
+            if (CurrentLayout.LayoutStyle.PageStyle.StretchSystemToPageWidth)
+            {
+                CurrentLayout.LayoutStyle.PageStyle.StretchSystemToPageWidth = false;
+            }
+            else
+            {
+                CurrentLayout.LayoutStyle.PageStyle.StretchSystemToPageWidth = true;
+            }
         }
 
         private void OnTestButtonCommand()
@@ -331,29 +309,8 @@ namespace MusicXMLScore.ViewModel
             {
                 CurrentLayout.LayoutStyle.PageStyle.StretchLastSystemOnPage = true;
             }
-            //changed measure width (visual update test)
-            //string partId = CurrentSelectedScore.Part.FirstOrDefault().Id;
-            //string id = "3";
-            //CurrentSelectedScore.Part.ElementAt(partId.GetPartIdIndex()).MeasuresByNumber[id].CalculatedWidth = 40;
-            //LayoutStyle.Layout layout = new LayoutStyle.Layout();
-            //XmlSerializer xml = new XmlSerializer(layout.GetType());
-            //TextWriter txtw = new StreamWriter(@".\DefaultLayoutStyle.xml");
-            //xml.Serialize(txtw, layout);
-            //txtw.Close(); 
-        }
-        private void OnTestButton2Command()
-        {
-            //! switch stretch setting of last system 
-            if (CurrentLayout.LayoutStyle.PageStyle.StretchSystemToPageWidth)
-            {
-                CurrentLayout.LayoutStyle.PageStyle.StretchSystemToPageWidth = false;
-            }
-            else
-            {
-                CurrentLayout.LayoutStyle.PageStyle.StretchSystemToPageWidth = true;
-            }
         }
 
-            #endregion Methods
-        }
+        #endregion Methods
+    }
 }
