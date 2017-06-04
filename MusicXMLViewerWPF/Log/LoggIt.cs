@@ -1,4 +1,5 @@
-﻿using System;
+﻿//#define DEBUGLOG
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -76,7 +77,7 @@ namespace MusicXMLScore.Log
 
         public static void Log(string message, LogType logtype= LogType.Info, [CallerMemberName] string memberName = "")
         {
-            
+#if (DEBUGLOG)            
             string date = DateTime.Now.ToString();
             switch (logtype)
             {
@@ -104,6 +105,7 @@ namespace MusicXMLScore.Log
                 default:
                     break;
             }
+#endif
         }
 
         /// <summary>
