@@ -226,6 +226,7 @@ namespace MusicXMLScore.LayoutControl
                 systemsXPositions.Add(currentX);
                 systemsYPositions.Add(currentY);
                 currentY += systemDistances[i] + systemHeights[i];
+                systemDimensionsInfo[i].UpdateLayout = true;
                 //currentX = systemDimensionsInfo[i].SystemWidth;
             }
         }

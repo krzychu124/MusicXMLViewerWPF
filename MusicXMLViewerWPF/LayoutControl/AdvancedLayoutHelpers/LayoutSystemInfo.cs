@@ -1,6 +1,7 @@
 ﻿using MusicXMLScore.Converters;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,12 +9,12 @@ using System.Windows;
 
 namespace MusicXMLScore.LayoutControl
 { 
-    class LayoutSystemInfo
+    class LayoutSystemInfo : INotifyPropertyChanged
     {
         private double systemHeight;
         private double systemWidth;
-        double defaultStaffDistance;
-
+        private double defaultStaffDistance;
+        private bool updateLayout = false;
         //! distances between parts inside this system
         private Dictionary<string, double> partStaffDistances;
         //! calculated part heights 
@@ -28,6 +29,25 @@ namespace MusicXMLScore.LayoutControl
         private Dictionary<string, double> measureCoordsY;
 
         private Dictionary<string, double> measureMinSharedWidth;
+
+        public event PropertyChangedEventHandler PropertyChanged = delegate { };
+
+        public bool UpdateLayout
+        {
+            get
+            {
+                return updateLayout;
+            }
+            set
+            {
+                if (updateLayout != value)
+                {
+                    updateLayout = value;
+                    PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(UpdateLayout)));
+                    updateLayout = false;
+                }
+            }
+        }
         public double SystemHeight
         {
             get
@@ -57,7 +77,29 @@ namespace MusicXMLScore.LayoutControl
             }
         }
 
-        public KeyValuePair<string, Point> MeasureCoords(string key) => new KeyValuePair<string, Point>(key, new Point(measureCoordsX[key], 0.0)); 
+        public Dictionary<string, double> PartHeights
+        {
+            get
+            {
+                return partHeights;
+            }
+
+            set
+            {
+                partHeights = value;
+            }
+        }
+        public double PartPositionY(string partID) => measureCoordsY.ContainsKey(partID) ? measureCoordsY[partID] : 0.0;
+
+        public Point FirstPartMeasureCoords(string measureID) => new Point(measureCoordsX[measureID], 0.0);
+
+        /// <summary>
+        /// Measure coordinates with valid measureID and partID
+        /// </summary>
+        /// <param name="measureID">ID of this measure</param>
+        /// <param name="partID">Valid Part ID of this measure</param>
+        /// <returns></returns>
+        public Point WhicheverPartMeasureCoords(string measureID, string partID) => new Point(measureCoordsX[measureID], measureCoordsY[partID]);
 
         public LayoutSystemInfo(List<SharedMeasureProperties> measuresOfSystem)
         {
