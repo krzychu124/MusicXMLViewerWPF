@@ -14,7 +14,7 @@ using MusicXMLScore.Model;
 
 namespace MusicXMLScore.DrawingHelpers
 {
-    public class PartProperties //TODO_H Clean up unneccessary methods, field and properties
+    public class PartProperties //TODO_H refactor: reduce unnecessary dependecies (the best would be all)
     {
 
         #region Fields

@@ -21,7 +21,6 @@ namespace MusicXMLScore.LayoutControl
         private int staves = 1;
         private double defaultStavesDistance = 0.0;
         private string partID;
-        //private Dictionary<int, double> staffDistances = new Dictionary<int, double>() { { 1, 0.0 } };
         private PartProperties partProperties;
         private int systemIndex = 0;
         private int pageIndex;
