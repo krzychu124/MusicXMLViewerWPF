@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using MusicXMLScore.LayoutControl;
 
 namespace MusicXMLScore.DrawingHelpers
 {
@@ -24,6 +25,12 @@ namespace MusicXMLScore.DrawingHelpers
         //! PartsSystem<MeasuresIDsList<MeasureId>
         private List<PartsSystemDrawing> partSystemsList;
         private ScorePartwiseMusicXML score;
+        //! --------------------- test -------------------
+        private LayoutControl.LayoutPageContentInfo pageContentLayout;
+        private List<string> partIDs;
+        private MeasureSegmentContainer measuresContainer;
+
+        //! --------------------- !test -------------------
         #endregion Fields
 
         #region Constructors
@@ -49,6 +56,10 @@ namespace MusicXMLScore.DrawingHelpers
 
             pageDimensions = pageLayout.PageProperties.PageDimensions.Dimensions;
             PageCanvas = new Canvas() { Width = pageDimensions.Width, Height = pageDimensions.Height };
+        }
+        public PageDrawingSystem(LayoutControl.LayoutPageContentInfo pageLayoutInfo):this(pageLayoutInfo.PageIndex)
+        {
+            this.pageContentLayout = pageLayoutInfo;
         }
 
         #endregion Constructors
@@ -183,6 +194,72 @@ namespace MusicXMLScore.DrawingHelpers
             }
         }
 
+        internal void AssignMeasureSegmentContainer(MeasureSegmentContainer measureSegmentsContainer, List<string> partIDsToAdd)
+        {
+            measuresContainer = measureSegmentsContainer;
+
+            if (pageContentLayout != null)
+            {
+                if (partIDsToAdd != null && partIDsToAdd.Count != 0)
+                {
+                    this.partIDs = partIDsToAdd;
+                }
+                else
+                {
+                    Log.LoggIt.Log("List of part ID's is empty! No further actions performed");
+                }
+            }
+            else
+            {
+                Log.LoggIt.Log("Page layout not set! Page not drawn/arranged", Log.LogType.Warning);
+            }
+
+        }
+
+        internal void ArrangeSystemsAdvanced()
+        {
+            if (pageContentLayout != null)
+            {
+                List<PartsSystemDrawing> partSystemsTest = new List<PartsSystemDrawing>();
+                foreach (var systemLayout in pageContentLayout.SystemDimensionsInfo)
+                {
+                    Dictionary<string, List<MeasureSegmentController>> measuresToAdd = new Dictionary<string, List<MeasureSegmentController>>();
+                    foreach (var partID in partIDs)
+                    {
+                        List<MeasureSegmentController> measures = new List<MeasureSegmentController>(); //! collection of measures with the same ID/Number form all parts
+                        var measuresIDs = systemLayout.Measures.Select(x => x.MeasureId);
+                        measures = measuresContainer.MeasureSegments[partID].Where(x => measuresIDs.Contains(x.MeasureID)).ToList();
+                        measuresToAdd.Add(partID, measures);
+                    }
+                    partSystemsTest.Add(new PartsSystemDrawing(measuresToAdd, partIDs, systemLayout));
+                }
+                AddPartsSytem(partSystemsTest);
+                ArrangeUsingLayoutInfo();
+            }
+        }
+
+        public void ArrangeUsingLayoutInfo(LayoutControl.LayoutPageContentInfo pageLayout = null)
+        {
+            if (pageLayout == null)
+            {
+                if(pageContentLayout!= null)
+                {
+                    //! do layout
+                    List<Point> precalculatedCoords = new List<Point>();
+                    for (int i = 0; i < partSystemsList.Count; i++)
+                    {
+                        precalculatedCoords.Add(pageContentLayout.SystemPosition(i));
+                    }
+                    ArrangeSystems(true, precalculatedCoords);
+                }
+            }
+            else
+            {
+                pageContentLayout = pageLayout;
+                //! rearrange if necessary
+                //! do layout
+            }
+        }
         #endregion Methods
     }
 }

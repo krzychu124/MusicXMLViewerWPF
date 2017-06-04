@@ -22,6 +22,10 @@ namespace MusicXMLScore.DrawingHelpers
         private int stavesCount = 1;
         private int systemIndex;
         private int pageIndex;
+        private LayoutSystemInfo systemLayoutInfo;
+        //! temp, test
+        private List<MeasureDrawing> measuresStaffs;
+        private List<SegmentPanel> measuresSegments;
         #endregion Fields
 
         #region Constructors
@@ -37,17 +41,26 @@ namespace MusicXMLScore.DrawingHelpers
             staffDistance = partProperites.StaffLayoutPerPage[pageIndex].ElementAt(systemIndex).StaffDistance;
             CalculateDimensions();
         }
-        public PartSegmentDrawing(List<MeasureSegmentController> measureSegments, string partId, PartProperties partProperties, int systemIndex, int pageIndex)
+
+        public PartSegmentDrawing(List<MeasureSegmentController> measureSegments, string partID, LayoutSystemInfo layoutInfo)
         {
+            this.partId = partID;
             this.measuresList = measureSegments.Select(x => x.MeasureID).ToList();
             this.partMeasures = measureSegments;
-            this.partId = partId;
-            this.partProperties = partProperties;
-            this.systemIndex = systemIndex;
-            this.pageIndex = pageIndex;
-            stavesCount = partProperties.NumberOfStaves;
+            this.partProperties = ViewModel.ViewModelLocator.Instance.Main.CurrentPartsProperties[partID];
+            this.stavesCount = partProperties.NumberOfStaves;
+            this.systemLayoutInfo = layoutInfo;
+            systemLayoutInfo.PropertyChanged += SystemLayoutInfo_PropertyChanged;
             staffDistance = partProperties.StaffLayoutPerPage[pageIndex].ElementAt(0).StaffDistance;
             CalculateDimensions();
+        }
+
+        private void SystemLayoutInfo_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if(e.PropertyName == nameof(systemLayoutInfo.UpdateLayout))
+            {
+                UpdateContent();
+            }
         }
 
         #endregion Constructors
@@ -125,7 +138,7 @@ namespace MusicXMLScore.DrawingHelpers
                 PartSegmentCanvas.Children.Add(measureCanvas.BaseObjectVisual);
 
 
-                MeasureSegmentController measureSegment = new LayoutControl.MeasureSegmentController(measureSerializable, partId, stavesCount, systemIndex, pageIndex);
+                MeasureSegmentController measureSegment = new LayoutControl.MeasureSegmentController(measureSerializable, partId, stavesCount);
                 partMeasures.Add(measureSegment);
 
                 //! workaroud to eliminate segment panel
@@ -136,7 +149,7 @@ namespace MusicXMLScore.DrawingHelpers
                 Canvas.SetLeft(spanel, partProperties.Coords[measureId].X);
                 PartSegmentCanvas.Children.Add(spanel);
 
-                //! workaroud to eliminate segment panel
+                //! workaround to eliminate segment panel
                 //Canvas.SetTop(measureObjectCanvas, 0);
                 //Canvas.SetLeft(measureObjectCanvas, partProperties.Coords[measureId].X);
                 //PartSegmentCanvas.Children.Add(measureObjectCanvas);
@@ -145,22 +158,62 @@ namespace MusicXMLScore.DrawingHelpers
         }
         public Size GenerateContent(bool test, LayoutSystemInfo systemLayout =null)
         {
-            foreach (var measureSegment in PartMeasures)
+            if (systemLayout != null)
             {
-                MeasureDrawing measureCanvas = new MeasureDrawing(measureSegment.MeasureID, partId, staffDistance, stavesCount);
+                measuresStaffs = new List<MeasureDrawing>(); //! hold reference for future position update
+                measuresSegments = new List<SegmentPanel>(); //! hold reference for future position update
+                //! use system layout info
+                foreach (var measureSegment in PartMeasures)
+                {
+                    MeasureDrawing measureCanvas = new MeasureDrawing(measureSegment.MeasureID, partId, staffDistance, stavesCount); //! todo_M merge with MeasureSegmentController
+                    //! -------test
+                    measuresStaffs.Add(measureCanvas);
+                    //! -------
+                    Canvas.SetTop(measureCanvas.BaseObjectVisual, 0);
+                    Canvas.SetLeft(measureCanvas.BaseObjectVisual, systemLayout.WhicheverPartMeasureCoords(measureSegment.MeasureID, partId).X);
+                    PartSegmentCanvas.Children.Add(measureCanvas.BaseObjectVisual);
 
-                Canvas.SetTop(measureCanvas.BaseObjectVisual, 0);
-                Canvas.SetLeft(measureCanvas.BaseObjectVisual, partProperties.Coords[measureSegment.MeasureID].X);
-                PartSegmentCanvas.Children.Add(measureCanvas.BaseObjectVisual);
 
-                SegmentPanel spanel = measureSegment.GetContentPanel();
+                    SegmentPanel spanel = measureSegment.GetContentPanel();
+                    //! -------test
+                    measuresSegments.Add(spanel);
+                    //! -------
+                    Canvas.SetTop(spanel, 0);
+                    Canvas.SetLeft(spanel, systemLayout.WhicheverPartMeasureCoords(measureSegment.MeasureID, partId).X);
+                    PartSegmentCanvas.Children.Add(spanel);
+                }
+            }
+            else
+            {
+                foreach (var measureSegment in PartMeasures)
+                {
+                    MeasureDrawing measureCanvas = new MeasureDrawing(measureSegment.MeasureID, partId, staffDistance, stavesCount);
 
-                Canvas.SetTop(spanel, 0);
-                Canvas.SetLeft(spanel, partProperties.Coords[measureSegment.MeasureID].X);
-                PartSegmentCanvas.Children.Add(spanel);
+                    Canvas.SetTop(measureCanvas.BaseObjectVisual, 0);
+                    Canvas.SetLeft(measureCanvas.BaseObjectVisual, partProperties.Coords[measureSegment.MeasureID].X);
+                    PartSegmentCanvas.Children.Add(measureCanvas.BaseObjectVisual);
 
+                    SegmentPanel spanel = measureSegment.GetContentPanel();
+
+                    Canvas.SetTop(spanel, 0);
+                    Canvas.SetLeft(spanel, partProperties.Coords[measureSegment.MeasureID].X);
+                    PartSegmentCanvas.Children.Add(spanel);
+
+                }
             }
             return size;
+        }
+
+        private void UpdateContent()
+        {
+            for (int i = 0; i < partMeasures.Count; i++)
+            {
+                Canvas.SetTop(measuresStaffs[i].BaseObjectVisual, 0);
+                Canvas.SetLeft(measuresStaffs[i].BaseObjectVisual, systemLayoutInfo.WhicheverPartMeasureCoords(partMeasures[i].MeasureID, partId).X);
+
+                Canvas.SetTop(measuresSegments[i], 0);
+                Canvas.SetLeft(measuresSegments[i], systemLayoutInfo.WhicheverPartMeasureCoords(partMeasures[i].MeasureID, partId).X);
+            }
         }
 
         private void CalculateDimensions()
