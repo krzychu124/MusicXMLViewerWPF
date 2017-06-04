@@ -26,6 +26,7 @@ namespace MusicXMLScore.LayoutControl
         private ObservableDictionary<string, ObservableDictionary<int, FractionHelper>> fractionPositionHelper;
         List<SharedMeasureProperties> sharedMeasuresProps = new List<SharedMeasureProperties>();
         Dictionary<int, LayoutPageContentInfo> layoutPageInfo;
+        Dictionary<int, PageDrawingSystem> pages;
 
         private bool ignoreLayoutLoadedFromFile = false; //! ignores layout elements loaded from file (new-page, new-system) //WiP
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
@@ -74,6 +75,8 @@ namespace MusicXMLScore.LayoutControl
         public AdvancedMeasureLayout(ScorePartwiseMusicXML score)
         {
             this.scoreFile = score;
+            this.GenerateMeasureSegments();
+            this.FindOptimalMeasureWidths();
         }
 
         private void OnFractionPositionsCollectionChange(object sender, NotifyCollectionChangedEventArgs e)
@@ -94,9 +97,12 @@ namespace MusicXMLScore.LayoutControl
                     break;
             }
         }
-        
 
-        public void AddBlankPage()
+        /// <summary>
+        /// Adds canvas (if parameterless, adds blank page) to pages collection
+        /// </summary>
+        /// <param name="page"></param>
+        public void AddPage(Canvas page = null)
         {
             if (pagesCollection == null)
             {
@@ -107,44 +113,29 @@ namespace MusicXMLScore.LayoutControl
                 pagesPerNumber = new Dictionary<int, PageViewModel>();
             }
             int index = pagesCollection.Count;
-            PageViewModel pvm = new PageViewModel(index);
-            pagesPerNumber.Add(index, pvm);
-            pagesCollection.Add(new PageView() { DataContext = pvm });
-        }
-        public void AddPage(Canvas page)
-        {
-            if (pagesCollection == null)
+            PageViewModel pvm;
+            if (page != null)
             {
-                pagesCollection = new ObservableCollection<UIElement>();
+                pvm = new PageViewModel(page);
             }
-            if (pagesPerNumber == null)
+            else
             {
-                pagesPerNumber = new Dictionary<int, PageViewModel>();
+                pvm = new PageViewModel(index);
             }
-            int index = pagesCollection.Count;
-            PageViewModel pvm = new PageViewModel(page);
             pagesPerNumber.Add(index, pvm);
             pagesCollection.Add(new PageView() { DataContext = pvm });
         }
 
-        public void GenerateMeasureSegments()
+        /// <summary>
+        /// Generate measure segments of all measures from music score
+        /// </summary>
+        private void GenerateMeasureSegments()
         {
             measureSegmentsContainer = new MeasureSegmentContainer();
-            var partIdsList = scoreFile.Part.Select(x => x.Id).ToList();
-            measureSegmentsContainer.InitPartIDs(partIdsList);
-            //! var test = measureSegmentsContainer["P1"]; //// indexer test
-            foreach (var part in scoreFile.Part)
-            {
-                int stavesCount = part.GetStavesCount();
-                foreach (var measure in part.Measure)
-                {
-                    MeasureSegmentController measureSegmentController = new MeasureSegmentController(measure, part.Id, stavesCount, 0, 0);
-                    measureSegmentsContainer.AddMeasureSegmentController(measureSegmentController, part.Id);
-                }
-            }
+            measureSegmentsContainer.GenerateMeasureSegments(scoreFile);
         }
 
-        public void FindOptimalMeasureWidths()
+        private void FindOptimalMeasureWidths()
         {
             double pageContentWidth = ViewModelLocator.Instance.Main.CurrentPageLayout.GetContentWidth();
             List<MeasureSegmentController> testList = new List<MeasureSegmentController>();
@@ -181,14 +172,18 @@ namespace MusicXMLScore.LayoutControl
             measureSegmentsContainer.UpdateMeasureWidths();
             //! init measure content stretch info of all measures
             GetOptimalStretch();
+
             ArrangeAndStretchMeasuresContent();
-            //! collect pages (calculate and arrange measureSystems into pages)
+            //! collect measures into systems
+            SystemsCollector(measureSegmentsContainer.MeasureSegments.FirstOrDefault().Value.Select(measure => measure.MeasureID).ToList());
+            //! collect pages (using layoutPageInfo)
             PagesCollector();
         }
 
         /// <summary>
-        /// Arranges measure content (spacing, beams and later, others)
+        /// Arranges measure content (spacing, beams and later, others) - if parameterless, updates all measures
         /// </summary>
+        /// <param name="measureNumber">Updates only measures with selected number</param>
         private void ArrangeAndStretchMeasuresContent(string measureNumber = null)
         {
             if (measureNumber != null) //! update only measures with selected measureNumber
@@ -238,24 +233,32 @@ namespace MusicXMLScore.LayoutControl
                 }
             }
         }
-        
-        private PartsSystemDrawing GeneratePartSystem(int systemIndex, int pageIndex, Dictionary<string, List<MeasureSegmentController>> measuresToAdd)
-        {
-            List<string> partIDs = measureSegmentsContainer.PartIDsList;
-            var partProperties = ViewModelLocator.Instance.Main.CurrentPartsProperties;
-            return new PartsSystemDrawing(systemIndex, measuresToAdd, partIDs, partProperties, pageIndex);
-        }
 
-        public void PagesCollector()
+        /// <summary>
+        /// Collect and add pages using calculated layoutPageInfo
+        /// </summary>
+        private void PagesCollector()
         {
-            List<string> unarrangedMeasures = new List<string>();
-            //! get all measures number(id)
-            foreach (var measure in measureSegmentsContainer.MeasureSegments.FirstOrDefault().Value)
+            if (layoutPageInfo != null && layoutPageInfo.Count != 0)
             {
-                unarrangedMeasures.Add(measure.MeasureID);
+                var partIDs = measureSegmentsContainer.PartIDsList;
+
+                pages = new Dictionary<int, PageDrawingSystem>();
+                foreach (var pageInfo in layoutPageInfo)
+                {
+                    PageDrawingSystem page = new PageDrawingSystem(pageInfo.Value);
+                    page.AssignMeasureSegmentContainer(measureSegmentsContainer, partIDs);
+                    page.ArrangeSystemsAdvanced();
+                    pages.Add(pageInfo.Key, page);
+                    AddPage(page.PageCanvas);
+                }
             }
-            SystemsCollector(unarrangedMeasures);
         }
+        
+        /// <summary>
+        /// Collect measures into systems
+        /// </summary>
+        /// <param name="unarrangedMeasures"></param>
         public void SystemsCollector(List<string> unarrangedMeasures)
         {
             //! collection of layout information about pages generated from score
@@ -332,37 +335,6 @@ namespace MusicXMLScore.LayoutControl
                     pageContent.ArrangeSystems();
                     layoutPageInfo.Add(pageIndex, pageContent);
                 }
-            }
-            //! -------------------------temp meaure coords update, todo refactor------------ High priority!!!
-            var partIDs = measureSegmentsContainer.PartIDsList;
-            var partPropertiesTest = ViewModelLocator.Instance.Main.CurrentPartsProperties;
-            var coords = layoutPageInfo.SelectMany(x => x.Value.AllMeasureCoords()).Distinct().ToDictionary(item =>item.Key,item=> item.Value);
-            foreach (var p in partIDs)
-            {
-                partPropertiesTest[p].Coords = coords;
-            }
-            //!todo --------------------------------------------------------------------------
-
-            //! set collected pages into PageDrawingSystem which already has arrange (using updated coords dictionary in previous step) --looks awful now... toRefactor later
-            foreach (var page in layoutPageInfo)
-            {
-                List<PartsSystemDrawing> partSystemsTest = new List<PartsSystemDrawing>();
-                foreach (var system in page.Value.SystemDimensionsInfo)
-                {
-                    Dictionary<string, List<MeasureSegmentController>> measuresToAdd = new Dictionary<string, List<MeasureSegmentController>>();
-                    foreach (var partID in partIDs)
-                    {
-                        List<MeasureSegmentController> measures = new List<MeasureSegmentController>();
-                        var measuresIDs = system.Measures.Select(x=>x.MeasureId);
-                        measures = measureSegmentsContainer.MeasureSegments[partID].Where(x => measuresIDs.Contains(x.MeasureID)).ToList();
-                        measuresToAdd.Add(partID, measures);
-                    }
-                    partSystemsTest.Add(GeneratePartSystem(0, page.Key, measuresToAdd));
-                }
-                PageDrawingSystem pdsTest = new PageDrawingSystem(page.Key);
-                pdsTest.AddPartsSytem(partSystemsTest);
-                pdsTest.ArrangeSystems(true, page.Value.AllSystemsPositions());
-                AddPage(pdsTest.PageCanvas);
             }
         }
         /// <summary>
