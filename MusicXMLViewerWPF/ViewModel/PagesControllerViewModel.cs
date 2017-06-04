@@ -100,27 +100,28 @@ namespace MusicXMLScore.ViewModel
         #region Methods
         
 
-        public void AddScorePartwise(ScorePartwiseMusicXML spmXML)
+        public void AddScorePartwise(ScorePartwiseMusicXML scorePartXML)
         {
+            if (scorePartXML == null)
+            {
+                throw new NullReferenceException("null scorePart object"); //! temp
+            }
             IsBlank = false;
-            partwise = spmXML;
+            partwise = scorePartXML;
             PagesCollection = new ObservableCollection<UIElement>();
-            DrawingHelpers.PartProperties pp = ViewModelLocator.Instance.Main.CurrentPartsProperties[spmXML.Part.ElementAt(0).Id];
+            DrawingHelpers.PartProperties pp = ViewModelLocator.Instance.Main.CurrentPartsProperties[scorePartXML.Part.ElementAt(0).Id];
             bool autoLayoutSupport = ViewModelLocator.Instance.Main.CurrentScoreProperties.AutoLayoutSupportByScore;
             //autoLayoutSupport = false;
             if (autoLayoutSupport)
             {
                 foreach (var pages in pp.PartSysemsInPages)
                 {
-                    AddPageToCollection(spmXML);
+                    AddPageToCollection(scorePartXML);
                 }
             }
             else
             {
                 advancedLayout = new AdvancedMeasureLayout(partwise);
-                //advancedLayout.AddBlankPage();
-                advancedLayout.GenerateMeasureSegments();
-                advancedLayout.FindOptimalMeasureWidths();
                 PagesCollection = advancedLayout.PagesCollection;
             }
         }

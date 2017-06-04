@@ -6,17 +6,22 @@
              xmlns:local="clr-namespace:MusicXMLScore.ViewModel"
              xmlns:helpers="clr-namespace:MusicXMLScore.Helpers"
              xmlns:credit ="clr-namespace:MusicXMLViewerWPF"
-             xmlns:Configuration="clr-namespace:MusicXMLScore.ViewModel" xmlns:Log="clr-namespace:MusicXMLScore.Log" x:Class="MusicXMLScore.ViewModel.PageView"
-             mc:Ignorable="d" Height="{Binding PageHeight}" Width="{Binding PageWidth}" x:Name="uc" d:DesignWidth="500" d:DesignHeight="250.333">
+             xmlns:Configuration="clr-namespace:MusicXMLScore.ViewModel"
+             x:Class="MusicXMLScore.ViewModel.PageView"
+             mc:Ignorable="d" Height="{Binding PageHeight}" Width="{Binding PageWidth}" x:Name="PageUserControl" d:DesignWidth="500" d:DesignHeight="250.333">
+    <Grid>
+        <Border Background="White">
+            <Border.Effect>
+                <DropShadowEffect Color="LightGray" BlurRadius="10" ShadowDepth="5"></DropShadowEffect>
+            </Border.Effect>
+        </Border>
 
-    <ItemsControl x:Name="PartsSegments" ItemsSource="{Binding PartsSegments}" Background="WhiteSmoke">
-        <ItemsControl.Effect>
-            <DropShadowEffect Color="Gray" BlurRadius="5" ShadowDepth="5"></DropShadowEffect>
-        </ItemsControl.Effect>
-        <ItemsControl.ItemsPanel>
-            <ItemsPanelTemplate>
-                <Canvas></Canvas>
-            </ItemsPanelTemplate>
-        </ItemsControl.ItemsPanel>
-    </ItemsControl>
+        <ItemsControl x:Name="PageCanvas" ItemsSource="{Binding PageCanvas}" Background="WhiteSmoke">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Canvas></Canvas>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+        </ItemsControl>
+    </Grid>
 </UserControl>

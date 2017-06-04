@@ -152,7 +152,7 @@ namespace MusicXMLScore.Model
 
         public ScorePartwisePartMeasureMusicXML()
         {
-            PropertyChanged += OnPropertyChanged;
+            //PropertyChanged += OnPropertyChanged;
         }
         private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {

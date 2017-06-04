@@ -18,8 +18,6 @@ namespace MusicXMLScore.LayoutControl
     class MeasureSegmentController
     {
         private SegmentPanel segmentPanel;
-        private int systemIndex =0;
-        private int pageIndex;
         private int stavesCount = 1;
         private int maxDuration = 1;
         private double width = 0;
@@ -124,17 +122,21 @@ namespace MusicXMLScore.LayoutControl
             }
         }
 
-        public MeasureSegmentController(Model.ScorePartwisePartMeasureMusicXML measure, string partID, int stavesCount, int systemIndex, int pageIndex)
+        /// <summary>
+        /// Measure Segment Controller Contructor
+        /// </summary>
+        /// <param name="measure">Measure object</param>
+        /// <param name="partID">Part ID of measure</param>
+        /// <param name="stavesCount">Number of staves in measure(1 is normal, 2 piano staff)</param>
+        public MeasureSegmentController(Model.ScorePartwisePartMeasureMusicXML measure, string partID, int stavesCount)
         {
-            this.systemIndex = systemIndex;
-            this.pageIndex = pageIndex;
             this.partId = partID;
-            this.stavesCount = stavesCount;
+            this.stavesCount = stavesCount <1 ? 1: stavesCount; //! correction if set to 0
             this.measureID = measure.Number;
-            partProperties = ViewModel.ViewModelLocator.Instance.Main.CurrentPartsProperties[partID];
+            partProperties = ViewModel.ViewModelLocator.Instance.Main.CurrentPartsProperties[partID]; //Todo refator: replace/remove (reduce dependencies)
             Stopwatch stopWatch;
 
-            segmentPanel = new SegmentPanel(partID, measure.Number, systemIndex, pageIndex);
+            segmentPanel = new SegmentPanel(partID, measure.Number, 0, 0);
             stopWatch = new Stopwatch();
 
             stopWatch.Start();

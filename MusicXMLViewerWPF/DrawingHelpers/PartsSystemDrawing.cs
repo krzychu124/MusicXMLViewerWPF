@@ -34,6 +34,7 @@ namespace MusicXMLScore.DrawingHelpers
         private int systemIndex;
         private int pageIndex;
         private MeasureLayoutStyle attributesLayout;
+        private LayoutSystemInfo systemLayout;
         #endregion Fields
 
         #region Constructors
@@ -50,17 +51,14 @@ namespace MusicXMLScore.DrawingHelpers
             GetSetSystemMargins();
             PartsSegmentsDraw();
         }
-        public PartsSystemDrawing(int systemIndex, Dictionary<string, List<MeasureSegmentController>> measuresToArrange, List<string> partsIdList, Dictionary<string, PartProperties> partsProperties, int pageIndex)
+
+        public PartsSystemDrawing(Dictionary<string, List<MeasureSegmentController>> measuresToAdd, List<string> partIDs, LayoutSystemInfo layoutInfo)
         {
-            this.systemIndex = systemIndex;
-            this.partIDsList = partsIdList;
-            partWidth = measuresToArrange.Where(x => x.Key == measuresToArrange.Keys.FirstOrDefault()).FirstOrDefault().Value.Sum(x => x.MinimalWidthWithAttributes);
-            
-            this.partsPropertiesList = partsProperties;
-            this.pageIndex = pageIndex;
             attributesLayout = ViewModel.ViewModelLocator.Instance.Main.CurrentLayout.LayoutStyle.MeasureStyle;
-            GetSetSystemMargins();
-            PartsSegmentsDraw(measuresToArrange);
+            systemLayout = layoutInfo;
+            this.partIDsList = partIDs;
+            partWidth = measuresToAdd.Where(x => x.Key == measuresToAdd.Keys.FirstOrDefault()).FirstOrDefault().Value.Sum(x => x.MinimalWidthWithAttributes);
+            PartsSegmentsDraw(measuresToAdd, layoutInfo);
         }
 
         public double LeftMargin
@@ -123,42 +121,49 @@ namespace MusicXMLScore.DrawingHelpers
 
         #region Methods
 
-        public void CalculatePositions()
+        public void CalculatePositions(bool advanced = false)
         {
-            partsPositions = new Dictionary<string, Tuple<double, double, double>>();
-            double distanceToTop = 0.0;
-            double distanceToPrevious = 0.0;
-            foreach (var partSegment in partsSegments.Values)
+            if (advanced)
             {
-                string partSegmentID = partSegment.PartId;
-                int partIndex = partSegmentID.GetPartIdIndex();
-                var currentPartProperties = partsPropertiesList[partSegmentID];
-                if (partIndex == 0)
-                {
-                    distanceToPrevious = 0;
-                    distanceToTop = partSegment.Size.Height;
-                    partsPositions.Add(partSegmentID, new Tuple<double, double, double>(leftMargin, distanceToPrevious, distanceToPrevious));
-                    //? distanceToPrevious instead of distanceToTop, no top offset while first part in system
-                    //? distanceToTop set to partHeight to simulate bottom line of part ;)
-                }
-                else
-                {
-                    distanceToPrevious = currentPartProperties.StaffLayout.ElementAt(systemIndex).StaffDistance.TenthsToWPFUnit();
-                    distanceToTop += distanceToPrevious;
-                    partsPositions.Add(partSegmentID, new Tuple<double, double, double>(leftMargin, distanceToPrevious, distanceToTop));
-                    distanceToTop += partSegment.Size.Height;
-                }
+
             }
-            this.size = new Size(partWidth, distanceToTop);
+            else
+            {
+                partsPositions = new Dictionary<string, Tuple<double, double, double>>();
+                double distanceToTop = 0.0;
+                double distanceToPrevious = 0.0;
+                foreach (var partSegment in partsSegments.Values)
+                {
+                    string partSegmentID = partSegment.PartId;
+                    int partIndex = partSegmentID.GetPartIdIndex();
+                    var currentPartProperties = partsPropertiesList[partSegmentID];
+                    if (partIndex == 0)
+                    {
+                        distanceToPrevious = 0;
+                        distanceToTop = partSegment.Size.Height;
+                        partsPositions.Add(partSegmentID, new Tuple<double, double, double>(leftMargin, distanceToPrevious, distanceToPrevious));
+                        //? distanceToPrevious instead of distanceToTop, no top offset while first part in system
+                        //? distanceToTop set to partHeight to simulate bottom line of part ;)
+                    }
+                    else
+                    {
+                        distanceToPrevious = currentPartProperties.StaffLayout.ElementAt(systemIndex).StaffDistance.TenthsToWPFUnit();
+                        distanceToTop += distanceToPrevious;
+                        partsPositions.Add(partSegmentID, new Tuple<double, double, double>(leftMargin, distanceToPrevious, distanceToTop));
+                        distanceToTop += partSegment.Size.Height;
+                    }
+                }
+                this.size = new Size(partWidth, distanceToTop);
+            }
         }
 
         private void ArrangeMeasureContent(bool advancedLayout) //TODO split on more methods
         {
             SetPartSystemDimensions(size.Width, size.Height);
-            SetPartSegmentCanvasPositions();
+            SetPartSegmentCanvasPositions(advancedLayout);
             List<List<MeasureSegmentController>> partMeasuresList = GetMeasuresList();
 
-            if (advancedLayout == false)
+            if (!advancedLayout)
             {
                 foreach (var partMeasureSegment in partMeasuresList)
                 {
@@ -263,13 +268,25 @@ namespace MusicXMLScore.DrawingHelpers
         /// <summary>
         /// Sets positions of all partSegments Canvas.
         /// </summary>
-        private void SetPartSegmentCanvasPositions()
+        private void SetPartSegmentCanvasPositions(bool advanced = false)
         {
-            foreach (var partSegment in partsSegments.Values)
+            if (advanced)
             {
-                string partSegmentId = partSegment.PartId;
-                Canvas.SetTop(partSegment.PartSegmentCanvas, partsPositions[partSegmentId].Item3); //TODO_H layout-problem with first part...
-                Canvas.SetLeft(partSegment.PartSegmentCanvas, partsPositions[partSegmentId].Item1);
+                foreach (var partSegment in partsSegments.Values)
+                {
+                    string partSegmentId = partSegment.PartId;
+                    Canvas.SetTop(partSegment.PartSegmentCanvas, systemLayout.PartPositionY(partSegmentId));
+                    Canvas.SetLeft(partSegment.PartSegmentCanvas, 0.0); //! todo margin
+                }
+            }
+            else
+            {
+                foreach (var partSegment in partsSegments.Values)
+                {
+                    string partSegmentId = partSegment.PartId;
+                    Canvas.SetTop(partSegment.PartSegmentCanvas, partsPositions[partSegmentId].Item3); //TODO_H layout-problem with first part...
+                    Canvas.SetLeft(partSegment.PartSegmentCanvas, partsPositions[partSegmentId].Item1);
+                }
             }
         }
 
@@ -327,31 +344,7 @@ namespace MusicXMLScore.DrawingHelpers
             }
             return durationOfPosition;
         }
-
-        /// <summary>
-        /// Gets each position duration.
-        /// </summary>
-        /// <param name="measureDurationValue">Duration of measure</param>
-        /// <param name="positionIndexes">All unique position indexes</param>
-        /// <returns>Collection of each position duration</returns>
-        private Dictionary<int, int> GetDurationOfPosition(int measureDurationValue, List<int> positionIndexes)
-        {
-            int measureDuration = measureDurationValue;
-            Dictionary<int, int> durationOfPosition = new Dictionary<int, int>();
-            for (int i = 0; i < positionIndexes.Count; i++)
-            {
-                if (i < positionIndexes.Count - 1)
-                {
-                    durationOfPosition.Add(positionIndexes[i], positionIndexes[i + 1] - positionIndexes[i]);
-                }
-                else
-                {
-                    durationOfPosition.Add(positionIndexes[positionIndexes.Count - 1], measureDuration - positionIndexes[positionIndexes.Count - 1]);
-                }
-            }
-            return durationOfPosition;
-        }
-
+        
         /// <summary>
         /// Upades/draws beams between notes if any.
         /// </summary>
@@ -369,6 +362,9 @@ namespace MusicXMLScore.DrawingHelpers
             }
         }
 
+        /// <summary>
+        /// Sets horizontal offset(margin) of current system to 0
+        /// </summary>
         private void GetSetSystemMargins() //TODO_WIP do more tests... //
         {
             var currentPartProperties = partsPropertiesList.ElementAt(0).Value;
@@ -390,19 +386,18 @@ namespace MusicXMLScore.DrawingHelpers
             CalculatePositions();
             ArrangeMeasureContent(false);
         }
-
-        private void PartsSegmentsDraw(Dictionary<string, List<MeasureSegmentController>> measuresList)
+        
+        private void PartsSegmentsDraw(Dictionary<string, List<MeasureSegmentController>> measuresList, LayoutSystemInfo layoutInfo)
         {
             partsSegments = new Dictionary<string, PartSegmentDrawing>();
             partSystemCanvas = new Canvas();
             foreach (var partId in partIDsList)
             {
-                PartSegmentDrawing partSegment = new PartSegmentDrawing(measuresList[partId], partId, partsPropertiesList[partId], systemIndex, pageIndex);
+                PartSegmentDrawing partSegment = new PartSegmentDrawing(measuresList[partId], partId, layoutInfo);
                 partsSegments.Add(partId, partSegment);
-                partSegment.GenerateContent(true);
+                partSegment.GenerateContent(true, layoutInfo);
                 PartSystemCanvas.Children.Add(partSegment.PartSegmentCanvas);
             }
-            CalculatePositions();
             ArrangeMeasureContent(true);
         }
 
