@@ -322,8 +322,8 @@ namespace MusicXMLScore.LayoutControl
         private void SetDefaultDistances()
         {
             var layout = ViewModel. ViewModelLocator.Instance.Main.CurrentLayout;
-            defaultSystemDistance = 2.5 * layout.PageProperties.StaffHeight.MMToTenths();
-            defaultTopSystemDistance = 3 * layout.PageProperties.StaffHeight.MMToTenths();
+            defaultSystemDistance = 3 * layout.PageProperties.StaffHeight.MMToTenths();
+            defaultTopSystemDistance = 3.5 * layout.PageProperties.StaffHeight.MMToTenths();
         }
 
         /// <summary>
