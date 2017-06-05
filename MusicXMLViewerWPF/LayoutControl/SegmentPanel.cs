@@ -13,6 +13,7 @@ using System.Windows.Media;
 
 namespace MusicXMLScore.LayoutControl
 {
+    [Obsolete("Refactored, currently not used")]
     class SegmentPanel : Panel
     {
         private Dictionary<int, MeasureItemsContainer> notesContainer;
@@ -54,8 +55,8 @@ namespace MusicXMLScore.LayoutControl
         public void AddMeasureContainer(MeasureItemsContainer measureNotes, int numberOfStave = 1)
         {
             measureNotes.Tag = numberOfStave.ToString();
-            double staffHeight = ViewModel.ViewModelLocator.Instance.Main.CurrentPageLayout.StaffHeight.MMToWPFUnit();
-            measureNotes.ArrangeStaffs(staffHeight + defaultStavesDistance.TenthsToWPFUnit());
+            //double staffHeight = ViewModel.ViewModelLocator.Instance.Main.CurrentPageLayout.StaffHeight.MMToWPFUnit();
+            //measureNotes.ArrangeStaffs(staffHeight + defaultStavesDistance.TenthsToWPFUnit());
             Children.Add(measureNotes);
             InitNotesContainer();
             notesContainer.Add(numberOfStave, measureNotes);
@@ -91,7 +92,7 @@ namespace MusicXMLScore.LayoutControl
                 double top = double.IsNaN(Canvas.GetTop(child)) ? 0.0 : Canvas.GetTop(child);
                 double left = double.IsNaN(Canvas.GetLeft(child)) ? 0.0 : Canvas.GetLeft(child);
                 child.Arrange(new Rect(left, top, size.Width, size.Height));
-                size.Width += panelWidth;
+                //size.Width += panelWidth;
             }
             return size;
         }
