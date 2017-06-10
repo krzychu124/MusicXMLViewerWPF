@@ -19,43 +19,37 @@ namespace MusicXMLScore.DrawingHelpers
 
         #region Fields
 
-        private Dictionary<string, List<ClefMusicXML>> clefAttributes;
+        private bool systemAttributes = true;
         private ClefChangesDictionary clefChanges = new ClefChangesDictionary();
         private Dictionary<string, ClefChangesDictionary> clefPerStaff;
+        private Dictionary<string, int> divisionsAttributes;
         private Dictionary<string, Point> coords;
-        private ScorePartwisePartMusicXML currentPart;
         private double defaultStaffDistance = 0.0;
         private double defaultSystemDistance = 0.0;
         private double defaultTopSystemDistance = 0.0;
-        private Dictionary<string, int> divisionsAttributes;
-        private List<string> firstIdPerSystem;
-        private Dictionary<string, KeyMusicXML> keyAttributes;
-        private KeyChangesDictionary keyChanges = new KeyChangesDictionary();
-        private List<MeasureNumberingMusicXML> measureNumbering = new List<MeasureNumberingMusicXML>();
-        private List<List<MeasureNumberingMusicXML>> measureNumberingPerPage = new List<List<MeasureNumberingMusicXML>>();
-        private List<List<string>> measuresPerSystem = new List<List<string>>();
-        private List<List<List<string>>> measuresPerSystemPerPage = new List<List<List<string>>>();
-        private List<Tuple<string, string>> measuresRangeInPartSystem = new List<Tuple<string, string>>();
-        private int numberOfStaves = 1;
         private double partHeight = 0;
-        private string partId;
-        private int partIndex = 0;
-        private List<List<Tuple<string, string>>> partSysemsInPages;
-        private List<StaffLayoutMusicXML> staffLayout = new List<StaffLayoutMusicXML>();
-        private List<List<StaffLayoutMusicXML>> staffLayoutPerPage = new List<List<StaffLayoutMusicXML>>();
         private double stavesDistance = 0.0;
-        private bool systemAttributes = true;
-        private List<SystemLayoutMusicXML> systemLayout = new List<SystemLayoutMusicXML>();
+        private int numberOfStaves = 1;
+        private int partIndex = 0;
+        private KeyChangesDictionary keyChanges = new KeyChangesDictionary();
+        private List<List<List<string>>> measuresPerSystemPerPage = new List<List<List<string>>>();
+        private List<List<MeasureNumberingMusicXML>> measureNumberingPerPage = new List<List<MeasureNumberingMusicXML>>();
+        private List<List<StaffLayoutMusicXML>> staffLayoutPerPage = new List<List<StaffLayoutMusicXML>>();
+        private List<List<string>> measuresPerSystem = new List<List<string>>();
         private List<List<SystemLayoutMusicXML>> systemLayoutPerPage = new List<List<SystemLayoutMusicXML>>();
+        private List<List<Tuple<string, string>>> partSysemsInPages;
+        private List<MeasureNumberingMusicXML> measureNumbering = new List<MeasureNumberingMusicXML>();
+        private List<StaffLayoutMusicXML> staffLayout = new List<StaffLayoutMusicXML>();
+        private List<SystemLayoutMusicXML> systemLayout = new List<SystemLayoutMusicXML>();
+        private List<Tuple<string, string>> measuresRangeInPartSystem = new List<Tuple<string, string>>();
+        private ScorePartwisePartMusicXML currentPart;
+        private string partId;
         private TimeChangesDictionary timeChanges = new TimeChangesDictionary();
 
         #endregion Fields
 
         #region Constructors
-        public PartProperties(string partId)
-        {
-            
-        }
+
         public PartProperties(ScorePartwiseMusicXML score, string partId)
         {
             SetMainFields(score, partId);
@@ -64,27 +58,12 @@ namespace MusicXMLScore.DrawingHelpers
             GetLayoutInfo(measuresInPart);
             SetSystemMeasureRanges();
             SetPartHeight();
-            //GenerateKeyAttributes();
             GenerateDivisionChanges();
-            //GenerateFirstMeasureIdPerSystem();
         }
 
         #endregion Constructors
 
         #region Properties
-
-        public Dictionary<string, List<ClefMusicXML>> ClefAttributes
-        {
-            get
-            {
-                return clefAttributes;
-            }
-
-            set
-            {
-                clefAttributes = value;
-            }
-        }
 
         public ClefChangesDictionary ClefChanges
         {
@@ -116,38 +95,14 @@ namespace MusicXMLScore.DrawingHelpers
         {
             get
             {
-                return coords;
+                return coords; 
+                //! return new Dictionary<string, Point>(measuresPerSystem.SelectMany((x,i) => x).ToDictionary(item => item, item=> new Point()));
+                //! temporary empty list of point 
             }
 
             set
             {
                 coords = value;
-            }
-        }
-
-        public Dictionary<string, int> DivisionsAttributes
-        {
-            get
-            {
-                return divisionsAttributes;
-            }
-
-            set
-            {
-                divisionsAttributes = value;
-            }
-        }
-
-        public Dictionary<string, KeyMusicXML> KeyAttributes
-        {
-            get
-            {
-                return keyAttributes;
-            }
-
-            set
-            {
-                keyAttributes = value;
             }
         }
 
@@ -255,32 +210,6 @@ namespace MusicXMLScore.DrawingHelpers
             set
             {
                 staffLayoutPerPage = value;
-            }
-        }
-
-        public double StavesDistance
-        {
-            get
-            {
-                return stavesDistance;
-            }
-
-            set
-            {
-                stavesDistance = value;
-            }
-        }
-
-        public List<SystemLayoutMusicXML> SystemLayout
-        {
-            get
-            {
-                return systemLayout;
-            }
-
-            set
-            {
-                systemLayout = value;
             }
         }
 
@@ -417,12 +346,7 @@ namespace MusicXMLScore.DrawingHelpers
             }
             GenerateClefPerStaffDictionary();
         }
-
-        public ClefChanges GetCurrentClef(string staffNumber, string measureNumber)
-        {
-            return new ClefChanges();// ClefAlterations.Select((i, j)=> i = clefAlterations.Keys, j = clefAlterations.Values).Where()
-        }
-
+        
         public int GetDivisionsMeasureId(string measureId)
         {
             string resultKey = divisionsAttributes.Keys.FirstOrDefault();
@@ -432,22 +356,6 @@ namespace MusicXMLScore.DrawingHelpers
             }
             resultKey = divisionsAttributes.Where(i => int.Parse(i.Key) <= int.Parse(measureId)).LastOrDefault().Key;
             return divisionsAttributes[resultKey];
-        }
-
-        public bool IsSystemBeginningMeasure(string measureId)
-        {
-            if (firstIdPerSystem == null)
-            {
-                //GenerateFirstMeasureIdPerSystem();
-            }
-            if (firstIdPerSystem.Contains(measureId))
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
         }
 
         private void AttributesChanged(AttributesMusicXML attributes, int cursorPosition, string measureNumber, bool firstMeasure = false)
@@ -570,64 +478,6 @@ namespace MusicXMLScore.DrawingHelpers
             }
         }
         
-        private void GenerateFirstMeasureIdPerSystem()
-        {
-            if (measuresPerSystem != null || measuresPerSystem.Count != 0)
-            {
-                if (firstIdPerSystem == null)
-                {
-                    firstIdPerSystem = new List<string>();
-                }
-                if (firstIdPerSystem.Count != 0)
-                {
-                    firstIdPerSystem.Clear();
-                }
-                firstIdPerSystem = measuresPerSystem.Select(t => t).ElementAt(0).ToList();
-            }
-        }
-
-        private void GenerateKeyAttributes()
-        {
-            //MusicXML support behaviour when key is different inside different part staves, 
-            //I can't find any reason why this could be usefull since part correspond with one instrument and is impossible to play in eg. two different keySignatures at the same time
-            //This feature will be omitted for now, so every staffline in part will have the same key signature.
-            var firsMeasureInSystem = from zz in measuresPerSystem select zz.Select(t => t).ElementAt(0);
-            keyAttributes = new Dictionary<string, KeyMusicXML>();
-            KeyMusicXML currentKeySignature = new KeyMusicXML();
-            foreach (var measure in currentPart.Measure)
-            {
-                if (measure.Items.OfType<AttributesMusicXML>().FirstOrDefault() != null)
-                {
-                    var attributes = measure.Items.OfType<AttributesMusicXML>().FirstOrDefault();
-                    if (attributes.Key.Count != 0)
-                    {
-                        var keySig = attributes.Key.ElementAt(0);
-                        currentKeySignature = keySig;
-                        currentKeySignature.PrintObject = Model.Helpers.SimpleTypes.YesNoMusicXML.yes;
-                        keyAttributes.Add(measure.Number, currentKeySignature);
-                    }
-                    else
-                    {
-                        KeyMusicXML key = currentKeySignature.Clone();
-                        key.PrintObject = Model.Helpers.SimpleTypes.YesNoMusicXML.no;
-                        keyAttributes.Add(measure.Number, key);
-                    }
-                }
-                else
-                {
-                    KeyMusicXML key = currentKeySignature.Clone();
-                    key.PrintObject = Model.Helpers.SimpleTypes.YesNoMusicXML.no;
-                    if (firsMeasureInSystem.Contains(measure.Number))
-                    {
-                        key.PrintObject = Model.Helpers.SimpleTypes.YesNoMusicXML.yes;
-                    }
-                    keyAttributes.Add(measure.Number, key);
-                }
-
-            }
-            //var test = keyAttributes.Select(i => i).Where(i => i.Value.PrintObject == Model.Helpers.SimpleTypes.YesNoMusicXML.yes);
-        }
-
         //! Refactor needed - missing default layout if Loaded score does not contain any layout supporting print elements
         private void GetLayoutInfo(List<Model.ScorePartwisePartMeasureMusicXML> part)
         {
@@ -649,10 +499,7 @@ namespace MusicXMLScore.DrawingHelpers
                         }
                         else
                         {
-                            //if (item.IndexOf(measureNumber) == 0)
-                            //{
                             systemLayout.Add(new SystemLayoutMusicXML() { SystemDistance = defaultSystemDistance, TopSystemDistance = defaultTopSystemDistance });
-                            //}
                         }
                         if (printLayouts.MeasureNumbering != null)
                         {
@@ -667,7 +514,6 @@ namespace MusicXMLScore.DrawingHelpers
                         }
                         else
                         {
-
                             staffLayout.Add(new StaffLayoutMusicXML() { Number = numberOfStaves.ToString(), StaffDistance = defaultStaffDistance });
                         }
                     }
@@ -751,12 +597,12 @@ namespace MusicXMLScore.DrawingHelpers
             double staffHeight = ViewModel.ViewModelLocator.Instance.Main.CurrentPageLayout.StaffHeight.MMToTenths();
             partHeight = staffHeight * numberOfStaves + (stavesDistance * (numberOfStaves - 1));
         }
-        public void SetSystemMeasureRanges(/*MusicXMLViewerWPF.ScorePartwiseMusicXML score*/)
+        public void SetSystemMeasureRanges()
         {
             LayoutControl.LayoutGeneral currentLayout = ViewModel.ViewModelLocator.Instance.Main.CurrentLayout;
             double defaultLeftMargin = currentLayout.PageMargins.LeftMargin;
             double defaultTopMargin = currentLayout.PageMargins.TopMargin;
-            var part = currentPart;// score.Part.ElementAt(partIndex);
+            var part = currentPart;
             measuresPerSystem = new List<List<string>>();
             foreach (var page in partSysemsInPages)
             {
@@ -768,8 +614,7 @@ namespace MusicXMLScore.DrawingHelpers
                 }
                 measuresPerSystemPerPage.Add(new List<List<string>>(tempList));
             }
-            var measures = part.Measure;// score.Part.ElementAt(partIndex).Measure;
-            //score.SetLargestWidth();
+            var measures = part.Measure;
             double previousWidth = 0.0;
             double currentLineY = 0.0;
             coords = new Dictionary<string, Point>();
@@ -789,8 +634,10 @@ namespace MusicXMLScore.DrawingHelpers
                     {
                         topMargin = defaultTopMargin + staffLayout.ElementAt(systemIndex).StaffDistance;
                     }
+
+
                     previousWidth = 0.0; //! test marginL.TenthsToWPFUnit();
-                    //currentLineY = topMargin.TenthsToWPFUnit();
+
                     foreach (var measureId in measuresLine)
                     {
                         coords.Add(measureId, new Point(previousWidth, currentLineY));
@@ -799,14 +646,6 @@ namespace MusicXMLScore.DrawingHelpers
                 }
                 else
                 {
-                    if (partIndex == 0)
-                    {
-                        //currentLineY += systemLayout.ElementAt(systemIndex).SystemDistance.TenthsToWPFUnit() + currentLayout.PageProperties.StaffHeight.MMToWPFUnit();
-                    }
-                    else
-                    {
-                        //currentLineY += staffLayout.ElementAt(systemIndex).StaffDistance.TenthsToWPFUnit() + currentLayout.PageProperties.StaffHeight.MMToWPFUnit();
-                    }
                     previousWidth = 0.0; //! test (defaultLeftMargin + systemLayout.ElementAt(systemIndex).SystemMargins.LeftMargin).TenthsToWPFUnit();
                     foreach (var measureId in measuresLine)
                     {

@@ -23,20 +23,22 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
         private int itemDuration =0;
         private double itemWidth = 0.0;
         private double itemWidthMin = 0.0;
-        private double itemWidthOpt = 0.0; 
         private double itemLeftMargin;
         private double itemRightMargin;
+
         private double horizontalOffset = 0.0;
         private double verticalOffset = 0.0;
-        private bool measureRest = false;
+
+        private bool measureRest = false;//! todo
         private string symbol;
         private string partId;
         private string measureId;
         private string itemStaff;
         private int dotCount = 0;
+
         private Dictionary<int, double> staffLines = new Dictionary<int, double>();
         private NoteTypeValueMusicXML restType = NoteTypeValueMusicXML.whole;
-        private double itemWeight = 0.0;
+
         private bool customPitch = false;
         private string customOctave = "4";
         private StepMusicXML customStep = StepMusicXML.B;
@@ -66,32 +68,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
                 itemWidthMin = value;
             }
         }
-
-        public double ItemWidthOpt
-        {
-            get
-            {
-                return itemWidthOpt;
-            }
-
-            set
-            {
-                itemWidthOpt = value;
-            }
-        }
-
-        public double ItemWeight
-        {
-            get
-            {
-                return itemWeight;
-            }
-            set
-            {
-                itemWeight = value;
-            }
-        }
-
+        
         public int ItemDuration
         {
             get
@@ -256,30 +233,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
             }
             ItemCanvas.Children.Add(rest);
         }
-
-        public void DrawSpace(double length, bool red = false)
-        {
-            Brush color;
-            int shiftY = 50;
-            DrawingVisualHost spaceCanvas = new DrawingVisualHost();
-            if (red)
-            {
-                color = Brushes.Red;
-                shiftY = 70;
-            }
-            else
-            {
-                color = Brushes.Green;
-            }
-            double y = r.Next(0, 15) + shiftY;
-            DrawingVisual dv = new DrawingVisual();
-            using (DrawingContext dc = dv.RenderOpen())
-            {
-                dc.DrawLine(new Pen(color, 3.0), new Point(0, shiftY), new Point(length - 0.05, shiftY));
-            }
-            spaceCanvas.AddVisual(dv);
-            ItemCanvas.Children.Add(spaceCanvas);
-        }
+        
         private double SetPosition(int customPosition)
         {
             return staffLines[customPosition];
@@ -300,8 +254,6 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
             double dotWidth = DrawingMethods.GetTextWidth(MusicSymbols.Dot, TypeFaces.GetMusicFont());
             double leftFreeSpace = restWidth * 0.1;
             double dotSpaces = dotWidth * 0.5;
-
-            itemWidthOpt = leftFreeSpace + restWidth + (dotWidth + dotSpaces) * dotCount;
         }
         private void GetSymbol()
         {

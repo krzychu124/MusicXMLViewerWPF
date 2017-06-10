@@ -29,7 +29,22 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
         private int staffsNumber;
         private Canvas temporaryBarline;
         private Canvas temporaryStartBarline;
+        //! temp test ---------------------
+        private List<DrawingVisualHost> beams;
 
+        public List<DrawingVisualHost> Beams
+        {
+            get
+            {
+                return beams;
+            }
+
+            set
+            {
+                beams = value;
+            }
+        }
+        //! -----------------------------------------
         internal List<Tuple<int, IMeasureItemVisual>> ItemsWithPostition
         {
             get
@@ -55,6 +70,27 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
             }
         }
 
+        public int StaffsNumber
+        {
+            get
+            {
+                return staffsNumber;
+            }
+
+            private set
+            {
+                if (value < 1)
+                {
+                    Log.LoggIt.Log($"Staff number can't be lower than 1! Passed value {value} changed to 1");
+                    staffsNumber = 1;
+                }
+                else
+                {
+                    staffsNumber = value;
+                }
+            }
+        }
+
         public MeasureItemsContainer(string measureId, string partId, int numberOfStave, string staffs)
         {
             measureItemsVisuals = new List<IMeasureItemVisual>();
@@ -64,7 +100,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
             this.measureId = measureId;
             this.partId = partId;
             staveNumber = numberOfStave;
-            staffsNumber = int.Parse(staffs);
+            StaffsNumber = int.Parse(staffs);
         }
 
         private void InitPositionsPerStaff(string staffs)
@@ -82,9 +118,9 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
             for (int i = 0; i < itemsPositionsPerStaff.Count; i++)
             {
                 string staffNumber = (i+1).ToString();
+                double top = staffDistance * i + (40.0.TenthsToWPFUnit() * i);
                 foreach (var item in itemsPositionsPerStaff[staffNumber])
                 {
-                    double top = staffNumber != "1" ? staffDistance : 0.0;
                     if (item.Item2 is NoteContainerItem)
                     {
                         var note = item.Item2 as NoteContainerItem;
@@ -93,10 +129,10 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
                     Canvas.SetTop(item.Item2.ItemCanvas as Canvas, top);
                 }
             }
-            double tempHeight = staffsNumber == 1 ? 0.0 : staffDistance; //! temp
-            DrawTempBarline(tempHeight + 40.0.TenthsToWPFUnit()); //! Temp barline (black)
+            double tempBarlineHeight = (staffsNumber-1)* staffDistance + (staffsNumber * 40.0.TenthsToWPFUnit()); 
+            DrawTempBarline(tempBarlineHeight); //! Temp barline (black)
 #if VISUALDEBUG
-            DrawTempStartBarline(tempHeight + 40.0.TenthsToWPFUnit()); //! Temp 0.X position barline (red)
+            DrawTempStartBarline(tempBarlineHeight + 40.0.TenthsToWPFUnit()); //! Temp 0.X position barline (red)
 #endif
         }
 

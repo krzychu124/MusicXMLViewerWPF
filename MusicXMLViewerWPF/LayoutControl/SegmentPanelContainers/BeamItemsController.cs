@@ -42,11 +42,12 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
         private void GenerateBeams()
         {
             var voices = beams.Select(x => x.Voice).Distinct().ToList();
-            //var fractions = positionPerFractionTable.Keys.Select(x=>x);
+
             if (voices.Count != 0)
             {
                 beamsSegmentsPerVoice = new Dictionary<string, List<BeamSegment>>();
             }
+
             for (int i = 0; i < voices.Count; i++)
             {
                 string voiceId = voices[i];
@@ -71,6 +72,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
                         }
                     }
                 }
+
                 if (beamsSegmentsList.Count != 0)
                 {
                     beamsSegmentsPerVoice.Add(voiceId, beamsSegmentsList);

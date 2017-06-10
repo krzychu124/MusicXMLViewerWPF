@@ -105,7 +105,7 @@ namespace MusicXMLScore.LayoutControl
         {
             measures = measuresOfSystem;
             var layout = ViewModel.ViewModelLocator.Instance.Main.CurrentLayout;
-            defaultStaffDistance = 1.7 * layout.PageProperties.StaffHeight.MMToTenths();
+            defaultStaffDistance = 1.5 * layout.PageProperties.StaffHeight.MMToTenths();
             var partProperties = ViewModel.ViewModelLocator.Instance.Main.CurrentPartsProperties;
             var partHeights = partProperties.Select((a) => new { key = a.Key, value = a.Value.PartHeight }).ToDictionary(item => item.key, item => item.value);
             AddPartHeights(partHeights);

@@ -17,19 +17,20 @@ namespace MusicXMLScore.LayoutControl
 {
     class MeasureSegmentController
     {
-        private SegmentPanel segmentPanel;
         private int stavesCount = 1;
+        private double minStavesDistance = 40.0.TenthsToWPFUnit();
         private int maxDuration = 1;
         private double width = 0;
         private double minimalWidth;
         private PartProperties partProperties;
-        //Dictionary<string, SegmentPanelContainers.MeasureItemsContainer> staffs;
         private Tuple<double, double, double> attributesWidths;
         private BeamItemsController beamsController;
         MeasureItemsContainer measureItemsContainer;
+
         private string measureID;
         private double minimalWidthWithAttributes;
         private string partId;
+
         public int MaxDuration
         {
             get
@@ -134,9 +135,9 @@ namespace MusicXMLScore.LayoutControl
             this.stavesCount = stavesCount <1 ? 1: stavesCount; //! correction if set to 0
             this.measureID = measure.Number;
             partProperties = ViewModel.ViewModelLocator.Instance.Main.CurrentPartsProperties[partID]; //Todo refator: replace/remove (reduce dependencies)
+            minStavesDistance = partProperties.StaffLayoutPerPage.FirstOrDefault().FirstOrDefault().StaffDistance.TenthsToWPFUnit(); //todo replace/improvements
             Stopwatch stopWatch;
 
-            segmentPanel = new SegmentPanel(partID, measure.Number, 0, 0);
             stopWatch = new Stopwatch();
 
             stopWatch.Start();
@@ -274,8 +275,8 @@ namespace MusicXMLScore.LayoutControl
             beamsController = new BeamItemsController(beam);
             GenerateAndAddAttributesContainers(measure.Number, partID);
             width = measure.CalculatedWidth.TenthsToWPFUnit();
-            ArrangeContainers(measure.CalculatedWidth.TenthsToWPFUnit(), maxDuration); 
-            AppendContainersToSegment();
+            ArrangeContainers(measure.CalculatedWidth.TenthsToWPFUnit(), maxDuration);
+            measureItemsContainer.ArrangeStaffs(minStavesDistance);
 
             stopWatch.Stop();
             Log.LoggIt.Log($"Measure content {measure.Number} (Switch) processig done in: {stopWatch.ElapsedMilliseconds}", Log.LogType.Warning);
@@ -440,10 +441,7 @@ namespace MusicXMLScore.LayoutControl
             attributesWidths = Tuple.Create(maxClefWidth, maxKeyWidth, maxTimeWidth);
             return 0.0;
         }
-        private void AppendContainersToSegment()
-        {
-            segmentPanel.AddMeasureContainer(measureItemsContainer, stavesCount);
-        }
+
         public List<int> GetIndexes()
         {
             List<List<int>> indexes = new List<List<int>>();
@@ -459,44 +457,32 @@ namespace MusicXMLScore.LayoutControl
         {
             return attributesWidths ?? Tuple.Create(0.0, 0.0, 0.0);
         }
-        public SegmentPanel GetContentPanel()
-        {
-            return segmentPanel;
-        }
         public Canvas GetMeasureCanvas()
         {
             return measureItemsContainer;
         }
         public void AddBeams(List<DrawingVisualHost> beams)
         {
-            if (segmentPanel.Beams == null) 
+            if (measureItemsContainer.Beams == null)
             {
-                segmentPanel.Beams = new List<DrawingVisualHost>();
+                measureItemsContainer.Beams = new List<DrawingVisualHost>();
             }
-            if (segmentPanel.Beams.Count != 0)
+            if (measureItemsContainer.Beams.Count != 0)
             {
                 //! if not empty - remove beams to update
-                foreach (var item in segmentPanel.Beams)
+                foreach (var item in measureItemsContainer.Beams)
                 {
-                    segmentPanel.Children.Remove(item);
+                    measureItemsContainer.Children.Remove(item);
                 }
-                segmentPanel.Beams.Clear();
+                measureItemsContainer.Beams.Clear();
             }
             foreach (var item in beams)
             {
-                segmentPanel.Beams.Add(item); //! reference used for update 
-                segmentPanel.Children.Add(item);
+                measureItemsContainer.Beams.Add(item); //! reference used for update 
+                measureItemsContainer.Children.Add(item);
             }
         }
-        public double MinimalContentWidth()
-        {
-            var contentItemsWidth = measureItemsContainer.GetMinimalContentWidth();
-            var attributesWidth = GetAttributesWidths();
-            minimalWidthWithAttributes = ( contentItemsWidth + (attributesWidths.Item1 + attributesWidths.Item2 + attributesWidths.Item3)) *1.5;
-            ViewModel.ViewModelLocator.Instance.Main.CurrentSelectedScore.Part.FirstOrDefault().MeasuresByNumber[measureID].CalculatedWidth = MinimalWidthWithAttributes.WPFUnitToTenths();//! Test
-            //! calculate optimal width using spacing values
-            return contentItemsWidth ;
-        }
+
         public List<AntiCollisionHelper> GetContentItemsProperties(int shortestDuration = 1)
         {
             List<AntiCollisionHelper> antiCollHelpers = new List<AntiCollisionHelper>();
