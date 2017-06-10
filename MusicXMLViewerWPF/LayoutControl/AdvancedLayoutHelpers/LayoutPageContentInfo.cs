@@ -147,17 +147,7 @@ namespace MusicXMLScore.LayoutControl
         {
             return pageLayoutStyle.StretchLastSystemOnPage;
         }
-
-        //public LayoutPageContentInfo(int pageIndex, double systemDistance, double topSystemDistance)
-        //{
-        //    this.pageIndex = pageIndex;
-        //    defaultSystemDistance = systemDistance;
-        //    defaultTopSystemDistance = topSystemDistance;
-        //    GetPageContentHeight();
-        //    GetPageContentWidth();
-        //    availableHeight = pageContentHeight; //! CalculateAvailableHeight();
-        //    PropertyChanged += LayoutPageContentInfo_PropertyChangedHandler;
-        //}
+        
         /// <summary>
         /// Adds Complete Collection of LayoutSystemInfo to LayoutPageContent
         /// </summary>
@@ -186,8 +176,7 @@ namespace MusicXMLScore.LayoutControl
             }
             else
             {
-                //!todo  need tests 
-                //? availableHeight -= systemInfo.SystemHeight + defaultSystemDistance.TenthsToWPFUnit();
+                //!todo more tests 
 
                 systemDimensionsInfo.Add(systemInfo);
                 lastSystemIndex = systemDimensionsInfo.Count - 1;
