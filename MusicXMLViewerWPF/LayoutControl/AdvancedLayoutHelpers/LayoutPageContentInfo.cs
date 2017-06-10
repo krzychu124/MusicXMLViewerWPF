@@ -148,16 +148,16 @@ namespace MusicXMLScore.LayoutControl
             return pageLayoutStyle.StretchLastSystemOnPage;
         }
 
-        public LayoutPageContentInfo(int pageIndex, double systemDistance, double topSystemDistance)
-        {
-            this.pageIndex = pageIndex;
-            defaultSystemDistance = systemDistance;
-            defaultTopSystemDistance = topSystemDistance;
-            GetPageContentHeight();
-            GetPageContentWidth();
-            availableHeight = pageContentHeight; //! CalculateAvailableHeight();
-            PropertyChanged += LayoutPageContentInfo_PropertyChangedHandler;
-        }
+        //public LayoutPageContentInfo(int pageIndex, double systemDistance, double topSystemDistance)
+        //{
+        //    this.pageIndex = pageIndex;
+        //    defaultSystemDistance = systemDistance;
+        //    defaultTopSystemDistance = topSystemDistance;
+        //    GetPageContentHeight();
+        //    GetPageContentWidth();
+        //    availableHeight = pageContentHeight; //! CalculateAvailableHeight();
+        //    PropertyChanged += LayoutPageContentInfo_PropertyChangedHandler;
+        //}
         /// <summary>
         /// Adds Complete Collection of LayoutSystemInfo to LayoutPageContent
         /// </summary>
@@ -227,7 +227,6 @@ namespace MusicXMLScore.LayoutControl
                 systemsYPositions.Add(currentY);
                 currentY += systemDistances[i] + systemHeights[i];
                 systemDimensionsInfo[i].UpdateLayout = true;
-                //currentX = systemDimensionsInfo[i].SystemWidth;
             }
         }
 
@@ -325,40 +324,5 @@ namespace MusicXMLScore.LayoutControl
             defaultSystemDistance = 3 * layout.PageProperties.StaffHeight.MMToTenths();
             defaultTopSystemDistance = 3.5 * layout.PageProperties.StaffHeight.MMToTenths();
         }
-
-        /// <summary>
-        /// Generates positions of every system on page
-        /// </summary>
-        /// <returns>Collection of positions of every system on page</returns>
-        public List<Point> AllSystemsPositions()
-        {
-            List<Point> resultList = new List<Point>();
-            foreach (var index in systemDistances.Keys)
-            {
-                resultList.Add(this.SystemPosition(index));
-            }
-            return resultList;
-        }
-
-        /// <summary>
-        /// Generates measures positions on page (id/Number as key)
-        /// </summary>
-        /// <returns>Positions of all measures on page</returns>
-        public Dictionary<string, Point> AllMeasureCoords()
-        {
-            Dictionary<string, Point> coords = new Dictionary<string, Point>();
-            foreach (var item in systemDimensionsInfo)
-            {
-                foreach (var c in item.Measures)
-                {
-                    string measureID = c.MeasureId;
-                    Point measureCoords = item.FirstPartMeasureCoords(measureID);
-                    coords.Add(measureID, measureCoords);
-                }
-            }
-                return coords;
-        }
-
-
     }
 }

@@ -120,7 +120,6 @@
     <Compile Include="LayoutControl\SegmentPanelContainers\BeamItemsController.cs" />
     <Compile Include="LayoutControl\LayoutGeneral.cs" />
     <Compile Include="LayoutControl\MeasureSegmentController.cs" />
-    <Compile Include="LayoutControl\SegmentPanel.cs" />
     <Compile Include="LayoutControl\SegmentPanelContainers\Attributes\ClefContainerItem.cs" />
     <Compile Include="LayoutControl\SegmentPanelContainers\Attributes\IAttributeItemVisual.cs" />
     <Compile Include="LayoutControl\SegmentPanelContainers\Attributes\KeyContainerItem.cs" />

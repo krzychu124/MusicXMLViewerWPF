@@ -20,17 +20,14 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
     class NoteContainerItem : INoteItemVisual
     {
         private Canvas itemCanvas;
-        private static Random r= new Random();
         private int itemDuration = 0;
         private double itemWidth = 0.0;
         private double itemRightMargin = 0.0;
         private double itemLeftMargin = 0.0;
         private double itemWidthMin = 0.0;
-        private double itemWidthOpt = 0.0;
         private double horizontalOffset = 0.0;
         private double verticalOffset = 0.0;
         private List<NoteMusicXML> noteItem;
-        private bool isChordNote;
         private int fractionPosition;
         private string symbol;
         private string measureId;
@@ -45,7 +42,6 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
         private int duration;
         private Dictionary<int, int> pitchedPosition;
         private Dictionary<int, double> pitchedValue;
-        private double itemWeight = 0.0;
         private bool needLedgerLines = false;
         private List<double> ledgerLinesPositions;
         private string itemStaff;
@@ -55,45 +51,17 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
         private bool isSmall = false;
         private bool hasBeams = false;
         private LayoutStyle.Layout layoutStyle;
-        public NoteContainerItem(NoteMusicXML note, int fractionPosition, string partId, string measureId, string staffId)
-        {
-            layoutStyle = ViewModel.ViewModelLocator.Instance.Main.CurrentLayout.LayoutStyle;
-            noteItem = new List<NoteMusicXML>();
-            noteItem.Add(note);
-            isChordNote = false;
-            this.fractionPosition = fractionPosition;
-            SetVisualType();
-            this.measureId = measureId;
-            this.partId = partId;
-            this.itemStaff = staffId;
-            itemCanvas = new Canvas();
-            InitNoteProperties();
-            if (hasBeams)
-            {
-                hasBeams = false; // temp testing 
-               // InitBeams();
-            }
-            else
-            {
-                if((int)noteType  < 8)
-                {
-                    DrawFlag();
-                }
-            }
-        }
 
         public NoteContainerItem(List<NoteMusicXML> chordList, int fractionPosition, string partId, string measureId, string staffId)
         {
             layoutStyle = ViewModel.ViewModelLocator.Instance.Main.CurrentLayout.LayoutStyle;
             noteItem = new List<NoteMusicXML>(chordList);
-            isChordNote = true;
             this.fractionPosition = fractionPosition;
             SetVisualType();
             this.measureId = measureId;
             this.partId = partId;
             this.itemStaff = staffId != null ? staffId : "1";
             itemCanvas = new Canvas();
-            //hasBeams = false; // temp testing 
 
             InitNoteProperties();
             InitBeams();
@@ -199,7 +167,6 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
                 index++;
             }
             itemWidthMin = DrawingMethods.GetTextWidth(symbol, TypeFaces.GetMusicFont(), isSmall);
-            itemWidthOpt = itemWidthMin;
             itemWidth = itemWidthMin;
             CheckForLedgerLines();
             if (needLedgerLines)
@@ -311,30 +278,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
                     return "";
             }
         }
-
-        public void DrawSpace(double length, bool red = false)
-        {
-            Brush color;
-            int shiftY = 50;
-            DrawingVisualHost spaceCanvas = new DrawingVisualHost();
-            if (red)
-            {
-                color = Brushes.Red;
-                shiftY = 70;
-            }
-            else
-            {
-                color = Brushes.Green;
-            }
-            double y = r.Next(0, 15) + shiftY;
-            DrawingVisual dv = new DrawingVisual();
-            using (DrawingContext dc = dv.RenderOpen())
-            {
-                dc.DrawLine(new Pen(color, 3.0), new Point(0, y), new Point(length -0.05, y));
-            }
-            spaceCanvas.AddVisual(dv);
-            ItemCanvas.Children.Add(spaceCanvas);
-        }
+        
         private void CheckForLedgerLines()
         {
             if (GetLowestPitchPosition() < -1)
@@ -366,11 +310,10 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
         internal void AddStem(DrawingVisualHost dvh)
         {
             var stem = ItemCanvas.Children.OfType<DrawingVisualHost>().Where(x => (string)x.Tag == "stem").FirstOrDefault();
-            if (stem != null)
+            if (stem == null)
             {
-                ItemCanvas.Children.Remove(stem);
+                ItemCanvas.Children.Add(dvh);
             }
-            ItemCanvas.Children.Add(dvh);
         }
         private void AddFlag(DrawingVisualHost flagHost)
         {
@@ -466,11 +409,6 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
             itemLeftMargin = value > itemLeftMargin ? value : itemLeftMargin;
         }
 
-        private void CalculateWeight()
-        {
-
-        }
-
         public void SetItemMargins(double left, double right)//! wip
         {
             ItemLeftMargin = left;
@@ -487,27 +425,6 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
             set
             {
                 itemWidthMin = value;
-            }
-        }
-
-        public double ItemWidthOpt
-        {
-            get
-            {
-                return itemWidthOpt;
-            }
-
-            set
-            {
-                itemWidthOpt = value;
-            }
-        }
-
-        public double ItemWeight
-        {
-            get
-            {
-                return itemWeight;
             }
         }
 
