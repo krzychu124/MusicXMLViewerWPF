@@ -26,7 +26,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
         private double stemLength;
         private bool isDown;
         private double staffLineOffset;
-
+        private DrawingVisualHost stemVisual;
         internal NoteContainerItem NoteReference
         {
             get
@@ -357,27 +357,45 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
         private void Draw()
         {
             LayoutStyle.NotesLayoutStyle notesStyle = ViewModel.ViewModelLocator.Instance.Main.CurrentLayout.LayoutStyle.NotesStyle;
-            DrawingVisual dv = new DrawingVisual();
-            using (DrawingContext dc = dv.RenderOpen())
+            DrawingVisual dravingVisualStem = new DrawingVisual();
+            using (DrawingContext dc = dravingVisualStem.RenderOpen())
             {
                 dc.DrawLine(new Pen(note.Color, notesStyle.StemThickness * sizeFactor), startPoint, endPoint);
             }
-            DrawingVisualHost dvh = new DrawingVisualHost();
-            dvh.AddVisual(dv);
-            dvh.Tag = "stem";
-            note.AddStem(dvh);
-        }
+            //! check if added previously to prevent unnecessary remove+add calls
+            bool stemVisualAdded = false;
+            if (stemVisual == null)
+            {
+                stemVisual = new DrawingVisualHost();
+                stemVisual.Tag = "stem";
+            }
+            else
+            {
+                stemVisual.ClearVisuals();
+                stemVisualAdded = true; //! no need to add to noteVisual
+            }
+            //! 
+            stemVisual.AddVisual(dravingVisualStem);
 
+            //! add visual to noteVisual (one time only)
+            if (!stemVisualAdded)
+            {
+                note.AddStem(stemVisual);
+            }
+        }
         /// <summary>
         /// Sets new Stem EndPoint Vertical value and updates stem visual
         /// </summary>
         /// <param name="endPointY"></param>
         internal void SetEndPointY(double endPointY)
         {
-            calculatedEndPoint.Y = endPointY;
-            endPoint.Y = endPointY - staffLineOffset;
-            CalculateStemLength();
-            Draw();
+            if (endPointY != calculatedEndPoint.Y)
+            {
+                calculatedEndPoint.Y = endPointY;
+                endPoint.Y = endPointY - staffLineOffset;
+                CalculateStemLength();
+                Draw();
+            }
         }
     }
 }
