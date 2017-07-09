@@ -19,7 +19,7 @@ namespace MusicXMLScore.DrawingHelpers
         six = 6
     }
 
-    class DrawableStaffLine : IDrawableObjectPart
+    class DrawableStaffLine //: IDrawableObjectPart
     {
         #region Fields
 

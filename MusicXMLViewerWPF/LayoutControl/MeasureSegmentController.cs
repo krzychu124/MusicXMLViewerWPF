@@ -12,6 +12,7 @@ using MusicXMLScore.LayoutControl.SegmentPanelContainers;
 using MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes;
 using MusicXMLScore.Helpers;
 using System.Windows.Controls;
+using MusicXMLScore.VisualObjectController;
 
 namespace MusicXMLScore.LayoutControl
 {
@@ -25,7 +26,10 @@ namespace MusicXMLScore.LayoutControl
         private PartProperties partProperties;
         private Tuple<double, double, double> attributesWidths;
         private BeamItemsController beamsController;
-        MeasureItemsContainer measureItemsContainer;
+        private MeasureItemsContainer measureItemsContainer;
+        private StaffLineVisualController staffLineController;
+
+        private Model.ScorePartwisePartMeasureMusicXML measure;
 
         private string measureID;
         private double minimalWidthWithAttributes;
@@ -134,22 +138,28 @@ namespace MusicXMLScore.LayoutControl
             this.partId = partID;
             this.stavesCount = stavesCount <1 ? 1: stavesCount; //! correction if set to 0
             this.measureID = measure.Number;
+            this.measure = measure;
             partProperties = ViewModel.ViewModelLocator.Instance.Main.CurrentPartsProperties[partID]; //Todo refator: replace/remove (reduce dependencies)
             minStavesDistance = partProperties.StaffLayoutPerPage.FirstOrDefault().FirstOrDefault().StaffDistance.TenthsToWPFUnit(); //todo replace/improvements
-            Stopwatch stopWatch;
 
-            stopWatch = new Stopwatch();
-
-            stopWatch.Start();
             var currentDivisions = partProperties.GetDivisionsMeasureId(measure.Number);
             var currentTime = ViewModel.ViewModelLocator.Instance.Main.CurrentScoreProperties.GetTimeSignature(measure.Number);
-            double denominator = currentDivisions ==1 ? 1 : currentTime.GetDenominator();
+            double denominator = currentDivisions == 1 ? 1 : currentTime.GetDenominator();
             double numerator = currentDivisions == 1 ? 1 : currentTime.GetNumerator();
             maxDuration = (int)((4 / (double)denominator) * ( currentDivisions * numerator));
             int durationCursor = 0;
             var measureItems = measure.Items;
+            
+            //!----------- beams --------------------------
             List<BeamItem> beam = new List<BeamItem>();
             measureItemsContainer = new MeasureItemsContainer(measure.Number, partID, stavesCount, stavesCount.ToString());
+            //!-------------------------------------------
+            
+            //!----------- staff lines --------------------
+            staffLineController = new StaffLineVisualController(stavesCount, width, partProperties.NumberOfLines, measure,  minStavesDistance);
+            measureItemsContainer.AddStaffLine(staffLineController.StaffLineCanvas);
+            //!--------------------------------------------
+
             List<NoteMusicXML> temporaryChordList = new List<NoteMusicXML>();
             int chordDuration = 0;
             string tempStaffNumber = "1";
@@ -277,9 +287,6 @@ namespace MusicXMLScore.LayoutControl
             width = measure.CalculatedWidth.TenthsToWPFUnit();
             ArrangeContainers(measure.CalculatedWidth.TenthsToWPFUnit(), maxDuration);
             measureItemsContainer.ArrangeStaffs(minStavesDistance);
-
-            stopWatch.Stop();
-            Log.LoggIt.Log($"Measure content {measure.Number} (Switch) processig done in: {stopWatch.ElapsedMilliseconds}", Log.LogType.Warning);
         }
         private Tuple<NoteContainerItem, int, string, string> GenerateNoteContainerFromChords(List<NoteMusicXML> chordList, int durationCursor, string partId, string measireId, string staffId)
         {
@@ -304,7 +311,28 @@ namespace MusicXMLScore.LayoutControl
             }
             if (a.StaffDetails.Count != 0)
             {
+                if (a.StaffDetails.Count > 1)
+                {
 
+                }
+                else
+                {
+                    if (a.StaffDetails.FirstOrDefault().Number != null){
+
+                    }
+                    else
+                    {
+                        if (staffLineController.StaffVisuals.Count == 1)
+                        {
+                            var number = a.StaffDetails.FirstOrDefault().StaffLines;
+                            if (number != null)
+                            {
+                                partProperties.NumberOfLines = int.Parse(number);
+                            }
+                        }
+                    }
+
+                }
             }
             if (a.Transpose.Count != 0)
             {

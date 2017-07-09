@@ -11,6 +11,7 @@ using System.Windows.Media;
 using MusicXMLViewerWPF;
 using MusicXMLScore.Helpers;
 using GalaSoft.MvvmLight;
+using MusicXMLScore.DrawingHelpers;
 
 namespace MusicXMLScore.ViewModel
 {
@@ -56,10 +57,10 @@ namespace MusicXMLScore.ViewModel
         private int measurescount = 32;
         private uint timesigtimeval = 4;
         private KeyValuePair<int, TimeSigBeatTime> selectedtimebeats = new KeyValuePair<int, TimeSigBeatTime>(4, TimeSigBeatTime.four);
-        private KeyValuePair<string, ClefType> selectedclef = new KeyValuePair<string, ViewModel.ClefType>(MusicalChars.GClef, ViewModel.ClefType.GClef);
+        private KeyValuePair<string, ClefType> selectedclef = new KeyValuePair<string, ViewModel.ClefType>(MusicSymbols.GClef, ViewModel.ClefType.GClef);
         private static Helpers.PreviewCanvas previewcanvas;
-        private static List<string> cleftype_ = new List<string>() { MusicalChars.CClef, MusicalChars.GClef, MusicalChars.FClef};
-        private Dictionary<string, ClefType> cleftype = new Dictionary<string, ViewModel.ClefType>() { [MusicalChars.GClef] = ViewModel.ClefType.GClef, [MusicalChars.FClef] = ViewModel.ClefType.FClef, [MusicalChars.CClef] = ViewModel.ClefType.CClef };
+        private static List<string> cleftype_ = new List<string>() { MusicSymbols.CClef, MusicSymbols.GClef, MusicSymbols.FClef};
+        private Dictionary<string, ClefType> cleftype = new Dictionary<string, ViewModel.ClefType>() { [MusicSymbols.GClef] = ViewModel.ClefType.GClef, [MusicSymbols.FClef] = ViewModel.ClefType.FClef, [MusicSymbols.CClef] = ViewModel.ClefType.CClef };
         private static ObservableCollection<string> keysymbollist = new ObservableCollection<string>();
         private string selclef = cleftype_.ElementAt(1);
         private string selectedkeymode = "Major";

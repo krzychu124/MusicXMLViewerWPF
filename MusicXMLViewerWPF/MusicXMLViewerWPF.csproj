@@ -98,15 +98,12 @@
     <Compile Include="DrawingHelpers\MeasureDrawing.cs" />
     <Compile Include="DrawingHelpers\DrawableStaffLine.cs" />
     <Compile Include="DrawingHelpers\DrawingMethods.cs" />
-    <Compile Include="DrawingHelpers\IDrawableObjectBase.cs" />
-    <Compile Include="DrawingHelpers\IDrawableObjectPart.cs" />
     <Compile Include="DrawingHelpers\PageDrawingSystem.cs" />
     <Compile Include="DrawingHelpers\PartProperties.cs" />
     <Compile Include="DrawingHelpers\PartSegmentDrawing.cs" />
     <Compile Include="DrawingHelpers\PartsSystemDrawing.cs" />
     <Compile Include="Helpers\ComparisonHelpers.cs" />
     <Compile Include="Helpers\CustomPartsSegmentPanel.cs" />
-    <Compile Include="Helpers\MusicSymbols.cs" />
     <Compile Include="Helpers\ObservableDictionary.cs" />
     <Compile Include="Helpers\PageProperties.cs" />
     <Compile Include="Helpers\SimpleWrapPanel.cs" />
@@ -274,6 +271,8 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="ViewModel\ViewModelLocator.cs" />
+    <Compile Include="VisualObjectController\StaffLineVisualController.cs" />
+    <Compile Include="VisualObject\StaffLineVisual.cs" />
     <Page Include="View\ConfigurationView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

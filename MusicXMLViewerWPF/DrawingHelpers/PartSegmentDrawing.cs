@@ -24,7 +24,6 @@ namespace MusicXMLScore.DrawingHelpers
         private int pageIndex;
         private LayoutSystemInfo systemLayoutInfo;
         //! temp, test
-        private List<MeasureDrawing> measuresStaffs;
         private List<Canvas> measuresSegments;
         #endregion Fields
 
@@ -151,20 +150,10 @@ namespace MusicXMLScore.DrawingHelpers
         {
             if (systemLayout != null)
             {
-                measuresStaffs = new List<MeasureDrawing>(); //! hold reference for future position update
-                measuresSegments = new List<Canvas>(); //! hold reference for future position update
+                measuresSegments = new List<Canvas>(); //! holds reference for future position update
                 //! use system layout info
                 foreach (var measureSegment in PartMeasures)
                 {
-                    MeasureDrawing measureCanvas = new MeasureDrawing(measureSegment.MeasureID, partId, staffDistance, stavesCount);
-                    //! todo_M merge measureCanvas with MeasureSegmentController
-                    //! -------test
-                    measuresStaffs.Add(measureCanvas);
-                    //! -------
-                    Canvas.SetTop(measureCanvas.BaseObjectVisual, 0);
-                    Canvas.SetLeft(measureCanvas.BaseObjectVisual, systemLayout.WhicheverPartMeasureCoords(measureSegment.MeasureID, partId).X);
-                    PartSegmentCanvas.Children.Add(measureCanvas.BaseObjectVisual);
-
                     //! -------test
                     measuresSegments.Add(measureSegment.GetMeasureCanvas());
                     //! -------
@@ -179,9 +168,6 @@ namespace MusicXMLScore.DrawingHelpers
         {
             for (int i = 0; i < partMeasures.Count; i++)
             {
-                Canvas.SetTop(measuresStaffs[i].BaseObjectVisual, 0);
-                Canvas.SetLeft(measuresStaffs[i].BaseObjectVisual, systemLayoutInfo.WhicheverPartMeasureCoords(partMeasures[i].MeasureID, partId).X);
-
                 Canvas.SetTop(measuresSegments[i], 0);
                 Canvas.SetLeft(measuresSegments[i], systemLayoutInfo.WhicheverPartMeasureCoords(partMeasures[i].MeasureID, partId).X);
             }

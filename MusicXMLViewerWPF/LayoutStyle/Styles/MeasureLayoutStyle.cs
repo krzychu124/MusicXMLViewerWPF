@@ -26,6 +26,7 @@ namespace MusicXMLScore.LayoutStyle
         private double smallClefSize = 80;
 
         private double staffSpaceLegth = 10;
+        private double staffLineThickness = 1.2;
         private double stavesDistance = 70;
 
         private double timeSigLeftOffset = 1;
@@ -202,6 +203,19 @@ namespace MusicXMLScore.LayoutStyle
             set
             {
                 timeSigRightOffset = value;
+            }
+        }
+
+        public double StaffLineThickness
+        {
+            get
+            {
+                return staffLineThickness;
+            }
+
+            set
+            {
+                staffLineThickness = value;
             }
         }
 

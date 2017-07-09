@@ -11,10 +11,11 @@ using System.Windows.Threading;
 using System.Xml.Serialization;
 using MusicXMLViewerWPF;
 using MusicXMLScore.Model;
+using System.ComponentModel;
 
 namespace MusicXMLScore.DrawingHelpers
 {
-    public class PartProperties //TODO_H refactor: reduce unnecessary dependecies (the best would be all)
+    public class PartProperties : INotifyPropertyChanged //TODO_H refactor: reduce unnecessary dependecies (the best would be all)
     {
 
         #region Fields
@@ -30,6 +31,7 @@ namespace MusicXMLScore.DrawingHelpers
         private double partHeight = 0;
         private double stavesDistance = 0.0;
         private int numberOfStaves = 1;
+        private int numberOfLines = 5;
         private int partIndex = 0;
         private KeyChangesDictionary keyChanges = new KeyChangesDictionary();
         private List<List<List<string>>> measuresPerSystemPerPage = new List<List<List<string>>>();
@@ -45,6 +47,8 @@ namespace MusicXMLScore.DrawingHelpers
         private ScorePartwisePartMusicXML currentPart;
         private string partId;
         private TimeChangesDictionary timeChanges = new TimeChangesDictionary();
+
+        public event PropertyChangedEventHandler PropertyChanged = delegate { };
 
         #endregion Fields
 
@@ -236,6 +240,20 @@ namespace MusicXMLScore.DrawingHelpers
             set
             {
                 timeChanges = value;
+            }
+        }
+
+        public int NumberOfLines
+        {
+            get
+            {
+                return numberOfLines;
+            }
+
+            set
+            {
+                numberOfLines = value;
+                PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(NumberOfLines)));
             }
         }
 
