@@ -16,7 +16,7 @@ using System.ComponentModel;
 
 namespace MusicXMLScore.DrawingHelpers
 {
-    class MeasureDrawing : IDrawableObjectBase, INotifyPropertyChanged
+    class MeasureDrawing : INotifyPropertyChanged
     {
         //TODO Refactor and move to MeasureSegmentController
         #region Fields

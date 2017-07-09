@@ -13,6 +13,7 @@ using MusicXMLScore.LayoutControl.SegmentPanelContainers.Attributes;
 using System.Windows;
 using System.Windows.Media;
 using MusicXMLScore.Helpers;
+using MusicXMLScore.VisualObjectController;
 
 namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
 {
@@ -350,6 +351,11 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
         {
             measureItemsVisuals.Add(attributeVisual);
             Children.Add(attributeVisual.ItemCanvas as Canvas); 
+        }
+
+        public void AddStaffLine(Canvas staffLine)
+        {
+            this.Children.Add(staffLine); //! test
         }
     }
 }

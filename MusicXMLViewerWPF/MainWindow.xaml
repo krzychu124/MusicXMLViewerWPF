@@ -25,7 +25,7 @@
             <Menu IsMainMenu="True" Height="20" VerticalAlignment="Top" DockPanel.Dock="Top" Width="Auto" >
                 <MenuItem Header="File" >
                     <MenuItem Header="Create Default Score" IsEnabled="False" Command="{Binding NewDefaultScoreCreatorCommand}"/>
-                    <MenuItem Header="Create Custom Score" IsEnabled="False" Command="{Binding NewCustomScoreCreatorCommand}"/>
+                    <MenuItem Header="Create Custom Score" IsEnabled="true" Command="{Binding NewCustomScoreCreatorCommand}"/>
                     <Separator/>
                     <MenuItem Header="Open File" Command="{Binding OpenFileCommand}"/>
                     <MenuItem Header="Open Last">

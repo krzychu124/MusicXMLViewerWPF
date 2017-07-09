@@ -64,6 +64,8 @@ namespace MusicXMLScore.DrawingHelpers
         //    }
         //}
         //TODO_I Implementation missing
+
+        //Use StaffLineVisual instead of staffLine symbols
         #region staffs 
         #region oneLine
         public readonly string shortStaffOneSymbol = "\uE01C";
