@@ -1,12 +1,8 @@
 ﻿using MusicXMLScore.Converters;
 using MusicXMLScore.Helpers;
 using MusicXMLScore.Model.MeasureItems.Attributes;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -15,27 +11,27 @@ namespace MusicXMLScore.VisualObject
 {
     class StaffLineVisual : INotifyPropertyChanged
     {
-        private Brush color;
-        private int linesCount;
-        private double yPosition;
-        private double width;
-        private double height;
-        private DrawingVisualHost visual;
-        private Canvas canvasVisual;
-        private double lineSpacing;
-        private double lineThickness;
-        private Dictionary<int, double> lineYOffset;
-        private int staffNumber = 1;
+        private Brush _color;
+        private int _linesCount;
+        private double _yPosition;
+        private double _width;
+        private double _height;
+        private DrawingVisualHost _visual;
+        private Canvas _canvasVisual;
+        private double _lineSpacing;
+        private double _lineThickness;
+        private Dictionary<int, double> _lineYOffset;
+        private int _staffNumber = 1;
         public Brush Color
         {
             get
             {
-                return color;
+                return _color;
             }
 
             set
             {
-                color = value;
+                _color = value;
                 PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(Color)));
             }
         }
@@ -44,14 +40,14 @@ namespace MusicXMLScore.VisualObject
         {
             get
             {
-                return linesCount;
+                return _linesCount;
             }
 
             set
             {
-                if (value != linesCount)
+                if (value != _linesCount)
                 {
-                    linesCount = value;
+                    _linesCount = value;
                     PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(LinesCount)));
                 }
             }
@@ -61,14 +57,14 @@ namespace MusicXMLScore.VisualObject
         {
             get
             {
-                return yPosition;
+                return _yPosition;
             }
 
             set
             {
-                if (value != yPosition)
+                if (value != _yPosition)
                 {
-                    yPosition = value;
+                    _yPosition = value;
                     PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(YPosition)));
                 }
             }
@@ -78,14 +74,14 @@ namespace MusicXMLScore.VisualObject
         {
             get
             {
-                return width;
+                return _width;
             }
 
             set
             {
-                if (value != width)
+                if (value != _width)
                 {
-                    width = value;
+                    _width = value;
                     PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(Width)));
                 }
             }
@@ -95,12 +91,12 @@ namespace MusicXMLScore.VisualObject
         {
             get
             {
-                return height;
+                return _height;
             }
 
             set
             {
-                height = value;
+                _height = value;
                 PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(Height)));
             }
         }
@@ -109,12 +105,12 @@ namespace MusicXMLScore.VisualObject
         {
             get
             {
-                return visual;
+                return _visual;
             }
 
             set
             {
-                visual = value;
+                _visual = value;
             }
         }
 
@@ -122,12 +118,12 @@ namespace MusicXMLScore.VisualObject
         {
             get
             {
-                return canvasVisual;
+                return _canvasVisual;
             }
 
             set
             {
-                canvasVisual = value;
+                _canvasVisual = value;
             }
         }
 
@@ -135,12 +131,12 @@ namespace MusicXMLScore.VisualObject
         {
             get
             {
-                return staffNumber;
+                return _staffNumber;
             }
 
             set
             {
-                staffNumber = value;
+                _staffNumber = value;
             }
         }
 
@@ -149,11 +145,11 @@ namespace MusicXMLScore.VisualObject
         public StaffLineVisual(double width, int numberOfLines = 5, Brush color = null)
         {
             GetDefaults();
-            this.width = width;
-            this.linesCount = numberOfLines;
-            this.color = color ?? Brushes.Black;
-            this.yPosition = 0.0;
-            lineYOffset = new Dictionary<int, double>();
+            this._width = width;
+            this._linesCount = numberOfLines;
+            this._color = color ?? Brushes.Black;
+            this._yPosition = 0.0;
+            _lineYOffset = new Dictionary<int, double>();
             InitCanvas();
             Draw();
             PropertyChanged += StaffLineVisual_PropertyChanged;
@@ -175,7 +171,7 @@ namespace MusicXMLScore.VisualObject
                 case nameof(LinesCount):
                     if (LinesCount > 5)
                     {
-                        lineSpacing = lineSpacing * 1.5;
+                        _lineSpacing = _lineSpacing * 1.5;
                     }
                     else //reset spacing
                     {
@@ -191,14 +187,14 @@ namespace MusicXMLScore.VisualObject
                     break;
                 case "CalculatedWidth":
                     var measure = sender as Model.ScorePartwisePartMeasureMusicXML;
-                    Width = measure.CalculatedWidth.TenthsToWPFUnit();
+                    if (measure != null) Width = measure.CalculatedWidth.TenthsToWPFUnit();
                     break;
                 case nameof(YPosition):
                     UpdateCanvasPosition();
                     break;
                 case nameof(DrawingHelpers.PartProperties.NumberOfLines):
                     var partProperties = sender as DrawingHelpers.PartProperties;
-                    LinesCount = partProperties.NumberOfLines;
+                    if (partProperties != null) LinesCount = partProperties.NumberOfLines;
                     break;
                 default:
                     //log warning no such property name / no action for current property
@@ -221,56 +217,56 @@ namespace MusicXMLScore.VisualObject
         private void GetLineThickness()
         {
             var measureLayout = ViewModel.ViewModelLocator.Instance.Main.CurrentLayout.LayoutStyle.MeasureStyle;
-            lineThickness = measureLayout.StaffLineThickness.TenthsToWPFUnit();
+            _lineThickness = measureLayout.StaffLineThickness.TenthsToWPFUnit();
         }
         private void GetStaffLineSpacing()
         {
             var measureLayout = ViewModel.ViewModelLocator.Instance.Main.CurrentLayout.LayoutStyle.MeasureStyle;
-            lineSpacing = measureLayout.StaffSpaceLegth.TenthsToWPFUnit();
+            _lineSpacing = measureLayout.StaffSpaceLegth.TenthsToWPFUnit();
         }
         private void GenerateStaffLinesPositions()
         {
-            if (lineYOffset.Count != 0)
+            if (_lineYOffset.Count != 0)
             {
-                lineYOffset.Clear();
+                _lineYOffset.Clear();
             }
-            double offsetFromZero = (5 - linesCount) / 2.0 * 10.0.TenthsToWPFUnit();
+            double offsetFromZero = (5 - _linesCount) / 2.0 * 10.0.TenthsToWPFUnit();
             double currentOffset = 0 + offsetFromZero;
-            for (int i = 1; i <= linesCount; i++)
+            for (int i = 1; i <= _linesCount; i++)
             {
-                lineYOffset.Add(i, currentOffset);
-                currentOffset += lineSpacing;
+                _lineYOffset.Add(i, currentOffset);
+                currentOffset += _lineSpacing;
             }
         }
 
         private void Draw(bool updatePositions = false)
         {
             DrawingVisual staffLineVisual = new DrawingVisual();
-            Pen pen = new Pen(color, lineThickness);
+            Pen pen = new Pen(_color, _lineThickness);
 
-            if (updatePositions || lineYOffset.Count ==0)
+            if (updatePositions || _lineYOffset.Count ==0)
             {
                 GenerateStaffLinesPositions();
             }
             using (DrawingContext dc = staffLineVisual.RenderOpen())
             {
-                for (int i = 1; i <= linesCount; i++)
+                for (int i = 1; i <= _linesCount; i++)
                 {
-                    dc.DrawLine(pen, new Point(0.0, lineYOffset[i]), new Point(width, lineYOffset[i]));
+                    dc.DrawLine(pen, new Point(0.0, _lineYOffset[i]), new Point(_width, _lineYOffset[i]));
                 }
             }
-            visual.ClearVisuals();
-            visual.AddVisual(staffLineVisual);
+            _visual.ClearVisuals();
+            _visual.AddVisual(staffLineVisual);
         }
         private void InitCanvas()
         {
-            visual = new DrawingVisualHost();
-            canvasVisual = new Canvas();
-            canvasVisual.Children.Add(visual);
+            _visual = new DrawingVisualHost();
+            _canvasVisual = new Canvas();
+            _canvasVisual.Children.Add(_visual);
         }
         private void UpdateCanvasPosition()
         {
-            Canvas.SetTop(canvasVisual, YPosition);
+            Canvas.SetTop(_canvasVisual, YPosition);
         }
     }
 }
