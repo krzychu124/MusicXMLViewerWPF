@@ -2,82 +2,38 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace MusicXMLScore.ScoreProperties
 {
-    public class KeyChanges
+    public class KeyChanges : MeasureAttributeChanges<KeyMusicXML>
     {
-        #region Fields
-
-        private List<Tuple<string, int, KeyMusicXML>> keys = new List<Tuple<string, int, KeyMusicXML>>();
-
-        #endregion Fields
-
-        #region Constructors
-
-        public KeyChanges()
+        public void Add(string measureId, int timeFraction, KeyMusicXML key)
         {
-
+            base.Add(new KeyChange(measureId, timeFraction,key));
         }
-
-        #endregion Constructors
-
-        #region Properties
-
-        public List<Tuple<string, int, KeyMusicXML>> KeysChanges
-        {
-            get
-            {
-                return keys;
-            }
-
-            set
-            {
-                keys = value;
-            }
-        }
-
-        #endregion Properties
-
-        #region Methods
-
-        /// <summary>
-        /// Adds Key Signature to measure
-        /// </summary>
-        /// <param name="staff"> Staff Number when position is other than default (all staffs)</param>
-        /// <param name="position"> Measure fraction position from where key signature will be changed</param>
-        /// <param name="key">Selected key signature</param>
-        public void Add(string staff, int position, KeyMusicXML key)
-        {
-            keys.Add(Tuple.Create(staff, position, key));
-        }
-
-        #endregion Methods
     }
-    public class KeyChangesDictionary: Dictionary<string, KeyChanges>
+
+    public class KeyChange : AttributeChange<KeyMusicXML>
     {
-        #region Methods
-
-        /// <summary>
-        /// Adds KeyChanges to dictionary or Appends if (measureID)Key found
-        /// </summary>
-        /// <param name="measureID"></param>
-        /// <param name="keyChanges"></param>
-        public new void Add(string measureID, KeyChanges keyChanges)
+        public KeyChange(string measureId, int timeFraction, KeyMusicXML key):base(measureId, timeFraction, key)
         {
-            KeyChanges keys;
-            if (TryGetValue(measureID, out keys))
-            {
-                keys.KeysChanges.AddRange(keyChanges.KeysChanges);
-            }
-            else
-            {
-                base.Add(measureID, keyChanges);
-            }
         }
+    }
+    
 
-        #endregion Methods
+    public class KeyChangesDictionary : AttributeChangesDictionary<KeyChanges, KeyMusicXML>
+    {
+        /// <summary>
+        /// Adds KeyChanges to dictionary or Appends if (measureId)Key found
+        /// </summary>
+        /// <param name="measureId"></param>
+        /// <param name="keyChanges"></param>
+        public new void Add(string measureId, KeyChanges keyChanges)
+        {
+            base.Add(measureId, keyChanges);
+        }
     }
 }

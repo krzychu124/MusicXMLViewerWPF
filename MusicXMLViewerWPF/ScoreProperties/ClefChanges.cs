@@ -1,72 +1,41 @@
-﻿using MusicXMLScore.DrawingHelpers;
-using MusicXMLScore.Model.MeasureItems;
-using MusicXMLScore.Model.MeasureItems.Attributes;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using MusicXMLScore.Model.MeasureItems.Attributes;
 
 namespace MusicXMLScore.ScoreProperties
 {
-    public class ClefChanges 
+    public class ClefChanges : MeasureAttributeChanges<ClefMusicXML>
     {
-        #region Fields
-
-        private List<Tuple<string, int, ClefMusicXML>> clefs = new List<Tuple<string, int, ClefMusicXML>>();
-
-        #endregion Fields
-
-        #region Properties
-
-        public List<Tuple<string, int, ClefMusicXML>> ClefsChanges
+        public void Add(string staff, int timeFraction, ClefMusicXML clef)
         {
-            get
-            {
-                return clefs;
-            }
-
-            set
-            {
-                clefs = value;
-            }
+            base.Add(new ClefChange(staff, timeFraction, clef));
         }
-
-        #endregion Properties
-
-        #region Methods
-
-        public void Add(string staff, int position, ClefMusicXML clef)
-        {
-            clefs.Add(Tuple.Create(staff, position, clef));
-        }
-
-        #endregion Methods
     }
 
-    public class ClefChangesDictionary : Dictionary<string, ClefChanges>
+    public class ClefChange : AttributeChange<ClefMusicXML>
     {
-        #region Methods
+        public ClefChange(string staff, int timeFraction, ClefMusicXML clef) : base(staff, timeFraction, clef)
+        {
+        }
+    }
 
+    public class ClefChangesDictionary : AttributeChangesDictionary<ClefChanges, ClefMusicXML>
+    {
         /// <summary>
         /// Adds or appends clefChanges if dictionary contains key
         /// </summary>
-        /// <param name="measureID"></param>
+        /// <param name="measureId"></param>
         /// <param name="clefChanges"></param>
-        public new void Add(string measureID, ClefChanges clefChanges)
+        public new void Add(string measureId, ClefChanges clefChanges)
         {
-            if (base.ContainsKey(measureID))// 
+            if (ContainsKey(measureId))
             {
                 ClefChanges clefs;
-                base.TryGetValue(measureID, out clefs);
-                clefs.ClefsChanges.AddRange(clefChanges.ClefsChanges);
+                TryGetValue(measureId, out clefs);
+                clefs?.AttributeChanges.AddRange(clefChanges.AttributeChanges);
             }
             else
             {
-                base.Add(measureID, clefChanges);
+                base.Add(measureId, clefChanges);
             }
         }
-
-        #endregion Methods
     }
 }
