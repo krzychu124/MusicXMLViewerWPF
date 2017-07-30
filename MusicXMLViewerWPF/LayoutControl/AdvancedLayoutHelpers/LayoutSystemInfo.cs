@@ -1,124 +1,111 @@
 ﻿using MusicXMLScore.Converters;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace MusicXMLScore.LayoutControl
-{ 
+{
     class LayoutSystemInfo : INotifyPropertyChanged
     {
-        private double systemHeight;
-        private double systemWidth;
-        private double defaultStaffDistance;
-        private bool updateLayout = false;
-        //! distances between parts inside this system
-        private Dictionary<string, double> partStaffDistances;
-        //! calculated part heights 
-        private Dictionary<string, double> partHeights;
-        //! collection of measure widths to generate measures row
-        private Dictionary<string, double> measureSharedWidths;
-        //! collection of measures inside this system
-        private List<SharedMeasureProperties> measures;
-        //! measures X Coordinates inside system
-        private Dictionary<string, double> measureCoordsX;
-        //! measures Y Coordinates inside system
-        private Dictionary<string, double> measureCoordsY;
+        private double _systemHeight;
+        private double _systemWidth;
+        private double _defaultStaffDistance;
 
-        private Dictionary<string, double> measureMinSharedWidth;
+        private bool _updateLayout;
+
+        //! distances between parts inside this system
+        private Dictionary<string, double> _partStaffDistances;
+
+        //! calculated part heights 
+        private Dictionary<string, double> _partHeights;
+
+        //! collection of measure widths to generate measures row
+        private Dictionary<string, double> _measureSharedWidths;
+
+        //! collection of measures inside this system
+        private List<SharedMeasureProperties> _measures;
+
+        //! measures X Coordinates inside system
+        private Dictionary<string, double> _measureCoordsX;
+
+        //! measures Y Coordinates inside system
+        private Dictionary<string, double> _measureCoordsY;
+
+        private Dictionary<string, double> _measureMinSharedWidth;
 
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
 
         public bool UpdateLayout
         {
-            get
-            {
-                return updateLayout;
-            }
+            get { return _updateLayout; }
             set
             {
-                if (updateLayout != value)
+                if (_updateLayout != value)
                 {
-                    updateLayout = value;
+                    _updateLayout = value;
                     PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(UpdateLayout)));
-                    updateLayout = false;
+                    _updateLayout = false;
                 }
             }
         }
+
         public double SystemHeight
         {
-            get
-            {
-                return systemHeight;
-            }
+            get { return _systemHeight; }
         }
 
         public double SystemWidth
         {
-            get
-            {
-                return systemWidth;
-            }
+            get { return _systemWidth; }
         }
 
         internal List<SharedMeasureProperties> Measures
         {
-            get
-            {
-                return measures;
-            }
+            get { return _measures; }
 
-            set
-            {
-                measures = value;
-            }
+            set { _measures = value; }
         }
 
         public Dictionary<string, double> PartHeights
         {
-            get
-            {
-                return partHeights;
-            }
+            get { return _partHeights; }
 
-            set
-            {
-                partHeights = value;
-            }
+            set { _partHeights = value; }
         }
-        public double PartPositionY(string partID) => measureCoordsY.ContainsKey(partID) ? measureCoordsY[partID] : 0.0;
 
-        public Point FirstPartMeasureCoords(string measureID) => new Point(measureCoordsX[measureID], 0.0);
+        public double PartPositionY(string partId) => _measureCoordsY.ContainsKey(partId) ? _measureCoordsY[partId] : 0.0;
+
+        public Point FirstPartMeasureCoords(string measureId) => new Point(_measureCoordsX[measureId], 0.0);
 
         /// <summary>
         /// Measure coordinates with valid measureID and partID
         /// </summary>
-        /// <param name="measureID">ID of this measure</param>
-        /// <param name="partID">Valid Part ID of this measure</param>
+        /// <param name="measureId">ID of this measure</param>
+        /// <param name="partId">Valid Part ID of this measure</param>
         /// <returns></returns>
-        public Point WhicheverPartMeasureCoords(string measureID, string partID) => new Point(measureCoordsX[measureID], measureCoordsY[partID]);
+        public Point WhicheverPartMeasureCoords(string measureId, string partId) => new Point(_measureCoordsX[measureId], _measureCoordsY[partId]);
 
         public LayoutSystemInfo(List<SharedMeasureProperties> measuresOfSystem)
         {
-            measures = measuresOfSystem;
+            _measures = measuresOfSystem;
             var layout = ViewModel.ViewModelLocator.Instance.Main.CurrentLayout;
-            defaultStaffDistance = 1.5 * layout.PageProperties.StaffHeight.MMToTenths();
-            var partProperties = ViewModel.ViewModelLocator.Instance.Main.CurrentPartsProperties;
-            var partHeights = partProperties.Select((a) => new { key = a.Key, value = a.Value.PartHeight }).ToDictionary(item => item.key, item => item.value);
+            _defaultStaffDistance = 1.5 * layout.PageProperties.StaffHeight.MMToTenths();
+            var partProperties = ViewModel.ViewModelLocator.Instance.Main.PartsProperties;
+            var partHeights = partProperties.Select(a => new {key = a.Key, value = a.Value.PartHeight})
+                .ToDictionary(item => item.key, item => item.value);
             AddPartHeights(partHeights);
             GeneratePartDistances();
         }
+
         public void AddPartHeights(Dictionary<string, double> partHeights)
         {
-            this.partHeights = partHeights;
+            _partHeights = partHeights;
         }
 
         public void AddPartDistances(Dictionary<string, double> partDistances)
         {
-            partStaffDistances = partDistances;
+            _partStaffDistances = partDistances;
         }
 
         public void ArrangeSystem(bool stretchMeasures, double desiredWidth)
@@ -126,129 +113,135 @@ namespace MusicXMLScore.LayoutControl
             CalculateSystemDimensions(stretchMeasures, desiredWidth);
             GenerateCoords();
         }
+
         public void GeneratePartDistances()
         {
-            partStaffDistances = new Dictionary<string, double>();
-            if (partHeights != null)
+            _partStaffDistances = new Dictionary<string, double>();
+            if (_partHeights != null)
             {
-                foreach (var item in partHeights)
+                foreach (var item in _partHeights)
                 {
-                    partStaffDistances.Add(item.Key, defaultStaffDistance);
+                    _partStaffDistances.Add(item.Key, _defaultStaffDistance);
                 }
             }
             else
             {
-                Log.LoggIt.Log($"Part Heights did not initialized! Part Distances does not calculated properly using distance: {defaultStaffDistance}", Log.LogType.Exception);
+                Log.LoggIt.Log(
+                    $"Part Heights did not initialized! Part Distances does not calculated properly using distance: {_defaultStaffDistance}",
+                    Log.LogType.Exception);
                 //! init/generate part heights dictionary
             }
         }
 
         public void CalculateSystemDimensions(bool stretchMeasuresToWidth = false, double desiredWidth = 0.0)
         {
-            double heightParts = partHeights.Sum(x => x.Value);
-            double distances = partStaffDistances.Skip(1).Sum(x => x.Value);
-            systemHeight = heightParts + distances;
-            if (measureSharedWidths == null)
+            double heightParts = _partHeights.Sum(x => x.Value);
+            double distances = _partStaffDistances.Skip(1).Sum(x => x.Value);
+            _systemHeight = heightParts + distances;
+            if (_measureSharedWidths == null)
             {
                 GetSharedWidths();
                 GetMinSharedWidths();
             }
-            systemWidth = measureSharedWidths.Sum(x => x.Value);
+            _systemWidth = _measureSharedWidths.Sum(x => x.Value);
 
-            if (stretchMeasuresToWidth && systemWidth < desiredWidth)
+            if (stretchMeasuresToWidth && _systemWidth < desiredWidth)
             {
-               UpdateSystemWidth(desiredWidth);
+                UpdateSystemWidth(desiredWidth);
             }
             //! test ------------
-            if (!stretchMeasuresToWidth) 
+            if (!stretchMeasuresToWidth)
             {
-                systemWidth = measureMinSharedWidth.Sum(x => x.Value); //! update anyway
-                UpdateSystemWidth(systemWidth);
+                _systemWidth = _measureMinSharedWidth.Sum(x => x.Value); //! update anyway
+                UpdateSystemWidth(_systemWidth);
             }
         }
+
         private void GetSharedWidths()
         {
-            measureSharedWidths = new Dictionary<string, double>();
-            foreach (var measure in measures)
+            _measureSharedWidths = new Dictionary<string, double>();
+            foreach (var measure in _measures)
             {
-                measureSharedWidths.Add(measure.MeasureId, measure.SharedWidth);
+                _measureSharedWidths.Add(measure.MeasureId, measure.SharedWidth);
             }
         }
+
         private void GetMinSharedWidths()
         {
-            measureMinSharedWidth = new Dictionary<string, double>();
-            foreach (var measure in measures)
+            _measureMinSharedWidth = new Dictionary<string, double>();
+            foreach (var measure in _measures)
             {
-                measureMinSharedWidth.Add(measure.MeasureId, measure.MinimalSharedWidth);
+                _measureMinSharedWidth.Add(measure.MeasureId, measure.MinimalSharedWidth);
             }
         }
+
         private void GenerateMeasureXCoordinates()
         {
             double currentX = 0.0;
-            if (measureSharedWidths == null || measureSharedWidths.Count == 0)
+            if (_measureSharedWidths == null || _measureSharedWidths.Count == 0)
             {
                 Log.LoggIt.Log("no measures inside collection: X coordinates did not generated", Log.LogType.Exception);
             }
             else
             {
-                measureCoordsX = new Dictionary<string, double>();
-                foreach (var item in measureSharedWidths)
+                _measureCoordsX = new Dictionary<string, double>();
+                foreach (var item in _measureSharedWidths)
                 {
-                    measureCoordsX.Add(item.Key, currentX);
+                    _measureCoordsX.Add(item.Key, currentX);
                     currentX += item.Value;
                 }
             }
-            if (currentX > systemWidth && !(currentX == systemWidth))
+            if (currentX > _systemWidth && !currentX.Equals4DigitPrecision(_systemWidth))
             {
-                Log.LoggIt.Log($"System width too small!!! Now is: {systemWidth}, should be {currentX}", Log.LogType.Exception);
+                Log.LoggIt.Log($"System width too small!!! Now is: {_systemWidth}, should be {currentX}", Log.LogType.Exception);
             }
         }
 
         public void UpdateSystemWidth(double desiredWidth)
         {
-            double currentWidth = measureSharedWidths.Sum(x => x.Value);
+            double currentWidth = _measureSharedWidths.Sum(x => x.Value);
             double difference = desiredWidth - currentWidth;
-            double itemsCount = measureSharedWidths.Count;
+            double itemsCount = _measureSharedWidths.Count;
             double offset = difference / itemsCount;
-            foreach (var item in measures)
+            foreach (var item in _measures)
             {
                 item.SharedWidth = item.SharedWidth + offset;
             }
             GetSharedWidths();
-            systemWidth = desiredWidth;
+            _systemWidth = desiredWidth;
         }
 
         public void UpdateSystemHeight(double height)
         {
-            systemHeight = height;
+            _systemHeight = height;
         }
 
         private void GenerateMeasureYCoordinates()
         {
             double currentY = 0.0;
-            if (partStaffDistances == null || partStaffDistances.Count == 0)
+            if (_partStaffDistances == null || _partStaffDistances.Count == 0)
             {
                 Log.LoggIt.Log("no part staff distances specified inside collection: Y coordinates did not generated", Log.LogType.Exception);
             }
             else
             {
-                measureCoordsY = new Dictionary<string, double>();
-                foreach (var item in partStaffDistances)
+                _measureCoordsY = new Dictionary<string, double>();
+                foreach (var item in _partStaffDistances)
                 {
-                    measureCoordsY.Add(item.Key, currentY);
-                    currentY += item.Value + partHeights[item.Key];
+                    _measureCoordsY.Add(item.Key, currentY);
+                    currentY += item.Value + _partHeights[item.Key];
                 }
             }
-            if (currentY > systemHeight && !(currentY == systemHeight))
+            if (currentY > _systemHeight && !currentY.Equals4DigitPrecision(_systemHeight))
             {
-                Log.LoggIt.Log($"System height too small!!! Now is: {systemHeight}, should be {currentY}", Log.LogType.Exception);
+                Log.LoggIt.Log($"System height too small!!! Now is: {_systemHeight}, should be {currentY}", Log.LogType.Exception);
             }
         }
-        public void GenerateCoords()
+
+        private void GenerateCoords()
         {
             GenerateMeasureXCoordinates();
             GenerateMeasureYCoordinates();
         }
-        
     }
 }
