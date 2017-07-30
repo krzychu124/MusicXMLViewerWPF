@@ -18,13 +18,12 @@ namespace MusicXMLScore.LayoutControl
         /// <returns>Minimal space for current note/rest</returns>
         public static double SpacingValue(double duration, double shortestDuration, double alpha = 0.6)
         {
-            double result = 1;
             if (duration < shortestDuration)
             {
                 Log.LoggIt.Log($"Given duration {duration} is lower than calculated shortest duration{shortestDuration}", Log.LogType.Exception);
-                duration =  shortestDuration;
+                duration = shortestDuration;
             }
-            result = 1 + (alpha * (Math.Log(duration / shortestDuration, 2.0))); //? 1.5 +
+            var result = 1 + (alpha * (Math.Log(duration / shortestDuration, 2.0)));
             return result;
         }
 
@@ -44,7 +43,7 @@ namespace MusicXMLScore.LayoutControl
                 Tuple<double, double> currentPositionPair = positions[positionIndex[i]];
                 double currentPosition = currentPositionPair.Item1;
                 double correctedSpacing = (currentPositionPair.Item2 / currentFullWidth) * difference;
-                
+
                 if (i == 0)
                 {
                     Tuple<double, double> t = Tuple.Create(currentPosition, correctedSpacing + currentPositionPair.Item2);
@@ -106,15 +105,15 @@ namespace MusicXMLScore.LayoutControl
                 maxKey = attributesWidths.Select(x => x.Item2).Max();
                 maxTime = attributesWidths.Select(x => x.Item3).Max();
             }
-            if (maxClef != 0)
+            if (!maxClef.Equals4DigitPrecision(0.0))
             {
                 maxClef += attributesLayout.ClefLeftOffset.TenthsToWPFUnit() + attributesLayout.ClefRightOffset.TenthsToWPFUnit();
             }
-            if (maxKey != 0)
+            if (!maxKey.Equals4DigitPrecision(0.0))
             {
                 maxKey += attributesLayout.KeySigLeftOffset.TenthsToWPFUnit() + attributesLayout.KeySigRightOffset.TenthsToWPFUnit();
             }
-            if (maxTime != 0)
+            if (!maxTime.Equals4DigitPrecision(0.0))
             {
                 maxTime += attributesLayout.TimeSigLeftOffset.TenthsToWPFUnit() + attributesLayout.TimeSigRightOffset.TenthsToWPFUnit();
             }
