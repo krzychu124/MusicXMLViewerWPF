@@ -1,17 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Input;
 using System.Windows.Media;
-using MusicXMLViewerWPF;
-using MusicXMLScore.Helpers;
 using GalaSoft.MvvmLight;
 using MusicXMLScore.DrawingHelpers;
+using MusicXMLScore.Helpers;
+using MusicXMLScore.Log;
 
 namespace MusicXMLScore.ViewModel
 {
@@ -24,7 +19,7 @@ namespace MusicXMLScore.ViewModel
         sixteen = 16,
         twentyfour = 24,
         thirtytwo = 32,
-        sixtyfour = 64,
+        sixtyfour = 64
     }
 
     enum TimeSigSettingOptions
@@ -50,17 +45,17 @@ namespace MusicXMLScore.ViewModel
     {
         #region fields
         private bool customsetting;
-        private ClefTypeOptions currentclefoption = ViewModel.ClefTypeOptions.regularclef;
-        private Dictionary<int, TimeSigBeatTime> timebeatlist = new Dictionary<int, TimeSigBeatTime>() { [1] = TimeSigBeatTime.one, [2] = TimeSigBeatTime.two, [4] = TimeSigBeatTime.four, [8] = TimeSigBeatTime.eight, [16] = TimeSigBeatTime.sixteen, [24] = TimeSigBeatTime.twentyfour, [32] = TimeSigBeatTime.thirtytwo, [64] = TimeSigBeatTime.sixtyfour };
-        private Helpers.PreviewCanvas canvaslist = new Helpers.PreviewCanvas();
-        private Helpers.PreviewCanvas keypreview = new Helpers.PreviewCanvas();
+        private ClefTypeOptions currentclefoption = ClefTypeOptions.regularclef;
+        private Dictionary<int, TimeSigBeatTime> timebeatlist = new Dictionary<int, TimeSigBeatTime> { [1] = TimeSigBeatTime.one, [2] = TimeSigBeatTime.two, [4] = TimeSigBeatTime.four, [8] = TimeSigBeatTime.eight, [16] = TimeSigBeatTime.sixteen, [24] = TimeSigBeatTime.twentyfour, [32] = TimeSigBeatTime.thirtytwo, [64] = TimeSigBeatTime.sixtyfour };
+        private PreviewCanvas canvaslist = new PreviewCanvas();
+        private PreviewCanvas keypreview = new PreviewCanvas();
         private int measurescount = 32;
         private uint timesigtimeval = 4;
         private KeyValuePair<int, TimeSigBeatTime> selectedtimebeats = new KeyValuePair<int, TimeSigBeatTime>(4, TimeSigBeatTime.four);
-        private KeyValuePair<string, ClefType> selectedclef = new KeyValuePair<string, ViewModel.ClefType>(MusicSymbols.GClef, ViewModel.ClefType.GClef);
-        private static Helpers.PreviewCanvas previewcanvas;
-        private static List<string> cleftype_ = new List<string>() { MusicSymbols.CClef, MusicSymbols.GClef, MusicSymbols.FClef};
-        private Dictionary<string, ClefType> cleftype = new Dictionary<string, ViewModel.ClefType>() { [MusicSymbols.GClef] = ViewModel.ClefType.GClef, [MusicSymbols.FClef] = ViewModel.ClefType.FClef, [MusicSymbols.CClef] = ViewModel.ClefType.CClef };
+        private KeyValuePair<string, ClefType> selectedclef = new KeyValuePair<string, ClefType>(MusicSymbols.GClef, ViewModel.ClefType.GClef);
+        private static PreviewCanvas previewcanvas;
+        private static List<string> cleftype_ = new List<string> { MusicSymbols.CClef, MusicSymbols.GClef, MusicSymbols.FClef};
+        private Dictionary<string, ClefType> cleftype = new Dictionary<string, ClefType> { [MusicSymbols.GClef] = ViewModel.ClefType.GClef, [MusicSymbols.FClef] = ViewModel.ClefType.FClef, [MusicSymbols.CClef] = ViewModel.ClefType.CClef };
         private static ObservableCollection<string> keysymbollist = new ObservableCollection<string>();
         private string selclef = cleftype_.ElementAt(1);
         private string selectedkeymode = "Major";
@@ -74,9 +69,9 @@ namespace MusicXMLScore.ViewModel
         public ClefTypeOptions CurrentClefOption { get { return currentclefoption; } set { if (value != currentclefoption) { currentclefoption = value; } } }
         public Dictionary<ImageSource, ClefType> ClefTypeList { get; set; }
         public Dictionary<int, TimeSigBeatTime> TimeBeatList { get { return timebeatlist; } }
-        public Helpers.PreviewCanvas ConfigurationPreview { get { return canvaslist; } }
-        public Helpers.PreviewCanvas KeyPreview { get { return keypreview; } }
-        public Helpers.PreviewCanvas PreviewCanvas { get { return previewcanvas; } set { previewcanvas = value; } }
+        public PreviewCanvas ConfigurationPreview { get { return canvaslist; } }
+        public PreviewCanvas KeyPreview { get { return keypreview; } }
+        public PreviewCanvas PreviewCanvas { get { return previewcanvas; } set { previewcanvas = value; } }
         public int MeasuresCount { get { return measurescount; } set { measurescount = value; } }
         public uint TimeSigTime { get { return timesigtimeval; } set { if (value != timesigtimeval) { if (timesigtimeval != value) { Set(nameof(TimeSigTime), ref timesigtimeval, value); } } } }
         public KeyValuePair<ImageSource, ClefType> SelectedClefType { get; set; }
@@ -158,14 +153,14 @@ namespace MusicXMLScore.ViewModel
             DrawingVisual vis = new DrawingVisual();
             using (DrawingContext dc = vis.RenderOpen())
             {
-                Helpers.DrawingHelpers.DrawString(dc, "test2", Helpers.TypeFaces.TextFont, Brushes.Black, 35f, 45f, 20f);
+                Helpers.DrawingHelpers.DrawString(dc, "test2", TypeFaces.TextFont, Brushes.Black, 35f, 45f, 20f);
             }
             return vis;
         }
 
         private static void OnOpionsWindow()
         {
-            ViewModel.ConfigurationView optionswindow = new ConfigurationView();
+            ConfigurationView optionswindow = new ConfigurationView();
             optionswindow.ShowDialog();
         }
 
@@ -182,44 +177,44 @@ namespace MusicXMLScore.ViewModel
             {
                 if (SelectedKeyType == "Sharp")
                 {
-                    KeySymbolList = new ObservableCollection<string>() { "C", "G", "D", "A", "E", "B", "F\u266f", "C\u266f" };
+                    KeySymbolList = new ObservableCollection<string> { "C", "G", "D", "A", "E", "B", "F\u266f", "C\u266f" };
                 }
                 if (SelectedKeyType == "Flat")
                 {
-                    KeySymbolList = new ObservableCollection<string>() { "C", "F", "B\u266d", "E\u266d", "A\u266d", "D\u266d", "G\u266d", "C\u266d" };
+                    KeySymbolList = new ObservableCollection<string> { "C", "F", "B\u266d", "E\u266d", "A\u266d", "D\u266d", "G\u266d", "C\u266d" };
                 }
                 if (SelectedKeyType == "None")
                 {
-                    KeySymbolList = new ObservableCollection<string>() { "C", "G", "D", "A", "E", "B", "F\u266f", "C\u266f", "C", "F", "B\u266d", "E\u266d", "A\u266d", "D\u266d", "G\u266d", "C\u266d" };
+                    KeySymbolList = new ObservableCollection<string> { "C", "G", "D", "A", "E", "B", "F\u266f", "C\u266f", "C", "F", "B\u266d", "E\u266d", "A\u266d", "D\u266d", "G\u266d", "C\u266d" };
                 }
             }
             if (SelectedKeyMode == "Minor")
             {
                 if (SelectedKeyType == "Sharp")
                 {
-                    KeySymbolList = new ObservableCollection<string>() { "a", "e", "b", "f\u266f", "c\u266f", "g\u266f", "d\u266f", "b\u266d" };
+                    KeySymbolList = new ObservableCollection<string> { "a", "e", "b", "f\u266f", "c\u266f", "g\u266f", "d\u266f", "b\u266d" };
                 }
                 if (SelectedKeyType == "Flat")
                 {
-                    KeySymbolList = new ObservableCollection<string>() { "a", "d", "g", "c", "f", "b\u266d", "e\u266d", "g\u266f" };
+                    KeySymbolList = new ObservableCollection<string> { "a", "d", "g", "c", "f", "b\u266d", "e\u266d", "g\u266f" };
                 }
                 if (SelectedKeyType == "None")
                 {
-                    KeySymbolList = new ObservableCollection<string>() { "a", "e", "b", "f\u266f", "c\u266f", "g\u266f", "d\u266f", "b\u266d", "a", "d", "g", "c", "f", "b\u266d", "e\u266d", "g\u266f" };
+                    KeySymbolList = new ObservableCollection<string> { "a", "e", "b", "f\u266f", "c\u266f", "g\u266f", "d\u266f", "b\u266d", "a", "d", "g", "c", "f", "b\u266d", "e\u266d", "g\u266f" };
                 }
             }
         }
 
         private void OnCanvasClick() //! test
         {
-            Log.LoggIt.Log("test");
-            Log.LoggIt.Log("error1", Log.LogType.Warning);
-            Log.LoggIt.Log("warning occured here ------------------------------------------------>", Log.LogType.Warning);
+            LoggIt.Log("test");
+            LoggIt.Log("error1", LogType.Warning);
+            LoggIt.Log("warning occured here ------------------------------------------------>", LogType.Warning);
             for (int i = 0; i < 200; i++)
             {
-                Log.LoggIt.Log($"test {i}", Log.LogType.Info);
-                Log.LoggIt.Log($"test {i}", Log.LogType.Warning);
-                Log.LoggIt.Log($"test {i}", Log.LogType.Error);
+                LoggIt.Log($"test {i}", LogType.Info);
+                LoggIt.Log($"test {i}", LogType.Warning);
+                LoggIt.Log($"test {i}", LogType.Error);
             }
             //MessageBox.Show(SimpleLogger.SimpleLog.NumberOfLogEntriesWaitingToBeWrittenToFile.ToString() + " " + canvaslist.Count);
         }

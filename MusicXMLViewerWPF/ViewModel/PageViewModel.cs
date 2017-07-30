@@ -1,19 +1,13 @@
 ﻿
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
-using MusicXMLScore.Helpers;
 using System.Windows.Media;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Windows.Shapes;
-using System.Reflection;
-using MusicXMLViewerWPF;
 using GalaSoft.MvvmLight;
+using MusicXMLScore.DrawingHelpers;
+using MusicXMLScore.Helpers;
+using MusicXMLViewerWPF;
 
 namespace MusicXMLScore.ViewModel
 {
@@ -25,12 +19,12 @@ namespace MusicXMLScore.ViewModel
         #region Private Fiels
         private ObservableCollection<UIElement> pageCanvas = new ObservableCollection<UIElement>();
         private DrawingVisualHost page = new DrawingVisualHost();
-        private double pageHeight = 0.0;
-        private double pageWidth = 0.0;
+        private double pageHeight;
+        private double pageWidth;
         #endregion
         #region NewConcept
-        DrawingHelpers.PageDrawingSystem newPage;
-        int pageIndex = 0;
+        PageDrawingSystem newPage;
+        int pageIndex;
         #endregion
 
         #region Contructors
@@ -60,7 +54,7 @@ namespace MusicXMLScore.ViewModel
         public PageViewModel(ScorePartwiseMusicXML scorePartwise, int index)
         {
             pageIndex = index;
-            newPage = new DrawingHelpers.PageDrawingSystem(scorePartwise, pageIndex);
+            newPage = new PageDrawingSystem(scorePartwise, pageIndex);
             Point dimensions = ViewModelLocator.Instance.Main.CurrentPageLayout.PageDimensions.GetPageDimensionsInPx();
             PageWidth = dimensions.X;
             PageHeight = dimensions.Y;
