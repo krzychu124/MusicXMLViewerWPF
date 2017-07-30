@@ -3,13 +3,14 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Xml.Serialization;
+using MusicXMLScore.ScoreProperties;
 
 namespace MusicXMLScore.Model.MeasureItems.Attributes
 {
     [Serializable]
     [XmlType("key")]
     [DebuggerDisplay("{Items[0]} {number}")]
-    public class KeyMusicXML
+    public class KeyMusicXML : IMeasureAttribute
     {
         private object[] items;
         private KeyChoiceTypes[] itemsElementName;

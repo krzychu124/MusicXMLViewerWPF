@@ -12,35 +12,35 @@ namespace MusicXMLScore.LayoutControl
     class LayoutPageContentInfo : INotifyPropertyChanged
     {
         //! missing custom system distance setter
-        private int pageIndex; //! index of page
-        private double pageContentWidth; //! width available for content (page width - margins)
-        private double pageContentHeight; //! height available for content (page height - margins)
+        private int _pageIndex; //! index of page
+        private double _pageContentWidth; //! width available for content (page width - margins)
+        private double _pageContentHeight; //! height available for content (page height - margins)
         //private bool keepEqualMeasureCount = true; //!todo implementation
-        private int lastSystemIndex; //! index of last added system 
+        private int _lastSystemIndex; //! index of last added system 
         
-        private double defaultSystemDistance;
-        private double defaultTopSystemDistance;
-        private Dictionary<int, double> systemDistances;
-        private Dictionary<int, double> systemHeights;
-        private List<LayoutSystemInfo> systemDimensionsInfo;
-        private double availableHeight;
-        private List<double> systemsYPositions;
-        private List<double> systemsXPositions;
-        private LayoutStyle.PageLayoutStyle pageLayoutStyle;
+        private double _defaultSystemDistance;
+        private double _defaultTopSystemDistance;
+        private Dictionary<int, double> _systemDistances;
+        private Dictionary<int, double> _systemHeights;
+        private List<LayoutSystemInfo> _systemDimensionsInfo;
+        private double _availableHeight;
+        private List<double> _systemsYPositions;
+        private List<double> _systemsXPositions;
+        private LayoutStyle.PageLayoutStyle _pageLayoutStyle;
 
         /// <summary>
         /// System position on page
         /// </summary>
         /// <param name="index">Index of system</param>
         /// <returns></returns>
-        public Point SystemPosition(int index) => new Point(systemsXPositions[index], systemsYPositions[index]);
-        public double SystemVerticalPosition(uint index) => index < systemsYPositions.Count ? systemsYPositions[(int)index] : 0.0;
-        public double SystemHorizontalPosition(uint index) => index < systemsXPositions.Count ? systemsXPositions[(int)index] : 0.0;
+        public Point SystemPosition(int index) => new Point(_systemsXPositions[index], _systemsYPositions[index]);
+        public double SystemVerticalPosition(uint index) => index < _systemsYPositions.Count ? _systemsYPositions[(int)index] : 0.0;
+        public double SystemHorizontalPosition(uint index) => index < _systemsXPositions.Count ? _systemsXPositions[(int)index] : 0.0;
 
         /// <summary>
         /// Number of systems generated inside page
         /// </summary>
-        public int SystemsCount => systemDimensionsInfo?.Count ?? 0;
+        public int SystemsCount => _systemDimensionsInfo?.Count ?? 0;
 
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
         
@@ -51,12 +51,12 @@ namespace MusicXMLScore.LayoutControl
         {
             get
             {
-                return pageContentWidth;
+                return _pageContentWidth;
             }
 
             set
             {
-                pageContentWidth = value;
+                _pageContentWidth = value;
             }
         }
 
@@ -67,14 +67,14 @@ namespace MusicXMLScore.LayoutControl
         {
             get
             {
-                return systemDimensionsInfo;
+                return _systemDimensionsInfo;
             }
 
             set
             {
-                if (systemDimensionsInfo != value)
+                if (_systemDimensionsInfo != value)
                 {
-                    systemDimensionsInfo = value;
+                    _systemDimensionsInfo = value;
                     PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(SystemDimensionsInfo)));
                 }
             }
@@ -87,24 +87,24 @@ namespace MusicXMLScore.LayoutControl
         {
             get
             {
-                return pageIndex;
+                return _pageIndex;
             }
 
             set
             {
-                pageIndex = value;
+                _pageIndex = value;
             }
         }
 
         public LayoutPageContentInfo(int pageIndex)
         {
-            this.pageIndex = pageIndex;
+            _pageIndex = pageIndex;
             SetDefaultDistances();
             GetPageContentHeight();
             GetPageContentWidth();
-            availableHeight = pageContentHeight; //! CalculateAvailableHeight();
-            pageLayoutStyle = ViewModel.ViewModelLocator.Instance.Main.CurrentLayout.LayoutStyle.PageStyle;
-            pageLayoutStyle.PropertyChanged += LayoutPageContentInfo_PropertyChangedHandler;
+            _availableHeight = _pageContentHeight; //! CalculateAvailableHeight();
+            _pageLayoutStyle = ViewModel.ViewModelLocator.Instance.Main.CurrentLayout.LayoutStyle.PageStyle;
+            _pageLayoutStyle.PropertyChanged += LayoutPageContentInfo_PropertyChangedHandler;
             PropertyChanged += LayoutPageContentInfo_PropertyChangedHandler;
         }
 
@@ -115,13 +115,13 @@ namespace MusicXMLScore.LayoutControl
                 case nameof(LayoutStyle.PageLayoutStyle.StretchSystemToPageWidth):
                     if (sender is LayoutStyle.PageLayoutStyle)
                     {
-                        this.ArrangeSystems();
+                        ArrangeSystems();
                     }
                     break;
                 case nameof(LayoutStyle.PageLayoutStyle.StretchLastSystemOnPage):
                     if (sender is LayoutStyle.PageLayoutStyle)
                     {
-                        this.ArrangeSystems();
+                        ArrangeSystems();
                     }
                     break;
                 default:
@@ -136,7 +136,7 @@ namespace MusicXMLScore.LayoutControl
         /// <returns></returns>
         private bool SystemStretchedToWidth()
         {
-            return pageLayoutStyle.StretchSystemToPageWidth;
+            return _pageLayoutStyle.StretchSystemToPageWidth;
         }
 
         /// <summary>
@@ -145,7 +145,7 @@ namespace MusicXMLScore.LayoutControl
         /// <returns></returns>
         private bool LastSystemStretched()
         {
-            return pageLayoutStyle.StretchLastSystemOnPage;
+            return _pageLayoutStyle.StretchLastSystemOnPage;
         }
         
         /// <summary>
@@ -154,7 +154,7 @@ namespace MusicXMLScore.LayoutControl
         /// <param name="systemInfo"></param>
         public void AddSystemDimensionsInfo(List<LayoutSystemInfo> systemInfo)
         {
-            systemDimensionsInfo = systemInfo;
+            _systemDimensionsInfo = systemInfo;
             CalculateAvailableHeight();
         }
 
@@ -166,32 +166,27 @@ namespace MusicXMLScore.LayoutControl
         public bool AddSystemDimensionInfo(LayoutSystemInfo systemInfo)
         {
             systemInfo.ArrangeSystem(SystemStretchedToWidth(), PageContentWidth); //! stretch test
-            if (systemDimensionsInfo == null)
+            if (_systemDimensionsInfo == null)
             {
-                systemDimensionsInfo = new List<LayoutSystemInfo>();
+                _systemDimensionsInfo = new List<LayoutSystemInfo>();
             }
-            if (availableHeight < systemInfo.SystemHeight)
+            if (_availableHeight < systemInfo.SystemHeight)
             {
                 return false;
             }
-            else
-            {
-                //!todo more tests 
-
-                systemDimensionsInfo.Add(systemInfo);
-                lastSystemIndex = systemDimensionsInfo.Count - 1;
-                CalculateAvailableHeight();
-                return true;
-            }
-            
+            //!todo more tests 
+            _systemDimensionsInfo.Add(systemInfo);
+            _lastSystemIndex = _systemDimensionsInfo.Count - 1;
+            CalculateAvailableHeight();
+            return true;
         }
 
         public void ArrangeSystems()
         {
             int index = 0;
-            foreach (var system in systemDimensionsInfo)
+            foreach (var system in _systemDimensionsInfo)
             {
-                if (index == lastSystemIndex && !LastSystemStretched()) //! is last system in page
+                if (index == _lastSystemIndex && !LastSystemStretched()) //! is last system in page
                 {
                     system.ArrangeSystem(false, PageContentWidth);
                 }
@@ -203,19 +198,19 @@ namespace MusicXMLScore.LayoutControl
             }
             double currentX = 0.0;
             double currentY = 0.0;
-            systemsXPositions = new List<double>();
-            systemsYPositions = new List<double>();
+            _systemsXPositions = new List<double>();
+            _systemsYPositions = new List<double>();
 
-            for (int i = 0; i < systemDimensionsInfo.Count; i++)
+            for (int i = 0; i < _systemDimensionsInfo.Count; i++)
             {
                 if (i == 0)
                 {
-                    currentY = systemDistances[i];
+                    currentY = _systemDistances[i];
                 }
-                systemsXPositions.Add(currentX);
-                systemsYPositions.Add(currentY);
-                currentY += systemDistances[i] + systemHeights[i];
-                systemDimensionsInfo[i].UpdateLayout = true;
+                _systemsXPositions.Add(currentX);
+                _systemsYPositions.Add(currentY);
+                currentY += _systemDistances[i] + _systemHeights[i];
+                _systemDimensionsInfo[i].UpdateLayout = true;
             }
         }
 
@@ -226,14 +221,14 @@ namespace MusicXMLScore.LayoutControl
         {
             GenerateSystemHeights();
             GenerateSystemDistances();
-            availableHeight = pageContentHeight;
-            for (int i = 0; i < systemDistances.Count; i++)
+            _availableHeight = _pageContentHeight;
+            for (int i = 0; i < _systemDistances.Count; i++)
             {
-                availableHeight -= systemDistances[i];
-                availableHeight -= systemHeights[i];
-                if (availableHeight < 0)
+                _availableHeight -= _systemDistances[i];
+                _availableHeight -= _systemHeights[i];
+                if (_availableHeight < 0)
                 {
-                    availableHeight = 0;
+                    _availableHeight = 0;
                     Log.LoggIt.Log("Available height is lower than all systems heights");
                 }
             }
@@ -244,7 +239,7 @@ namespace MusicXMLScore.LayoutControl
         /// </summary>
         private void GetPageContentWidth()
         {
-            pageContentWidth = ViewModel.ViewModelLocator.Instance.Main.CurrentPageLayout.GetContentWidth();
+            _pageContentWidth = ViewModel.ViewModelLocator.Instance.Main.CurrentPageLayout.GetContentWidth();
         }
 
         /// <summary>
@@ -252,7 +247,7 @@ namespace MusicXMLScore.LayoutControl
         /// </summary>
         private void GetPageContentHeight()
         {
-            pageContentHeight = ViewModel.ViewModelLocator.Instance.Main.CurrentPageLayout.GetContentHeight();
+            _pageContentHeight = ViewModel.ViewModelLocator.Instance.Main.CurrentPageLayout.GetContentHeight();
         }
 
         /// <summary>
@@ -260,19 +255,19 @@ namespace MusicXMLScore.LayoutControl
         /// </summary>
         private void GenerateSystemHeights()
         {
-            if (systemHeights == null)
+            if (_systemHeights == null)
             {
-                systemHeights = new Dictionary<int, double>();
+                _systemHeights = new Dictionary<int, double>();
             }
-            if (systemHeights.Count != 0) //? maight be refactored to skip heights instead of creating collection from scratch
+            if (_systemHeights.Count != 0) //? maight be refactored to skip heights instead of creating collection from scratch
             {
-                systemHeights.Clear();
+                _systemHeights.Clear();
             }
 
-            foreach (var system in systemDimensionsInfo)
+            foreach (var system in _systemDimensionsInfo)
             {
-                int index = systemDimensionsInfo.IndexOf(system);
-                systemHeights.Add(index, system.SystemHeight);
+                int index = _systemDimensionsInfo.IndexOf(system);
+                _systemHeights.Add(index, system.SystemHeight);
             }
         }
 
@@ -281,25 +276,25 @@ namespace MusicXMLScore.LayoutControl
         /// </summary>
         private void GenerateSystemDistances()// todo add option to get distances from loaded score (if some available)
         {
-            if (systemDistances == null)
+            if (_systemDistances == null)
             {
-                systemDistances = new Dictionary<int, double>();
+                _systemDistances = new Dictionary<int, double>();
             }
-            if (systemDistances.Count != 0)//? maight be refactored to skip heights instead of creating collection from scratch
+            if (_systemDistances.Count != 0)//? maight be refactored to skip heights instead of creating collection from scratch
             {
-                systemDistances.Clear();
+                _systemDistances.Clear();
             }
 
-            foreach (var system in systemDimensionsInfo)
+            foreach (var system in _systemDimensionsInfo)
             {
-                int index = systemDimensionsInfo.IndexOf(system);
+                int index = _systemDimensionsInfo.IndexOf(system);
                 if (index == 0)
                 {
-                    systemDistances.Add(index, defaultTopSystemDistance);
+                    _systemDistances.Add(index, _defaultTopSystemDistance);
                 }
                 else
                 {
-                    systemDistances.Add(index, defaultSystemDistance);
+                    _systemDistances.Add(index, _defaultSystemDistance);
                 }
             }
         }
@@ -310,8 +305,8 @@ namespace MusicXMLScore.LayoutControl
         private void SetDefaultDistances()
         {
             var layout = ViewModel. ViewModelLocator.Instance.Main.CurrentLayout;
-            defaultSystemDistance = 3 * layout.PageProperties.StaffHeight.MMToTenths();
-            defaultTopSystemDistance = 3.5 * layout.PageProperties.StaffHeight.MMToTenths();
+            _defaultSystemDistance = 3 * layout.PageProperties.StaffHeight.MMToTenths();
+            _defaultTopSystemDistance = 3.5 * layout.PageProperties.StaffHeight.MMToTenths();
         }
     }
 }

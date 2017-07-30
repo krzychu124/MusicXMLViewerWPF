@@ -20,22 +20,22 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
         public static Tuple<NoteTypeValueMusicXML,bool> GetBaseDurationValue(int duration, string partId, string measureId)
         {
             NoteTypeValueMusicXML result = NoteTypeValueMusicXML.whole;
-            int divisions = ViewModel.ViewModelLocator.Instance.Main.CurrentPartsProperties[partId].GetDivisionsMeasureId(measureId);
-            double durationFactor = (double)duration / (double)divisions;
+            int divisions = ViewModel.ViewModelLocator.Instance.Main.PartsProperties[partId].GetDivisionsMeasureId(measureId);
+            double durationFactor = duration / (double)divisions;
             int quarterDivider = (int)((int)NoteDurationValuesInverted.quarter * durationFactor);
             var convertedDuration = quarterDivider;
             bool hasDot = !convertedDuration.IsPowerOfTwo();
             if (!hasDot)
             {
                 NoteDurationValuesInverted baseNoteDuration;
-                Enum.TryParse<NoteDurationValuesInverted>(convertedDuration.ToString(), out baseNoteDuration);
+                Enum.TryParse(convertedDuration.ToString(), out baseNoteDuration);
                 result = baseNoteDuration.GetNoteTypeFromNoteDuration();
             }
             else
             {
                 int flooredDuration = FloorPowerOfTwo(convertedDuration);
                 NoteDurationValuesInverted baseNoteDuration;
-                Enum.TryParse<NoteDurationValuesInverted>(flooredDuration.ToString(), out baseNoteDuration);
+                Enum.TryParse(flooredDuration.ToString(), out baseNoteDuration);
                 result = baseNoteDuration.GetNoteTypeFromNoteDuration();
             }
             return new Tuple<NoteTypeValueMusicXML, bool>(result, hasDot);
@@ -74,7 +74,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
         public static NoteTypeValueMusicXML GetNoteTypeFromNoteDuration(this NoteDurationValuesInverted value)
         {
             NoteTypeValueMusicXML result;
-            Enum.TryParse<NoteTypeValueMusicXML>(value.ToString(), out result);
+            Enum.TryParse(value.ToString(), out result);
             return result;
         }
 

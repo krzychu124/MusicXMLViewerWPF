@@ -7,135 +7,86 @@ using System.Threading.Tasks;
 
 namespace MusicXMLScore.LayoutControl
 {
-
     [DebuggerDisplay("{DebugDisplay, nq}")]
     class AntiCollisionHelper //temporary name
     {
-        private int factionPosition;
-        private double fractionDuration;
-        private double spacingFactor;
-        private double elementWidth;
-        private double leftMinWidth;
-        private double rightMinWidth;
-        private double fractionPosX;
-        private double fractionStretch;
+        private int _factionPosition;
+        private double _fractionDuration;
+        private double _spacingFactor;
+        private double _elementWidth;
+        private double _leftMinWidth;
+        private double _rightMinWidth;
+        private double _fractionPosX;
+        private double _fractionStretch;
+
         public int FactionPosition
         {
-            get
-            {
-                return factionPosition;
-            }
+            get { return _factionPosition; }
 
-            set
-            {
-                factionPosition = value;
-            }
+            set { _factionPosition = value; }
         }
 
         public double FractionDuration
         {
-            get
-            {
-                return fractionDuration;
-            }
+            get { return _fractionDuration; }
 
-            set
-            {
-                fractionDuration = value;
-            }
+            set { _fractionDuration = value; }
         }
 
         public double ElementWidth
         {
-            get
-            {
-                return elementWidth;
-            }
+            get { return _elementWidth; }
 
-            set
-            {
-                elementWidth = value;
-            }
+            set { _elementWidth = value; }
         }
 
         public double LeftMinWidth
         {
-            get
-            {
-                return leftMinWidth;
-            }
+            get { return _leftMinWidth; }
 
-            set
-            {
-                leftMinWidth = value;
-            }
+            set { _leftMinWidth = value; }
         }
 
         public double RightMinWidth
         {
-            get
-            {
-                return rightMinWidth;
-            }
+            get { return _rightMinWidth; }
 
-            set
-            {
-                rightMinWidth = value;
-            }
+            set { _rightMinWidth = value; }
         }
 
-        private string DebugDisplay
-        {
-            get { return string.Format("{0}, {1:N2}, {2:N2}, {3:N2}, {4:N2} {5:N2} FS:{6:N2}", FactionPosition, FractionDuration, SpacingFactor, ElementWidth, LeftMinWidth, RightMinWidth, FractionStretch); }
-        }
+        private string DebugDisplay => string.Format("{0}, {1:N2}, {2:N2}, {3:N2}, {4:N2} {5:N2} FS:{6:N2}", FactionPosition, FractionDuration, SpacingFactor,
+            ElementWidth, LeftMinWidth, RightMinWidth, FractionStretch);
 
         public double SpacingFactor
         {
-            get
-            {
-                return spacingFactor;
-            }
+            get { return _spacingFactor; }
 
-            set
-            {
-                spacingFactor = value;
-            }
+            set { _spacingFactor = value; }
         }
 
         public double FractionPosX
         {
-            get
-            {
-                return fractionPosX;
-            }
+            get { return _fractionPosX; }
 
-            set
-            {
-                fractionPosX = value;
-            }
+            set { _fractionPosX = value; }
         }
 
         public double FractionStretch
         {
-            get
-            {
-                return fractionStretch;
-            }
+            get { return _fractionStretch; }
 
-            set
-            {
-                fractionStretch = value;
-            }
+            set { _fractionStretch = value; }
         }
 
-        public AntiCollisionHelper(int fractionPosition, double fractionDuration, double spacingFactor, double elementWidth, double leftMin, double rightMin)
+        public AntiCollisionHelper(int fractionPosition, double fractionDuration, double spacingFactor, double elementWidth, double leftMin,
+            double rightMin)
         {
-            this.FactionPosition = fractionPosition;
-            this.FractionDuration = fractionDuration;
-            this.spacingFactor = spacingFactor;
-            this.ElementWidth = elementWidth;
-            this.LeftMinWidth = leftMin;
-            this.RightMinWidth = rightMin;
+            FactionPosition = fractionPosition;
+            FractionDuration = fractionDuration;
+            SpacingFactor = spacingFactor;
+            ElementWidth = elementWidth;
+            LeftMinWidth = leftMin;
+            RightMinWidth = rightMin;
         }
     }
 }

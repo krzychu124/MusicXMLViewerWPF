@@ -1,90 +1,90 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using MusicXMLScore.Model.MeasureItems.Attributes;
-using MusicXMLScore.DrawingHelpers;
-using MusicXMLScore.ScoreProperties;
 using MusicXMLScore.Converters;
+using MusicXMLScore.DrawingHelpers;
+using MusicXMLScore.Helpers;
+using MusicXMLScore.LayoutStyle;
+using MusicXMLScore.Model.Helpers.SimpleTypes;
+using MusicXMLScore.Model.MeasureItems.Attributes;
+using MusicXMLScore.ViewModel;
 
 namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Attributes
 {
     class ClefContainerItem : IAttributeItemVisual
     {
-        private string itemStaff;
-        private Canvas itemCanvas;
-        private readonly int attributeIndex = 0;
-        private double itemWidth;
-        private double itemLeftMargin;
-        private double itemRightMargin;
-        private Rect itemRectBounds;
-        private Visual visual;
-        private ClefSignMusicXML sign;
-        private int line;
-        private int octaveChange;
-        private bool isAdditional =false;
-        private string symbol;
-        private double staffLine;
-        private bool isEmpty = false;
-        private bool visible = true;
-        private int fractionPosition = 0;
-        
+        private string _itemStaff;
+        private Canvas _itemCanvas;
+        private readonly int _attributeIndex = 0;
+        private double _itemWidth;
+        private double _itemLeftMargin;
+        private double _itemRightMargin;
+        private Rect _itemRectBounds;
+        private Visual _visual;
+        private ClefSignMusicXML _sign;
+        private int _line;
+        private int _octaveChange;
+        private bool _isAdditional;
+        private string _symbol;
+        private double _staffLine;
+        private bool _isEmpty;
+        private bool _visible = true;
+        private int _fractionPosition;
+
         public ClefContainerItem(string staff, int fractionPosition, ClefMusicXML clef)
         {
-            this.fractionPosition = fractionPosition;
-            this.sign = clef.Sign;
-            this.line = clef.Line != null ? int.Parse(clef.Line) : 0;
-            this.octaveChange = clef.ClefOctaveChange != null ? int.Parse(clef.ClefOctaveChange) : 0;
-            itemCanvas = new Canvas();
+            _fractionPosition = fractionPosition;
+            _sign = clef.Sign;
+            _line = clef.Line != null ? int.Parse(clef.Line) : 0;
+            _octaveChange = clef.ClefOctaveChange != null ? int.Parse(clef.ClefOctaveChange) : 0;
+            _itemCanvas = new Canvas();
             if (clef.AdditionalSpecified)
             {
-                isAdditional = clef.Additional == Model.Helpers.SimpleTypes.YesNoMusicXML.yes ? true : false;
+                _isAdditional = clef.Additional == YesNoMusicXML.yes;
             }
             else
             {
-                isAdditional = false;
+                _isAdditional = false;
             }
             if (fractionPosition != 0)
             {
-                isAdditional = true;
+                _isAdditional = true;
             }
             SetStandardClefMargins();
             GetSymbol();
             GetLine();
             Draw();
         }
-        public ClefContainerItem(ClefSignMusicXML sign, int line, int octaveChange =0, bool additional = false)
+
+        public ClefContainerItem(ClefSignMusicXML sign, int line, int octaveChange = 0, bool additional = false)
         {
-            this.sign = sign;
-            this.line = line;
-            this.octaveChange = octaveChange;
-            isAdditional = additional;
-            
+            _sign = sign;
+            _line = line;
+            _octaveChange = octaveChange;
+            _isAdditional = additional;
+
             GetSymbol();
             GetLine();
 
             Draw();
         }
+
         public ClefContainerItem(ClefMusicXML clef)
         {
-            this.sign = clef.Sign;
-            this.line = clef.Line != null ? int.Parse(clef.Line) : 0;
-            this.octaveChange = clef.ClefOctaveChange != null ? int.Parse(clef.ClefOctaveChange) : 0;
+            _sign = clef.Sign;
+            _line = clef.Line != null ? int.Parse(clef.Line) : 0;
+            _octaveChange = clef.ClefOctaveChange != null ? int.Parse(clef.ClefOctaveChange) : 0;
             if (clef.AdditionalSpecified)
             {
-                isAdditional = clef.Additional == Model.Helpers.SimpleTypes.YesNoMusicXML.yes ? true : false;
+                _isAdditional = clef.Additional == YesNoMusicXML.yes ? true : false;
             }
             else
             {
-                isAdditional = false;
+                _isAdditional = false;
             }
-            if (fractionPosition != 0)
+            if (_fractionPosition != 0)
             {
-                isAdditional = true;
+                _isAdditional = true;
             }
             GetSymbol();
             GetLine();
@@ -95,134 +95,131 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Attributes
         {
             if (visible)
             {
-                double tempLine = staffLine;
-                string tempSymbol = symbol;
+                double tempLine = _staffLine;
+                string tempSymbol = _symbol;
                 if (empty) // used for proper layout spacing, invisible but taking space; //TODO_LATER more test/refactor
                 {
-                    itemWidth = DrawingMethods.GetTextWidth(MusicSymbols.GClef, Helpers.TypeFaces.GetMusicFont(), isAdditional);
+                    _itemWidth = DrawingMethods.GetTextWidth(MusicSymbols.GClef, TypeFaces.GetMusicFont(), _isAdditional);
                     tempSymbol = "";
                     tempLine = 0.0;
                 }
                 else
                 {
-                    itemWidth = DrawingMethods.GetTextWidth(symbol, Helpers.TypeFaces.GetMusicFont(), isAdditional);
+                    _itemWidth = DrawingMethods.GetTextWidth(_symbol, TypeFaces.GetMusicFont(), _isAdditional);
                 }
-                Helpers.DrawingVisualHost cc = new Helpers.DrawingVisualHost();
+                DrawingVisualHost cc = new DrawingVisualHost();
                 //cc.Width = 10;
                 //cc.Height = 10;
-                cc.AddCharacterGlyph(new Point(0, tempLine), tempSymbol, isAdditional);
+                cc.AddCharacterGlyph(new Point(0, tempLine), tempSymbol, _isAdditional);
                 ItemCanvas.Children.Add(cc);
             }
-            else
-            {
-
-            }
-            
         }
 
         private void GetLine()
         {
-            if (line == 0)
+            if (_line == 0)
             {
-                if (sign == ClefSignMusicXML.G)
+                if (_sign == ClefSignMusicXML.G)
                 {
-                    line = 2;
+                    _line = 2;
                 }
-                if (sign == ClefSignMusicXML.C)
+                if (_sign == ClefSignMusicXML.C)
                 {
-                    line = 3;
+                    _line = 3;
                 }
-                if (sign == ClefSignMusicXML.F)
+                if (_sign == ClefSignMusicXML.F)
                 {
-                    line = 4;
+                    _line = 4;
                 }
-                if (sign == ClefSignMusicXML.TAB)
+                if (_sign == ClefSignMusicXML.TAB)
                 {
-                    line = 3;
+                    _line = 3;
                 }
             }
-            if (sign == ClefSignMusicXML.percussion)
+            if (_sign == ClefSignMusicXML.percussion)
             {
-                line = 3;
+                _line = 3;
             }
-            if (sign == ClefSignMusicXML.TAB)
+            if (_sign == ClefSignMusicXML.TAB)
             {
-                line = 3;
+                _line = 3;
             }
-            staffLine = ViewModel.ViewModelLocator.Instance.Main.CurrentPageLayout.AvaliableIndexLinePositions[10 - (line *2)];
+            _staffLine = ViewModelLocator.Instance.Main.CurrentPageLayout.AvaliableIndexLinePositions[10 - (_line * 2)];
         }
 
         private void GetSymbol()
         {
-            switch (sign)
+            switch (_sign)
             {
                 case ClefSignMusicXML.G:
-                    switch (octaveChange)
+                    switch (_octaveChange)
                     {
                         case -2:
-                            symbol = MusicSymbols.GClef15Down;
+                            _symbol = MusicSymbols.GClef15Down;
                             break;
                         case -1:
-                            symbol = MusicSymbols.GClef8Down;
+                            _symbol = MusicSymbols.GClef8Down;
                             break;
                         case 1:
-                            symbol = MusicSymbols.GClef8Up;
+                            _symbol = MusicSymbols.GClef8Up;
                             break;
                         case 2:
-                            symbol = MusicSymbols.GClef15Up;
+                            _symbol = MusicSymbols.GClef15Up;
                             break;
-                        default: symbol = MusicSymbols.GClef;
+                        default:
+                            _symbol = MusicSymbols.GClef;
                             break;
                     }
                     break;
                 case ClefSignMusicXML.F:
-                    switch (octaveChange)
+                    switch (_octaveChange)
                     {
                         case -2:
-                            symbol = MusicSymbols.FClef15Down;
+                            _symbol = MusicSymbols.FClef15Down;
                             break;
                         case -1:
-                            symbol = MusicSymbols.FClef8Down;
+                            _symbol = MusicSymbols.FClef8Down;
                             break;
                         case 1:
-                            symbol = MusicSymbols.FClef8Up;
+                            _symbol = MusicSymbols.FClef8Up;
                             break;
                         case 2:
-                            symbol = MusicSymbols.FClef15Up;
+                            _symbol = MusicSymbols.FClef15Up;
                             break;
                         default:
-                            symbol = MusicSymbols.FClef;
+                            _symbol = MusicSymbols.FClef;
                             break;
                     }
                     break;
                 case ClefSignMusicXML.C:
-                    switch (octaveChange)
+                    switch (_octaveChange)
                     {
                         case -1:
-                            symbol = MusicSymbols.CClef8Down;
+                            _symbol = MusicSymbols.CClef8Down;
                             break;
-                        default: symbol = MusicSymbols.CClef;
+                        default:
+                            _symbol = MusicSymbols.CClef;
                             break;
                     }
                     break;
                 case ClefSignMusicXML.percussion:
-                    symbol = MusicSymbols.Percussion;
+                    _symbol = MusicSymbols.Percussion;
                     break;
                 case ClefSignMusicXML.TAB:
-                    symbol = MusicSymbols.TAB;
+                    _symbol = MusicSymbols.TAB;
                     break;
                 case ClefSignMusicXML.jianpu:
-                    symbol = string.Empty;
+                    _symbol = string.Empty;
                     break;
                 case ClefSignMusicXML.none:
-                    symbol = string.Empty;
+                    _symbol = string.Empty;
                     break;
             }
         }
 
         private void SetStandardClefMargins()
         {
-            LayoutStyle.Layout layout = ViewModel.ViewModelLocator.Instance.Main.CurrentLayout.LayoutStyle;
+            Layout layout = ViewModelLocator.Instance.Main.CurrentLayout.LayoutStyle;
             SetItemMargins(layout.MeasureStyle.ClefLeftOffset.TenthsToWPFUnit(), layout.MeasureStyle.ClefRightOffset.TenthsToWPFUnit());
         }
 
@@ -234,121 +231,68 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Attributes
 
         public Rect ItemRectBounds
         {
-            get
-            {
-                return itemRectBounds;
-            }
+            get { return _itemRectBounds; }
 
-            set
-            {
-                itemRectBounds = value;
-            }
+            set { _itemRectBounds = value; }
         }
+
         public double ItemWidth
         {
-            get
-            {
-                return itemWidth;
-            }
+            get { return _itemWidth; }
         }
 
         public bool Empty
         {
-            get
-            {
-                return isEmpty;
-            }
+            get { return _isEmpty; }
 
-            set
-            {
-                isEmpty = value;
-            }
+            set { _isEmpty = value; }
         }
 
         public bool Visible
         {
-            get
-            {
-                return visible;
-            }
+            get { return _visible; }
 
-            set
-            {
-                visible = value;
-            }
+            set { _visible = value; }
         }
 
         public double ItemWidthMin
         {
-            get
-            {
-                return 0;
-            }
+            get { return 0; }
 
-            set
-            {
-                
-            }
+            set { }
         }
 
         public int AttributeIndex
         {
-            get
-            {
-                return attributeIndex;
-            }
+            get { return _attributeIndex; }
         }
 
         public Canvas ItemCanvas
         {
-            get
-            {
-                return itemCanvas;
-            }
+            get { return _itemCanvas; }
 
-            set
-            {
-                itemCanvas = value;
-            }
+            set { _itemCanvas = value; }
         }
 
         public string ItemStaff
         {
-            get
-            {
-                return itemStaff;
-            }
+            get { return _itemStaff; }
 
-            set
-            {
-                itemStaff = value;
-            }
+            set { _itemStaff = value; }
         }
 
         public double ItemLeftMargin
         {
-            get
-            {
-                return itemLeftMargin;
-            }
+            get { return _itemLeftMargin; }
 
-            private set
-            {
-                itemLeftMargin = value;
-            }
+            private set { _itemLeftMargin = value; }
         }
 
         public double ItemRightMargin
         {
-            get
-            {
-                return itemRightMargin;
-            }
+            get { return _itemRightMargin; }
 
-            private set
-            {
-                itemRightMargin = value;
-            }
+            private set { _itemRightMargin = value; }
         }
     }
 }

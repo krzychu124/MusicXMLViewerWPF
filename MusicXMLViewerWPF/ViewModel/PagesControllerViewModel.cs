@@ -1,19 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MusicXMLViewerWPF;
-using System.ComponentModel;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Linq;
 using System.Windows;
 using GalaSoft.MvvmLight;
-using GalaSoft.MvvmLight.Messaging;
-using MusicXMLScore.Helpers;
-using System.Xml.Serialization;
-using MusicXMLScore.Model;
-using System.IO;
+using MusicXMLScore.DrawingHelpers;
 using MusicXMLScore.LayoutControl;
+using MusicXMLViewerWPF;
 
 namespace MusicXMLScore.ViewModel
 {
@@ -109,7 +102,7 @@ namespace MusicXMLScore.ViewModel
             IsBlank = false;
             partwise = scorePartXML;
             PagesCollection = new ObservableCollection<UIElement>();
-            DrawingHelpers.PartProperties pp = ViewModelLocator.Instance.Main.CurrentPartsProperties[scorePartXML.Part.ElementAt(0).Id];
+            PartProperties pp = ViewModelLocator.Instance.Main.PartsProperties[scorePartXML.Part.ElementAt(0).Id];
             bool autoLayoutSupport = ViewModelLocator.Instance.Main.CurrentScoreProperties.AutoLayoutSupportByScore;
             //autoLayoutSupport = false;
             if (autoLayoutSupport)
@@ -129,7 +122,7 @@ namespace MusicXMLScore.ViewModel
         private void AddPageToCollection() //default page
         {
             PageViewModel pvm = new PageViewModel();
-            PagesCollection.Add(new PageView() { DataContext = pvm });
+            PagesCollection.Add(new PageView { DataContext = pvm });
         }
         
 
@@ -138,7 +131,7 @@ namespace MusicXMLScore.ViewModel
             id = sp.ID;
             int index = pageCollection.Count;
             PageViewModel pvm = new PageViewModel(sp, index);
-            PagesCollection.Add(new PageView() { DataContext = pvm });
+            PagesCollection.Add(new PageView { DataContext = pvm });
         }
         
         private void PagesControllerViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)

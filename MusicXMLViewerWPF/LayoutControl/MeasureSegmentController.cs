@@ -1,130 +1,93 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Windows.Controls;
 using MusicXMLScore.Converters;
 using MusicXMLScore.DrawingHelpers;
-using MusicXMLScore.Model.MeasureItems;
-using System.Diagnostics;
-using MusicXMLScore.LayoutControl.SegmentPanelContainers.Attributes;
-using MusicXMLScore.LayoutControl.SegmentPanelContainers;
-using MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes;
 using MusicXMLScore.Helpers;
-using System.Windows.Controls;
+using MusicXMLScore.LayoutControl.SegmentPanelContainers;
+using MusicXMLScore.LayoutControl.SegmentPanelContainers.Attributes;
+using MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes;
+using MusicXMLScore.Log;
+using MusicXMLScore.Model;
+using MusicXMLScore.Model.MeasureItems;
+using MusicXMLScore.ViewModel;
 using MusicXMLScore.VisualObjectController;
 
 namespace MusicXMLScore.LayoutControl
 {
     class MeasureSegmentController
     {
-        private int stavesCount = 1;
-        private double minStavesDistance = 40.0.TenthsToWPFUnit();
-        private int maxDuration = 1;
-        private double width = 0;
-        private double minimalWidth;
-        private PartProperties partProperties;
-        private Tuple<double, double, double> attributesWidths;
-        private BeamItemsController beamsController;
-        private MeasureItemsContainer measureItemsContainer;
-        private StaffLineVisualController staffLineController;
+        private int _stavesCount = 1;
+        private double _minStavesDistance = 40.0.TenthsToWPFUnit();
+        private int _maxDuration = 1;
+        private double _width;
+        private double _minimalWidth;
+        private PartProperties _partProperties;
+        private Tuple<double, double, double> _attributesWidths;
+        private BeamItemsController _beamsController;
+        private MeasureItemsContainer _measureItemsContainer;
+        private StaffLineVisualController _staffLineController;
 
-        private Model.ScorePartwisePartMeasureMusicXML measure;
+        private ScorePartwisePartMeasureMusicXML _measure;
 
-        private string measureID;
-        private double minimalWidthWithAttributes;
-        private string partId;
+        private string _measureId;
+        private double _minimalWidthWithAttributes;
+        private string _partId;
 
         public int MaxDuration
         {
-            get
-            {
-                return maxDuration;
-            }
+            get { return _maxDuration; }
 
-            set
-            {
-                maxDuration = value;
-            }
+            set { _maxDuration = value; }
         }
 
         public double Width
         {
-            get
-            {
-                return width;
-            }
+            get { return _width; }
 
-            set
-            {
-                width = value;
-            }
+            set { _width = value; }
         }
+
         internal BeamItemsController BeamsController
         {
-            get
-            {
-                return beamsController;
-            }
+            get { return _beamsController; }
 
-            set
-            {
-                beamsController = value;
-            }
+            set { _beamsController = value; }
         }
 
         public double MinimalWidth
         {
-            get
-            {
-                return minimalWidth;
-            }
+            get { return _minimalWidth; }
 
             set
             {
-                minimalWidth = value;
-                int partIndex = ViewModel.ViewModelLocator.Instance.Main.CurrentSelectedScore.Part.FindIndex(x => x.Id == partId);
-                ViewModel.ViewModelLocator.Instance.Main.CurrentSelectedScore.Part.ElementAt(partIndex).Measure.Where(x=>x.Number== measureID).FirstOrDefault().CalculatedWidth = minimalWidth.WPFUnitToTenths();
+                _minimalWidth = value;
+                int partIndex = ViewModelLocator.Instance.Main.CurrentSelectedScore.Part.FindIndex(x => x.Id == _partId);
+                ViewModelLocator.Instance.Main.CurrentSelectedScore.Part.ElementAt(partIndex).Measure.FirstOrDefault(x => x.Number == _measureId)
+                    .CalculatedWidth = _minimalWidth.WPFUnitToTenths();
             }
         }
 
-        public string MeasureID
+        public string MeasureId
         {
-            get
-            {
-                return measureID;
-            }
+            get { return _measureId; }
 
-            set
-            {
-                measureID = value;
-            }
+            set { _measureId = value; }
         }
 
         public double MinimalWidthWithAttributes
         {
-            get
-            {
-                return minimalWidthWithAttributes;
-            }
+            get { return _minimalWidthWithAttributes; }
 
-            set
-            {
-                minimalWidthWithAttributes = value;
-            }
+            set { _minimalWidthWithAttributes = value; }
         }
 
         public string PartId
         {
-            get
-            {
-                return partId;
-            }
+            get { return _partId; }
 
-            set
-            {
-                partId = value;
-            }
+            set { _partId = value; }
         }
 
         /// <summary>
@@ -133,31 +96,32 @@ namespace MusicXMLScore.LayoutControl
         /// <param name="measure">Measure object</param>
         /// <param name="partID">Part ID of measure</param>
         /// <param name="stavesCount">Number of staves in measure(1 is normal, 2 piano staff)</param>
-        public MeasureSegmentController(Model.ScorePartwisePartMeasureMusicXML measure, string partID, int stavesCount)
+        public MeasureSegmentController(ScorePartwisePartMeasureMusicXML measure, string partID, int stavesCount)
         {
-            this.partId = partID;
-            this.stavesCount = stavesCount <1 ? 1: stavesCount; //! correction if set to 0
-            this.measureID = measure.Number;
-            this.measure = measure;
-            partProperties = ViewModel.ViewModelLocator.Instance.Main.CurrentPartsProperties[partID]; //Todo refator: replace/remove (reduce dependencies)
-            minStavesDistance = partProperties.StaffLayoutPerPage.FirstOrDefault().FirstOrDefault().StaffDistance.TenthsToWPFUnit(); //todo replace/improvements
+            _partId = partID;
+            _stavesCount = stavesCount < 1 ? 1 : stavesCount; //! correction if set to 0
+            _measureId = measure.Number;
+            _measure = measure;
+            _partProperties = ViewModelLocator.Instance.Main.PartsProperties[partID]; //Todo refator: replace/remove (reduce dependencies)
+            _minStavesDistance =
+                _partProperties.StaffLayoutPerPage.FirstOrDefault().FirstOrDefault().StaffDistance.TenthsToWPFUnit(); //todo replace/improvements
 
-            var currentDivisions = partProperties.GetDivisionsMeasureId(measure.Number);
-            var currentTime = ViewModel.ViewModelLocator.Instance.Main.CurrentScoreProperties.GetTimeSignature(measure.Number);
-            double denominator = currentDivisions == 1 ? 1 : currentTime.GetDenominator();
-            double numerator = currentDivisions == 1 ? 1 : currentTime.GetNumerator();
-            maxDuration = (int)((4 / (double)denominator) * ( currentDivisions * numerator));
+            var currentDivisions = _partProperties.GetDivisionsMeasureId(measure.Number);
+            var currentTime = ViewModelLocator.Instance.Main.CurrentScoreProperties.GetTimeSignature(measure.Number);
+            double denominator = currentDivisions == 1 ? 1.0 : currentTime.GetDenominator();
+            double numerator = currentDivisions == 1 ? 1.0 : currentTime.GetNumerator();
+            _maxDuration = (int) (4 / denominator * (currentDivisions * numerator));
             int durationCursor = 0;
             var measureItems = measure.Items;
-            
+
             //!----------- beams --------------------------
             List<BeamItem> beam = new List<BeamItem>();
-            measureItemsContainer = new MeasureItemsContainer(measure.Number, partID, stavesCount, stavesCount.ToString());
+            _measureItemsContainer = new MeasureItemsContainer(measure.Number, partID, stavesCount, stavesCount.ToString());
             //!-------------------------------------------
-            
+
             //!----------- staff lines --------------------
-            staffLineController = new StaffLineVisualController(stavesCount, width, partProperties.NumberOfLines, measure,  minStavesDistance);
-            measureItemsContainer.AddStaffLine(staffLineController.StaffLineCanvas);
+            _staffLineController = new StaffLineVisualController(stavesCount, _width, _partProperties.NumberOfLines, measure, _minStavesDistance);
+            _measureItemsContainer.AddStaffLine(_staffLineController.StaffLineCanvas);
             //!--------------------------------------------
 
             List<NoteMusicXML> temporaryChordList = new List<NoteMusicXML>();
@@ -175,14 +139,16 @@ namespace MusicXMLScore.LayoutControl
                             continue; // bugfix => when chorded notes sequence is splited by direction items 
                         }
 
-                        var noteContainer = GenerateNoteContainerFromChords(temporaryChordList, durationCursor, partID, measure.Number, tempStaffNumber);
+                        var noteContainer =
+                            GenerateNoteContainerFromChords(temporaryChordList, durationCursor, partID, measure.Number, tempStaffNumber);
                         temporaryChordList.Clear();
                         if (noteContainer.Item1.Beams != null)
                         {
                             beam.Add(noteContainer.Item1.Beams);
                         }
                         //! add previous notesChord to container
-                        measureItemsContainer.AppendNoteWithStaffNumber(noteContainer.Item1, noteContainer.Item2, noteContainer.Item3, noteContainer.Item4);
+                        _measureItemsContainer.AppendNoteWithStaffNumber(noteContainer.Item1, noteContainer.Item2, noteContainer.Item3,
+                            noteContainer.Item4);
                         durationCursor += chordDuration;
                     }
                 }
@@ -190,7 +156,7 @@ namespace MusicXMLScore.LayoutControl
                 string typeName = measure.Items[i].GetType().Name;
                 if (typeName == nameof(AttributesMusicXML))
                 {
-                    AttributesMusicXML a = (AttributesMusicXML)measureItems[i];
+                    AttributesMusicXML a = (AttributesMusicXML) measureItems[i];
                     if (CheckIfElementsOtherThanClefKeyTime(a, durationCursor))
                     {
                         //Todo refactor
@@ -198,35 +164,38 @@ namespace MusicXMLScore.LayoutControl
                 }
                 if (typeName == nameof(BackupMusicXML))
                 {
-                    BackupMusicXML backward = (BackupMusicXML)measureItems[i];
+                    BackupMusicXML backward = (BackupMusicXML) measureItems[i];
                     durationCursor -= int.Parse(backward.Duration.ToString());
                 }
                 if (typeName == nameof(ForwardMusicXML))
                 {
-                    ForwardMusicXML forward = (ForwardMusicXML)measureItems[i];
+                    ForwardMusicXML forward = (ForwardMusicXML) measureItems[i];
                     durationCursor += int.Parse(forward.Duration.ToString());
                 }
                 if (typeName == nameof(NoteMusicXML))
                 {
-                    NoteMusicXML note = (NoteMusicXML)measureItems[i];
+                    NoteMusicXML note = (NoteMusicXML) measureItems[i];
                     string staffNumber = note.Staff;
                     string voice = note.Voice;
                     if (note.IsRest())
                     {
                         if (temporaryChordList.Count != 0)
                         {
-                            var noteContainer = GenerateNoteContainerFromChords(temporaryChordList, durationCursor, partID, measure.Number, tempStaffNumber);
+                            var noteContainer =
+                                GenerateNoteContainerFromChords(temporaryChordList, durationCursor, partID, measure.Number, tempStaffNumber);
                             temporaryChordList.Clear();
                             if (noteContainer.Item1.Beams != null)
                             {
                                 beam.Add(noteContainer.Item1.Beams);
                             }
                             //! add previous notesChord to container
-                            measureItemsContainer.AppendNoteWithStaffNumber(noteContainer.Item1, noteContainer.Item2, noteContainer.Item3, noteContainer.Item4);
+                            _measureItemsContainer.AppendNoteWithStaffNumber(noteContainer.Item1, noteContainer.Item2, noteContainer.Item3,
+                                noteContainer.Item4);
                             durationCursor += chordDuration;
                         }
                         //! add rest to container
-                        measureItemsContainer.AppendRestWithStaffNumber(new RestContainterItem(note, durationCursor, partID, measure.Number, staffNumber), durationCursor, voice, staffNumber);
+                        _measureItemsContainer.AppendRestWithStaffNumber(
+                            new RestContainterItem(note, durationCursor, partID, measure.Number, staffNumber), durationCursor, voice, staffNumber);
                         durationCursor += note.GetDuration();
                     }
                     else
@@ -237,20 +206,21 @@ namespace MusicXMLScore.LayoutControl
                             {
                                 if (temporaryChordList.Count != 0)
                                 {
-                                    var noteContainer = GenerateNoteContainerFromChords(temporaryChordList, durationCursor, partID, measure.Number, tempStaffNumber);
+                                    var noteContainer = GenerateNoteContainerFromChords(temporaryChordList, durationCursor, partID, measure.Number,
+                                        tempStaffNumber);
                                     temporaryChordList.Clear();
                                     if (noteContainer.Item1.Beams != null)
                                     {
                                         beam.Add(noteContainer.Item1.Beams);
                                     }
                                     //! add previous notesChord to container
-                                    measureItemsContainer.AppendNoteWithStaffNumber(noteContainer.Item1, noteContainer.Item2, noteContainer.Item3, noteContainer.Item4);
+                                    _measureItemsContainer.AppendNoteWithStaffNumber(noteContainer.Item1, noteContainer.Item2, noteContainer.Item3,
+                                        noteContainer.Item4);
                                     durationCursor += chordDuration;
                                 }
                                 chordDuration = note.GetDuration();
                                 tempStaffNumber = staffNumber;
                                 temporaryChordList.Add(note);
-
                             }
                         }
                         else
@@ -265,137 +235,140 @@ namespace MusicXMLScore.LayoutControl
                     {
                         if (i + 1 < measure.Items.Length)
                         {
-                            
                         }
                         if (i + 1 == measure.Items.Length)
                         {
-                            var noteContainer = GenerateNoteContainerFromChords(temporaryChordList, durationCursor, partID, measure.Number, tempStaffNumber);
+                            var noteContainer =
+                                GenerateNoteContainerFromChords(temporaryChordList, durationCursor, partID, measure.Number, tempStaffNumber);
                             temporaryChordList.Clear();
                             if (noteContainer.Item1.Beams != null)
                             {
                                 beam.Add(noteContainer.Item1.Beams);
                             }
                             //! add previous notesChord to container
-                            measureItemsContainer.AppendNoteWithStaffNumber(noteContainer.Item1, noteContainer.Item2, noteContainer.Item3, noteContainer.Item4);
+                            _measureItemsContainer.AppendNoteWithStaffNumber(noteContainer.Item1, noteContainer.Item2, noteContainer.Item3,
+                                noteContainer.Item4);
                             durationCursor += chordDuration;
                         }
                     }
                 }
             }
-            beamsController = new BeamItemsController(beam);
+            _beamsController = new BeamItemsController(beam);
             GenerateAndAddAttributesContainers(measure.Number, partID);
-            width = measure.CalculatedWidth.TenthsToWPFUnit();
-            ArrangeContainers(measure.CalculatedWidth.TenthsToWPFUnit(), maxDuration);
-            measureItemsContainer.ArrangeStaffs(minStavesDistance);
+            _width = measure.CalculatedWidth.TenthsToWPFUnit();
+            ArrangeContainers(measure.CalculatedWidth.TenthsToWPFUnit(), _maxDuration);
+            _measureItemsContainer.ArrangeStaffs(_minStavesDistance);
         }
-        private Tuple<NoteContainerItem, int, string, string> GenerateNoteContainerFromChords(List<NoteMusicXML> chordList, int durationCursor, string partId, string measireId, string staffId)
+
+        private Tuple<NoteContainerItem, int, string, string> GenerateNoteContainerFromChords(List<NoteMusicXML> chordList, int durationCursor,
+            string partId, string measireId, string staffId)
         {
             string chordVoice = chordList.FirstOrDefault().Voice;
             NoteContainerItem noteContainer = new NoteContainerItem(chordList, durationCursor, partId, measireId, staffId);
             return Tuple.Create(noteContainer, durationCursor, chordVoice, staffId);
         }
 
+        //TODO finish/refactor
         private bool CheckIfElementsOtherThanClefKeyTime(AttributesMusicXML a, int currentFraction)
         {
             if (a.DivisionsSpecified)
             {
-
             }
             if (a.MeasureStyle.Count != 0)
             {
-
             }
             if (a.PartSymbol != null)
             {
-
             }
             if (a.StaffDetails.Count != 0)
             {
                 if (a.StaffDetails.Count > 1)
                 {
-
                 }
                 else
                 {
-                    if (a.StaffDetails.FirstOrDefault().Number != null){
-
+                    if (a.StaffDetails.FirstOrDefault().Number != null)
+                    {
                     }
                     else
                     {
-                        if (staffLineController.StaffVisuals.Count == 1)
+                        if (_staffLineController.StaffVisuals.Count == 1)
                         {
                             var number = a.StaffDetails.FirstOrDefault().StaffLines;
                             if (number != null)
                             {
-                                partProperties.NumberOfLines = int.Parse(number);
+                                _partProperties.NumberOfLines = int.Parse(number);
                             }
                         }
                     }
-
                 }
             }
             if (a.Transpose.Count != 0)
             {
-
             }
             return false;
         }
 
         private void GenerateAndAddAttributesContainers(string measureNumber, string partID)
         {
-            for (int i = 1; i <= stavesCount; i++) // missing - remainders for each systemSegment beginning measure
+            for (int i = 1; i <= _stavesCount; i++) // missing - remainders for each systemSegment beginning measure
             {
-                if (partProperties.ClefChanges.ContainsKey(measureNumber))
+                if (_partProperties.ClefChanges.ContainsKey(measureNumber))
                 {
-                    var clefList = partProperties.ClefChanges[measureNumber].ClefsChanges.Where(x => x.Item1 == i.ToString()).ToList();
+                    var clefList = _partProperties.ClefChanges[measureNumber].AttributeChanges.Where(x => x.StaffNumber == i.ToString()).ToList();
                     if (clefList.Count != 0)
                     {
                         foreach (var clef in clefList)
                         {
-                            ClefContainerItem clefContainer = new ClefContainerItem(clef.Item1, clef.Item2, clef.Item3);
-                            measureItemsContainer.AppendAttributeWithStaffNumber(clefContainer, clef.Item2, clef.Item1);
+                            ClefContainerItem clefContainer = new ClefContainerItem(clef.StaffNumber, clef.TimeFraction, clef.AttributeEntity);
+                            _measureItemsContainer.AppendAttributeWithStaffNumber(clefContainer, clef.TimeFraction, clef.StaffNumber);
                         }
                     }
                 }
-                if (partProperties.KeyChanges.ContainsKey(measureNumber))
+                if (_partProperties.KeyChanges.ContainsKey(measureNumber))
                 {
-                    var keyList = partProperties.KeyChanges[measureNumber].KeysChanges.Where(x => x.Item1 == i.ToString() || x.Item1 == null).ToList();
+                    var keyList = _partProperties.KeyChanges[measureNumber].AttributeChanges
+                        .Where(x => x.StaffNumber == i.ToString() || x.StaffNumber == null).ToList();
                     if (keyList.Count != 0)
                     {
                         foreach (var key in keyList)
                         {
-                            string staffNumber = key.Item1 != null ? key.Item1 : i.ToString();
-                            KeyContainerItem keyContainer = new KeyContainerItem(key.Item3, key.Item2, measureNumber, partID, staffNumber);
-                            measureItemsContainer.AppendAttributeWithStaffNumber(keyContainer, key.Item2, staffNumber);
+                            string staffNumber = key.StaffNumber ?? i.ToString();
+                            KeyContainerItem keyContainer =
+                                new KeyContainerItem(key.AttributeEntity, key.TimeFraction, measureNumber, partID, staffNumber);
+                            _measureItemsContainer.AppendAttributeWithStaffNumber(keyContainer, key.TimeFraction, staffNumber);
                         }
                     }
                 }
-                if (partProperties.TimeChanges.ContainsKey(measureNumber))
+                if (_partProperties.TimeChanges.ContainsKey(measureNumber))
                 {
-                    var timeList = partProperties.TimeChanges[measureNumber].TimesChanges.Where(x => x.Item1 == i.ToString() || x.Item1 == null).ToList();
+                    var timeList = _partProperties.TimeChanges[measureNumber].AttributeChanges
+                        .Where(x => x.StaffNumber == i.ToString() || x.StaffNumber == null).ToList();
                     if (timeList.Count != 0)
                     {
                         foreach (var time in timeList)
                         {
-                            string staffNumber = time.Item1 != null ? time.Item1 : i.ToString();
-                            TimeSignatureContainerItem timeContainer = new TimeSignatureContainerItem(time.Item1, time.Item2, time.Item3);
-                            measureItemsContainer.AppendAttributeWithStaffNumber(timeContainer, time.Item2, staffNumber);
+                            string staffNumber = time.StaffNumber != null ? time.StaffNumber : i.ToString();
+                            TimeSignatureContainerItem timeContainer =
+                                new TimeSignatureContainerItem(time.StaffNumber, time.TimeFraction, time.AttributeEntity);
+                            _measureItemsContainer.AppendAttributeWithStaffNumber(timeContainer, time.TimeFraction, staffNumber);
                         }
                     }
                 }
             }
         }
+
         public void ArrangeUsingDurationTable(Dictionary<int, double> durationTable, bool update = false)
         {
-            measureItemsContainer.ArrangeUsingDurationTable(durationTable, update);
+            _measureItemsContainer.ArrangeUsingDurationTable(durationTable, update);
         }
 
         private void ArrangeContainers(double availableWidth, int maxDuration)
         {
             Dictionary<string, List<Tuple<int, IMeasureItemVisual>>> itemsPerStaff = new Dictionary<string, List<Tuple<int, IMeasureItemVisual>>>();
-            for (int i = 1; i <= stavesCount; i++)
+            for (int i = 1; i <= _stavesCount; i++)
             {
-                itemsPerStaff.Add(i.ToString(), measureItemsContainer.ItemsPositionsPerStaff[i.ToString()]);
+                itemsPerStaff.Add(i.ToString(), _measureItemsContainer.ItemsPositionsPerStaff[i.ToString()]);
             }
             Dictionary<string, List<IMeasureItemVisual>> attributesList = new Dictionary<string, List<IMeasureItemVisual>>();
             foreach (var item in itemsPerStaff)
@@ -405,7 +378,8 @@ namespace MusicXMLScore.LayoutControl
             }
             CalculateBeginningAttributes(attributesList);
         }
-        private double CalculateBeginningAttributes(Dictionary<string, List<IMeasureItemVisual>> attributesList)
+
+        private void CalculateBeginningAttributes(Dictionary<string, List<IMeasureItemVisual>> attributesList)
         {
             Dictionary<string, ClefContainerItem> clefs = new Dictionary<string, ClefContainerItem>();
             Dictionary<string, KeyContainerItem> keys = new Dictionary<string, KeyContainerItem>();
@@ -426,7 +400,7 @@ namespace MusicXMLScore.LayoutControl
                     {
                         if (times.ContainsKey(item.Key))
                         {
-                            Log.LoggIt.Log($"Argument exception key {item.Key}", Log.LogType.Exception);
+                            LoggIt.Log($"Argument exception key {item.Key}", LogType.Exception);
                             times[item.Key] = attribute as TimeSignatureContainerItem;
                         }
                         else
@@ -444,7 +418,7 @@ namespace MusicXMLScore.LayoutControl
                 List<double> clefWidths = new List<double>();
                 foreach (var item in clefs)
                 {
-                    clefWidths.Add(measureItemsContainer.ArrangeAttributes(item.Value as IAttributeItemVisual, new Dictionary<string, double>()));
+                    clefWidths.Add(_measureItemsContainer.ArrangeAttributes(item.Value, new Dictionary<string, double>()));
                 }
                 maxClefWidth = clefWidths.Max();
             }
@@ -453,7 +427,7 @@ namespace MusicXMLScore.LayoutControl
                 List<double> keysWidths = new List<double>();
                 foreach (var item in keys)
                 {
-                    keysWidths.Add(measureItemsContainer.ArrangeAttributes(item.Value as IAttributeItemVisual, new Dictionary<string, double>()));
+                    keysWidths.Add(_measureItemsContainer.ArrangeAttributes(item.Value, new Dictionary<string, double>()));
                 }
                 maxKeyWidth = keysWidths.Max();
             }
@@ -462,18 +436,17 @@ namespace MusicXMLScore.LayoutControl
                 List<double> timesWidths = new List<double>();
                 foreach (var item in times)
                 {
-                    timesWidths.Add(measureItemsContainer.ArrangeAttributes(item.Value as IAttributeItemVisual, new Dictionary<string, double>()));
+                    timesWidths.Add(_measureItemsContainer.ArrangeAttributes(item.Value, new Dictionary<string, double>()));
                 }
                 maxTimeWidth = timesWidths.Max();
             }
-            attributesWidths = Tuple.Create(maxClefWidth, maxKeyWidth, maxTimeWidth);
-            return 0.0;
+            _attributesWidths = Tuple.Create(maxClefWidth, maxKeyWidth, maxTimeWidth);
         }
 
         public List<int> GetIndexes()
         {
             List<List<int>> indexes = new List<List<int>>();
-            indexes.Add(measureItemsContainer.GetDurationIndexes());
+            indexes.Add(_measureItemsContainer.GetDurationIndexes());
             return indexes.SelectMany(x => x).Distinct().ToList();
         }
 
@@ -483,55 +456,60 @@ namespace MusicXMLScore.LayoutControl
         /// <returns></returns>
         public Tuple<double, double, double> GetAttributesWidths()
         {
-            return attributesWidths ?? Tuple.Create(0.0, 0.0, 0.0);
+            return _attributesWidths ?? Tuple.Create(0.0, 0.0, 0.0);
         }
+
         public Canvas GetMeasureCanvas()
         {
-            return measureItemsContainer;
+            return _measureItemsContainer;
         }
+
         public void AddBeams(List<DrawingVisualHost> beams)
         {
-            if (measureItemsContainer.Beams == null)
+            if (_measureItemsContainer.Beams == null)
             {
-                measureItemsContainer.Beams = new List<DrawingVisualHost>();
+                _measureItemsContainer.Beams = new List<DrawingVisualHost>();
             }
-            if (measureItemsContainer.Beams.Count != 0)
+            if (_measureItemsContainer.Beams.Count != 0)
             {
                 //! if not empty - remove beams to update
-                foreach (var item in measureItemsContainer.Beams)
+                foreach (var item in _measureItemsContainer.Beams)
                 {
-                    measureItemsContainer.Children.Remove(item);
+                    _measureItemsContainer.Children.Remove(item);
                 }
-                measureItemsContainer.Beams.Clear();
+                _measureItemsContainer.Beams.Clear();
             }
             foreach (var item in beams)
             {
-                measureItemsContainer.Beams.Add(item); //! reference used for update 
-                measureItemsContainer.Children.Add(item);
+                _measureItemsContainer.Beams.Add(item); //! reference used for update 
+                _measureItemsContainer.Children.Add(item);
             }
         }
 
         public List<AntiCollisionHelper> GetContentItemsProperties(int shortestDuration = 1)
         {
             List<AntiCollisionHelper> antiCollHelpers = new List<AntiCollisionHelper>();
-            var allfractions = measureItemsContainer.GetDurationIndexes();
+            var allfractions = _measureItemsContainer.GetDurationIndexes();
             foreach (var fraction in allfractions)
             {
-                List<IMeasureItemVisual> fractionVisuals = measureItemsContainer.ItemsWithPostition.Where(x => x.Item1 == fraction && x.Item2 is INoteItemVisual).Select(item=>item.Item2).ToList();
+                List<IMeasureItemVisual> fractionVisuals = _measureItemsContainer.ItemsWithPostition
+                    .Where(x => x.Item1 == fraction && x.Item2 is INoteItemVisual).Select(item => item.Item2).ToList();
                 foreach (var itemVisual in fractionVisuals)
                 {
                     INoteItemVisual note = itemVisual as INoteItemVisual;
                     double itemFractionFactor = LayoutHelpers.SpacingValue(note.ItemDuration, shortestDuration);
                     double factor = note.ItemDuration;
-                    antiCollHelpers.Add(new AntiCollisionHelper(fraction, factor, itemFractionFactor, note.ItemWidth, note.ItemLeftMargin, note.ItemRightMargin));
+                    antiCollHelpers.Add(new AntiCollisionHelper(fraction, factor, itemFractionFactor, note.ItemWidth, note.ItemLeftMargin,
+                        note.ItemRightMargin));
                 }
             }
             return antiCollHelpers;
         }
+
         public int GetMinDuration()
         {
-            var allfractions = measureItemsContainer.GetDurationIndexes();
-            var durationsOfPostion = LayoutHelpers.GetDurationOfPosition(maxDuration, allfractions);
+            var allfractions = _measureItemsContainer.GetDurationIndexes();
+            var durationsOfPostion = LayoutHelpers.GetDurationOfPosition(_maxDuration, allfractions);
             return durationsOfPostion.Values.Where(x => x > 0).Min();
         }
     }

@@ -1,15 +1,10 @@
-﻿using MusicXMLScore.Helpers;
-using MusicXMLScore.Converters;
+﻿using MusicXMLScore.Converters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using MusicXMLScore.LayoutControl;
-using MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes;
-using MusicXMLScore.LayoutControl.SegmentPanelContainers;
 using MusicXMLScore.LayoutStyle;
 
 namespace MusicXMLScore.DrawingHelpers
@@ -18,46 +13,46 @@ namespace MusicXMLScore.DrawingHelpers
     {
         #region Fields
 
-        private double leftMargin;
-        private List<string> measuresList;
-        private List<string> partIDsList;
-        private Dictionary<string, Tuple<double, double, double>> partsPositions;
+        private double _leftMargin;
+        private List<string> _measuresList;
+        private List<string> _partIDsList;
+        private Dictionary<string, Tuple<double, double, double>> _partsPositions;
         //! <PartId, <MarginLeft, distance to previous, distance to topLine>>  
         //! First partID in first page system = TopDistance, next StaffDistance
         //! Other elements using StaffDistance
-        private Dictionary<string, PartProperties> partsPropertiesList;
-        private Dictionary<string, PartSegmentDrawing> partsSegments;
-        private Canvas partSystemCanvas;
-        private double partWidth;
+        private Dictionary<string, PartProperties> _partsPropertiesList;
+        private Dictionary<string, PartSegmentDrawing> _partsSegments;
+        private Canvas _partSystemCanvas;
+        private double _partWidth;
         
-        private Size size;
-        private int systemIndex;
-        private int pageIndex;
-        private MeasureLayoutStyle attributesLayout;
-        private LayoutSystemInfo systemLayout;
+        private Size _size;
+        private int _systemIndex;
+        private int _pageIndex;
+        private readonly MeasureLayoutStyle _attributesLayout;
+        private readonly LayoutSystemInfo _systemLayout;
         #endregion Fields
 
         #region Constructors
 
         public PartsSystemDrawing(int systemIndex, List<string> measuresToDraw, List<string> partsIdList, Dictionary<string, PartProperties> partsProperties, int pageIndex)
         {
-            this.systemIndex = systemIndex;
-            measuresList = measuresToDraw;
-            this.partIDsList = partsIdList;
-            partWidth = measuresList.CalculateWidth(partIDsList.ElementAt(0));
-            this.partsPropertiesList = partsProperties;
-            this.pageIndex = pageIndex;
-            attributesLayout = ViewModel.ViewModelLocator.Instance.Main.CurrentLayout.LayoutStyle.MeasureStyle;
+            this._systemIndex = systemIndex;
+            _measuresList = measuresToDraw;
+            _partIDsList = partsIdList;
+            _partWidth = _measuresList.CalculateWidth(_partIDsList.ElementAt(0));
+            _partsPropertiesList = partsProperties;
+            this._pageIndex = pageIndex;
+            _attributesLayout = ViewModel.ViewModelLocator.Instance.Main.CurrentLayout.LayoutStyle.MeasureStyle;
             GetSetSystemMargins();
             PartsSegmentsDraw();
         }
 
         public PartsSystemDrawing(Dictionary<string, List<MeasureSegmentController>> measuresToAdd, List<string> partIDs, LayoutSystemInfo layoutInfo)
         {
-            attributesLayout = ViewModel.ViewModelLocator.Instance.Main.CurrentLayout.LayoutStyle.MeasureStyle;
-            systemLayout = layoutInfo;
-            this.partIDsList = partIDs;
-            partWidth = measuresToAdd.Where(x => x.Key == measuresToAdd.Keys.FirstOrDefault()).FirstOrDefault().Value.Sum(x => x.MinimalWidthWithAttributes);
+            _attributesLayout = ViewModel.ViewModelLocator.Instance.Main.CurrentLayout.LayoutStyle.MeasureStyle;
+            _systemLayout = layoutInfo;
+            _partIDsList = partIDs;
+            _partWidth = measuresToAdd.Where(x => x.Key == measuresToAdd.Keys.FirstOrDefault()).FirstOrDefault().Value.Sum(x => x.MinimalWidthWithAttributes);
             PartsSegmentsDraw(measuresToAdd, layoutInfo);
         }
 
@@ -65,12 +60,12 @@ namespace MusicXMLScore.DrawingHelpers
         {
             get
             {
-                return leftMargin;
+                return _leftMargin;
             }
 
             set
             {
-                leftMargin = value;
+                _leftMargin = value;
             }
         }
 
@@ -82,12 +77,12 @@ namespace MusicXMLScore.DrawingHelpers
         {
             get
             {
-                return partSystemCanvas;
+                return _partSystemCanvas;
             }
 
             set
             {
-                partSystemCanvas = value;
+                _partSystemCanvas = value;
             }
         }
 
@@ -95,12 +90,12 @@ namespace MusicXMLScore.DrawingHelpers
         {
             get
             {
-                return size;
+                return _size;
             }
 
             set
             {
-                size = value;
+                _size = value;
             }
         }
 
@@ -108,12 +103,12 @@ namespace MusicXMLScore.DrawingHelpers
         {
             get
             {
-                return systemIndex;
+                return _systemIndex;
             }
 
             set
             {
-                systemIndex = value;
+                _systemIndex = value;
             }
         }
 
@@ -129,37 +124,37 @@ namespace MusicXMLScore.DrawingHelpers
             }
             else
             {
-                partsPositions = new Dictionary<string, Tuple<double, double, double>>();
+                _partsPositions = new Dictionary<string, Tuple<double, double, double>>();
                 double distanceToTop = 0.0;
-                double distanceToPrevious = 0.0;
-                foreach (var partSegment in partsSegments.Values)
+                foreach (var partSegment in _partsSegments.Values)
                 {
-                    string partSegmentID = partSegment.PartId;
-                    int partIndex = partSegmentID.GetPartIdIndex();
-                    var currentPartProperties = partsPropertiesList[partSegmentID];
+                    string partSegmentId = partSegment.PartId;
+                    int partIndex = partSegmentId.GetPartIdIndex();
+                    var currentPartProperties = _partsPropertiesList[partSegmentId];
+                    var distanceToPrevious = 0.0;
                     if (partIndex == 0)
                     {
-                        distanceToPrevious = 0;
+                        distanceToPrevious = 0.0;
                         distanceToTop = partSegment.Size.Height;
-                        partsPositions.Add(partSegmentID, new Tuple<double, double, double>(leftMargin, distanceToPrevious, distanceToPrevious));
+                        _partsPositions.Add(partSegmentId, new Tuple<double, double, double>(_leftMargin, distanceToPrevious, distanceToPrevious));
                         //? distanceToPrevious instead of distanceToTop, no top offset while first part in system
                         //? distanceToTop set to partHeight to simulate bottom line of part ;)
                     }
                     else
                     {
-                        distanceToPrevious = currentPartProperties.StaffLayout.ElementAt(systemIndex).StaffDistance.TenthsToWPFUnit();
+                        distanceToPrevious = currentPartProperties.StaffLayout.ElementAt(_systemIndex).StaffDistance.TenthsToWPFUnit();
                         distanceToTop += distanceToPrevious;
-                        partsPositions.Add(partSegmentID, new Tuple<double, double, double>(leftMargin, distanceToPrevious, distanceToTop));
+                        _partsPositions.Add(partSegmentId, new Tuple<double, double, double>(_leftMargin, distanceToPrevious, distanceToTop));
                         distanceToTop += partSegment.Size.Height;
                     }
                 }
-                this.size = new Size(partWidth, distanceToTop);
+                _size = new Size(_partWidth, distanceToTop);
             }
         }
 
         private void ArrangeMeasureContent(bool advancedLayout) //TODO split on more methods
         {
-            SetPartSystemDimensions(size.Width, size.Height);
+            SetPartSystemDimensions(_size.Width, _size.Height);
             SetPartSegmentCanvasPositions(advancedLayout);
             List<List<MeasureSegmentController>> partMeasuresList = GetMeasuresList();
 
@@ -182,7 +177,7 @@ namespace MusicXMLScore.DrawingHelpers
 
                     List<int> positionIndexes = indexes.SelectMany(x => x).Distinct().ToList();
                     positionIndexes.Sort();
-                    double startingPosition = durationTable[0] + attributesLayout.AttributesRightOffset.TenthsToWPFUnit();
+                    double startingPosition = durationTable[0] + _attributesLayout.AttributesRightOffset.TenthsToWPFUnit();
                     Dictionary<int, Tuple<double, double>> positions = GeneratePositionsTable(partMeasureSegment, positionIndexes, startingPosition);
 
                     double targetWidth = measureWidth - durationTable[0];
@@ -272,20 +267,20 @@ namespace MusicXMLScore.DrawingHelpers
         {
             if (advanced)
             {
-                foreach (var partSegment in partsSegments.Values)
+                foreach (var partSegment in _partsSegments.Values)
                 {
                     string partSegmentId = partSegment.PartId;
-                    Canvas.SetTop(partSegment.PartSegmentCanvas, systemLayout.PartPositionY(partSegmentId));
+                    Canvas.SetTop(partSegment.PartSegmentCanvas, _systemLayout.PartPositionY(partSegmentId));
                     Canvas.SetLeft(partSegment.PartSegmentCanvas, 0.0); //! todo margin
                 }
             }
             else
             {
-                foreach (var partSegment in partsSegments.Values)
+                foreach (var partSegment in _partsSegments.Values)
                 {
                     string partSegmentId = partSegment.PartId;
-                    Canvas.SetTop(partSegment.PartSegmentCanvas, partsPositions[partSegmentId].Item3); //TODO_H layout-problem with first part...
-                    Canvas.SetLeft(partSegment.PartSegmentCanvas, partsPositions[partSegmentId].Item1);
+                    Canvas.SetTop(partSegment.PartSegmentCanvas, _partsPositions[partSegmentId].Item3); //TODO_H layout-problem with first part...
+                    Canvas.SetLeft(partSegment.PartSegmentCanvas, _partsPositions[partSegmentId].Item1);
                 }
             }
         }
@@ -297,8 +292,8 @@ namespace MusicXMLScore.DrawingHelpers
         /// <param name="height"></param>
         private void SetPartSystemDimensions(double width, double height)
         {
-            partSystemCanvas.Width = width;
-            partSystemCanvas.Height = height;
+            _partSystemCanvas.Width = width;
+            _partSystemCanvas.Height = height;
         }
 
         /// <summary>
@@ -307,12 +302,12 @@ namespace MusicXMLScore.DrawingHelpers
         /// <returns></returns>
         private List<List<MeasureSegmentController>> GetMeasuresList()
         {
-            int measuresCount = partsSegments.ElementAt(0).Value.PartMeasures.Count;
+            int measuresCount = _partsSegments.ElementAt(0).Value.PartMeasures.Count;
             List<List<MeasureSegmentController>> measuresList = new List<List<MeasureSegmentController>>();
             for (int i = 0; i < measuresCount; i++)
             {
                 List<MeasureSegmentController> measures = new List<MeasureSegmentController>();
-                foreach (var partSegment in partsSegments.Values)
+                foreach (var partSegment in _partsSegments.Values)
                 {
                     measures.Add(partSegment.PartMeasures.ElementAt(i));
                 }
@@ -367,19 +362,19 @@ namespace MusicXMLScore.DrawingHelpers
         /// </summary>
         private void GetSetSystemMargins() //TODO_WIP do more tests... //
         {
-            var currentPartProperties = partsPropertiesList.ElementAt(0).Value;
-            leftMargin = 0;
+            var currentPartProperties = _partsPropertiesList.ElementAt(0).Value;
+            _leftMargin = 0;
             //rightMargin = 0;
         }
 
         private void PartsSegmentsDraw()
         {
-            partsSegments = new Dictionary<string, PartSegmentDrawing>();
-            partSystemCanvas = new Canvas();
-            foreach (var partId in partIDsList)
+            _partsSegments = new Dictionary<string, PartSegmentDrawing>();
+            _partSystemCanvas = new Canvas();
+            foreach (var partId in _partIDsList)
             {
-                PartSegmentDrawing partSegment = new PartSegmentDrawing(measuresList, partId, partsPropertiesList[partId], systemIndex, pageIndex);
-                partsSegments.Add(partId, partSegment);
+                PartSegmentDrawing partSegment = new PartSegmentDrawing(_measuresList, partId, _partsPropertiesList[partId], _systemIndex, _pageIndex);
+                _partsSegments.Add(partId, partSegment);
                 partSegment.GenerateContent();
                 PartSystemCanvas.Children.Add(partSegment.PartSegmentCanvas);
             }
@@ -389,12 +384,12 @@ namespace MusicXMLScore.DrawingHelpers
         
         private void PartsSegmentsDraw(Dictionary<string, List<MeasureSegmentController>> measuresList, LayoutSystemInfo layoutInfo)
         {
-            partsSegments = new Dictionary<string, PartSegmentDrawing>();
-            partSystemCanvas = new Canvas();
-            foreach (var partId in partIDsList)
+            _partsSegments = new Dictionary<string, PartSegmentDrawing>();
+            _partSystemCanvas = new Canvas();
+            foreach (var partId in _partIDsList)
             {
                 PartSegmentDrawing partSegment = new PartSegmentDrawing(measuresList[partId], partId, layoutInfo);
-                partsSegments.Add(partId, partSegment);
+                _partsSegments.Add(partId, partSegment);
                 partSegment.GenerateContent(true, layoutInfo);
                 PartSystemCanvas.Children.Add(partSegment.PartSegmentCanvas);
             }

@@ -102,7 +102,7 @@ namespace MusicXMLScore.ViewModel
         public RelayCommand TestButton2Command { get; set; }
         public RelayCommand TestButtonCommand { get; set; }
 
-        internal Dictionary<string, PartProperties> CurrentPartsProperties =>
+        internal Dictionary<string, PartProperties> PartsProperties =>
             ScoreProperties.CurrentScoreProperties.PartProperties;
 
         internal ScoreProperties.ScoreProperties CurrentScoreProperties => _scoreProperties.CurrentScoreProperties;
