@@ -9,7 +9,7 @@ using System.Windows.Media;
 
 namespace MusicXMLScore.VisualObject
 {
-    class StaffLineVisual : INotifyPropertyChanged
+    internal class StaffLineVisual : INotifyPropertyChanged
     {
         private Brush _color;
         private int _linesCount;
@@ -21,13 +21,10 @@ namespace MusicXMLScore.VisualObject
         private double _lineSpacing;
         private double _lineThickness;
         private Dictionary<int, double> _lineYOffset;
-        private int _staffNumber = 1;
+
         public Brush Color
         {
-            get
-            {
-                return _color;
-            }
+            get { return _color; }
 
             set
             {
@@ -38,10 +35,7 @@ namespace MusicXMLScore.VisualObject
 
         public int LinesCount
         {
-            get
-            {
-                return _linesCount;
-            }
+            get { return _linesCount; }
 
             set
             {
@@ -55,10 +49,7 @@ namespace MusicXMLScore.VisualObject
 
         public double YPosition
         {
-            get
-            {
-                return _yPosition;
-            }
+            get { return _yPosition; }
 
             set
             {
@@ -72,10 +63,7 @@ namespace MusicXMLScore.VisualObject
 
         public double Width
         {
-            get
-            {
-                return _width;
-            }
+            get { return _width; }
 
             set
             {
@@ -89,10 +77,7 @@ namespace MusicXMLScore.VisualObject
 
         public double Height
         {
-            get
-            {
-                return _height;
-            }
+            get { return _height; }
 
             set
             {
@@ -101,61 +86,31 @@ namespace MusicXMLScore.VisualObject
             }
         }
 
-        public DrawingVisualHost Visual
-        {
-            get
-            {
-                return _visual;
-            }
-
-            set
-            {
-                _visual = value;
-            }
-        }
-
         public Canvas CanvasVisual
         {
-            get
-            {
-                return _canvasVisual;
-            }
+            get { return _canvasVisual; }
 
-            set
-            {
-                _canvasVisual = value;
-            }
+            set { _canvasVisual = value; }
         }
 
-        public int StaffNumber
-        {
-            get
-            {
-                return _staffNumber;
-            }
-
-            set
-            {
-                _staffNumber = value;
-            }
-        }
+        public int StaffNumber { get; set; } = 1;
 
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
 
         public StaffLineVisual(double width, int numberOfLines = 5, Brush color = null)
         {
             GetDefaults();
-            this._width = width;
-            this._linesCount = numberOfLines;
-            this._color = color ?? Brushes.Black;
-            this._yPosition = 0.0;
+            _width = width;
+            _linesCount = numberOfLines;
+            _color = color ?? Brushes.Black;
+            _yPosition = 0.0;
             _lineYOffset = new Dictionary<int, double>();
             InitCanvas();
             Draw();
             PropertyChanged += StaffLineVisual_PropertyChanged;
         }
 
-        public StaffLineVisual(double width, StaffDetailsMusicXML staffDetails, Brush color = null):this(width)
+        public StaffLineVisual(double width, StaffDetailsMusicXML staffDetails, Brush color = null) : this(width)
         {
             //Todo
         }
@@ -166,7 +121,6 @@ namespace MusicXMLScore.VisualObject
             {
                 case nameof(Color):
                     Draw();
-                    //update visual;
                     break;
                 case nameof(LinesCount):
                     if (LinesCount > 5)
@@ -196,11 +150,9 @@ namespace MusicXMLScore.VisualObject
                     var partProperties = sender as DrawingHelpers.PartProperties;
                     if (partProperties != null) LinesCount = partProperties.NumberOfLines;
                     break;
-                default:
-                    //log warning no such property name / no action for current property
-                    break;
             }
         }
+
         private void GetDefaults()
         {
             GetDefaultHeight();
@@ -219,11 +171,13 @@ namespace MusicXMLScore.VisualObject
             var measureLayout = ViewModel.ViewModelLocator.Instance.Main.CurrentLayout.LayoutStyle.MeasureStyle;
             _lineThickness = measureLayout.StaffLineThickness.TenthsToWPFUnit();
         }
+
         private void GetStaffLineSpacing()
         {
             var measureLayout = ViewModel.ViewModelLocator.Instance.Main.CurrentLayout.LayoutStyle.MeasureStyle;
             _lineSpacing = measureLayout.StaffSpaceLegth.TenthsToWPFUnit();
         }
+
         private void GenerateStaffLinesPositions()
         {
             if (_lineYOffset.Count != 0)
@@ -244,7 +198,7 @@ namespace MusicXMLScore.VisualObject
             DrawingVisual staffLineVisual = new DrawingVisual();
             Pen pen = new Pen(_color, _lineThickness);
 
-            if (updatePositions || _lineYOffset.Count ==0)
+            if (updatePositions || _lineYOffset.Count == 0)
             {
                 GenerateStaffLinesPositions();
             }
@@ -258,12 +212,14 @@ namespace MusicXMLScore.VisualObject
             _visual.ClearVisuals();
             _visual.AddVisual(staffLineVisual);
         }
+
         private void InitCanvas()
         {
             _visual = new DrawingVisualHost();
             _canvasVisual = new Canvas();
             _canvasVisual.Children.Add(_visual);
         }
+
         private void UpdateCanvasPosition()
         {
             Canvas.SetTop(_canvasVisual, YPosition);

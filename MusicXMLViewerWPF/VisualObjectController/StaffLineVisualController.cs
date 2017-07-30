@@ -1,13 +1,8 @@
 ﻿using MusicXMLScore.Converters;
 using MusicXMLScore.Helpers;
 using MusicXMLScore.VisualObject;
-using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -15,66 +10,46 @@ namespace MusicXMLScore.VisualObjectController
 {
     class StaffLineVisualController : INotifyPropertyChanged
     {
-        private int staffCount;
-        private double width;
-        private ObservableDictionary<int, StaffLineVisual> staffVisuals;
-        private Dictionary<int, double> staffY;
-        private Canvas staffLineCanvas;
-        private double staffDistance;
-        private int numberOfLines;
+        private int _staffCount;
+        private double _width;
+        private Dictionary<int, double> _staffY;
+        private Canvas _staffLineCanvas;
+        private double _staffDistance;
+        private int _numberOfLines;
 
-        public event PropertyChangedEventHandler PropertyChanged =delegate { };
+        public event PropertyChangedEventHandler PropertyChanged = delegate { };
 
-        internal ObservableDictionary<int, StaffLineVisual> StaffVisuals
-        {
-            get
-            {
-                return staffVisuals;
-            }
-
-            set
-            {
-                staffVisuals = value;
-            }
-        }
+        internal ObservableDictionary<int, StaffLineVisual> StaffVisuals { get; }
 
         public double Width
         {
-            get
-            {
-                return width;
-            }
+            get { return _width; }
 
             set
             {
-                width = value;
+                _width = value;
                 PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(Width)));
             }
         }
 
         public Canvas StaffLineCanvas
         {
-            get
-            {
-                return staffLineCanvas;
-            }
+            get { return _staffLineCanvas; }
 
-            set
-            {
-                staffLineCanvas = value;
-            }
+            set { _staffLineCanvas = value; }
         }
 
         private void StaffLineVisualController_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(Width))
+            {
+                foreach (var staff in StaffVisuals.Values)
                 {
-                    foreach (var staff in StaffVisuals.Values)
-                    {
-                        staff.Width = Width;
-                    }
+                    staff.Width = Width;
                 }
+            }
         }
+
         private void MeasureMusicXML_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             var measure = sender as Model.ScorePartwisePartMeasureMusicXML;
@@ -87,34 +62,38 @@ namespace MusicXMLScore.VisualObjectController
             }
         }
 
-        public StaffLineVisualController(int staffCount, double width, int numberOfLines, Model.ScorePartwisePartMeasureMusicXML measure = null, double staffDistance = 0.0)
+        public StaffLineVisualController(int staffCount, double width, int numberOfLines, Model.ScorePartwisePartMeasureMusicXML measure = null,
+            double staffDistance = 0.0)
         {
-            this.staffCount = staffCount;
-            this.width = width;
-            this.staffDistance = staffDistance;
-            this.numberOfLines = numberOfLines;
+            _staffCount = staffCount;
+            _width = width;
+            _staffDistance = staffDistance;
+            _numberOfLines = numberOfLines;
 
-            staffVisuals = new ObservableDictionary<int, StaffLineVisual>();
-            staffY = new Dictionary<int, double>();
+            StaffVisuals = new ObservableDictionary<int, StaffLineVisual>();
+            _staffY = new Dictionary<int, double>();
             Draw();
 
             CollectStaffs();
-            WeakEventManager<Model.ScorePartwisePartMeasureMusicXML, PropertyChangedEventArgs>.AddHandler(measure, "PropertyChanged", MeasureMusicXML_PropertyChanged);
+            WeakEventManager<Model.ScorePartwisePartMeasureMusicXML, PropertyChangedEventArgs>.AddHandler(measure, "PropertyChanged",
+                MeasureMusicXML_PropertyChanged);
             PropertyChanged += StaffLineVisualController_PropertyChanged;
         }
-        
+
         public void AddStaff(StaffLineVisual staff, int staffNumber = 1)
         {
-            if (staffVisuals.ContainsKey(staffNumber))
+            if (StaffVisuals.ContainsKey(staffNumber))
             {
                 //! log staffLine is overwritten
                 //! all references of previous staffLine has to be removes
-                staffVisuals[staffNumber] = staff;
-            }else
+                StaffVisuals[staffNumber] = staff;
+            }
+            else
             {
-                staffVisuals.Add(staffNumber, staff);
+                StaffVisuals.Add(staffNumber, staff);
             }
         }
+
         public void Draw(bool update = false)
         {
             if (update)
@@ -129,23 +108,22 @@ namespace MusicXMLScore.VisualObjectController
 
         private void UpdatePositions()
         {
-            staffY.Clear();
-            for (int i = 1; i <= staffCount; i++)
+            _staffY.Clear();
+            for (int i = 1; i <= _staffCount; i++)
             {
-                staffY.Add(i, staffVisuals[i].YPosition);
+                _staffY.Add(i, StaffVisuals[i].YPosition);
             }
         }
 
         private void GenerateStaffLines()
         {
-            double currentY =0.0;
-            for (int i = 1; i <= staffCount; i++)
+            double currentY = 0.0;
+            for (int i = 1; i <= _staffCount; i++)
             {
-                var staff = new StaffLineVisual(width, numberOfLines);
-                staff.StaffNumber = i;
+                var staff = new StaffLineVisual(_width, _numberOfLines) {StaffNumber = i};
                 if (i != 1)
                 {
-                    staff.YPosition = currentY + staffDistance;
+                    staff.YPosition = currentY + _staffDistance;
                 }
                 currentY += staff.Height;
                 AddStaff(staff, i);
@@ -155,10 +133,10 @@ namespace MusicXMLScore.VisualObjectController
 
         private void CollectStaffs()
         {
-            staffLineCanvas = new Canvas();
+            _staffLineCanvas = new Canvas();
             foreach (var staff in StaffVisuals.Values)
             {
-                staffLineCanvas.Children.Add(staff.CanvasVisual);
+                _staffLineCanvas.Children.Add(staff.CanvasVisual);
             }
         }
     }
