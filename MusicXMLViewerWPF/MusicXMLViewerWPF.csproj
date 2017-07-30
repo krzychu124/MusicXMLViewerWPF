@@ -93,6 +93,7 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Converters\DoubleExtensions.cs" />
     <Compile Include="Converters\EnumExtensions.cs" />
     <Compile Include="Converters\ExtensionMethods.cs" />
     <Compile Include="DrawingHelpers\MeasureDrawing.cs" />
@@ -217,8 +218,12 @@
     <Compile Include="Model\ScorePartwisePartMeasureMusicXML.cs" />
     <Compile Include="Model\ScorePartwisePartMusicXML.cs" />
     <Compile Include="Model\MeasureItems\SoundMusicXML.cs" />
+    <Compile Include="ScoreProperties\AttributeChange.cs" />
     <Compile Include="ScoreProperties\ClefChanges.cs" />
+    <Compile Include="ScoreProperties\IMeasureAttribute.cs" />
     <Compile Include="ScoreProperties\KeyChanges.cs" />
+    <Compile Include="ScoreProperties\MeasureAttributeChanges.cs" />
+    <Compile Include="ScoreProperties\ScoreProperties.cs" />
     <Compile Include="ScoreProperties\ScorePropertiesContainer.cs" />
     <Compile Include="ScoreProperties\TimeChanges.cs" />
     <Compile Include="ScoreProperties\TimeSignatures.cs" />
