@@ -1,12 +1,13 @@
 ﻿using MusicXMLScore.Model.Helpers.SimpleTypes;
 using System;
 using System.Xml.Serialization;
+using MusicXMLScore.ScoreProperties;
 
 namespace MusicXMLScore.Model.MeasureItems.Attributes
 {
     [Serializable]
     [XmlType(TypeName = "time")]
-    public class TimeMusicXML
+    public class TimeMusicXML : IMeasureAttribute
     {
         private object[] items;
         private TimeChoiceTypeMusicXML[] itemsElementName;

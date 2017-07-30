@@ -2,13 +2,14 @@
 using System;
 using System.Diagnostics;
 using System.Xml.Serialization;
+using MusicXMLScore.ScoreProperties;
 
 namespace MusicXMLScore.Model.MeasureItems.Attributes
 {
     [Serializable]
     [XmlType(TypeName ="clef")]
     [DebuggerDisplay("{Number} {Sign.ToString()}{Line} P: {PrintObject.ToString()} Ps: {PrintObjectSpecified}")]
-    public class ClefMusicXML
+    public class ClefMusicXML :IMeasureAttribute
     {
         private ClefSignMusicXML sign;
         private string line;
