@@ -5,9 +5,6 @@ using MusicXMLViewerWPF;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Media;
 
 namespace MusicXMLScore.Converters
@@ -43,7 +40,7 @@ namespace MusicXMLScore.Converters
         public static double MMToTenths(this double MM)
         {
             double converterFactor = ViewModelLocator.Instance.Main.CurrentPageLayout.ConverterFactor;
-            if (converterFactor == 0)
+            if (converterFactor.Equals4DigitPrecision(0.0))
             {
                 return 0.0;
             }
@@ -69,7 +66,7 @@ namespace MusicXMLScore.Converters
         /// <returns></returns>
         public static double WPFUnitToTenths(this double WPFUnit)
         {
-            if (WPFUnit == 0)
+            if (WPFUnit.Equals4DigitPrecision(0.0))
             {
                 return 0.0;
             }
@@ -206,24 +203,6 @@ namespace MusicXMLScore.Converters
         }
 
         /// <summary>
-        /// Gets Parts Id list
-        /// </summary>
-        /// <param name="score"></param>
-        /// <returns>Collection of Part Id</returns>
-        public static List<string> TryGetEveryPartId(this ScorePartwiseMusicXML score)
-        {
-            List<string> result = new List<string>();
-            foreach (var part in score.Part)
-            {
-                if (score.Partlist.ScoreParts.Any(i=> i.PartId == part.Id))
-                {
-                    result.Add(part.Id);
-                }
-            }
-            return result;
-        }
-
-        /// <summary>
         /// Generates measure Number between rangeOfMeasures(first,last) of selected Part object
         /// </summary>
         /// <param name="part"></param>
@@ -237,20 +216,6 @@ namespace MusicXMLScore.Converters
             int count = endindex -startindex +1;
             measuresRange = part.Measure.GetRange(startindex, count).Select(i=>i.Number).ToList();
             return measuresRange;
-        }
-
-        [Obsolete("Refactored")]
-        public static Point GetMeasurePosition(this ScorePartwisePartMeasureMusicXML measure, Dictionary<string, Point> measureCoordsList)
-        {
-            Point position = new Point();
-            if (measureCoordsList != null)
-            {
-                if (measureCoordsList.ContainsKey(measure.Number))
-                {
-                    position = measureCoordsList[measure.Number];
-                }
-            }
-            return position;
         }
 
         /// <summary>
@@ -281,7 +246,7 @@ namespace MusicXMLScore.Converters
         /// <returns></returns>
         public static ScorePartwisePartMeasureMusicXML GetMeasureUsingId(this ScorePartwisePartMusicXML part, string measureNumber)
         {
-            var measure = part.Measure.Select(i => i).Where(i => i.Number == measureNumber).FirstOrDefault();
+            var measure = part.Measure.Select(i => i).FirstOrDefault(i => i.Number == measureNumber);
             return measure;
         }
 
@@ -295,7 +260,7 @@ namespace MusicXMLScore.Converters
             {
                 string id = measure.Number;
                 var maxWidth = score.GetLargestWidth(id);
-                if (maxWidth == 0)
+                if (maxWidth.Equals4DigitPrecision(0.0))
                 {
                     maxWidth = 120;
                 }
@@ -305,39 +270,6 @@ namespace MusicXMLScore.Converters
                     m.CalculatedWidth = maxWidth;
                 }
             }
-        }
-        
-        [Obsolete("Refactored")]
-        public static Dictionary<string, DrawingHelpers.PartProperties> CorrectCoords(this Dictionary<string, DrawingHelpers.PartProperties> pp)
-        {
-            Dictionary<string, DrawingHelpers.PartProperties> result = new Dictionary<string, DrawingHelpers.PartProperties>();
-            var coords = pp.ElementAt(0).Value.Coords;
-            List<List<string>> systems = pp.ElementAt(0).Value.MeasuresPerSystem;
-            double correction = 0;
-            foreach (var coord in pp.Select(i => i).Where(i => i.Key != pp.ElementAt(0).Key))
-            {
-                correction += coord.Value.Coords.ElementAt(0).Value.Y;
-            }
-            correction -= coords.ElementAt(0).Value.Y;
-            foreach (var measureline in systems)
-            {
-                if (systems.IndexOf(measureline) != 0)
-                {
-                    for (int i = 0; i < measureline.Count; i++)
-                    {
-                        coords[measureline[i]] = new Point(coords[measureline[i]].X, coords[measureline[i]].Y + correction);
-                    }
-                    correction = 0;
-                    int index = coords.Keys.ToList().IndexOf(measureline.ElementAt(0));
-                    foreach (var coord in pp.Select(i => i).Where(i => i.Key != pp.ElementAt(0).Key))
-                    {
-                        correction += coord.Value.Coords.ElementAt(index).Value.Y;
-                    }
-                    correction -= coords.ElementAt(index).Value.Y;
-                }
-            }
-
-            return result;
         }
 
         /// <summary>
@@ -349,7 +281,7 @@ namespace MusicXMLScore.Converters
         public static double CalculateWidth(this List<string> measuresIds, string partId)
         {
             double result = 0.0;
-            var part = ViewModelLocator.Instance.Main.CurrentSelectedScore.Part.Where(i => i.Id == partId).FirstOrDefault();
+            var part = ViewModelLocator.Instance.Main.CurrentSelectedScore.Part.FirstOrDefault(i => i.Id == partId);
             foreach(var measureId in measuresIds)
             {
                 result += part.MeasuresByNumber[measureId].CalculatedWidth;
@@ -361,11 +293,11 @@ namespace MusicXMLScore.Converters
         /// <summary>
         /// Gets index of part using part Id
         /// </summary>
-        /// <param name="partID"></param>
+        /// <param name="partId"></param>
         /// <returns></returns>
-        public static int GetPartIdIndex(this string partID)
+        public static int GetPartIdIndex(this string partId)
         {
-            return ViewModelLocator.Instance.Main.CurrentSelectedScore.Part.IndexOf(ViewModelLocator.Instance.Main.CurrentSelectedScore.Part.Where(i => i.Id == partID).FirstOrDefault());
+            return ViewModelLocator.Instance.Main.CurrentSelectedScore.Part.IndexOf(ViewModelLocator.Instance.Main.CurrentSelectedScore.Part.FirstOrDefault(i => i.Id == partId));
         }
 
         /// <summary>
@@ -386,9 +318,9 @@ namespace MusicXMLScore.Converters
         /// <returns></returns>
         public static ushort GetGlyphIndexOfCharacter(this string symbolCharacter)
         {
-            int symbol = (int)symbolCharacter.ToCharArray().FirstOrDefault();
+            int symbol = symbolCharacter.ToCharArray().FirstOrDefault();
             GlyphTypeface glyph;
-            GlyphTypeface typeface = Helpers.TypeFaces.GetMusicFont().TryGetGlyphTypeface(out glyph) ? glyph : null;
+            var glyphTypeface = Helpers.TypeFaces.GetMusicFont().TryGetGlyphTypeface(out glyph) ? glyph : null;
             ushort glyphindex;
             glyph.CharacterToGlyphMap.TryGetValue(symbol, out glyphindex);
             return glyphindex;
