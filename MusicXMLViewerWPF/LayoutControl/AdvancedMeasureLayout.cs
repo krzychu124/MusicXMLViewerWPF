@@ -19,28 +19,28 @@ namespace MusicXMLScore.LayoutControl
 {
     class AdvancedMeasureLayout : INotifyPropertyChanged
     {
-        private ScorePartwiseMusicXML scoreFile;
-        private ObservableCollection<UIElement> pagesCollection;
-        private Dictionary<int, PageViewModel> pagesPerNumber;
-        private MeasureSegmentContainer measureSegmentsContainer;
-        private ObservableDictionary<string, ObservableDictionary<int, FractionHelper>> fractionPositionHelper;
-        List<SharedMeasureProperties> sharedMeasuresProps = new List<SharedMeasureProperties>();
-        Dictionary<int, LayoutPageContentInfo> layoutPageInfo;
-        Dictionary<int, PageDrawingSystem> pages;
+        private ScorePartwiseMusicXML _scoreFile;
+        private ObservableCollection<UIElement> _pagesCollection;
+        private Dictionary<int, PageViewModel> _pagesPerNumber;
+        private MeasureSegmentContainer _measureSegmentsContainer;
+        private ObservableDictionary<string, ObservableDictionary<int, FractionHelper>> _fractionPositionHelper;
+        List<SharedMeasureProperties> _sharedMeasuresProps = new List<SharedMeasureProperties>();
+        Dictionary<int, LayoutPageContentInfo> _layoutPageInfo;
+        Dictionary<int, PageDrawingSystem> _pages;
 
-        private bool ignoreLayoutLoadedFromFile = false; //! ignores layout elements loaded from file (new-page, new-system) //WiP
+        private bool _ignoreLayoutLoadedFromFile; //! ignores layout elements loaded from file (new-page, new-system) //WiP
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
         
         public ObservableCollection<UIElement> PagesCollection
         {
             get
             {
-                return pagesCollection;
+                return _pagesCollection;
             }
 
             set
             {
-                pagesCollection = value;
+                _pagesCollection = value;
             }
         }
 
@@ -48,12 +48,12 @@ namespace MusicXMLScore.LayoutControl
         {
             get
             {
-                return fractionPositionHelper;
+                return _fractionPositionHelper;
             }
 
             set
             {
-                fractionPositionHelper = value;
+                _fractionPositionHelper = value;
                 PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(FractionPositionHelper)));
             }
         }
@@ -62,21 +62,21 @@ namespace MusicXMLScore.LayoutControl
         {
             get
             {
-                return ignoreLayoutLoadedFromFile;
+                return _ignoreLayoutLoadedFromFile;
             }
 
             set
             {
-                ignoreLayoutLoadedFromFile = value;
+                _ignoreLayoutLoadedFromFile = value;
                 PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(IgnoreLayoutLoadedFromFile)));
             }
         }
 
         public AdvancedMeasureLayout(ScorePartwiseMusicXML score)
         {
-            this.scoreFile = score;
-            this.GenerateMeasureSegments();
-            this.FindOptimalMeasureWidths();
+            _scoreFile = score;
+            GenerateMeasureSegments();
+            FindOptimalMeasureWidths();
         }
 
         private void OnFractionPositionsCollectionChange(object sender, NotifyCollectionChangedEventArgs e)
@@ -93,8 +93,6 @@ namespace MusicXMLScore.LayoutControl
                     break;
                 case NotifyCollectionChangedAction.Reset:
                     break;
-                default:
-                    break;
             }
         }
 
@@ -104,15 +102,15 @@ namespace MusicXMLScore.LayoutControl
         /// <param name="page"></param>
         public void AddPage(Canvas page = null)
         {
-            if (pagesCollection == null)
+            if (_pagesCollection == null)
             {
-                pagesCollection = new ObservableCollection<UIElement>();
+                _pagesCollection = new ObservableCollection<UIElement>();
             }
-            if (pagesPerNumber == null)
+            if (_pagesPerNumber == null)
             {
-                pagesPerNumber = new Dictionary<int, PageViewModel>();
+                _pagesPerNumber = new Dictionary<int, PageViewModel>();
             }
-            int index = pagesCollection.Count;
+            int index = _pagesCollection.Count;
             PageViewModel pvm;
             if (page != null)
             {
@@ -122,8 +120,8 @@ namespace MusicXMLScore.LayoutControl
             {
                 pvm = new PageViewModel(index);
             }
-            pagesPerNumber.Add(index, pvm);
-            pagesCollection.Add(new PageView() { DataContext = pvm });
+            _pagesPerNumber.Add(index, pvm);
+            _pagesCollection.Add(new PageView { DataContext = pvm });
         }
 
         /// <summary>
@@ -131,23 +129,23 @@ namespace MusicXMLScore.LayoutControl
         /// </summary>
         private void GenerateMeasureSegments()
         {
-            measureSegmentsContainer = new MeasureSegmentContainer();
-            measureSegmentsContainer.GenerateMeasureSegments(scoreFile);
+            _measureSegmentsContainer = new MeasureSegmentContainer();
+            _measureSegmentsContainer.GenerateMeasureSegments(_scoreFile);
         }
 
         private void FindOptimalMeasureWidths()
         {
             double pageContentWidth = ViewModelLocator.Instance.Main.CurrentPageLayout.GetContentWidth();
             List<MeasureSegmentController> testList = new List<MeasureSegmentController>();
-            sharedMeasuresProps = new List<SharedMeasureProperties>();
+            _sharedMeasuresProps = new List<SharedMeasureProperties>();
             
-            for (int i = 0; i < scoreFile.Part.FirstOrDefault().Measure.Count; i++)
+            for (int i = 0; i < _scoreFile.Part.FirstOrDefault().Measure.Count; i++)
             {
                 //! all measures (from all parts) of current index i
                 Dictionary<string, List<AntiCollisionHelper>> measureContentPropertiesList = new Dictionary<string, List<AntiCollisionHelper>>(); 
-                List<MeasureSegmentController> measureOfAllParts = measureSegmentsContainer.MeasureSegments.Select(x => x.Value.ElementAt(i)).ToList();
+                List<MeasureSegmentController> measureOfAllParts = _measureSegmentsContainer.MeasureSegments.Select(x => x.Value.ElementAt(i)).ToList();
                 int shortestDuration = measureOfAllParts.Select(x => x.GetMinDuration()).Min();
-                SharedMeasureProperties sharedMeasureProperties = new SharedMeasureProperties(measureOfAllParts.FirstOrDefault().MeasureID);
+                SharedMeasureProperties sharedMeasureProperties = new SharedMeasureProperties(measureOfAllParts.FirstOrDefault().MeasureId);
                 //! collect collision helpers from all parts (current measureId only)
                 foreach (var measure in measureOfAllParts)
                 {
@@ -161,21 +159,21 @@ namespace MusicXMLScore.LayoutControl
 
                 sharedMeasureProperties.GenerateFractionPositions();
 
-                sharedMeasuresProps.Add(sharedMeasureProperties);
+                _sharedMeasuresProps.Add(sharedMeasureProperties);
                 //! Set calculated minimalWidth of current meeasureId in all parts
                 double currentMeasureMinWidth = sharedMeasureProperties.SharedWidth;
-                measureOfAllParts.ForEach((x) => { x.MinimalWidth = currentMeasureMinWidth; }); 
+                measureOfAllParts.ForEach(x => { x.MinimalWidth = currentMeasureMinWidth; }); 
                 //! each part measure => get width => get max => stretch to optimal => set optimal width each part measure
                 
             }
             //! update measureWidth with new calculated minimalWidth
-            measureSegmentsContainer.UpdateMeasureWidths();
+            _measureSegmentsContainer.UpdateMeasureWidths();
             //! init measure content stretch info of all measures
             GetOptimalStretch();
 
             ArrangeAndStretchMeasuresContent();
             //! collect measures into systems
-            SystemsCollector(measureSegmentsContainer.MeasureSegments.FirstOrDefault().Value.Select(measure => measure.MeasureID).ToList());
+            SystemsCollector(_measureSegmentsContainer.MeasureSegments.FirstOrDefault().Value.Select(measure => measure.MeasureId).ToList());
             //! collect pages (using layoutPageInfo)
             PagesCollector();
         }
@@ -189,21 +187,21 @@ namespace MusicXMLScore.LayoutControl
             if (measureNumber != null) //! update only measures with selected measureNumber
             {
                 //! get part Id's
-                var allParts = measureSegmentsContainer.PartIDsList;
+                var allParts = _measureSegmentsContainer.PartIDsList;
                 //! select measures with measureNumber from all parts
-                var allPartsMeasures = allParts.Select(x => x.Select(z => measureSegmentsContainer.MeasureSegments.Where(c => c.Key == x).Select(c => c.Value.Where(id => id.MeasureID == measureNumber).FirstOrDefault()).FirstOrDefault()).FirstOrDefault());
+                var allPartsMeasures = allParts.Select(x => x.Select(z => _measureSegmentsContainer.MeasureSegments.Where(c => c.Key == x).Select(c => c.Value.FirstOrDefault(id => id.MeasureId == measureNumber)).FirstOrDefault()).FirstOrDefault());
                 if (allPartsMeasures != null)
                 {
                     foreach (var item in allPartsMeasures)
                     {
                         //! set new width of measure which invoke event to update staffline width
-                        item.MinimalWidth = fractionPositionHelper[measureNumber].LastOrDefault().Value.Position;
+                        item.MinimalWidth = _fractionPositionHelper[measureNumber].LastOrDefault().Value.Position;
                         //! rearrange measure content, pass true for content stretch update
-                        item.ArrangeUsingDurationTable(fractionPositionHelper[measureNumber].ToDictionary(x => x.Key, x => x.Value.Position), true);
+                        item.ArrangeUsingDurationTable(_fractionPositionHelper[measureNumber].ToDictionary(x => x.Key, x => x.Value.Position), true);
                         //! if measure has any note beams to draw, calculate,draw and add.
                         if (item.BeamsController != null)
                         {
-                            item.BeamsController.Draw(fractionPositionHelper[measureNumber].ToDictionary(x => x.Key, x => x.Value.Position));
+                            item.BeamsController.Draw(_fractionPositionHelper[measureNumber].ToDictionary(x => x.Key, x => x.Value.Position));
                             if (item.BeamsController.BeamsVisuals != null)
                             {
                                 item.AddBeams(item.BeamsController.BeamsVisuals);
@@ -214,16 +212,16 @@ namespace MusicXMLScore.LayoutControl
             }
             else //! update all measures
             {
-                foreach (var measureSegmentItem in measureSegmentsContainer.MeasureSegments)
+                foreach (var measureSegmentItem in _measureSegmentsContainer.MeasureSegments)
                 {
                     //! arrange measure content (measureSegmentItem as measureSegment of Part)
                     foreach (var val in measureSegmentItem.Value)
                     {
-                        val.ArrangeUsingDurationTable(fractionPositionHelper[val.MeasureID].ToDictionary(item => item.Key, item => item.Value.Position));
+                        val.ArrangeUsingDurationTable(_fractionPositionHelper[val.MeasureId].ToDictionary(item => item.Key, item => item.Value.Position));
                         //! draw and add note beams if any
                         if (val.BeamsController != null)
                         {
-                            val.BeamsController.Draw(fractionPositionHelper[val.MeasureID].ToDictionary(item => item.Key, item => item.Value.Position));
+                            val.BeamsController.Draw(_fractionPositionHelper[val.MeasureId].ToDictionary(item => item.Key, item => item.Value.Position));
                             if (val.BeamsController.BeamsVisuals != null)
                             {
                                 val.AddBeams(val.BeamsController.BeamsVisuals);
@@ -239,17 +237,17 @@ namespace MusicXMLScore.LayoutControl
         /// </summary>
         private void PagesCollector()
         {
-            if (layoutPageInfo != null && layoutPageInfo.Count != 0)
+            if (_layoutPageInfo != null && _layoutPageInfo.Count != 0)
             {
-                var partIDs = measureSegmentsContainer.PartIDsList;
+                var partIDs = _measureSegmentsContainer.PartIDsList;
 
-                pages = new Dictionary<int, PageDrawingSystem>();
-                foreach (var pageInfo in layoutPageInfo)
+                _pages = new Dictionary<int, PageDrawingSystem>();
+                foreach (var pageInfo in _layoutPageInfo)
                 {
                     PageDrawingSystem page = new PageDrawingSystem(pageInfo.Value);
-                    page.AssignMeasureSegmentContainer(measureSegmentsContainer, partIDs);
+                    page.AssignMeasureSegmentContainer(_measureSegmentsContainer, partIDs);
                     page.ArrangeSystemsAdvanced();
-                    pages.Add(pageInfo.Key, page);
+                    _pages.Add(pageInfo.Key, page);
                     AddPage(page.PageCanvas);
                 }
             }
@@ -262,7 +260,7 @@ namespace MusicXMLScore.LayoutControl
         public void SystemsCollector(List<string> unarrangedMeasures)
         {
             //! collection of layout information about pages generated from score
-            layoutPageInfo = new Dictionary<int, LayoutPageContentInfo>();
+            _layoutPageInfo = new Dictionary<int, LayoutPageContentInfo>();
             int pageIndex = 0;
             LayoutPageContentInfo pageContent = new LayoutPageContentInfo(pageIndex);
             double currentWidth = 0.0;
@@ -273,7 +271,7 @@ namespace MusicXMLScore.LayoutControl
             {
                 
                 string measureId = unarrangedMeasures[i];
-                SharedMeasureProperties currentMeasureProperties = sharedMeasuresProps.Where(x => x.MeasureId == measureId).FirstOrDefault();
+                SharedMeasureProperties currentMeasureProperties = _sharedMeasuresProps.FirstOrDefault(x => x.MeasureId == measureId);
                 currentWidth += currentMeasureProperties.SharedWidth; 
                 //! if calculated width would be to high, collected measures represents one system
                 if (currentWidth > pageContent.PageContentWidth)
@@ -286,7 +284,7 @@ namespace MusicXMLScore.LayoutControl
                     if (!systemFitsOnPage)
                     {
                         pageContent.ArrangeSystems();
-                        layoutPageInfo.Add(pageIndex, pageContent);
+                        _layoutPageInfo.Add(pageIndex, pageContent);
                         pageIndex++;
                         pageContent = new LayoutPageContentInfo(pageIndex);
                         pageContent.AddSystemDimensionInfo(layoutSystem);
@@ -307,7 +305,7 @@ namespace MusicXMLScore.LayoutControl
                     }
                 }
                 //! if any measure left unarranged
-                if (i == (unarrangedMeasures.Count - 1) && measuresToSystem.Count != 0)
+                if (i == unarrangedMeasures.Count - 1 && measuresToSystem.Count != 0)
                 {
                     List<SharedMeasureProperties> sharedMeasuresCollection = new List<SharedMeasureProperties>(measuresToSystem);
                     LayoutSystemInfo layoutSystem = new LayoutSystemInfo(sharedMeasuresCollection);
@@ -316,24 +314,24 @@ namespace MusicXMLScore.LayoutControl
                     if (!systemFitsOnPage)
                     {
                         pageContent.ArrangeSystems();
-                        layoutPageInfo.Add(pageIndex, pageContent);
+                        _layoutPageInfo.Add(pageIndex, pageContent);
                         pageIndex++;
                         pageContent = new LayoutPageContentInfo(pageIndex);
                         pageContent.AddSystemDimensionInfo(layoutSystem);
                         pageContent.ArrangeSystems();
-                        layoutPageInfo.Add(pageIndex, pageContent);
+                        _layoutPageInfo.Add(pageIndex, pageContent);
                     }
                     else
                     {
                         pageContent.ArrangeSystems();
-                        layoutPageInfo.Add(pageIndex, pageContent);
+                        _layoutPageInfo.Add(pageIndex, pageContent);
                     }
                 }
                 //! if it is last measure and page not added to layoutPageInfo
-                if (i == (unarrangedMeasures.Count - 1) && layoutPageInfo.Count != pageIndex + 1)
+                if (i == unarrangedMeasures.Count - 1 && _layoutPageInfo.Count != pageIndex + 1)
                 {
                     pageContent.ArrangeSystems();
-                    layoutPageInfo.Add(pageIndex, pageContent);
+                    _layoutPageInfo.Add(pageIndex, pageContent);
                 }
             }
         }
@@ -342,22 +340,25 @@ namespace MusicXMLScore.LayoutControl
         /// </summary>
         private void GetOptimalStretch()
         {
-            fractionPositionHelper = new ObservableDictionary<string, ObservableDictionary<int, FractionHelper>>();
-            (fractionPositionHelper as INotifyCollectionChanged).CollectionChanged += OnFractionPositionsCollectionChange;
-            foreach (var sharedMeasure in sharedMeasuresProps)
+            _fractionPositionHelper = new ObservableDictionary<string, ObservableDictionary<int, FractionHelper>>();
+            (_fractionPositionHelper as INotifyCollectionChanged).CollectionChanged += OnFractionPositionsCollectionChange;
+            foreach (var sharedMeasure in _sharedMeasuresProps)
             {
                 string currentMeasureId = sharedMeasure.MeasureId;
                 sharedMeasure.FractionPositionsChanged += OnFractionPositionChange; //! listen to shared fractions collection change
-                FractionPositionHelper.Add(currentMeasureId, sharedMeasuresProps.Where(x => x.MeasureId == currentMeasureId).FirstOrDefault().SharedFractions);
+                FractionPositionHelper.Add(currentMeasureId, _sharedMeasuresProps.Where(x => x.MeasureId == currentMeasureId).FirstOrDefault().SharedFractions);
             }
         }
         private void OnFractionPositionChange(object sender, EventArgs e)
         {
             var measureProperties = sender as SharedMeasureProperties;
             //! update fraction table
-            FractionPositionHelper[measureProperties.MeasureId] = measureProperties.SharedFractions;
-            //! update visuals
-            ArrangeAndStretchMeasuresContent(measureProperties.MeasureId);
+            if (measureProperties != null)
+            {
+                FractionPositionHelper[measureProperties.MeasureId] = measureProperties.SharedFractions;
+                //! update visuals
+                ArrangeAndStretchMeasuresContent(measureProperties.MeasureId);
+            }
         }
     }
     
