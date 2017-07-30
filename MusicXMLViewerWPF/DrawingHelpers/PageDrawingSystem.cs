@@ -12,36 +12,38 @@ namespace MusicXMLScore.DrawingHelpers
 {
     class PageDrawingSystem
     {
-        #region Fields
-        private List<string> firstMeasureIdPerSystem;
-        private List<int> firstMeasureIndexPerSystem;
-        private List<List<string>> measuresIdRangePerSystem;
-        private Canvas pageCanvas;
-        private Size pageDimensions;
-        private int pageIndex = 0;
-        private LayoutControl.LayoutGeneral pageLayout;
-        private List<string> partIDsToDraw = new List<string>();
-        private Dictionary<string, PartProperties> partsProperties = new Dictionary<string, PartProperties>();
+        private List<string> _firstMeasureIdPerSystem;
+        private List<int> _firstMeasureIndexPerSystem;
+        private List<List<string>> _measuresIdRangePerSystem;
+        private Canvas _pageCanvas;
+        private Size _pageDimensions;
+        private int _pageIndex;
+        private LayoutGeneral _pageLayout;
+        private List<string> _partIDsToDraw = new List<string>();
+
+        private Dictionary<string, PartProperties> _partsProperties = new Dictionary<string, PartProperties>();
+
         //! PartsSystem<MeasuresIDsList<MeasureId>
-        private List<PartsSystemDrawing> partSystemsList;
-        private ScorePartwiseMusicXML score;
+        private List<PartsSystemDrawing> _partSystemsList;
+
+        private readonly ScorePartwiseMusicXML _score;
+
         //! --------------------- test -------------------
-        private LayoutControl.LayoutPageContentInfo pageContentLayout;
-        private List<string> partIDs;
-        private MeasureSegmentContainer measuresContainer;
+        private LayoutPageContentInfo _pageContentLayout;
+
+        private List<string> _partIDs;
+        private MeasureSegmentContainer _measuresContainer;
 
         //! --------------------- !test -------------------
-        #endregion Fields
 
-        #region Constructors
         public PageDrawingSystem(ScorePartwiseMusicXML score, int pageIndex)
         {
-            this.pageIndex = pageIndex;
-            this.score = score;
-            pageLayout = ViewModelLocator.Instance.Main.CurrentLayout;
+            _pageIndex = pageIndex;
+            _score = score;
+            _pageLayout = ViewModelLocator.Instance.Main.CurrentLayout;
 
-            pageDimensions = pageLayout.PageProperties.PageDimensions.Dimensions;
-            PageCanvas = new Canvas() { Width = pageDimensions.Width, Height = pageDimensions.Height };
+            _pageDimensions = _pageLayout.PageProperties.PageDimensions.Dimensions;
+            PageCanvas = new Canvas {Width = _pageDimensions.Width, Height = _pageDimensions.Height};
 
             GenerateMeasuresRangePerSystem();
             GetFirstMeasureDistancesPerSystem();
@@ -49,69 +51,58 @@ namespace MusicXMLScore.DrawingHelpers
             AddPartsSystem();
             ArrangeSystems();
         }
+
         public PageDrawingSystem(int pageIndex)
         {
-            this.pageIndex = pageIndex;
-            pageLayout = ViewModelLocator.Instance.Main.CurrentLayout;
+            _pageIndex = pageIndex;
+            _pageLayout = ViewModelLocator.Instance.Main.CurrentLayout;
 
-            pageDimensions = pageLayout.PageProperties.PageDimensions.Dimensions;
-            PageCanvas = new Canvas() { Width = pageDimensions.Width, Height = pageDimensions.Height };
+            _pageDimensions = _pageLayout.PageProperties.PageDimensions.Dimensions;
+            PageCanvas = new Canvas {Width = _pageDimensions.Width, Height = _pageDimensions.Height};
         }
-        public PageDrawingSystem(LayoutControl.LayoutPageContentInfo pageLayoutInfo):this(pageLayoutInfo.PageIndex)
+
+        public PageDrawingSystem(LayoutPageContentInfo pageLayoutInfo) : this(pageLayoutInfo.PageIndex)
         {
-            this.pageContentLayout = pageLayoutInfo;
+            _pageContentLayout = pageLayoutInfo;
         }
-
-        #endregion Constructors
-
-        #region Properties
 
         public Canvas PageCanvas
         {
-            get
-            {
-                return pageCanvas;
-            }
+            get { return _pageCanvas; }
 
-            set
-            {
-                pageCanvas = value;
-            }
+            set { _pageCanvas = value; }
         }
-
-        #endregion Properties
-
-        #region Methods
 
         private void AddAllPartsToDrawing()
         {
             var parts = ViewModelLocator.Instance.Main.CurrentSelectedScore.Part;
             foreach (var part in parts)
             {
-                partIDsToDraw.Add(part.Id);
+                _partIDsToDraw.Add(part.Id);
             }
         }
 
         private void AddPartsSystem()
         {
-            partSystemsList = new List<PartsSystemDrawing>();
-            foreach (var measuresIDs in measuresIdRangePerSystem)
+            _partSystemsList = new List<PartsSystemDrawing>();
+            foreach (var measuresIDs in _measuresIdRangePerSystem)
             {
-                int index = measuresIdRangePerSystem.IndexOf(measuresIDs);
-                PartsSystemDrawing partsSystem = new PartsSystemDrawing(index, measuresIDs, partIDsToDraw, partsProperties, pageIndex);
-                partSystemsList.Add(partsSystem);
+                int index = _measuresIdRangePerSystem.IndexOf(measuresIDs);
+                PartsSystemDrawing partsSystem = new PartsSystemDrawing(index, measuresIDs, _partIDsToDraw, _partsProperties, _pageIndex);
+                _partSystemsList.Add(partsSystem);
                 if (partsSystem.PartSystemCanvas != null)
                 {
-                    pageCanvas.Children.Add(partsSystem.PartSystemCanvas);
+                    _pageCanvas.Children.Add(partsSystem.PartSystemCanvas);
                 }
             }
         }
+
         public void AddPartsSytem(List<PartsSystemDrawing> partSystemsCollection)
         {
-            partSystemsList = new List<PartsSystemDrawing>();
+            _partSystemsList = new List<PartsSystemDrawing>();
             foreach (var partSys in partSystemsCollection)
             {
-                partSystemsList.Add(partSys);
+                _partSystemsList.Add(partSys);
                 if (partSys.PartSystemCanvas != null)
                 {
                     PageCanvas.Children.Add(partSys.PartSystemCanvas);
@@ -122,25 +113,28 @@ namespace MusicXMLScore.DrawingHelpers
         public void ArrangeSystems(bool advancedLayout = false, List<Point> precalculatedCoords = null)
         {
             double systemDistanceToPrevious = 0.0;
-            double leftMarginScore = pageLayout.PageMargins.LeftMargin.TenthsToWPFUnit();
+            double leftMarginScore = _pageLayout.PageMargins.LeftMargin.TenthsToWPFUnit();
             if (!advancedLayout)
             {
-                var firstSystemPartProperties = partsProperties.ElementAt(0).Value;
-                systemDistanceToPrevious += pageLayout.PageMargins.TopMargin.TenthsToWPFUnit();
-                PartProperties currentPartProperties = ViewModelLocator.Instance.Main.CurrentPartsProperties.Values.FirstOrDefault();
-                foreach (var system in partSystemsList)
+                var firstSystemPartProperties = _partsProperties.ElementAt(0).Value;
+                systemDistanceToPrevious += _pageLayout.PageMargins.TopMargin.TenthsToWPFUnit();
+                PartProperties currentPartProperties = ViewModelLocator.Instance.Main.PartsProperties.Values.FirstOrDefault();
+                foreach (var system in _partSystemsList)
                 {
                     double lMargin = 0.0;
 
-                    int systemIndex = partSystemsList.IndexOf(system);
-                    lMargin = leftMarginScore + currentPartProperties.SystemLayoutPerPage[pageIndex].ElementAt(system.SystemIndex).SystemMargins.LeftMargin.TenthsToWPFUnit();
+                    int systemIndex = _partSystemsList.IndexOf(system);
+                    lMargin = leftMarginScore + currentPartProperties.SystemLayoutPerPage[_pageIndex].ElementAt(system.SystemIndex).SystemMargins
+                                  .LeftMargin.TenthsToWPFUnit();
                     if (systemIndex == 0)
                     {
-                        systemDistanceToPrevious += firstSystemPartProperties.SystemLayoutPerPage.ElementAt(pageIndex).ElementAt(0).TopSystemDistance.TenthsToWPFUnit();
+                        systemDistanceToPrevious += firstSystemPartProperties.SystemLayoutPerPage.ElementAt(_pageIndex).ElementAt(0).TopSystemDistance
+                            .TenthsToWPFUnit();
                     }
                     if (systemIndex != 0)
                     {
-                        systemDistanceToPrevious += firstSystemPartProperties.SystemLayoutPerPage.ElementAt(pageIndex).ElementAt(systemIndex).SystemDistance.TenthsToWPFUnit();
+                        systemDistanceToPrevious += firstSystemPartProperties.SystemLayoutPerPage.ElementAt(_pageIndex).ElementAt(systemIndex)
+                            .SystemDistance.TenthsToWPFUnit();
                     }
 
                     Canvas.SetTop(system.PartSystemCanvas, systemDistanceToPrevious);
@@ -152,14 +146,14 @@ namespace MusicXMLScore.DrawingHelpers
             {
                 if (precalculatedCoords != null)
                 {
-                    if( partSystemsList.Count > precalculatedCoords.Count)
+                    if (_partSystemsList.Count > precalculatedCoords.Count)
                     {
                         throw new NotImplementedException();
                     }
-                    for (int i = 0; i < partSystemsList.Count; i++)
+                    for (int i = 0; i < _partSystemsList.Count; i++)
                     {
-                        Canvas.SetTop(partSystemsList[i].PartSystemCanvas, precalculatedCoords[i].Y);
-                        Canvas.SetLeft(partSystemsList[i].PartSystemCanvas, precalculatedCoords[i].X + leftMarginScore);
+                        Canvas.SetTop(_partSystemsList[i].PartSystemCanvas, precalculatedCoords[i].Y);
+                        Canvas.SetLeft(_partSystemsList[i].PartSystemCanvas, precalculatedCoords[i].X + leftMarginScore);
                     }
                 }
             }
@@ -167,42 +161,42 @@ namespace MusicXMLScore.DrawingHelpers
 
         private void GenerateMeasuresRangePerSystem()
         {
-            foreach (var part in score.Part)
+            foreach (var part in _score.Part)
             {
-                PartProperties tempPartProperties = ViewModelLocator.Instance.Main.CurrentPartsProperties[part.Id];
-                int partIndex = score.Part.IndexOf(part);
+                PartProperties tempPartProperties = ViewModelLocator.Instance.Main.PartsProperties[part.Id];
+                int partIndex = _score.Part.IndexOf(part);
                 if (partIndex != 0)
                 {
-                    partsProperties.Add(part.Id, tempPartProperties);
+                    _partsProperties.Add(part.Id, tempPartProperties);
                 }
                 else
                 {
-                    partsProperties.Add(part.Id, tempPartProperties);
+                    _partsProperties.Add(part.Id, tempPartProperties);
                 }
             }
-            measuresIdRangePerSystem = partsProperties.ElementAt(0).Value.MeasuresPerSystemPerPage.ElementAt(pageIndex);
+            _measuresIdRangePerSystem = _partsProperties.ElementAt(0).Value.MeasuresPerSystemPerPage.ElementAt(_pageIndex);
         }
 
         private void GetFirstMeasureDistancesPerSystem()
         {
-            firstMeasureIdPerSystem = new List<string>();
-            firstMeasureIndexPerSystem = new List<int>();
-            foreach (var measure in measuresIdRangePerSystem)
+            _firstMeasureIdPerSystem = new List<string>();
+            _firstMeasureIndexPerSystem = new List<int>();
+            foreach (var measure in _measuresIdRangePerSystem)
             {
-                firstMeasureIdPerSystem.Add(measure.ElementAt(0));
-                firstMeasureIndexPerSystem.Add(measure.ElementAt(0).GetMeasureIdIndex());
+                _firstMeasureIdPerSystem.Add(measure.ElementAt(0));
+                _firstMeasureIndexPerSystem.Add(measure.ElementAt(0).GetMeasureIdIndex());
             }
         }
 
         internal void AssignMeasureSegmentContainer(MeasureSegmentContainer measureSegmentsContainer, List<string> partIDsToAdd)
         {
-            measuresContainer = measureSegmentsContainer;
+            _measuresContainer = measureSegmentsContainer;
 
-            if (pageContentLayout != null)
+            if (_pageContentLayout != null)
             {
                 if (partIDsToAdd != null && partIDsToAdd.Count != 0)
                 {
-                    this.partIDs = partIDsToAdd;
+                    _partIDs = partIDsToAdd;
                 }
                 else
                 {
@@ -213,53 +207,52 @@ namespace MusicXMLScore.DrawingHelpers
             {
                 Log.LoggIt.Log("Page layout not set! Page not drawn/arranged", Log.LogType.Warning);
             }
-
         }
 
         internal void ArrangeSystemsAdvanced()
         {
-            if (pageContentLayout != null)
+            if (_pageContentLayout != null)
             {
                 List<PartsSystemDrawing> partSystemsTest = new List<PartsSystemDrawing>();
-                foreach (var systemLayout in pageContentLayout.SystemDimensionsInfo)
+                foreach (var systemLayout in _pageContentLayout.SystemDimensionsInfo)
                 {
                     Dictionary<string, List<MeasureSegmentController>> measuresToAdd = new Dictionary<string, List<MeasureSegmentController>>();
-                    foreach (var partID in partIDs)
+                    foreach (var partId in _partIDs)
                     {
-                        List<MeasureSegmentController> measures = new List<MeasureSegmentController>(); //! collection of measures with the same ID/Number form all parts
+                        List<MeasureSegmentController>
+                            measures = new List<MeasureSegmentController>(); //! collection of measures with the same ID/Number form all parts
                         var measuresIDs = systemLayout.Measures.Select(x => x.MeasureId);
-                        measures = measuresContainer.MeasureSegments[partID].Where(x => measuresIDs.Contains(x.MeasureID)).ToList();
-                        measuresToAdd.Add(partID, measures);
+                        measures = _measuresContainer.MeasureSegments[partId].Where(x => measuresIDs.Contains(x.MeasureId)).ToList();
+                        measuresToAdd.Add(partId, measures);
                     }
-                    partSystemsTest.Add(new PartsSystemDrawing(measuresToAdd, partIDs, systemLayout));
+                    partSystemsTest.Add(new PartsSystemDrawing(measuresToAdd, _partIDs, systemLayout));
                 }
                 AddPartsSytem(partSystemsTest);
                 ArrangeUsingLayoutInfo();
             }
         }
 
-        public void ArrangeUsingLayoutInfo(LayoutControl.LayoutPageContentInfo pageLayout = null)
+        public void ArrangeUsingLayoutInfo(LayoutPageContentInfo pageLayout = null)
         {
             if (pageLayout == null)
             {
-                if(pageContentLayout!= null)
+                if (_pageContentLayout != null)
                 {
                     //! do layout
                     List<Point> precalculatedCoords = new List<Point>();
-                    for (int i = 0; i < partSystemsList.Count; i++)
+                    for (int i = 0; i < _partSystemsList.Count; i++)
                     {
-                        precalculatedCoords.Add(pageContentLayout.SystemPosition(i));
+                        precalculatedCoords.Add(_pageContentLayout.SystemPosition(i));
                     }
                     ArrangeSystems(true, precalculatedCoords);
                 }
             }
             else
             {
-                pageContentLayout = pageLayout;
+                _pageContentLayout = pageLayout;
                 //! rearrange if necessary
                 //! do layout
             }
         }
-        #endregion Methods
     }
 }
