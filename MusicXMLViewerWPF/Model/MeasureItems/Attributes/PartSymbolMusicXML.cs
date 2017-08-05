@@ -33,6 +33,7 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
                 topStaff = value;
             }
         }
+
         [XmlAttribute("bottom-staff", DataType ="positiveInteger")]
         public string BottomStaff
         {
@@ -46,6 +47,7 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
                 bottomStaff = value;
             }
         }
+
         [XmlAttribute("default-x")]
         public double DefaultX
         {
@@ -59,6 +61,7 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
                 defaultX = value;
             }
         }
+
         [XmlIgnore]
         public bool DefaultXSpecified
         {
@@ -72,6 +75,7 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
                 defaultXSpecified = value;
             }
         }
+
         [XmlAttribute("default-y")]
         public double DefaultY
         {
@@ -85,6 +89,7 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
                 defaultY = value;
             }
         }
+
         [XmlIgnore]
         public bool DefaultYSpecified
         {
@@ -98,6 +103,7 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
                 defaultYSpecified = value;
             }
         }
+
         [XmlAttribute("relative-x")]
         public double RelativeX
         {
@@ -111,6 +117,7 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
                 relativeX = value;
             }
         }
+
         [XmlIgnore]
         public bool RelativeXSpecified
         {
@@ -124,6 +131,7 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
                 relativeXSpecified = value;
             }
         }
+
         [XmlAttribute("relative-y")]
         public double RelativeY
         {
@@ -137,6 +145,7 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
                 relativeY = value;
             }
         }
+
         [XmlIgnore]
         public bool RelativeYSpecified
         {
@@ -150,6 +159,7 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
                 relativeYSpecified = value;
             }
         }
+
         [XmlAttribute("color")]
         public string Color
         {
@@ -163,6 +173,7 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
                 color = value;
             }
         }
+
         [XmlText]
         public GroupSymbolValueMusicXML Value
         {

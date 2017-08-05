@@ -31,6 +31,7 @@ namespace MusicXMLScore.Model.MeasureItems
                 duration = value;
             }
         }
+
         [XmlElement("voice")]
         public string Voice
         {
@@ -44,6 +45,7 @@ namespace MusicXMLScore.Model.MeasureItems
                 voice = value;
             }
         }
+
         [XmlElement("staff", DataType ="positiveInteger")]
         public string Staff
         {

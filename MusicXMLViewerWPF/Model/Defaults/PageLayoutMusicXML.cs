@@ -27,6 +27,7 @@ namespace MusicXMLScore.Model.Defaults
                 pageHeight = value;
             }
         }
+
         [XmlElement("page-width")]
         public double PageWidth
         {
@@ -40,6 +41,7 @@ namespace MusicXMLScore.Model.Defaults
                 pageWidth = value;
             }
         }
+
         [XmlElement("page-margins")]
         public List<PageMarginsMusicXML> PageMargins
         {
@@ -54,6 +56,7 @@ namespace MusicXMLScore.Model.Defaults
             }
         }
     }
+
     [Serializable]
     public class PageMarginsMusicXML
     {
@@ -77,6 +80,7 @@ namespace MusicXMLScore.Model.Defaults
                 leftMargin = value;
             }
         }
+
         [XmlElement("right-margin")]
         public double RightMargin
         {
@@ -90,6 +94,7 @@ namespace MusicXMLScore.Model.Defaults
                 rightMargin = value;
             }
         }
+
         [XmlElement("top-margin")]
         public double TopMargin
         {
@@ -103,6 +108,7 @@ namespace MusicXMLScore.Model.Defaults
                 topMargin = value;
             }
         }
+
         [XmlElement("bottom-margin")]
         public double BottomMargin
         {
@@ -116,6 +122,7 @@ namespace MusicXMLScore.Model.Defaults
                 bottomMargin = value;
             }
         }
+
         [XmlAttribute("type")]
         public MarginTypeMusicXML MarginType
         {
@@ -129,6 +136,7 @@ namespace MusicXMLScore.Model.Defaults
                 marginType = value;
             }
         }
+
         [XmlIgnore]
         public bool MarginTypeSpecified
         {
@@ -143,6 +151,7 @@ namespace MusicXMLScore.Model.Defaults
             }
         }
     }
+
     public enum MarginTypeMusicXML
     {
         odd,

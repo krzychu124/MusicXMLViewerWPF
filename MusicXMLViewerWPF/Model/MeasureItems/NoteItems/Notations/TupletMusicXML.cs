@@ -53,6 +53,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems.Notations
                 tupletActual = value;
             }
         }
+
         [XmlElement("tuplet-number")]
         public TupletPortionMusicXML TupletNormal
         {
@@ -66,6 +67,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems.Notations
                 tupletNormal = value;
             }
         }
+
         [XmlAttribute("type")]
         public StartStopMusicXML Type
         {
@@ -79,6 +81,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems.Notations
                 type = value;
             }
         }
+
         [XmlAttribute("number", DataType="positiveInteger")]
         public string Number
         {
@@ -92,6 +95,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems.Notations
                 number = value;
             }
         }
+
         [XmlAttribute("bracket")]
         public YesNoMusicXML Bracket
         {
@@ -105,6 +109,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems.Notations
                 bracket = value;
             }
         }
+
         [XmlIgnore]
         public bool BracketSpecified
         {
@@ -118,6 +123,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems.Notations
                 bracketSpecified = value;
             }
         }
+
         [XmlAttribute("show-number")]
         public ShowTupletMusicXML ShowNumber
         {
@@ -131,6 +137,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems.Notations
                 showNumber = value;
             }
         }
+
         [XmlIgnore]
         public bool ShowNumberSpecified
         {
@@ -144,6 +151,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems.Notations
                 showNumberSpecified = value;
             }
         }
+
         [XmlAttribute("show-type")]
         public ShowTupletMusicXML ShowType
         {
@@ -157,6 +165,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems.Notations
                 showType = value;
             }
         }
+
         [XmlIgnore]
         public bool ShowTypeSpecified
         {
@@ -170,6 +179,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems.Notations
                 showTypeSpecified = value;
             }
         }
+
         [XmlAttribute("line-shape")]
         public LineShapeMusicXML LineShape
         {
@@ -183,6 +193,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems.Notations
                 lineShape = value;
             }
         }
+
         [XmlIgnore]
         public bool LineShapeSpecified
         {
@@ -196,6 +207,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems.Notations
                 lineShapeSpecified = value;
             }
         }
+
         [XmlAttribute("default-x")]
         public double DefaultX
         {
@@ -209,6 +221,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems.Notations
                 defaultX = value;
             }
         }
+
         [XmlIgnore]
         public bool DefaultXSpecified
         {
@@ -222,6 +235,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems.Notations
                 defaultXSpecified = value;
             }
         }
+
         [XmlAttribute("default-y")]
         public double DefaultY
         {
@@ -235,6 +249,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems.Notations
                 defaultY = value;
             }
         }
+
         [XmlIgnore]
         public bool DefaultYSpecified
         {
@@ -248,6 +263,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems.Notations
                 defaultYSpecified = value;
             }
         }
+
         [XmlAttribute("relative-x")]
         public double RelativeX
         {
@@ -275,6 +291,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems.Notations
                 relativeXSpecified = value;
             }
         }
+
         [XmlAttribute("relative-y")]
         public double RelativeY
         {
@@ -302,6 +319,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems.Notations
                 relativeYSpecified = value;
             }
         }
+
         [XmlAttribute("placement")]
         public AboveBelowMusicXML Placement
         {
@@ -315,6 +333,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems.Notations
                 placement = value;
             }
         }
+
         [XmlIgnore]
         public bool PlacementSpecified
         {
@@ -343,7 +362,6 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems.Notations
     [XmlType(TypeName = "tuplet-portion")]
     public class TupletPortionMusicXML
     {
-
         private TupletNumberMusicXML tupletNumber;
         private TupletTypeMusicXML tupleType;
         private TupletDotMusicXML[] tupletDot;
@@ -366,6 +384,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems.Notations
                 tupletNumber = value;
             }
         }
+
         [XmlElement("tuplet-type")]
         public TupletTypeMusicXML TupletType
         {
@@ -379,6 +398,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems.Notations
                 tupleType = value;
             }
         }
+
         [XmlElement("tuplet-dot")]
         public TupletDotMusicXML[] TupletDot
         {
@@ -439,6 +459,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems.Notations
                 fontStyle = value;
             }
         }
+
         [XmlIgnore]
         public bool FontStyleSpecified
         {
@@ -452,6 +473,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems.Notations
                 fontStyleSpecified = value;
             }
         }
+
         [XmlAttribute("font-size")]
         public string FontSize
         {
@@ -479,6 +501,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems.Notations
                 fontWeight = value;
             }
         }
+
         [XmlIgnore]
         public bool FontWeightSpecified
         {
@@ -492,6 +515,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems.Notations
                 fontWeightSpecified = value;
             }
         }
+
         [XmlAttribute("color")]
         public string Color
         {
@@ -505,6 +529,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems.Notations
                 color = value;
             }
         }
+
         [XmlText]
         public string Value
         {
@@ -565,6 +590,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems.Notations
                 fontStyle = value;
             }
         }
+
         [XmlIgnore]
         public bool FontStyleSpecified
         {
@@ -578,6 +604,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems.Notations
                 fontStyleSpecified = value;
             }
         }
+
         [XmlAttribute("font-size")]
         public string FontSize
         {
@@ -605,6 +632,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems.Notations
                 fontWeight = value;
             }
         }
+
         [XmlIgnore]
         public bool FontWeightSpecified
         {
@@ -618,6 +646,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems.Notations
                 fontWeightSpecified = value;
             }
         }
+
         [XmlAttribute("color")]
         public string Color
         {
@@ -631,6 +660,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems.Notations
                 color = value;
             }
         }
+
         [XmlText]
         public NoteTypeValueMusicXML Value
         {
@@ -690,6 +720,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems.Notations
                 fontStyle = value;
             }
         }
+
         [XmlIgnore]
         public bool FontStyleSpecified
         {
@@ -703,6 +734,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems.Notations
                 fontStyleSpecified = value;
             }
         }
+
         [XmlAttribute("font-size")]
         public string FontSize
         {
@@ -730,6 +762,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems.Notations
                 fontWeight = value;
             }
         }
+
         [XmlIgnore]
         public bool FontWeightSpecified
         {
@@ -743,6 +776,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems.Notations
                 fontWeightSpecified = value;
             }
         }
+
         [XmlAttribute("color")]
         public string Color
         {

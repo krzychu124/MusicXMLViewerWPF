@@ -64,6 +64,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems.Notations
                 type = value;
             }
         }
+
         [XmlAttribute("number", DataType = "positiveInteger")]
         [System.ComponentModel.DefaultValue("1")]
         public string Number
@@ -78,6 +79,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems.Notations
                 number = value;
             }
         }
+
         [XmlAttribute("line-type")]
         public LineTypeMusicXML LineType
         {
@@ -91,6 +93,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems.Notations
                 lineType = value;
             }
         }
+
         [XmlIgnore]
         public bool LineTypeSpecified
         {
@@ -104,6 +107,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems.Notations
                 lineTypeSpecified = value;
             }
         }
+
         [XmlAttribute("dash-length")]
         public double DashLength
         {
@@ -117,6 +121,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems.Notations
                 dashLength = value;
             }
         }
+
         [XmlIgnore]
         public bool DashLengthSpecified
         {
@@ -130,6 +135,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems.Notations
                 dashLengthSpecified = value;
             }
         }
+
         [XmlAttribute("space-length")]
         public double SpaceLength
         {
@@ -143,6 +149,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems.Notations
                 spaceLength = value;
             }
         }
+
         [XmlIgnore]
         public bool SpaceLengthSpecified
         {
@@ -156,6 +163,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems.Notations
                 spaceLengthSpecified = value;
             }
         }
+
         [XmlAttribute("default-x")]
         public double DefaultX
         {
@@ -169,6 +177,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems.Notations
                 defaultX = value;
             }
         }
+
         [XmlIgnore]
         public bool DefaultXSpecified
         {
@@ -182,6 +191,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems.Notations
                 defaultXSpecified = value;
             }
         }
+
         [XmlAttribute("default-y")]
         public double DefaultY
         {
@@ -195,6 +205,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems.Notations
                 defaultY = value;
             }
         }
+
         [XmlIgnore]
         public bool DefaultYSpecified
         {
@@ -208,6 +219,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems.Notations
                 defaultYSpecified = value;
             }
         }
+
         [XmlAttribute("relative-x")]
         public double RelativeX
         {
@@ -221,6 +233,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems.Notations
                 relativeX = value;
             }
         }
+
         [XmlIgnore]
         public bool RelativeXSpecified
         {
@@ -234,6 +247,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems.Notations
                 relativeXSpecified = value;
             }
         }
+
         [XmlAttribute("relative-y")]
         public double RelativeY
         {
@@ -247,6 +261,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems.Notations
                 relativeY = value;
             }
         }
+
         [XmlIgnore]
         public bool RelativeYSpecified
         {
@@ -260,6 +275,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems.Notations
                 relativeYSpecified = value;
             }
         }
+
         [XmlAttribute("placement")]
         public AboveBelowMusicXML Placement
         {
@@ -273,6 +289,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems.Notations
                 placement = value;
             }
         }
+
         [XmlIgnore]
         public bool PlacementSpecified
         {
@@ -286,6 +303,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems.Notations
                 placementSpecified = value;
             }
         }
+
         [XmlAttribute("orientation")]
         public OverUnderMusicXML Orientation
         {
@@ -299,6 +317,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems.Notations
                 orientation = value;
             }
         }
+
         [XmlIgnore]
         public bool OrientationSpecified
         {
@@ -312,6 +331,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems.Notations
                 orientationSpecified = value;
             }
         }
+
         [XmlAttribute("bezier-offset")]
         public double BezierOffset
         {
@@ -325,6 +345,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems.Notations
                 bezierOffset = value;
             }
         }
+
         [XmlIgnore]
         public bool BezierOffsetSpecified
         {
@@ -338,6 +359,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems.Notations
                 bezierOffsetSpecified = value;
             }
         }
+
         [XmlAttribute("bezier-offset2")]
         public double BezierOffset2
         {
@@ -351,6 +373,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems.Notations
                 bezierOffset2 = value;
             }
         }
+
         [XmlIgnore]
         public bool BezierOffset2Specified
         {
@@ -364,6 +387,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems.Notations
                 bezierOffset2Specified = value;
             }
         }
+
         [XmlAttribute("bezier-x")]
         public double BezierX
         {
@@ -377,6 +401,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems.Notations
                 bezierX = value;
             }
         }
+
         [XmlIgnore]
         public bool BezierXSpecified
         {
@@ -390,6 +415,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems.Notations
                 bezierXSpecified = value;
             }
         }
+
         [XmlAttribute("bezier-y")]
         public double BezierY
         {
@@ -403,6 +429,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems.Notations
                 bezierY = value;
             }
         }
+
         [XmlIgnore]
         public bool BezierYSpecified
         {
@@ -416,6 +443,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems.Notations
                 bezierYSpecified = value;
             }
         }
+
         [XmlAttribute("bezier-x2")]
         public double BezierX2
         {
@@ -429,6 +457,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems.Notations
                 bezierX2 = value;
             }
         }
+
         [XmlIgnore]
         public bool BezierX2Specified
         {
@@ -442,6 +471,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems.Notations
                 bezierX2Specified = value;
             }
         }
+
         [XmlAttribute("bezier-y2")]
         public double BezierY2
         {
@@ -455,6 +485,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems.Notations
                 bezierY2 = value;
             }
         }
+
         [XmlIgnore]
         public bool BezierY2Specified
         {
@@ -468,6 +499,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems.Notations
                 bezierY2Specified = value;
             }
         }
+
         [XmlAttribute("color")]
         public string Color
         {

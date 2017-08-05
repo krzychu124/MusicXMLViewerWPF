@@ -31,6 +31,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems
                 actualNotes = value;
             }
         }
+
         [XmlElement("normal-notes", DataType = "nonNegativeInteger")]
         public string NormalNotes
         {
@@ -44,6 +45,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems
                 normalNotes = value;
             }
         }
+
         [XmlElement("normal-type")]
         public NoteTypeValueMusicXML NormalType
         {
@@ -57,6 +59,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems
                 normalType = value;
             }
         }
+
         [XmlElement("normal-dot")]
         public List<EmptyMusicXML> NormalDot
         {

@@ -28,6 +28,7 @@ namespace MusicXMLScore.Model.Helpers
                 printObject = value;
             }
         }
+
         [XmlIgnore]
         public bool PrintObjectSpecified
         {

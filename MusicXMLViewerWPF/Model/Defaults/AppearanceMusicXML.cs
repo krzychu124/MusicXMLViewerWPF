@@ -30,6 +30,7 @@ namespace MusicXMLScore.Model.Defaults
                 lineWidth = value;
             }
         }
+
         [XmlElement("note-size")]
         public List<NoteSizeMusicXML> NoteSize
         {
@@ -43,6 +44,7 @@ namespace MusicXMLScore.Model.Defaults
                 noteSize = value;
             }
         }
+
         [XmlElement("distance")]
         public List<DistanceMusicXML> Distance
         {
@@ -56,6 +58,7 @@ namespace MusicXMLScore.Model.Defaults
                 distance = value;
             }
         }
+
         [XmlElement("other-appearance")]
         public List<OtherAppearanceMusicXML> OtherAppearance
         {
@@ -69,6 +72,7 @@ namespace MusicXMLScore.Model.Defaults
                 otherAppearance = value;
             }
         }
+
         public AppearanceMusicXML()
         {
 
@@ -95,6 +99,7 @@ namespace MusicXMLScore.Model.Defaults
                 type = value;
             }
         }
+
         [XmlText(DataType ="double")]//! test
         public double Value
         {
@@ -130,6 +135,7 @@ namespace MusicXMLScore.Model.Defaults
                 type = value;
             }
         }
+
         [XmlText(DataType = "double")]//! test
         public double Value
         {
@@ -165,6 +171,7 @@ namespace MusicXMLScore.Model.Defaults
                 type = value;
             }
         }
+
         [XmlText(DataType = "double")]//! test
         public double Value
         {
@@ -200,6 +207,7 @@ namespace MusicXMLScore.Model.Defaults
                 type = value;
             }
         }
+
         [XmlText]//! test
         public string Value
         {

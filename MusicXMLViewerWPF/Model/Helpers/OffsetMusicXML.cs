@@ -16,7 +16,6 @@ namespace MusicXMLScore.Model.Helpers
         private bool soundSpecified;
         private double value;
 
-
         [XmlAttribute("sound")]
         public YesNoMusicXML Sound
         {
@@ -30,6 +29,7 @@ namespace MusicXMLScore.Model.Helpers
                 sound = value;
             }
         }
+
         [XmlIgnore]
         public bool SoundSpecified
         {
@@ -43,6 +43,7 @@ namespace MusicXMLScore.Model.Helpers
                 soundSpecified = value;
             }
         }
+
         [XmlText]
         public double Value
         {

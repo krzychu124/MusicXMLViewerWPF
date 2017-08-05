@@ -80,6 +80,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems.Notations
                 itemsElementName = value;
             }
         }
+
         [XmlAttribute("placement")]
         public AboveBelowMusicXML Placement
         {
@@ -93,6 +94,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems.Notations
                 placement = value;
             }
         }
+
         [XmlIgnore]
         public bool PlacementSpecified
         {
@@ -106,6 +108,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems.Notations
                 placementSpecified = value;
             }
         }
+
         [XmlAttribute("underline")]
         public string Underline
         {
@@ -119,6 +122,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems.Notations
                 underline = value;
             }
         }
+
         [XmlAttribute("overline")]
         public string Overline
         {
@@ -132,6 +136,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems.Notations
                 overline = value;
             }
         }
+
         [XmlAttribute("line-through")]
         public string Linethrough
         {
@@ -145,6 +150,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems.Notations
                 linethrough = value;
             }
         }
+
         [XmlAttribute("enclosure")]
         public EnclosureShapeMusicXML Enclosure
         {
@@ -158,6 +164,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems.Notations
                 enclosure = value;
             }
         }
+
         [XmlIgnore]
         public bool EnclosureSpecified
         {

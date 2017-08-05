@@ -50,6 +50,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems.Notations
                 items = value;
             }
         }
+
         [XmlElement("ItemsElementName")]
         [XmlIgnore()]
         public ArticulationsChoiceTypeMusicXML[] ItemsElementName
@@ -92,6 +93,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems.Notations
                 placement = value;
             }
         }
+
         [XmlIgnore]
         public bool PlacementSpecified
         {
@@ -105,6 +107,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems.Notations
                 placementSpecified = value;
             }
         }
+
         [XmlText]
         public BreathMarkValue Value
         {
@@ -159,7 +162,6 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems.Notations
     [XmlType(TypeName = "strong-accent")]
     public class StrongAccentMusicXML : EmptyPlacementMusicXML
     {
-
         private UpDownMusicXML type;
 
         public StrongAccentMusicXML()

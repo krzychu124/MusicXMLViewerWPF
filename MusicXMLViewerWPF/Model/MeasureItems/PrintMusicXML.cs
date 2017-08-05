@@ -46,6 +46,7 @@ namespace MusicXMLScore.Model.MeasureItems
                 pageLayout = value;
             }
         }
+
         [XmlElement("system-layout")]
         public SystemLayoutMusicXML SystemLayout
         {
@@ -59,6 +60,7 @@ namespace MusicXMLScore.Model.MeasureItems
                 systemLayout = value;
             }
         }
+
         [XmlElement("staff-layout")]
         public List<StaffLayoutMusicXML> StaffLayout
         {
@@ -72,6 +74,7 @@ namespace MusicXMLScore.Model.MeasureItems
                 staffLayout = value;
             }
         }
+
         [XmlElement("measure-layout")]
         public MeasureLayoutMusicXML MeasureLayout
         {
@@ -85,6 +88,7 @@ namespace MusicXMLScore.Model.MeasureItems
                 measureLayout = value;
             }
         }
+
         [XmlElement("measure-numbering")]
         public MeasureNumberingMusicXML MeasureNumbering
         {
@@ -98,6 +102,7 @@ namespace MusicXMLScore.Model.MeasureItems
                 measureNumbering = value;
             }
         }
+
         [XmlElement("part-name-display")]
         public NameDisplayMusicXML PartNameDisplay
         {
@@ -111,6 +116,7 @@ namespace MusicXMLScore.Model.MeasureItems
                 partNameDisplay = value;
             }
         }
+
         [XmlElement("part-abbreviation-display")]
         public NameDisplayMusicXML PartAbbreviationDisplay
         {
@@ -124,6 +130,7 @@ namespace MusicXMLScore.Model.MeasureItems
                 partAbbreviationDisplay = value;
             }
         }
+
         [XmlAttribute("staff-spacing")]
         public double StaffSpacing
         {
@@ -137,6 +144,7 @@ namespace MusicXMLScore.Model.MeasureItems
                 staffSpacing = value;
             }
         }
+
         [XmlIgnore]
         public bool StaffSpacingSpecified
         {
@@ -150,6 +158,7 @@ namespace MusicXMLScore.Model.MeasureItems
                 staffSpacingSpecified = value;
             }
         }
+
         [XmlAttribute("new-system")]
         public YesNoMusicXML NewSystem
         {
@@ -163,6 +172,7 @@ namespace MusicXMLScore.Model.MeasureItems
                 newSystem = value;
             }
         }
+
         [XmlIgnoreAttribute]
         public bool NewSystemSpecified
         {
@@ -176,6 +186,7 @@ namespace MusicXMLScore.Model.MeasureItems
                 newSystemSpecified = value;
             }
         }
+
         [XmlAttribute("new-page")]
         public YesNoMusicXML NewPage
         {
@@ -189,6 +200,7 @@ namespace MusicXMLScore.Model.MeasureItems
                 newPage = value;
             }
         }
+
         [XmlIgnore]
         public bool NewPageSpecified
         {
@@ -202,6 +214,7 @@ namespace MusicXMLScore.Model.MeasureItems
                 newPageSpecified = value;
             }
         }
+
         [XmlAttribute("blank-page")]
         public string BlankPage
         {
@@ -215,6 +228,7 @@ namespace MusicXMLScore.Model.MeasureItems
                 blankPage = value;
             }
         }
+
         [XmlAttribute("page-number")]
         public string PageNumber
         {
@@ -250,6 +264,7 @@ namespace MusicXMLScore.Model.MeasureItems
                 measureDistance = value;
             }
         }
+
         [XmlIgnore]
         public bool MeasureDistanceSpecified
         {

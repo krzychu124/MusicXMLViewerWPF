@@ -40,6 +40,7 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
                 items = value;
             }
         }
+
         [XmlElement("ItemsElementName")]
         [XmlIgnore()]
         public TimeChoiceTypeMusicXML[] ItemsElementName
@@ -54,6 +55,7 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
                 itemsElementName = value;
             }
         }
+
         [XmlAttribute("number", DataType = "positiveInteger")]
         public string Number
         {
@@ -67,6 +69,7 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
                 number = value;
             }
         }
+
         [XmlAttribute("symbol")]
         public TimeSymbolMusicXML TimeSymbol
         {
@@ -80,6 +83,7 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
                 timeSymbol = value;
             }
         }
+
         [XmlIgnore]
         public bool TimeSymbolSpecified
         {
@@ -93,6 +97,7 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
                 timeSymbolSpecified = value;
             }
         }
+
         [XmlAttribute("separator")]
         public TimeSeparatorMusicXML Separator
         {
@@ -106,6 +111,7 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
                 separator = value;
             }
         }
+
         [XmlIgnore]
         public bool SeparatorSpecified
         {
@@ -119,6 +125,7 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
                 separatorSpecified = value;
             }
         }
+
         [XmlAttribute("print-object")]
         public YesNoMusicXML PrintObject
         {
@@ -133,6 +140,7 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
                 printObjectSpecified = true;
             }
         }
+
         [XmlIgnore]
         public bool PrintObjectSpecified
         {
@@ -146,6 +154,7 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
                 printObjectSpecified = value;
             }
         }
+
         public TimeMusicXML Clone()
         {
             TimeMusicXML new_time = new TimeMusicXML()
@@ -162,14 +171,17 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
             };
             return new_time;
         }
+
         public int GetNumerator()
         {
             return GetTimeValueOfType(TimeChoiceTypeMusicXML.beats);
         }
+
         public int GetDenominator()
         {
             return GetTimeValueOfType(TimeChoiceTypeMusicXML.beattype);
         }
+
         public int GetTimeValueOfType(TimeChoiceTypeMusicXML type)
         {
             int value = 4;
@@ -209,6 +221,7 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
             }
             return value;
         }
+
         private object GetItemOfType(TimeChoiceTypeMusicXML type)
         {
             int index = -1;
@@ -259,6 +272,7 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
                 timeRelation = value;
             }
         }
+
         [XmlIgnore]
         public bool TimeRelationSpecified
         {
@@ -272,6 +286,7 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
                 timeRelationSpecified = value;
             }
         }
+
         [XmlElement("beats")]
         public string[] Beats
         {
@@ -285,6 +300,7 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
                 beats = value;
             }
         }
+
         [XmlElement("beats-type")]
         public string[] BeatsType
         {
@@ -298,6 +314,7 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
                 beatsType = value;
             }
         }
+
         [XmlAttribute("symbol")]
         public TimeSymbolMusicXML Symbol
         {
@@ -311,6 +328,7 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
                 symbol = value;
             }
         }
+
         [XmlIgnore]
         public bool TimeSymbolSpecified
         {
@@ -324,6 +342,7 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
                 timeSymbolSpecified = value;
             }
         }
+
         [XmlAttribute("separator")]
         public TimeSeparatorMusicXML Separator
         {
@@ -337,6 +356,7 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
                 separator = value;
             }
         }
+
         [XmlIgnore]
         public bool SeparatorSpecified
         {
@@ -351,6 +371,7 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
             }
         }
     }
+
     [Serializable]
     [XmlType(TypeName ="time-relation")]
     public enum TimeRelationMusicXML
@@ -387,6 +408,7 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
         dottednote,
         normal,
     }
+
     [Serializable]
     [XmlType(TypeName = "time-separator")]
     public enum TimeSeparatorMusicXML

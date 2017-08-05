@@ -33,6 +33,7 @@ namespace MusicXMLScore.Model
                 scaling = value;
             }
         }
+
         [XmlElement("page-layout")]
         public PageLayoutMusicXML PageLayout
         {
@@ -46,6 +47,7 @@ namespace MusicXMLScore.Model
                 pageLayout = value;
             }
         }
+
         [XmlElement("system-layout")]
         public SystemLayoutMusicXML SystemLayout
         {
@@ -59,6 +61,7 @@ namespace MusicXMLScore.Model
                 systemLayout = value;
             }
         }
+
         [XmlElement("music-font")]
         public EmptyFontMusicXML MusicFont
         {
@@ -72,6 +75,7 @@ namespace MusicXMLScore.Model
                 musicFont = value;
             }
         }
+
         [XmlElement("word-font")]
         public EmptyFontMusicXML WordFont
         {
@@ -85,6 +89,7 @@ namespace MusicXMLScore.Model
                 wordFont = value;
             }
         }
+
         [XmlElement("appearance")]
         public AppearanceMusicXML Appearance
         {
@@ -98,6 +103,7 @@ namespace MusicXMLScore.Model
                 appearance = value;
             }
         }
+
         [XmlElement("staff-layout")]
         public List<StaffLayoutMusicXML> StaffLayout
         {

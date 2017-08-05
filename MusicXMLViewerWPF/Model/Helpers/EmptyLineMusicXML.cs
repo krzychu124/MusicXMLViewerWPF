@@ -41,6 +41,7 @@ namespace MusicXMLScore.Model.Helpers
                 lineshape = value;
             }
         }
+
         [XmlIgnore]
         public bool LineshapeSpecified
         {
@@ -54,6 +55,7 @@ namespace MusicXMLScore.Model.Helpers
                 lineshapeSpecified = value;
             }
         }
+
         [XmlAttribute("line-type")]
         public LineTypeMusicXML Linetype
         {
@@ -67,6 +69,7 @@ namespace MusicXMLScore.Model.Helpers
                 linetype = value;
             }
         }
+
         [XmlIgnore]
         public bool LinetypeSpecified
         {
@@ -80,6 +83,7 @@ namespace MusicXMLScore.Model.Helpers
                 linetypeSpecified = value;
             }
         }
+
         [XmlAttribute("dash-length")]
         public double Dashlength
         {
@@ -93,6 +97,7 @@ namespace MusicXMLScore.Model.Helpers
                 dashlength = value;
             }
         }
+
         [XmlIgnore]
         public bool DashlengthSpecified
         {
@@ -106,6 +111,7 @@ namespace MusicXMLScore.Model.Helpers
                 dashlengthSpecified = value;
             }
         }
+
         [XmlAttribute("space-length")]
         public double Spacelength
         {
@@ -119,6 +125,7 @@ namespace MusicXMLScore.Model.Helpers
                 spacelength = value;
             }
         }
+
         [XmlIgnore]
         public bool SpacelengthSpecified
         {
@@ -132,6 +139,7 @@ namespace MusicXMLScore.Model.Helpers
                 spacelengthSpecified = value;
             }
         }
+
         [XmlAttribute("placement")]
         public AboveBelowMusicXML Placement
         {
@@ -145,6 +153,7 @@ namespace MusicXMLScore.Model.Helpers
                 placement = value;
             }
         }
+
         [XmlIgnore]
         public bool PlacementSpecified
         {

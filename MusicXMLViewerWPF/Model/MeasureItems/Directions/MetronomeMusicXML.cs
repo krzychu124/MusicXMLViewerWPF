@@ -52,6 +52,7 @@ namespace MusicXMLScore.Model.MeasureItems.Directions
                 justify = value;
             }
         }
+
         [XmlIgnore]
         public bool JustifySpecified
         {
@@ -65,6 +66,7 @@ namespace MusicXMLScore.Model.MeasureItems.Directions
                 justifySpecified = value;
             }
         }
+
         [XmlAttribute("parentheses")]
         public YesNoMusicXML Parentheses
         {
@@ -78,6 +80,7 @@ namespace MusicXMLScore.Model.MeasureItems.Directions
                 parentheses = value;
             }
         }
+
         [XmlIgnore]
         public bool ParenthesesSpecified
         {
@@ -115,6 +118,7 @@ namespace MusicXMLScore.Model.MeasureItems.Directions
                 metronomeType = value;
             }
         }
+
         [XmlElement("metronome-dot")]
         public List<EmptyMusicXML> MetronomeDot
         {
@@ -128,6 +132,7 @@ namespace MusicXMLScore.Model.MeasureItems.Directions
                 metronomeDot = value;
             }
         }
+
         [XmlElement("metronome-beam")]
         public List<MetronomeBeamMusicXML> MetronomeBeam
         {
@@ -141,6 +146,7 @@ namespace MusicXMLScore.Model.MeasureItems.Directions
                 metronomeBeam = value;
             }
         }
+
         [XmlElement("metronome-tuplet")]
         public MetronomeTupletMusicXML MetronomeTuplet
         {
@@ -184,6 +190,7 @@ namespace MusicXMLScore.Model.MeasureItems.Directions
                 type = value;
             }
         }
+
         [XmlAttribute("bracket")]
         public YesNoMusicXML Bracket
         {
@@ -197,6 +204,7 @@ namespace MusicXMLScore.Model.MeasureItems.Directions
                 bracket = value;
             }
         }
+
         [XmlIgnore]
         public bool BracketSpecified
         {
@@ -210,6 +218,7 @@ namespace MusicXMLScore.Model.MeasureItems.Directions
                 bracketSpecified = value;
             }
         }
+
         [XmlAttribute("show-number")]
         public ShowTupletMusicXML ShowNumber
         {
@@ -223,6 +232,7 @@ namespace MusicXMLScore.Model.MeasureItems.Directions
                 showNumber = value;
             }
         }
+
         [XmlIgnore]
         public bool ShowNumberSpecified
         {
@@ -324,6 +334,7 @@ namespace MusicXMLScore.Model.MeasureItems.Directions
                 fontStyle = value;
             }
         }
+
         [XmlIgnore]
         public bool FontStyleSpecified
         {
@@ -337,6 +348,7 @@ namespace MusicXMLScore.Model.MeasureItems.Directions
                 fontStyleSpecified = value;
             }
         }
+
         [XmlAttribute("font-size")]
         public string FontSize
         {
@@ -350,6 +362,7 @@ namespace MusicXMLScore.Model.MeasureItems.Directions
                 fontSize = value;
             }
         }
+
         [XmlAttribute("font-weight")]
         public FontWeightMusicXML FontWeight
         {
@@ -363,6 +376,7 @@ namespace MusicXMLScore.Model.MeasureItems.Directions
                 fontWeight = value;
             }
         }
+
         [XmlIgnore]
         public bool FontWeightSpecified
         {
@@ -376,6 +390,7 @@ namespace MusicXMLScore.Model.MeasureItems.Directions
                 fontWeightSpecified = value;
             }
         }
+
         [XmlText]
         public string Value
         {

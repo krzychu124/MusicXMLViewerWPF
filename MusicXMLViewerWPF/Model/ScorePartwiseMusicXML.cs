@@ -50,6 +50,7 @@ namespace MusicXMLViewerWPF
                 work = value;
             }
         }
+
         [XmlElement("movement-number", typeof(string))]
         public string MovementNumber
         {
@@ -77,6 +78,7 @@ namespace MusicXMLViewerWPF
                 movementTitle = value;
             }
         }
+
         [XmlElement("credit")]
         public List<CreditMusicXML> Credits
         {
@@ -86,6 +88,7 @@ namespace MusicXMLViewerWPF
                 credits = value;
             }
         }
+
         [XmlAttribute("version")]
         [System.ComponentModel.DefaultValue("1.0")]
         public string Version
@@ -114,6 +117,7 @@ namespace MusicXMLViewerWPF
                 partlist = value;
             }
         }
+
         [XmlElement("identification")]
         public IdentificationMusicXML Identification
         {
@@ -127,6 +131,7 @@ namespace MusicXMLViewerWPF
                 identification = value;
             }
         }
+
         [XmlElement("defaults")]
         public DefaultsMusicXML Defaults
         {
@@ -140,6 +145,7 @@ namespace MusicXMLViewerWPF
                 defaults = value;
             }
         }
+
         [XmlElement("part")]
         public List<ScorePartwisePartMusicXML> Part
         {
@@ -173,11 +179,12 @@ namespace MusicXMLViewerWPF
             this.version = "1.0";
             ID = Misc.RandomGenerator.GetRandomHexNumber();
         }
+
         public void InitPartsDictionaries()
         {
-            if (Part.Count == 1 && part.ElementAt(0).Id == null)
+            if (Part.Count == 1 && part[0].Id == null)
             {
-                part.ElementAt(0).Id = Partlist.ScoreParts.ElementAt(0).PartId;
+                part[0].Id = Partlist.ScoreParts[0].PartId;
             }
             foreach (var part in Part)
             {

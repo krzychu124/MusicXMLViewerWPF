@@ -33,6 +33,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems
                 footnote = value;
             }
         }
+
         [XmlElement("level")]
         public LevelMusicXML Level
         {
@@ -73,6 +74,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems
                 items = value;
             }
         }
+
         [XmlAttribute("print-object")]
         public YesNoMusicXML PrintObject
         {
@@ -86,6 +88,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems
                 printObject = value;
             }
         }
+
         [XmlIgnore]
         public bool PrintObjectSpecified
         {

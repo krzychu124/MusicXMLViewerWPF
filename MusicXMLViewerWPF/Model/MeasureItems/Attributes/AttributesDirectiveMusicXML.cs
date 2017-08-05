@@ -14,6 +14,7 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
         {
 
         }
+
         [XmlAttribute("lang")] //! Form=System.Xml.Schema.XmlSchemaForm.Qualified, Namespace="http://www.w3.org/XML/1998/namespace")
         public string Lang
         {
@@ -27,6 +28,7 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
                 lang = value;
             }
         }
+
         [XmlText]
         public string Value
         {

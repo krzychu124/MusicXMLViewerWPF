@@ -32,6 +32,7 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
                 diatonic = value;
             }
         }
+
         [XmlElement("chromatic")]
         public double Chromatic
         {
@@ -45,6 +46,7 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
                 chromatic = value;
             }
         }
+
         [XmlElement("octave-change", DataType ="integer")]
         public string OctaveChange
         {
@@ -58,6 +60,7 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
                 octaveChange = value;
             }
         }
+
         [XmlElement("double")]
         internal EmptyMusicXML DoubleField
         {
@@ -71,6 +74,7 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
                 doubleField = value;
             }
         }
+
         [XmlAttribute("number", DataType ="positiveInteger")]
         public string Number
         {

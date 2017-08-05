@@ -36,6 +36,7 @@ namespace MusicXMLScore.Model.MeasureItems
                 directionType = value;
             }
         }
+
         [XmlElement("offset")]
         public OffsetMusicXML Offset
         {
@@ -49,6 +50,7 @@ namespace MusicXMLScore.Model.MeasureItems
                 offset = value;
             }
         }
+
         [XmlElement("footnote")]
         public FormattedTextMusicXML Footnote
         {
@@ -62,6 +64,7 @@ namespace MusicXMLScore.Model.MeasureItems
                 footnote = value;
             }
         }
+
         [XmlElement("level")]
         public LevelMusicXML Level
         {
@@ -75,6 +78,7 @@ namespace MusicXMLScore.Model.MeasureItems
                 level = value;
             }
         }
+
         [XmlElement("voice")]
         public string Voice
         {
@@ -88,6 +92,7 @@ namespace MusicXMLScore.Model.MeasureItems
                 voice = value;
             }
         }
+
         [XmlElement("staff")]
         public string Staff
         {
@@ -101,6 +106,7 @@ namespace MusicXMLScore.Model.MeasureItems
                 staff = value;
             }
         }
+
         [XmlElement("sound")]
         public SoundMusicXML Sound
         {
@@ -114,6 +120,7 @@ namespace MusicXMLScore.Model.MeasureItems
                 sound = value;
             }
         }
+
         [XmlAttribute("placement")]
         public AboveBelowMusicXML Placement
         {
@@ -127,6 +134,7 @@ namespace MusicXMLScore.Model.MeasureItems
                 placement = value;
             }
         }
+
         [XmlIgnore]
         public bool PlacementSpecified
         {
@@ -140,6 +148,7 @@ namespace MusicXMLScore.Model.MeasureItems
                 placementSpecified = value;
             }
         }
+
         [XmlAttribute("directive")]
         public YesNoMusicXML Directive
         {
@@ -153,6 +162,7 @@ namespace MusicXMLScore.Model.MeasureItems
                 directive = value;
             }
         }
+
         [XmlIgnore]
         public bool DirectiveSpecified
         {

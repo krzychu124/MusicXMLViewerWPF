@@ -40,6 +40,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems
                 defaultX = value;
             }
         }
+
         [XmlIgnore]
         public bool DefaultXSpecified
         {
@@ -53,6 +54,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems
                 defaultXSpecified = value;
             }
         }
+
         [XmlAttribute("default-y")]
         public double DefaultY
         {
@@ -66,6 +68,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems
                 defaultY = value;
             }
         }
+
         [XmlIgnore]
         public bool DefaultYSpecified
         {
@@ -79,6 +82,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems
                 defaultYSpecified = value;
             }
         }
+
         [XmlAttribute("relative-x")]
         public double RelativeX
         {
@@ -92,6 +96,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems
                 relativeX = value;
             }
         }
+
         [XmlIgnore]
         public bool RelativeXSpecified
         {
@@ -105,6 +110,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems
                 relativeXSpecified = value;
             }
         }
+
         [XmlAttribute("relative-y")]
         public double RelativeY
         {
@@ -118,6 +124,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems
                 relativeY = value;
             }
         }
+
         [XmlIgnore]
         public bool RelativeYSpecified
         {
@@ -131,6 +138,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems
                 relativeYSpecified = value;
             }
         }
+
         [XmlAttribute("color")]
         public string Color
         {
@@ -144,6 +152,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems
                 color = value;
             }
         }
+
         [XmlText]
         public StemValueMusicXML Value
         {

@@ -42,6 +42,7 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
                 items = value;
             }
         }
+
         [XmlElement("ItemsElementName")]
         [XmlIgnore]
         public KeyChoiceTypes[] ItemsElementName
@@ -56,6 +57,7 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
                 itemsElementName = value;
             }
         }
+
         [XmlElement("key-octave")]
         public List<KeyOctaveMusicXML> KeyOctave
         {
@@ -69,6 +71,7 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
                 keyOctave = value;
             }
         }
+
         [XmlAttribute("number", DataType ="positiveInteger")]
         public string Number
         {
@@ -82,6 +85,7 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
                 number = value;
             }
         }
+
         [XmlAttribute("print-object")]
         public YesNoMusicXML PrintObject
         {
@@ -95,6 +99,7 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
                 printObject = value;
             }
         }
+
         [XmlIgnore]
         public bool PrintObjectSpecified
         {
@@ -108,6 +113,7 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
                 printObjectSpecified = value;
             }
         }
+
         [XmlIgnore]
         public static int[] DefaultGSharphKeys
         {
@@ -121,6 +127,7 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
                 defaultGSharphKeys = value;
             }
         }
+
         [XmlIgnore]
         public static int[] DefaultGFlatKeys
         {
@@ -149,6 +156,7 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
             return new_key;
         }
     }
+
     [Serializable]
     [XmlType(TypeName ="cancel")]
     public class CancelMusicXML
@@ -169,6 +177,7 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
                 location = value;
             }
         }
+
         [XmlIgnore]
         public bool LocationSpecified
         {
@@ -182,6 +191,7 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
                 locationSpecified = value;
             }
         }
+
         [XmlText]
         public string Value
         {
@@ -233,6 +243,7 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
                 number = value;
             }
         }
+
         [XmlAttribute("cancel")]
         public YesNoMusicXML Cancel
         {
@@ -246,6 +257,7 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
                 cancel = value;
             }
         }
+
         [XmlIgnore]
         public bool CancelSpecified
         {
@@ -259,6 +271,7 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
                 cancelSpecified = value;
             }
         }
+
         [XmlText]
         public string Value
         {

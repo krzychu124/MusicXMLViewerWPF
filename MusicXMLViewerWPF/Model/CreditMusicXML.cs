@@ -34,6 +34,7 @@ namespace MusicXMLScore.Model
                 creditType = value;
             }
         }
+
         [XmlElement("bookmark", Order =1)]
         public BookmarkMusicXML Bookmark
         {
@@ -147,5 +148,4 @@ namespace MusicXMLScore.Model
             }
         }
     }
-
 }

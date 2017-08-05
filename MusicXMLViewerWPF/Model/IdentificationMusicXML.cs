@@ -58,6 +58,7 @@ namespace MusicXMLScore.Model
                 creator = value;
             }
         }
+
         [XmlElement("rights")]
         public TypedTextMusicXML Rights
         {
@@ -71,6 +72,7 @@ namespace MusicXMLScore.Model
                 rights = value;
             }
         }
+
         [XmlElement("relation")]
         public TypedTextMusicXML Relation
         {
@@ -85,12 +87,12 @@ namespace MusicXMLScore.Model
             }
         }
 
-
         public IdentificationMusicXML()
         {
 
         }
     }
+
     [Serializable]
     public class TypedTextMusicXML
     {
@@ -109,6 +111,7 @@ namespace MusicXMLScore.Model
                 type = value;
             }
         }
+
         [XmlText()]
         public string Value
         {

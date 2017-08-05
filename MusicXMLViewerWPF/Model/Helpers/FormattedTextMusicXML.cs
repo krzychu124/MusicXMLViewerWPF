@@ -41,6 +41,7 @@ namespace MusicXMLScore.Model.Helpers
                 lang = value;
             }
         }
+
         [XmlAttribute("space", Namespace = "http://www.w3.org/XML/1998/namespace")]
         public string Space
         {
@@ -54,6 +55,7 @@ namespace MusicXMLScore.Model.Helpers
                 space = value;
             }
         }
+
         [XmlText()]
         public string Value
         {
@@ -67,6 +69,7 @@ namespace MusicXMLScore.Model.Helpers
                 this.value = value;
             }
         }
+
         [XmlAttribute("default-x")]
         public string DefaultX
         {
@@ -80,6 +83,7 @@ namespace MusicXMLScore.Model.Helpers
                 defaultX = value;
             }
         }
+
         [XmlAttribute("default-y")]
         public string DefaultY
         {
@@ -93,6 +97,7 @@ namespace MusicXMLScore.Model.Helpers
                 defaultY = value;
             }
         }
+
         [XmlAttribute("justify")]
         public string Justify
         {
@@ -106,6 +111,7 @@ namespace MusicXMLScore.Model.Helpers
                 justify = value;
             }
         }
+
         [XmlAttribute("halign")]
         public string Halign
         {
@@ -119,6 +125,7 @@ namespace MusicXMLScore.Model.Helpers
                 halign = value;
             }
         }
+
         [XmlAttribute("valign")]
         public string Valign
         {
@@ -132,6 +139,7 @@ namespace MusicXMLScore.Model.Helpers
                 valign = value;
             }
         }
+
         [XmlAttribute("font-family")]
         public string FontFamily
         {
@@ -145,6 +153,7 @@ namespace MusicXMLScore.Model.Helpers
                 fontFamily = value;
             }
         }
+
         [XmlAttribute("font-size")]
         public string FontSize
         {
@@ -158,6 +167,7 @@ namespace MusicXMLScore.Model.Helpers
                 fontSize = value;
             }
         }
+
         [XmlAttribute("font-weight")]
         public string FontWeight
         {
@@ -171,6 +181,7 @@ namespace MusicXMLScore.Model.Helpers
                 fontWeight = value;
             }
         }
+
         [XmlAttribute("font-style")]
         public string FontStyle
         {
@@ -184,6 +195,7 @@ namespace MusicXMLScore.Model.Helpers
                 fontStyle = value;
             }
         }
+
         [XmlAttribute("underline")]
         public string Underline
         {
@@ -197,6 +209,7 @@ namespace MusicXMLScore.Model.Helpers
                 underline = value;
             }
         }
+
         [XmlAttribute("color")]
         public string Color
         {
