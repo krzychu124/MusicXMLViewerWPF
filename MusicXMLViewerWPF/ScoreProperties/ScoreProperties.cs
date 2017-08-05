@@ -90,12 +90,12 @@ namespace MusicXMLScore.ScoreProperties
                 {
                     int x = measureKeysList.Count - 1; // 
                     // get last clef change from previous measure
-                    clef = clefsChanges[measureKeysList.ElementAt(x - 1)].AttributeChanges.LastOrDefault().AttributeEntity;
+                    clef = clefsChanges[measureKeysList[x - 1]].AttributeChanges.LastOrDefault().AttributeEntity;
                 }
                 else
                 {
                     //get last clef object with fractionPostion lower or equal than this Item.fracitonPosition
-                    clef = clefsChanges[measureId].AttributeChanges.Where(x => x.TimeFraction <= fractionPosition).LastOrDefault()?.AttributeEntity;
+                    clef = clefsChanges[measureId].AttributeChanges.LastOrDefault(x => x.TimeFraction <= fractionPosition)?.AttributeEntity;
                 }
             }
             else
@@ -132,12 +132,12 @@ namespace MusicXMLScore.ScoreProperties
                 {
                     int x = measureKeyList.Count - 1;
                     //get last key change from previous measure
-                    key = keyChanges[measureKeyList.ElementAt(x - 1)].AttributeChanges.LastOrDefault().AttributeEntity;
+                    key = keyChanges[measureKeyList[x - 1]].AttributeChanges.LastOrDefault().AttributeEntity;
                 }
                 else
                 {
                     //get last key with fractionPosition lower of equal than this Item.fractionPosition
-                    key = keyChanges[measureId].AttributeChanges.Where(x => x.TimeFraction <= fractionPosition).LastOrDefault().AttributeEntity;
+                    key = keyChanges[measureId].AttributeChanges.LastOrDefault(x => x.TimeFraction <= fractionPosition).AttributeEntity;
                 }
             }
             else

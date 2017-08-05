@@ -40,7 +40,7 @@ namespace MusicXMLScore.DrawingHelpers
             this.pageProperties = pageProperties;
             StaffLineWidth = width;
             Position = offsetPoint;
-            Color = color != null ? color : Brushes.Black;
+            Color = color ?? Brushes.Black;
             MeasureLines = linesCount;
             Draw();
         }
@@ -95,6 +95,7 @@ namespace MusicXMLScore.DrawingHelpers
                 width = value;
             }
         }
+
         internal MeasureLineCount MeasureLines
         {
             get
@@ -133,11 +134,12 @@ namespace MusicXMLScore.DrawingHelpers
                 GenerateGenericStaffLine(dc);
             }
         }
+
         private void GenerateGenericStaffLine(DrawingContext dc)//scale dependent
         {
             Brush color = Brushes.Black;
             double factor = PageProperties.PxPerMM(); // scalefactor 1mm to px
-            double lineThickness = pageProperties.TenthToPx(1/*.4583*/); 
+            double lineThickness = pageProperties.TenthToPx(1/*.4583*/);
             Pen pen = new Pen(color, lineThickness);
             double t = pageProperties.StaffSpace * factor;
             int Lines = (int)measureLines; // default is 5;
@@ -193,7 +195,7 @@ namespace MusicXMLScore.DrawingHelpers
         {
             double shift = (pageProperties.StaffHeight - (((int)measureLines - 1)* pageProperties.StaffSpace))/ 2;
 
-            return new Point(pointToShift.X, pointToShift.Y + shift *PageProperties.PxPerMM());
+            return new Point(pointToShift.X, pointToShift.Y + (shift *PageProperties.PxPerMM()));
         }
         /// <summary>
         /// Deprecated since custom drawing using GenerateGenericStaffLine()

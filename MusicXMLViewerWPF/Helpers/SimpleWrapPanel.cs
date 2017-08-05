@@ -40,6 +40,7 @@ namespace MusicXMLScore.Helpers
             panelHeight = height;
             return new Size(panelWidth, height);
         }
+
         protected override Size ArrangeOverride(Size finalSize)
         {
             double panelWidth = finalSize.Width;
@@ -55,7 +56,7 @@ namespace MusicXMLScore.Helpers
                 if (index % 2 == 1)
                 {
                     child.Arrange(new Rect(currentLeft, currentTop, currentWidth, currentHeight));
-                    
+
                     currentTop += currentHeight + verticalSpacing;
                     currentLeft = 0;
                 }
@@ -64,7 +65,6 @@ namespace MusicXMLScore.Helpers
                     child.Arrange(new Rect(currentLeft, currentTop, currentWidth, currentHeight));
                     currentLeft += currentWidth + horizontalSpacing;
                 }
-                
             }
             size.Height = this.panelHeight;
             return size;

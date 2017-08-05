@@ -24,7 +24,6 @@ namespace MusicXMLScore.ViewModel
             InitializeComponent();
             //NewScoreCreatorViewModel vm = new NewScoreCreatorViewModel();
             this.DataContext = new NewScoreCreatorViewModel();
-
         }
     }
 }

@@ -168,6 +168,7 @@ namespace MusicXMLScore.LayoutStyle
                 staffSpaceLegth = value;
             }
         }
+
         public double StavesDistacne
         {
             get
@@ -180,6 +181,7 @@ namespace MusicXMLScore.LayoutStyle
                 stavesDistance = value;
             }
         }
+
         public double TimeSigLeftOffset
         {
             get

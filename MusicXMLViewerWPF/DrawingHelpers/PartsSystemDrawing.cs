@@ -24,7 +24,7 @@ namespace MusicXMLScore.DrawingHelpers
         private Dictionary<string, PartSegmentDrawing> _partsSegments;
         private Canvas _partSystemCanvas;
         private double _partWidth;
-        
+
         private Size _size;
         private int _systemIndex;
         private int _pageIndex;
@@ -39,7 +39,7 @@ namespace MusicXMLScore.DrawingHelpers
             this._systemIndex = systemIndex;
             _measuresList = measuresToDraw;
             _partIDsList = partsIdList;
-            _partWidth = _measuresList.CalculateWidth(_partIDsList.ElementAt(0));
+            _partWidth = _measuresList.CalculateWidth(_partIDsList[0]);
             _partsPropertiesList = partsProperties;
             this._pageIndex = pageIndex;
             _attributesLayout = ViewModel.ViewModelLocator.Instance.Main.CurrentLayout.LayoutStyle.MeasureStyle;
@@ -52,7 +52,7 @@ namespace MusicXMLScore.DrawingHelpers
             _attributesLayout = ViewModel.ViewModelLocator.Instance.Main.CurrentLayout.LayoutStyle.MeasureStyle;
             _systemLayout = layoutInfo;
             _partIDsList = partIDs;
-            _partWidth = measuresToAdd.Where(x => x.Key == measuresToAdd.Keys.FirstOrDefault()).FirstOrDefault().Value.Sum(x => x.MinimalWidthWithAttributes);
+            _partWidth = measuresToAdd.FirstOrDefault(x => x.Key == measuresToAdd.Keys.FirstOrDefault()).Value.Sum(x => x.MinimalWidthWithAttributes);
             PartsSegmentsDraw(measuresToAdd, layoutInfo);
         }
 
@@ -142,7 +142,7 @@ namespace MusicXMLScore.DrawingHelpers
                     }
                     else
                     {
-                        distanceToPrevious = currentPartProperties.StaffLayout.ElementAt(_systemIndex).StaffDistance.TenthsToWPFUnit();
+                        distanceToPrevious = currentPartProperties.StaffLayout[_systemIndex].StaffDistance.TenthsToWPFUnit();
                         distanceToTop += distanceToPrevious;
                         _partsPositions.Add(partSegmentId, new Tuple<double, double, double>(_leftMargin, distanceToPrevious, distanceToTop));
                         distanceToTop += partSegment.Size.Height;
@@ -165,7 +165,7 @@ namespace MusicXMLScore.DrawingHelpers
                     Dictionary<int, double> durationTable = new Dictionary<int, double>();
                     List<List<int>> indexes = GetAllMeasureIndexes(partMeasureSegment);
                     double measureWidth = partMeasureSegment.Select(x => x.Width).Max();
-                    
+
                     Tuple<double, double, double> attributesWidth = LayoutHelpers.GetAttributesWidth(partMeasureSegment);
                     double maxClef = attributesWidth.Item1;
                     double maxKey = attributesWidth.Item2;
@@ -192,7 +192,7 @@ namespace MusicXMLScore.DrawingHelpers
                     foreach (MeasureSegmentController measureSegment in partMeasureSegment)
                     {
                         measureSegment.ArrangeUsingDurationTable(durationTable);
-                        RedrawBeams(measureSegment, durationTable); 
+                        RedrawBeams(measureSegment, durationTable);
                     }
                 }
             }
@@ -234,7 +234,7 @@ namespace MusicXMLScore.DrawingHelpers
                     double previewSpacing = staffSpace * LayoutHelpers.SpacingValue(currentDuration, shortestDuration, 0.6);
                     positions.Add(positionIndexes[i], Tuple.Create(currentStartPosition, previewSpacing));
                 }
-                else 
+                else
                 {
                     int currentDuration = durationOfPosition[positionIndexes[i]];
                     double previewSpacing = staffSpace * LayoutHelpers.SpacingValue(currentDuration, shortestDuration, 0.6);
@@ -263,6 +263,7 @@ namespace MusicXMLScore.DrawingHelpers
         /// <summary>
         /// Sets positions of all partSegments Canvas.
         /// </summary>
+        /// <param name="advanced"></param>
         private void SetPartSegmentCanvasPositions(bool advanced = false)
         {
             if (advanced)
@@ -309,7 +310,7 @@ namespace MusicXMLScore.DrawingHelpers
                 List<MeasureSegmentController> measures = new List<MeasureSegmentController>();
                 foreach (var partSegment in _partsSegments.Values)
                 {
-                    measures.Add(partSegment.PartMeasures.ElementAt(i));
+                    measures.Add(partSegment.PartMeasures[i]);
                 }
                 measuresList.Add(measures);
             }
@@ -339,7 +340,7 @@ namespace MusicXMLScore.DrawingHelpers
             }
             return durationOfPosition;
         }
-        
+
         /// <summary>
         /// Upades/draws beams between notes if any.
         /// </summary>
@@ -381,7 +382,7 @@ namespace MusicXMLScore.DrawingHelpers
             CalculatePositions();
             ArrangeMeasureContent(false);
         }
-        
+
         private void PartsSegmentsDraw(Dictionary<string, List<MeasureSegmentController>> measuresList, LayoutSystemInfo layoutInfo)
         {
             _partsSegments = new Dictionary<string, PartSegmentDrawing>();

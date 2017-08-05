@@ -30,7 +30,7 @@ namespace MusicXMLScore.LayoutControl
 
         private bool _ignoreLayoutLoadedFromFile; //! ignores layout elements loaded from file (new-page, new-system) //WiP
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
-        
+
         public ObservableCollection<UIElement> PagesCollection
         {
             get
@@ -138,12 +138,12 @@ namespace MusicXMLScore.LayoutControl
             double pageContentWidth = ViewModelLocator.Instance.Main.CurrentPageLayout.GetContentWidth();
             List<MeasureSegmentController> testList = new List<MeasureSegmentController>();
             _sharedMeasuresProps = new List<SharedMeasureProperties>();
-            
+
             for (int i = 0; i < _scoreFile.Part.FirstOrDefault().Measure.Count; i++)
             {
                 //! all measures (from all parts) of current index i
-                Dictionary<string, List<AntiCollisionHelper>> measureContentPropertiesList = new Dictionary<string, List<AntiCollisionHelper>>(); 
-                List<MeasureSegmentController> measureOfAllParts = _measureSegmentsContainer.MeasureSegments.Select(x => x.Value.ElementAt(i)).ToList();
+                Dictionary<string, List<AntiCollisionHelper>> measureContentPropertiesList = new Dictionary<string, List<AntiCollisionHelper>>();
+                List<MeasureSegmentController> measureOfAllParts = _measureSegmentsContainer.MeasureSegments.Select(x => x.Value[i]).ToList();
                 int shortestDuration = measureOfAllParts.Select(x => x.GetMinDuration()).Min();
                 SharedMeasureProperties sharedMeasureProperties = new SharedMeasureProperties(measureOfAllParts.FirstOrDefault().MeasureId);
                 //! collect collision helpers from all parts (current measureId only)
@@ -162,9 +162,9 @@ namespace MusicXMLScore.LayoutControl
                 _sharedMeasuresProps.Add(sharedMeasureProperties);
                 //! Set calculated minimalWidth of current meeasureId in all parts
                 double currentMeasureMinWidth = sharedMeasureProperties.SharedWidth;
-                measureOfAllParts.ForEach(x => { x.MinimalWidth = currentMeasureMinWidth; }); 
+                measureOfAllParts.ForEach(x => x.MinimalWidth = currentMeasureMinWidth);
                 //! each part measure => get width => get max => stretch to optimal => set optimal width each part measure
-                
+
             }
             //! update measureWidth with new calculated minimalWidth
             _measureSegmentsContainer.UpdateMeasureWidths();
@@ -252,7 +252,7 @@ namespace MusicXMLScore.LayoutControl
                 }
             }
         }
-        
+
         /// <summary>
         /// Collect measures into systems
         /// </summary>
@@ -264,15 +264,14 @@ namespace MusicXMLScore.LayoutControl
             int pageIndex = 0;
             LayoutPageContentInfo pageContent = new LayoutPageContentInfo(pageIndex);
             double currentWidth = 0.0;
-            double currentHeight = 0.0; //! TODO horizontal layout spacing calculations
+            //double currentHeight = 0.0; //! TODO horizontal layout spacing calculations
 
             List<SharedMeasureProperties> measuresToSystem = new List<SharedMeasureProperties>();
             for (int i = 0; i < unarrangedMeasures.Count; i++)
             {
-                
                 string measureId = unarrangedMeasures[i];
                 SharedMeasureProperties currentMeasureProperties = _sharedMeasuresProps.FirstOrDefault(x => x.MeasureId == measureId);
-                currentWidth += currentMeasureProperties.SharedWidth; 
+                currentWidth += currentMeasureProperties.SharedWidth;
                 //! if calculated width would be to high, collected measures represents one system
                 if (currentWidth > pageContent.PageContentWidth)
                 {
@@ -346,9 +345,10 @@ namespace MusicXMLScore.LayoutControl
             {
                 string currentMeasureId = sharedMeasure.MeasureId;
                 sharedMeasure.FractionPositionsChanged += OnFractionPositionChange; //! listen to shared fractions collection change
-                FractionPositionHelper.Add(currentMeasureId, _sharedMeasuresProps.Where(x => x.MeasureId == currentMeasureId).FirstOrDefault().SharedFractions);
+                FractionPositionHelper.Add(currentMeasureId, _sharedMeasuresProps.FirstOrDefault(x => x.MeasureId == currentMeasureId).SharedFractions);
             }
         }
+
         private void OnFractionPositionChange(object sender, EventArgs e)
         {
             var measureProperties = sender as SharedMeasureProperties;
@@ -361,5 +361,4 @@ namespace MusicXMLScore.LayoutControl
             }
         }
     }
-    
 }

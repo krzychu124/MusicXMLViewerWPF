@@ -20,11 +20,12 @@ namespace MusicXMLScore.Helpers
             visuals = new List<Visual>();
             AddVisualChild(_containerVisual);
         }
-        
+
         protected override Visual GetVisualChild(int index)
         {
             return _containerVisual;
         }
+
         protected override int VisualChildrenCount
         {
             get

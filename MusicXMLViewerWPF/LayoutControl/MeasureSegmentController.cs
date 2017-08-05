@@ -64,7 +64,7 @@ namespace MusicXMLScore.LayoutControl
             {
                 _minimalWidth = value;
                 int partIndex = ViewModelLocator.Instance.Main.CurrentSelectedScore.Part.FindIndex(x => x.Id == _partId);
-                ViewModelLocator.Instance.Main.CurrentSelectedScore.Part.ElementAt(partIndex).Measure.FirstOrDefault(x => x.Number == _measureId)
+                ViewModelLocator.Instance.Main.CurrentSelectedScore.Part[partIndex].Measure.FirstOrDefault(x => x.Number == _measureId)
                     .CalculatedWidth = _minimalWidth.WPFUnitToTenths();
             }
         }
@@ -348,7 +348,7 @@ namespace MusicXMLScore.LayoutControl
                     {
                         foreach (var time in timeList)
                         {
-                            string staffNumber = time.StaffNumber != null ? time.StaffNumber : i.ToString();
+                            string staffNumber = time.StaffNumber ?? i.ToString();
                             TimeSignatureContainerItem timeContainer =
                                 new TimeSignatureContainerItem(time.StaffNumber, time.TimeFraction, time.AttributeEntity);
                             _measureItemsContainer.AppendAttributeWithStaffNumber(timeContainer, time.TimeFraction, staffNumber);

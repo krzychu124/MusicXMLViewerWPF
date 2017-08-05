@@ -50,7 +50,7 @@ namespace MusicXMLScore.Helpers
                 return staffHeight;
             }
         }
-        
+
         internal PageDimensions PageDimensions
         {
             get
@@ -155,6 +155,7 @@ namespace MusicXMLScore.Helpers
             CalculatePageDimensions();
             GenerateAvaliableLinePositions();
         }
+
         public PageProperties(double scale, double staffLineHeight, double widthTenths, double heightTenths)
         {
             this.scale = scale;
@@ -166,6 +167,7 @@ namespace MusicXMLScore.Helpers
             CalculateStaffSpace();
             CalculatePageDimensions();
         }
+
         public PageProperties(SerializationInfo info, StreamingContext context)
         {
             scale = (double)info.GetValue("Scale", typeof(double));
@@ -197,7 +199,7 @@ namespace MusicXMLScore.Helpers
                 loadedPageMargins = defaults.PageLayout.PageMargins;
                 SetPageMargins(loadedPageMargins);
                 systemLayout = defaults.SystemLayout;
-                staffLayout = new List<StaffLayoutMusicXML>(defaults.StaffLayout){ };
+                staffLayout = new List<StaffLayoutMusicXML>(defaults.StaffLayout);
             }
             GenerateAvaliableLinePositions();
             GenerateStaffLine();
@@ -246,7 +248,7 @@ namespace MusicXMLScore.Helpers
                 return;
             }
 
-            var notSpecified = marginsList.Any(i => i.MarginTypeSpecified == false);
+            var notSpecified = marginsList.Any(i => !i.MarginTypeSpecified);
             if (notSpecified)
             {
                 pageMarginBoth = marginsList.ElementAtOrDefault(0);
@@ -347,28 +349,34 @@ namespace MusicXMLScore.Helpers
                 CalculatePageDimensions();
             }
         }
+
         private void SwitchDimensions()
         {
             double tempWidth = default_width;
             default_width = default_height;
             default_height = tempWidth;
         }
+
         private void CalculateConverterFactor()
         {
             converterFactor = staffHeight / scale;
         }
+
         private void CalculateStaffSpace()
         {
             staffSpace = staffHeight / (scale / 10);
         }
+
         private void CalculatePageDimensions()
         {
             pageDimensions = new PageDimensions(default_width, default_height, converterFactor);
         }
+
         public static double PxPerMM()
         {
             return Converters.ExtensionMethods.PxPerMM(); //? return DPI / 25.4;
         }
+
         public double TenthToPx(double tenths)
         {
             return tenths * converterFactor * PxPerMM();
@@ -383,6 +391,7 @@ namespace MusicXMLScore.Helpers
             info.AddValue("PageFormat", pagetype.ToString());
             info.AddValue("PageOrientation", pageOrientation.ToString());
         }
+
         public class PageDefaults
         {
             private double leftmargin = 0.05; // percent of width, dimensions+scale dependent
@@ -512,6 +521,7 @@ namespace MusicXMLScore.Helpers
             //private PageType pageType
         }
     }
+
     class PageDimensions
     {
         double width; // in tenths
@@ -524,18 +534,22 @@ namespace MusicXMLScore.Helpers
             this.height = height;
             this.converterFactor = converterFactor;
         }
+
         public Point GetPageDimensionsInMM()
         {
             return new Point(width * converterFactor, height * converterFactor);
         }
+
         public Point GetPageDimensionsInTenths()
         {
             return new Point(width, height);
         }
+
         public Point GetPageDimensionsInInches()
         {
             return new Point((width / 25.4) * converterFactor, (height / 25.4) * converterFactor);
         }
+
         public Point GetPageDimensionsInPx()
         {
             Point temp = GetPageDimensionsInMM();
@@ -543,6 +557,7 @@ namespace MusicXMLScore.Helpers
             //return new Point(temp.X * pxpermm, temp.Y * pxpermm);
             return new Point(width.TenthsToWPFUnit(), height.TenthsToWPFUnit());
         }
+
         public Size Dimensions
         {
             get
@@ -551,12 +566,14 @@ namespace MusicXMLScore.Helpers
             }
         }
     }
+
     enum PageType
     {
         A4,
         A3,
         Custom
     }
+
     enum PageOrientation
     {
         portait,

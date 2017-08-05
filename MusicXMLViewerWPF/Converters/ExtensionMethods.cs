@@ -73,11 +73,12 @@ namespace MusicXMLScore.Converters
             double converterFactor = ViewModelLocator.Instance.Main.CurrentPageLayout.ConverterFactor;
             return WPFUnit / (converterFactor * PxPerMM());
         }
+
         public static double WPFUnitToMM(this double WPFUnit)
         {
             return WPFUnit * PxPerMM(); //! to test
         }
-        
+
         /// <summary>
         /// Converts Millimeters to WPFUnits
         /// </summary>
@@ -113,20 +114,20 @@ namespace MusicXMLScore.Converters
             foreach (var measure in part.Measure)
             {
                 var print = measure.Items.OfType<PrintMusicXML>().FirstOrDefault();
-                
+
                 if (print != null)
                 {
                     if (print.NewSystemSpecified)
                     {
                         if (print.NewSystem == Model.Helpers.SimpleTypes.YesNoMusicXML.yes)
                         {
-                            lastNumber = part.Measure.ElementAt(part.Measure.IndexOf(measure)-1).Number;
+                            lastNumber = part.Measure[part.Measure.IndexOf(measure)-1].Number;
                             Tuple<string, string> t = new Tuple<string, string>(fistNumber, lastNumber);
                             if (part.Measure.IndexOf(measure) != 0)
                             {
                                 measuresPerLine.Add(t);
                             }
-                            
+
                             fistNumber = measure.Number;
                         }
                     }
@@ -134,7 +135,7 @@ namespace MusicXMLScore.Converters
                     {
                         if (print.NewPage == Model.Helpers.SimpleTypes.YesNoMusicXML.yes)
                         {
-                            lastNumber = part.Measure.ElementAt(part.Measure.IndexOf(measure) - 1).Number;
+                            lastNumber = part.Measure[part.Measure.IndexOf(measure) - 1].Number;
                             Tuple<string, string> t = new Tuple<string, string>(fistNumber, lastNumber);
                             measuresPerLine.Add(t);
                             linesPerPage.Add(new List<Tuple<string, string>>(measuresPerLine));
@@ -211,8 +212,8 @@ namespace MusicXMLScore.Converters
         public static List<string> TryGetMeasuresIdRange(this ScorePartwisePartMusicXML part, Tuple<string, string> rangeOfMeasures)
         {
             List<string> measuresRange = new List<string>();
-            int startindex = part.Measure.IndexOf(part.Measure.Select(i => i).Where(i => i.Number == rangeOfMeasures.Item1).FirstOrDefault());
-            int endindex = part.Measure.IndexOf(part.Measure.Select(i => i).Where(i => i.Number == rangeOfMeasures.Item2).FirstOrDefault());
+            int startindex = part.Measure.IndexOf(part.Measure.Select(i => i).FirstOrDefault(i => i.Number == rangeOfMeasures.Item1));
+            int endindex = part.Measure.IndexOf(part.Measure.Select(i => i).FirstOrDefault(i => i.Number == rangeOfMeasures.Item2));
             int count = endindex -startindex +1;
             measuresRange = part.Measure.GetRange(startindex, count).Select(i=>i.Number).ToList();
             return measuresRange;
@@ -226,7 +227,7 @@ namespace MusicXMLScore.Converters
         /// <returns>Largest Measure width among all parts</returns>
         public static double GetLargestWidth(this ScorePartwiseMusicXML score, string measureNumber)
         {
-            double result = score.Part.ElementAt(0).GetMeasureUsingId(measureNumber).Width;
+            double result = score.Part[0].GetMeasureUsingId(measureNumber).Width;
             foreach (var part in score.Part)
             {
                 double width = part.GetMeasureUsingId(measureNumber).Width;
@@ -256,7 +257,7 @@ namespace MusicXMLScore.Converters
         /// <param name="score"></param>
         public static void SetLargestMeasureWidth(this ScorePartwiseMusicXML score)
         {
-            foreach (var measure in score.Part.ElementAt(0).Measure)
+            foreach (var measure in score.Part[0].Measure)
             {
                 string id = measure.Number;
                 var maxWidth = score.GetLargestWidth(id);
@@ -307,8 +308,8 @@ namespace MusicXMLScore.Converters
         /// <returns></returns>
         public static int GetMeasureIdIndex(this string measureId)
         {
-            var measure = ViewModelLocator.Instance.Main.CurrentSelectedScore.Part.ElementAt(0).MeasuresByNumber[measureId];
-            return ViewModelLocator.Instance.Main.CurrentSelectedScore.Part.ElementAt(0).Measure.IndexOf(measure);
+            var measure = ViewModelLocator.Instance.Main.CurrentSelectedScore.Part[0].MeasuresByNumber[measureId];
+            return ViewModelLocator.Instance.Main.CurrentSelectedScore.Part[0].Measure.IndexOf(measure);
         }
 
         /// <summary>

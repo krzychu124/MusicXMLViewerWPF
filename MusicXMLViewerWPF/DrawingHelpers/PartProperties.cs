@@ -49,7 +49,7 @@ namespace MusicXMLScore.DrawingHelpers
         {
             SetMainFields(score, partId);
             SetDefaultDistances(score);
-            List<ScorePartwisePartMeasureMusicXML> measuresInPart = score.Part.ElementAt(_partIndex).Measure;
+            List<ScorePartwisePartMeasureMusicXML> measuresInPart = score.Part[_partIndex].Measure;
             GetLayoutInfo(measuresInPart);
             SetSystemMeasureRanges();
             SetPartHeight();
@@ -173,7 +173,7 @@ namespace MusicXMLScore.DrawingHelpers
         {
             if (_systemAttributes)
             {
-                List<string> systems = _measuresPerSystem.Select(x => x.ElementAt(0)).ToList();
+                List<string> systems = _measuresPerSystem.Select(x => x[0]).ToList();
                 foreach (var item in systems)
                 {
                     if (!ClefChanges.ContainsKey(item))
@@ -491,7 +491,7 @@ namespace MusicXMLScore.DrawingHelpers
                 _staffLayoutPerPage.Add(_staffLayout.GetRange(previousPageListIndex, currPageListIndex));
                 previousPageListIndex += currPageListIndex;
             }
-            _stavesDistance = _staffLayout.ElementAt(0).StaffDistance;
+            _stavesDistance = _staffLayout[0].StaffDistance;
         }
 
         private void SetDefaultDistances(ScorePartwiseMusicXML score)
@@ -506,7 +506,7 @@ namespace MusicXMLScore.DrawingHelpers
                 {
                     if (score.Defaults.StaffLayout.Count != 0)
                     {
-                        _defaultStaffDistance = score.Defaults.StaffLayout.ElementAt(0).StaffDistance;
+                        _defaultStaffDistance = score.Defaults.StaffLayout[0].StaffDistance;
                     }
                 }
                 if (score.Defaults.SystemLayout != null)
@@ -529,12 +529,12 @@ namespace MusicXMLScore.DrawingHelpers
             _currentPart = score.Part.FirstOrDefault(i => i.Id == _partId);
             _partIndex = score.Part.FindIndex(i => i.Id == _partId);
             FindPartSystems(score);
-            _numberOfStaves = score.Part.ElementAt(_partIndex).GetStavesCount();
+            _numberOfStaves = score.Part[_partIndex].GetStavesCount();
         }
 
         private void FindPartSystems(ScorePartwiseMusicXML score)
         {
-            _partSysemsInPages = score.Part.ElementAt(_partIndex).TryGetLinesPerPage();
+            _partSysemsInPages = score.Part[_partIndex].TryGetLinesPerPage();
         }
 
         private void SetPartHeight()

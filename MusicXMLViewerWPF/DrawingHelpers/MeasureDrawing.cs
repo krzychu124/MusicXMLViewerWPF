@@ -20,7 +20,7 @@ namespace MusicXMLScore.DrawingHelpers
     {
         //TODO Refactor and move to MeasureSegmentController
         #region Fields
-        
+
         private string id;
         private bool invalidated = false;
         private LayoutControl.LayoutGeneral layout;
@@ -42,7 +42,7 @@ namespace MusicXMLScore.DrawingHelpers
         #endregion Fields
 
         #region Constructors
-        
+
         public MeasureDrawing(string measureId, string partId, double staffDistance, int stavesCount)
         {
             //PropertyChanged += OnWidthChanged;
@@ -57,7 +57,7 @@ namespace MusicXMLScore.DrawingHelpers
             //! CreateStaffLine();
             CreateVisualObject();
         }
-        
+
         #endregion Constructors
 
         #region Properties
@@ -80,7 +80,7 @@ namespace MusicXMLScore.DrawingHelpers
         }
 
         public bool Invalidated { get { return invalidated; } private set { invalidated = value; } }
-        
+
         #endregion Properties
 
         #region Methods
@@ -137,7 +137,7 @@ namespace MusicXMLScore.DrawingHelpers
         private void GetMeasureProperties()
         {
             visualObject = new DrawingVisualHost();
-            measureSerializable = ViewModelLocator.Instance.Main.CurrentSelectedScore.Part.ElementAt(partId.GetPartIdIndex()).Measure.Where(x=>x.Number ==id).FirstOrDefault();
+            measureSerializable = ViewModelLocator.Instance.Main.CurrentSelectedScore.Part[partId.GetPartIdIndex()].Measure.FirstOrDefault(x=>x.Number ==id);
             measureSerializable.PropertyChanged += OnWidthChanged;
 
             measureHeight = layout.PageProperties.StaffHeight.MMToWPFUnit() * stavesCount + (stavesDistance.TenthsToWPFUnit() * (stavesCount - 1));
@@ -153,7 +153,7 @@ namespace MusicXMLScore.DrawingHelpers
         {
             CreateVisualObject();
         }
-        
+
         private void OnWidthChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(ScorePartwisePartMeasureMusicXML.CalculatedWidth))

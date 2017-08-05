@@ -24,6 +24,7 @@ namespace MusicXMLScore.LayoutControl
             pageProperties = new PageProperties();
             layoutStyle = new Layout();
         }
+
         public LayoutGeneral(ScorePartwiseMusicXML score)
         {
             pageProperties = score !=null?  new PageProperties(score.Defaults): null;
@@ -37,6 +38,7 @@ namespace MusicXMLScore.LayoutControl
             xml.Serialize(txtw, layoutStyle);
             txtw.Close();
         }
+
         private void LoadDefaultStyle() //! not tested
         {
             XmlSerializer xml = new XmlSerializer(layoutStyle.GetType());
@@ -45,6 +47,7 @@ namespace MusicXMLScore.LayoutControl
                 layoutStyle = (Layout) xml.Deserialize(stream);
             }
         }
+
         public PageProperties PageProperties { get { return pageProperties; } }
         public PageMarginsMusicXML PageMarginsEven { get { return PageProperties.PageMarginEven; } }
         public PageMarginsMusicXML PageMarginsOdd { get { return PageProperties.PageMarginOdd; } }

@@ -28,6 +28,7 @@ namespace MusicXMLScore.Helpers
         {
             element.SetValue(TopMarginProperty, value);
         }
+
         public static double GetTopMargin(UIElement element)
         {
             return (double)element.GetValue(TopMarginProperty);
@@ -54,7 +55,7 @@ namespace MusicXMLScore.Helpers
             return calculatedSize; // availableSize; //! base.MeasureOverride(availableSize);
         }
 
-        protected override Size ArrangeOverride(Size finalSize) 
+        protected override Size ArrangeOverride(Size finalSize)
         {
             var childrens = InternalChildren;
             if (childrens == null) { return finalSize; }

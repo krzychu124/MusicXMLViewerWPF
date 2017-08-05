@@ -32,7 +32,7 @@ namespace MusicXMLScore.ViewModel
         public MainWindowViewModel()
         {
             PropertyChanged += MainWindowViewModel_PropertyChanged;
-            CloseFileCommand = new RelayCommand(OnCloseFile, () => AllTabsClosed == false);
+            CloseFileCommand = new RelayCommand(OnCloseFile, () => !AllTabsClosed);
             TestButtonCommand = new RelayCommand(OnTestButtonCommand);
             TestButton2Command = new RelayCommand(OnTestButton2Command);
             ExitCommand = new RelayCommand(OnExitApp);
@@ -44,7 +44,7 @@ namespace MusicXMLScore.ViewModel
             CreateBlankTab();
             CacheXMLSerializer();
         }
-        
+
         public RelayCommand AddMeasureCommand { get; set; }
 
         private bool AllTabsClosed
@@ -209,11 +209,11 @@ namespace MusicXMLScore.ViewModel
             string header = "New Default Score";
             var vm = SelectedTabItem.DataContext as PagesControllerViewModel;
             //! if currently selected tab is empty
-            if (vm != null && vm.IsBlank)
+            if (vm?.IsBlank == true)
             {
                 SelectedTabItem.Header = header;
                 SelectedTabItem.DataContext = new PagesControllerViewModel(1);
-                Console.WriteLine(@"Default Score blank document");
+                Console.WriteLine("Default Score blank document");
             }
             else
             {
@@ -227,7 +227,6 @@ namespace MusicXMLScore.ViewModel
                 SelectedTabItem = tab;
             }
         }
-
 
         [STAThread]
         private void OnOpenFileCommand(object parameter) //! For now xml file load avaliable only

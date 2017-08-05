@@ -28,12 +28,14 @@ namespace MusicXMLScore
             InitializeComponent();
             //! test // ScorePartwiseMusicXML xml = MusicXMLScore.ViewModel.MainWindowViewModel.TempMethod<ScorePartwiseMusicXML>("C:\\Users\\Krzychu124\\Desktop\\xml_test_samples\\Echigo-Jishi.xml");
         }
+
         protected override void OnClosed(EventArgs e)
         {
             base.OnClosed(e);
 
             Application.Current.Shutdown();
         }
+
         public void checkdpi()
         {
             var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
@@ -41,7 +43,7 @@ namespace MusicXMLScore
 
             var dpiX = (int)dpiXProperty.GetValue(null, null);
             var dpiY = (int)dpiYProperty.GetValue(null, null);
-            
+
             IntPtr hdc = GetDC(IntPtr.Zero);
             Console.WriteLine(GetDeviceCaps(hdc, LOGPIXELSX));
             Console.WriteLine(GetDeviceCaps(hdc, LOGPIXELSY));
@@ -53,6 +55,7 @@ namespace MusicXMLScore
         {
             checkdpi();
         }
+
         [DllImport("gdi32.dll")]
         static extern int GetDeviceCaps(IntPtr hdc, int nIndex);
 
@@ -67,6 +70,5 @@ namespace MusicXMLScore
         /// Logical pixels inch in Y
         /// </summary>
         const int LOGPIXELSY = 90;
-
     }
 }

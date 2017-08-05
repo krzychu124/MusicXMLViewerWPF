@@ -26,21 +26,22 @@ namespace MusicXMLScore.LayoutStyle
             pageStyle = new PageLayoutStyle();
             colors = new Dictionary<int, Brush>()
             {
-                {1, Brushes.Black },
-                {2, Brushes.Navy },
-                {3, Brushes.DarkSlateGray},
-                {4, Brushes.DarkRed },
-                {5, Brushes.Indigo },
-                {6, Brushes.DodgerBlue },
-                {7, Brushes.Green },
-                {8, Brushes.OrangeRed },
+                [1] = Brushes.Black,
+                [2] = Brushes.Navy,
+                [3] = Brushes.DarkSlateGray,
+                [4] = Brushes.DarkRed,
+                [5] = Brushes.Indigo,
+                [6] = Brushes.DodgerBlue,
+                [7] = Brushes.Green,
+                [8] = Brushes.OrangeRed,
             };
         }
 
         public Layout(ScorePartwiseMusicXML score):this()
         {
-            
+
         }
+
         public BarlineLayoutStyle BarlineStyle
         {
             get
@@ -105,7 +106,7 @@ namespace MusicXMLScore.LayoutStyle
                 pageStyle = value;
             }
         }
-        
+
         public Dictionary<int, Brush> Colors
         {
             get

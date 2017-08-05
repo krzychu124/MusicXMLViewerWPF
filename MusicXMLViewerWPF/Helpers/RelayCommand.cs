@@ -49,6 +49,7 @@ namespace MusicXMLScore.Helpers
         }
         #endregion
     }
+
     public class RelayCommand<T> : ICommand
     {
         Action<T> _TargetExecuteMethod;

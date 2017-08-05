@@ -24,6 +24,7 @@ namespace MusicXMLScore.ViewModel
             InitializeComponent();
             this.DataContext = new ConfigurationViewModel();
         }
+
         protected override void OnClosed(EventArgs e)
         {
             base.OnClosed(e);

@@ -205,7 +205,7 @@ namespace MusicXMLScore.LayoutControl
             double offset = difference / itemsCount;
             foreach (var item in _measures)
             {
-                item.SharedWidth = item.SharedWidth + offset;
+                item.SharedWidth += offset;
             }
             GetSharedWidths();
             _systemWidth = desiredWidth;

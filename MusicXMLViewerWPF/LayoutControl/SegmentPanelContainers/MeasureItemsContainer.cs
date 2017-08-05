@@ -130,7 +130,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
                     Canvas.SetTop(item.Item2.ItemCanvas as Canvas, top);
                 }
             }
-            double tempBarlineHeight = (staffsNumber-1)* staffDistance + (staffsNumber * 40.0.TenthsToWPFUnit()); 
+            double tempBarlineHeight = (staffsNumber-1)* staffDistance + (staffsNumber * 40.0.TenthsToWPFUnit());
             DrawTempBarline(tempBarlineHeight); //! Temp barline (black)
 #if VISUALDEBUG
             DrawTempStartBarline(tempBarlineHeight + 40.0.TenthsToWPFUnit()); //! Temp 0.X position barline (red)
@@ -144,7 +144,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
             //! -----------------
             var measureBeginningAttributes = itemsWithPosition.Where(x => x.Item1 == 0 && x.Item2 is IAttributeItemVisual).Select(x => x.Item2).ToList();
             if (measureBeginningAttributes.Count != 0)
-            { 
+            {
                 //! ------------------ CLefs position set--------------------
                 var clef = measureBeginningAttributes.Where(x => x is ClefContainerItem).ToList();//as ClefContainerItem;
                 if (clef.Count != 0)
@@ -186,7 +186,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
             Dictionary<string, int> notesPerStaff = new Dictionary<string, int>();
             foreach (var item in itemsPositionsPerStaff)
             {
-                int notesCount = item.Value.Select(x => x.Item2).Where(x => x as INoteItemVisual != null).Count();
+                int notesCount = item.Value.Select(x => x.Item2).Count(x => x is INoteItemVisual);
                 notesPerStaff.Add(item.Key, notesCount);
             }
             //! ------------------ Note items and additional Attribute items position set--------------------
@@ -199,7 +199,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
                     {
                         //! grace notes has duration == 0
                         //! skipped due to possible wrong placement / overwriting previous position setting
-                        continue; 
+                        continue;
                     }
                     if (note is RestContainterItem)
                     {
@@ -224,13 +224,14 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
                 }
 
                 //! additional attributes (midmeasure and others)
-                if (item.Item2 is IAttributeItemVisual && item.Item1 >0) 
+                if (item.Item2 is IAttributeItemVisual && item.Item1 >0)
                 {
                     SetLeft(item.Item2.ItemCanvas as Canvas, durationTable[item.Item1] - item.Item2.ItemWidth);
                 }
             }
             SetLeft(temporaryBarline, durationTable.LastOrDefault().Value); //! Temp barline position test to end of measure (advanced layout visual helper)
         }
+
         private void DrawTempBarline(double staffHeight)
         {
             temporaryBarline = new Canvas();
@@ -256,7 +257,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
         {
             temporaryStartBarline = new Canvas();
             Point p1 = new Point();
-            Point p2 = new Point(0, staffHeight); 
+            Point p2 = new Point(0, staffHeight);
             Pen pen = new Pen(Brushes.Red, 1.5.TenthsToWPFUnit());
             DrawingVisual dv = new DrawingVisual();
             using (DrawingContext dc = dv.RenderOpen())
@@ -268,6 +269,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
             temporaryStartBarline.Children.Add(dvh);
             Children.Add(temporaryStartBarline);
         }
+
         public void RemoveTempStartBarline()
         {
             if (Children.Contains(temporaryStartBarline))
@@ -275,11 +277,12 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
                 Children.Remove(temporaryStartBarline);
             }
         }
+
         public List<int> GetDurationIndexes()
         {
             return itemsWithPosition.Select(x => x.Item1).Distinct().ToList();
         }
-        
+
         public double ArrangeAttributes(IAttributeItemVisual attributeVisual, Dictionary<string, double> staffPositions, double currentPosition = 0.0)
         {
             double width = currentPosition;
@@ -289,7 +292,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
             {
                 case 0:
                     ClefContainerItem clef = attributeVisual as ClefContainerItem;
-                    width += clef.ItemLeftMargin; 
+                    width += clef.ItemLeftMargin;
                     SetLeft(clef.ItemCanvas, width);
                     width += clef.ItemWidth + clef.ItemRightMargin;
                     break;
@@ -323,6 +326,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
             itemsWithPosition.Add(noteVisual);
             itemsPositionsPerStaff[staffNumber].Add(noteVisual);
         }
+
         public void AppendRestWithStaffNumber(RestContainterItem rest, int cursorPosition, string voice, string staffNumber)
         {
             Tuple<int, IMeasureItemVisual> restVisual = new Tuple<int, IMeasureItemVisual>(cursorPosition, rest);
@@ -330,6 +334,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
             itemsWithPosition.Add(restVisual);
             itemsPositionsPerStaff[staffNumber].Add(restVisual);
         }
+
         public void AppendAttributeWithStaffNumber(IAttributeItemVisual attributeItem, int cursorPosition, string staffNumber)
         {
             Tuple<int, IMeasureItemVisual> attributesVisual = new Tuple<int, IMeasureItemVisual>(cursorPosition, attributeItem);
@@ -337,20 +342,23 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
             itemsWithPosition.Add(attributesVisual);
             itemsPositionsPerStaff[staffNumber].Add(attributesVisual);
         }
+
         public void AddNote(NoteContainerItem noteVisual)
         {
             measureItemsVisuals.Add(noteVisual);
             Children.Add(noteVisual.ItemCanvas);
         }
+
         public void AddRest(RestContainterItem restVisual)
         {
             measureItemsVisuals.Add(restVisual);
             Children.Add(restVisual.ItemCanvas);
         }
+
         public void AddAttribute(IAttributeItemVisual attributeVisual)//temp
         {
             measureItemsVisuals.Add(attributeVisual);
-            Children.Add(attributeVisual.ItemCanvas as Canvas); 
+            Children.Add(attributeVisual.ItemCanvas as Canvas);
         }
 
         public void AddStaffLine(Canvas staffLine)

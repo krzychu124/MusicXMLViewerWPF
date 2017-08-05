@@ -76,7 +76,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Attributes
             _octaveChange = clef.ClefOctaveChange != null ? int.Parse(clef.ClefOctaveChange) : 0;
             if (clef.AdditionalSpecified)
             {
-                _isAdditional = clef.Additional == YesNoMusicXML.yes ? true : false;
+                _isAdditional = clef.Additional == YesNoMusicXML.yes;
             }
             else
             {

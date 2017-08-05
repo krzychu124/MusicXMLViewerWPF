@@ -37,7 +37,7 @@ namespace MusicXMLScore.DrawingHelpers
             _systemIndex = systemIndex;
             _pageIndex = pageIndex;
             _stavesCount = _partProperties.NumberOfStaves;
-            _staffDistance = partProperites.StaffLayoutPerPage[pageIndex].ElementAt(systemIndex).StaffDistance;
+            _staffDistance = partProperites.StaffLayoutPerPage[pageIndex][systemIndex].StaffDistance;
             CalculateDimensions();
         }
 
@@ -50,7 +50,7 @@ namespace MusicXMLScore.DrawingHelpers
             _stavesCount = _partProperties.NumberOfStaves;
             _systemLayoutInfo = layoutInfo;
             _systemLayoutInfo.PropertyChanged += SystemLayoutInfo_PropertyChanged;
-            _staffDistance = _partProperties.StaffLayoutPerPage[_pageIndex].ElementAt(0).StaffDistance;
+            _staffDistance = _partProperties.StaffLayoutPerPage[_pageIndex][0].StaffDistance;
             CalculateDimensions();
         }
 
@@ -130,22 +130,21 @@ namespace MusicXMLScore.DrawingHelpers
             foreach (var measureId in _measuresList)
             {
                 MeasureDrawing measureCanvas = new MeasureDrawing(measureId, _partId, _staffDistance, _stavesCount);
-                ScorePartwisePartMeasureMusicXML measureSerializable = ViewModel.ViewModelLocator.Instance.Main.CurrentSelectedScore.Part.ElementAt(_partId.GetPartIdIndex()).MeasuresByNumber[measureId];
+                ScorePartwisePartMeasureMusicXML measureSerializable = ViewModel.ViewModelLocator.Instance.Main.CurrentSelectedScore.Part[_partId.GetPartIdIndex()].MeasuresByNumber[measureId];
 
                 Canvas.SetTop(measureCanvas.BaseObjectVisual, 0);
                 Canvas.SetLeft(measureCanvas.BaseObjectVisual, _partProperties.Coords[measureId].X);
                 PartSegmentCanvas.Children.Add(measureCanvas.BaseObjectVisual);
 
-
                 MeasureSegmentController measureSegment = new MeasureSegmentController(measureSerializable, _partId, _stavesCount);
                 _partMeasures.Add(measureSegment);
-
 
                 Canvas.SetTop(measureSegment.GetMeasureCanvas(), 0);
                 Canvas.SetLeft(measureSegment.GetMeasureCanvas(), _partProperties.Coords[measureId].X);
                 PartSegmentCanvas.Children.Add(measureSegment.GetMeasureCanvas());
             }
         }
+
         public void GenerateContent(bool test, LayoutSystemInfo systemLayout)
         {
             if (systemLayout != null)
