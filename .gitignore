@@ -248,3 +248,4 @@ ModelManifest.xml
 .idea/
 *.*.iml
 .editorconfig
+/MusicXMLViewerWPF/MusicXMLViewerWPF.ruleset
