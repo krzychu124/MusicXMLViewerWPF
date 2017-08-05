@@ -124,16 +124,16 @@ namespace MusicXMLScore.DrawingHelpers
                     double lMargin = 0.0;
 
                     int systemIndex = _partSystemsList.IndexOf(system);
-                    lMargin = leftMarginScore + currentPartProperties.SystemLayoutPerPage[_pageIndex].ElementAt(system.SystemIndex).SystemMargins
+                    lMargin = leftMarginScore + currentPartProperties.SystemLayoutPerPage[_pageIndex][system.SystemIndex].SystemMargins
                                   .LeftMargin.TenthsToWPFUnit();
                     if (systemIndex == 0)
                     {
-                        systemDistanceToPrevious += firstSystemPartProperties.SystemLayoutPerPage.ElementAt(_pageIndex).ElementAt(0).TopSystemDistance
+                        systemDistanceToPrevious += firstSystemPartProperties.SystemLayoutPerPage[_pageIndex][0].TopSystemDistance
                             .TenthsToWPFUnit();
                     }
                     if (systemIndex != 0)
                     {
-                        systemDistanceToPrevious += firstSystemPartProperties.SystemLayoutPerPage.ElementAt(_pageIndex).ElementAt(systemIndex)
+                        systemDistanceToPrevious += firstSystemPartProperties.SystemLayoutPerPage[_pageIndex][systemIndex]
                             .SystemDistance.TenthsToWPFUnit();
                     }
 
@@ -174,7 +174,7 @@ namespace MusicXMLScore.DrawingHelpers
                     _partsProperties.Add(part.Id, tempPartProperties);
                 }
             }
-            _measuresIdRangePerSystem = _partsProperties.ElementAt(0).Value.MeasuresPerSystemPerPage.ElementAt(_pageIndex);
+            _measuresIdRangePerSystem = _partsProperties.ElementAt(0).Value.MeasuresPerSystemPerPage[_pageIndex];
         }
 
         private void GetFirstMeasureDistancesPerSystem()
@@ -183,8 +183,8 @@ namespace MusicXMLScore.DrawingHelpers
             _firstMeasureIndexPerSystem = new List<int>();
             foreach (var measure in _measuresIdRangePerSystem)
             {
-                _firstMeasureIdPerSystem.Add(measure.ElementAt(0));
-                _firstMeasureIndexPerSystem.Add(measure.ElementAt(0).GetMeasureIdIndex());
+                _firstMeasureIdPerSystem.Add(measure[0]);
+                _firstMeasureIndexPerSystem.Add(measure[0].GetMeasureIdIndex());
             }
         }
 

@@ -51,7 +51,7 @@ namespace MusicXMLScore.LayoutControl
                     break;
             }
         }
-        
+
         private void UpdateSharedWidth(double newWidth)
         {
             var list = sharedFractions.SkipWhile(x => x.Key < 0);
@@ -61,7 +61,7 @@ namespace MusicXMLScore.LayoutControl
             double dif = difference / (double)list.Count();
             for (int i = 1; i < list.Count(); i++)
             {
-                sharedFractions[list.ElementAt(i).Key].Position = sharedFractions[list.ElementAt(i).Key].Position + dif *i;
+                sharedFractions[list.ElementAt(i).Key].Position += dif * i;
             }
             sharedFractions[sharedFractions.LastOrDefault().Key].Position = newWidth; //! update last position (used as measure width)
             //! notify about changes
@@ -141,6 +141,7 @@ namespace MusicXMLScore.LayoutControl
                 sharedACHelper.Add(partId, new List<AntiCollisionHelper>() { acHelper });
             }
         }
+
         public void AddAntiCollisionHelper(string partId, List<AntiCollisionHelper> acHelper)
         {
             CalculateFractionStretch(acHelper);
@@ -151,7 +152,6 @@ namespace MusicXMLScore.LayoutControl
             else
             {
                 sharedACHelper.Add(partId, acHelper);
-
             }
         }
 
@@ -168,15 +168,16 @@ namespace MusicXMLScore.LayoutControl
             if (sharedFractions.ContainsKey(0))
             {
                 sharedFractions[0].Position = maxClef + maxKey + maxTime;
-            }                 
-            else              
-            {                 
+            }
+            else
+            {
                 sharedFractions.Add(0, new FractionHelper(0, maxClef + maxKey + maxTime));
             }
         }
+
         public void GenerateFractionPositions()
         {
-            var grouppedFractions = sharedACHelper.SelectMany(x => x.Value).OrderBy(x => x.FactionPosition).GroupBy(x => x.FactionPosition).Select(x => x.ToList()).ToList(); 
+            var grouppedFractions = sharedACHelper.SelectMany(x => x.Value).OrderBy(x => x.FactionPosition).GroupBy(x => x.FactionPosition).Select(x => x.ToList()).ToList();
             //! left margin of content 
             double minWidth = 10.0.TenthsToWPFUnit();
 
@@ -217,10 +218,11 @@ namespace MusicXMLScore.LayoutControl
                 item.FractionStretch = item.SpacingFactor * itemMinWidth;
             }
         }
+
         private void UpdateMeasureObjectWidth()
         {
             var keys = sharedACHelper.Select(x => x.Key);
-            var test = keys.Select(x => ViewModel.ViewModelLocator.Instance.Main.CurrentSelectedScore.Part.Where(k => k.Id == x).FirstOrDefault().MeasuresByNumber[MeasureId]);
+            var test = keys.Select(x => ViewModel.ViewModelLocator.Instance.Main.CurrentSelectedScore.Part.FirstOrDefault(k => k.Id == x).MeasuresByNumber[MeasureId]);
             foreach (var item in test)
             {
                 item.CalculatedWidth = SharedWidth.WPFUnitToTenths();
@@ -269,7 +271,6 @@ namespace MusicXMLScore.LayoutControl
             PropertyChanged += OnPropertyChanged;
             this.fraction = fraction;
             this.position = position;
-           
         }
 
         private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)

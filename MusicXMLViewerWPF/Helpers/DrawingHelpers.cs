@@ -16,6 +16,7 @@ namespace MusicXMLScore.Helpers
         {
             return points * (96.0 / 72.0);
         }
+
         public static void DrawString(DrawingContext dc, string text, Typeface t_f, Brush brush, float xPos, float yPos, float element_size)
         {
             double p =PointsToPixels(element_size);

@@ -52,6 +52,7 @@ namespace MusicXMLScore.Model.MeasureItems.Directions
                 type = value;
             }
         }
+
         [XmlAttribute("number")]
         public string Number
         {
@@ -65,6 +66,7 @@ namespace MusicXMLScore.Model.MeasureItems.Directions
                 number = value;
             }
         }
+
         [XmlAttribute("spread")]
         public double Spread
         {
@@ -78,6 +80,7 @@ namespace MusicXMLScore.Model.MeasureItems.Directions
                 spread = value;
             }
         }
+
         [XmlIgnore]
         public bool SpreadSpecified
         {
@@ -109,6 +112,7 @@ namespace MusicXMLScore.Model.MeasureItems.Directions
                 niente = value;
             }
         }
+
         [XmlIgnore]
         public bool NienteSpecified
         {
@@ -122,6 +126,7 @@ namespace MusicXMLScore.Model.MeasureItems.Directions
                 nienteSpecified = value;
             }
         }
+
         [XmlAttribute("line-type")]
         public LineTypeMusicXML LineType
         {
@@ -135,6 +140,7 @@ namespace MusicXMLScore.Model.MeasureItems.Directions
                 lineType = value;
             }
         }
+
         [XmlIgnore]
         public bool LineTypeSpecified
         {
@@ -148,6 +154,7 @@ namespace MusicXMLScore.Model.MeasureItems.Directions
                 lineTypeSpecified = value;
             }
         }
+
         [XmlAttribute("dash-length")]
         public double DashLength
         {
@@ -161,6 +168,7 @@ namespace MusicXMLScore.Model.MeasureItems.Directions
                 dashLength = value;
             }
         }
+
         [XmlIgnore]
         public bool DashLegthSpecified
         {
@@ -174,6 +182,7 @@ namespace MusicXMLScore.Model.MeasureItems.Directions
                 dashLegthSpecified = value;
             }
         }
+
         [XmlAttribute("space-length")]
         public double SpaceLength
         {
@@ -187,6 +196,7 @@ namespace MusicXMLScore.Model.MeasureItems.Directions
                 spaceLength = value;
             }
         }
+
         [XmlIgnore]
         public bool SpaceLengthSpecified
         {
@@ -200,6 +210,7 @@ namespace MusicXMLScore.Model.MeasureItems.Directions
                 spaceLengthSpecified = value;
             }
         }
+
         [XmlAttribute("default-x")]
         public double DefaultX
         {
@@ -213,6 +224,7 @@ namespace MusicXMLScore.Model.MeasureItems.Directions
                 defaultX = value;
             }
         }
+
         [XmlIgnore]
         public bool DefaultXSpecified
         {
@@ -226,6 +238,7 @@ namespace MusicXMLScore.Model.MeasureItems.Directions
                 defaultXSpecified = value;
             }
         }
+
         [XmlAttribute("default-y")]
         public double DefaultY
         {
@@ -239,6 +252,7 @@ namespace MusicXMLScore.Model.MeasureItems.Directions
                 defaultY = value;
             }
         }
+
         [XmlIgnore]
         public bool DefaultYSpecified
         {
@@ -252,6 +266,7 @@ namespace MusicXMLScore.Model.MeasureItems.Directions
                 defaultYSpecified = value;
             }
         }
+
         [XmlAttribute("relative-x")]
         public double RelativeX
         {
@@ -265,6 +280,7 @@ namespace MusicXMLScore.Model.MeasureItems.Directions
                 relativeX = value;
             }
         }
+
         [XmlIgnore]
         public bool RelativeXSpecified
         {
@@ -278,6 +294,7 @@ namespace MusicXMLScore.Model.MeasureItems.Directions
                 relativeXSpecified = value;
             }
         }
+
         [XmlAttribute("relative-y")]
         public double RelativeY
         {
@@ -291,6 +308,7 @@ namespace MusicXMLScore.Model.MeasureItems.Directions
                 relativeY = value;
             }
         }
+
         [XmlIgnore]
         public bool RelativeYSpecified
         {
@@ -304,6 +322,7 @@ namespace MusicXMLScore.Model.MeasureItems.Directions
                 relativeYSpecified = value;
             }
         }
+
         [XmlAttribute("color")]
         public string Color
         {

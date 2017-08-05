@@ -34,6 +34,7 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
                 this.item = value;
             }
         }
+
         [XmlAttribute("number", DataType ="positiveInteger")]
         public string Number
         {
@@ -47,6 +48,7 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
                 number = value;
             }
         }
+
         [XmlAttribute("font-family")]
         public string FontFamily
         {
@@ -60,6 +62,7 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
                 fontFamily = value;
             }
         }
+
         [XmlAttribute("font-style")]
         public FontStyleMusicXML FontStyle
         {
@@ -73,6 +76,7 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
                 fontStyle = value;
             }
         }
+
         [XmlIgnore]
         public bool FontStyleSpecified
         {
@@ -86,6 +90,7 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
                 fontStyleSpecified = value;
             }
         }
+
         [XmlAttribute("font-weight")]
         public FontWeightMusicXML FontWeight
         {
@@ -99,6 +104,7 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
                 fontWeight = value;
             }
         }
+
         [XmlIgnore]
         public bool FontWeightSpecified
         {
@@ -112,6 +118,7 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
                 fontWeightSpecified = value;
             }
         }
+
         [XmlAttribute("color")]
         public string Color
         {
@@ -157,6 +164,7 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
                 slashType = value;
             }
         }
+
         [XmlElement("slash-dot")]
         internal List<EmptyMusicXML> SlashDot
         {
@@ -170,6 +178,7 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
                 slashDot = value;
             }
         }
+
         [XmlAttribute("type")]
         public StartStopMusicXML Type
         {
@@ -183,6 +192,7 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
                 type = value;
             }
         }
+
         [XmlAttribute("use-dots")]
         public YesNoMusicXML UseDots
         {
@@ -196,6 +206,7 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
                 useDots = value;
             }
         }
+
         [XmlIgnore]
         public bool UseDotsSpecified
         {
@@ -209,6 +220,7 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
                 useDotsSpecified = value;
             }
         }
+
         [XmlAttribute("use-stems")]
         public YesNoMusicXML UseStems
         {
@@ -222,6 +234,7 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
                 useStems = value;
             }
         }
+
         [XmlIgnore]
         public bool UseStemsSpecified
         {
@@ -264,6 +277,7 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
                 useSymbols = value;
             }
         }
+
         [XmlIgnore]
         public bool UseSymbolsSpecified
         {
@@ -277,6 +291,7 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
                 useSymbolsSpecified = value;
             }
         }
+
         [XmlText]
         public string Value
         {
@@ -319,6 +334,7 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
                 type = value;
             }
         }
+
         [XmlAttribute("slashes", DataType ="positiveInteger")]
         public string Slashes
         {
@@ -332,6 +348,7 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
                 slashes = value;
             }
         }
+
         [XmlText]
         public string Value
         {
@@ -377,6 +394,7 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
                 slashType = value;
             }
         }
+
         [XmlElement("slash-dot")]
         internal List<EmptyMusicXML> SlashDot
         {
@@ -390,6 +408,7 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
                 slashDot = value;
             }
         }
+
         [XmlAttribute("type")]
         public StartStopMusicXML Type
         {
@@ -403,6 +422,7 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
                 type = value;
             }
         }
+
         [XmlAttribute("slashes", DataType ="positiveInteger")]
         public string Slashes
         {
@@ -416,6 +436,7 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
                 slashes = value;
             }
         }
+
         [XmlAttribute("use-dots")]
         public YesNoMusicXML UseDots
         {
@@ -429,6 +450,7 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
                 useDots = value;
             }
         }
+
         [XmlIgnore]
         public bool UseDotsSpecified
         {

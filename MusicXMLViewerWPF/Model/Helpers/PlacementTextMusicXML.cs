@@ -29,6 +29,7 @@ namespace MusicXMLScore.Model.Helpers
                 placement = value;
             }
         }
+
         [XmlIgnore]
         public bool PlacementSpecified
         {
@@ -42,6 +43,7 @@ namespace MusicXMLScore.Model.Helpers
                 placementSpecified = value;
             }
         }
+
         [XmlText]
         public string Value
         {

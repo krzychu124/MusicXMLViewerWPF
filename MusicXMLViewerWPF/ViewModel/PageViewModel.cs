@@ -14,7 +14,7 @@ namespace MusicXMLScore.ViewModel
     /// <summary>
     /// Contains PartSegmentViewModels as collection
     /// </summary>
-    class PageViewModel : ViewModelBase 
+    class PageViewModel : ViewModelBase
     {
         #region Private Fiels
         private ObservableCollection<UIElement> pageCanvas = new ObservableCollection<UIElement>();
@@ -31,13 +31,14 @@ namespace MusicXMLScore.ViewModel
         public PageViewModel()
         {
             TestCommand = new RelayCommand(OnTestCommand);
-            
+
             //! here default page which contains one ParSegmentView for simple test
             Point dimensions = ViewModelLocator.Instance.Main.CurrentPageLayout.PageDimensions.GetPageDimensionsInPx();
             PageWidth = dimensions.X;
             PageHeight = dimensions.Y;
             AddPartSegment();
         }
+
         public PageViewModel(int pageIndex):this()
         {
             this.pageIndex = pageIndex;
@@ -51,6 +52,7 @@ namespace MusicXMLScore.ViewModel
             page.Background = Brushes.WhiteSmoke;
             PageCanvas.Add(page);
         }
+
         public PageViewModel(ScorePartwiseMusicXML scorePartwise, int index)
         {
             pageIndex = index;
@@ -75,7 +77,7 @@ namespace MusicXMLScore.ViewModel
         {
             PageCanvas.Add(page);
         }
-        
+
         #endregion
 
         #region Commands, Action<>, Func<>

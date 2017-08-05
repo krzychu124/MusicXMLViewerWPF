@@ -34,6 +34,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems
                 size = value;
             }
         }
+
         [XmlIgnore]
         public bool SizeSpecified
         {
@@ -47,6 +48,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems
                 sizeSpecified = value;
             }
         }
+
         [XmlText]
         public NoteTypeValueMusicXML Value
         {

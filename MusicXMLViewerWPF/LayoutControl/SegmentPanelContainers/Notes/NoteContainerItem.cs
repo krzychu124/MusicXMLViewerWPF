@@ -60,13 +60,13 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
             SetVisualType();
             this.measureId = measureId;
             this.partId = partId;
-            this.itemStaff = staffId != null ? staffId : "1";
+            this.itemStaff = staffId ?? "1";
             itemCanvas = new Canvas();
 
             InitNoteProperties();
             InitBeams();
         }
-        
+
         private void DrawFlag()
         {
             bool isFlagDownwards = stem.IsDirectionDown();
@@ -103,8 +103,8 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
                     DrawFlag();
                 }
             }
-            
         }
+
         public void UpdateStemsAndBeams()
         {
             InitBeams(true); //! temp,test
@@ -112,15 +112,15 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
 
         private void SetVisualType()
         {
-            noteVisualType = noteItem.ElementAt(0).ItemsElementName.Contains(NoteChoiceTypeMusicXML.grace) ? NoteChoiceTypeMusicXML.grace :
-                noteItem.ElementAt(0).ItemsElementName.Contains(NoteChoiceTypeMusicXML.cue) ? NoteChoiceTypeMusicXML.cue : NoteChoiceTypeMusicXML.chord;
+            noteVisualType = noteItem[0].ItemsElementName.Contains(NoteChoiceTypeMusicXML.grace) ? NoteChoiceTypeMusicXML.grace :
+                noteItem[0].ItemsElementName.Contains(NoteChoiceTypeMusicXML.cue) ? NoteChoiceTypeMusicXML.cue : NoteChoiceTypeMusicXML.chord;
 
-            noteAdditionalType = noteItem.ElementAt(0).ItemsElementName.Contains(NoteChoiceTypeMusicXML.pitch) ? NoteChoiceTypeMusicXML.pitch : NoteChoiceTypeMusicXML.unpitched;
+            noteAdditionalType = noteItem[0].ItemsElementName.Contains(NoteChoiceTypeMusicXML.pitch) ? NoteChoiceTypeMusicXML.pitch : NoteChoiceTypeMusicXML.unpitched;
         }
+
         private void InitNoteProperties()
         {
-            
-            duration = noteItem.ElementAt(0).GetDuration(); // always first because all notes in chord should have the same duration
+            duration = noteItem[0].GetDuration(); // always first because all notes in chord should have the same duration
             itemDuration = duration;
             staffLine = ViewModel.ViewModelLocator.Instance.Main.CurrentPageLayout.AvaliableIndexLinePositions;
             GetSymbol();
@@ -136,15 +136,16 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
             {
                 stem = new StemItem(this);
                 //! if note type/duration is quarter/crotchet or shorter
-                if (((int)noteType < 9))
+                if ((int)noteType < 9)
                 {
-                    hasBeams = noteItem.Any(x => x.Beam.Count != 0) ? true : false;
+                    hasBeams = noteItem.Any(x => x.Beam.Count != 0);
                 }
             }
         }
+
         private void Draw()
         {
-            isSmall = noteVisualType == NoteChoiceTypeMusicXML.cue || noteVisualType == NoteChoiceTypeMusicXML.grace ? true : false;
+            isSmall = noteVisualType == NoteChoiceTypeMusicXML.cue || noteVisualType == NoteChoiceTypeMusicXML.grace;
             DrawingVisualHost noteVisualHost = new DrawingVisualHost();
             int index = 0;
             foreach (var note in noteItem)
@@ -208,8 +209,8 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
             string accidentalSymbol = GetAccidentalSymbolString(accidental.Value);
             double size = 1.0;
             double totalAccidentalSize = 0.0;
-            bool hasBracket = accidental.BracketSpecified ? accidental.Bracket == YesNoMusicXML.yes? true : false : false;
-            bool hasParentheses = accidental.ParenthesesSpecified ? accidental.Parentheses == YesNoMusicXML.yes ? true : false : false;
+            bool hasBracket = accidental.BracketSpecified ? accidental.Bracket == YesNoMusicXML.yes: false;
+            bool hasParentheses = accidental.ParenthesesSpecified ? accidental.Parentheses == YesNoMusicXML.yes: false;
             if (isSmall)
             {
                 size = 0.7;
@@ -220,11 +221,10 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
             }
             if (accidental.CautionarySpecified)
             {
-                hasParentheses = accidental.Cautionary == YesNoMusicXML.yes ? true : false;
+                hasParentheses = accidental.Cautionary == YesNoMusicXML.yes;
                 //! missing implementation if yes
             }
             //! accidental.Editiorial skipped...
-
 
             double accidentalWidth = DrawingMethods.GetTextWidth(accidentalSymbol, TypeFaces.GetMusicFont(), isSmall);
             double accidentalMargin = layoutStyle.NotesStyle.AccidentalToNoteSpace.TenthsToWPFUnit();
@@ -249,7 +249,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
             }
             else
             {
-                noteVisualHost.AddCharacterGlyph(new Point( (0 - accidentalWidth - accidentalMargin), noteHeadYPosition), accidentalSymbol, isSmall, color);
+                noteVisualHost.AddCharacterGlyph(new Point( 0 - accidentalWidth - accidentalMargin, noteHeadYPosition), accidentalSymbol, isSmall, color);
                 SetLeftMargin(accidentalWidth + accidentalMargin);
             }
         }
@@ -278,14 +278,14 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
                     return "";
             }
         }
-        
+
         private void CheckForLedgerLines()
         {
             if (GetLowestPitchPosition() < -1)
             {
                 needLedgerLines = true;
                 var value = Math.Abs(GetLowestPitchPosition());
-                var even = value % 2 == 0 ? true : false;
+                var even = value % 2 == 0;
                 int count = even ? (value + 1) /2 : value/2;
                 SetLedgerLinesPositions(count, true);
             }
@@ -293,15 +293,17 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
             {
                 needLedgerLines = true;
                 var value = Math.Abs(GetHighestPitchPosition());
-                var even = value % 2 == 0 ? true : false;
+                var even = value % 2 == 0;
                 int count = even ? (value - 10) /2 + 1 : (value - 9) /2;
                 SetLedgerLinesPositions(count, false);
             }
         }
+
         private int GetHighestPitchPosition()
         {
             return pitchedPosition.Values.Max();
         }
+
         private int GetLowestPitchPosition()
         {
             return pitchedPosition.Values.Min();
@@ -309,15 +311,16 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
 
         internal void AddStem(DrawingVisualHost dvh)
         {
-            var stem = ItemCanvas.Children.OfType<DrawingVisualHost>().Where(x => (string)x.Tag == "stem").FirstOrDefault();
+            var stem = ItemCanvas.Children.OfType<DrawingVisualHost>().FirstOrDefault(x => (string)x.Tag == "stem");
             if (stem == null)
             {
                 ItemCanvas.Children.Add(dvh);
             }
         }
+
         private void AddFlag(DrawingVisualHost flagHost)
         {
-            var flag = ItemCanvas.Children.OfType<DrawingVisualHost>().Where(x => (string)x.Tag == "flag").FirstOrDefault();
+            var flag = ItemCanvas.Children.OfType<DrawingVisualHost>().FirstOrDefault(x => (string)x.Tag == "flag");
             if (flag != null)
             {
                 ItemCanvas.Children.Remove(flag);
@@ -351,6 +354,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
                 }
             }
         }
+
         private void GetSymbol()
         {
             Tuple<NoteTypeValueMusicXML, bool> value = CalculationHelpers.GetBaseDurationValue(duration, partId, measureId);
@@ -381,17 +385,17 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
                 {
                     PitchMusicXML pitch = (PitchMusicXML)pitchObject[pitchIndex];
                     altered.Add(pitchIndex, pitch.AlterSpecified);
-                    pitchedPosition.Add(pitchIndex, CalculationHelpers.GetPitchIndexStaffLine(pitch, clef));
+                    pitchedPosition.Add(pitchIndex, pitch.GetPitchIndexStaffLine(clef));
                     pitchedValue.Add(pitchIndex, staffLine[pitchedPosition[pitchIndex]]);
                 }
                 else
                 {
                     UnpitchedMusicXML pitch = (UnpitchedMusicXML)pitchObject[pitchIndex];
-                    pitchedPosition.Add(pitchIndex, CalculationHelpers.GetPitchIndexStaffLine(new PitchMusicXML() { Step = pitch.DisplayStep, Octave = pitch.DisplayOctave }, clef));
+                    pitchedPosition.Add(pitchIndex, new PitchMusicXML() { Step = pitch.DisplayStep, Octave = pitch.DisplayOctave }.GetPitchIndexStaffLine(clef));
                     pitchedValue.Add(pitchIndex, staffLine[pitchedPosition[pitchIndex]]);
                 }
             }
-            if (altered.Any(x=>x.Value == true))//bug fix - all chorded notes should have been altered if any (octave shift)
+            if (altered.Any(x=> x.Value))//bug fix - all chorded notes should have been altered if any (octave shift)
             {
                 for (int i = 0; i < altered.Count; i++)
                 {

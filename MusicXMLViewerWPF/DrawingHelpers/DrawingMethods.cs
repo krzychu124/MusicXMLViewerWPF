@@ -42,6 +42,7 @@ namespace MusicXMLScore.DrawingHelpers
             }
             return totalWidth;
         }
+
         public static double GetTextWidth(string text, Typeface typeFace, double sizeFactor)
         {
             GlyphTypeface glyphTypeface;
@@ -67,6 +68,7 @@ namespace MusicXMLScore.DrawingHelpers
             }
             return totalWidth;
         }
+
         public static void DrawCharacterGlyph(DrawingVisual visual, Point position, ushort glyphIndex, bool isSmall = false)
         {
             PageProperties pageProperties = (PageProperties)ViewModel.ViewModelLocator.Instance.Main.CurrentPageLayout;
@@ -78,7 +80,7 @@ namespace MusicXMLScore.DrawingHelpers
             double smallFactor = isSmall ? 0.7 : 1;
             Point calculatedPosition = new Point(position.X, position.Y /** PageProperties.PxPerMM()*/);
 
-            double characterSize = pageProperties.StaffHeight.MMToWPFUnit() * smallFactor; 
+            double characterSize = pageProperties.StaffHeight.MMToWPFUnit() * smallFactor;
 
             using (DrawingContext dc = visual.RenderOpen())
             {
@@ -111,7 +113,7 @@ namespace MusicXMLScore.DrawingHelpers
             double smallFactor = isSmall ? 0.7 : 1;
             Point calculatedPosition = new Point(position.X, position.Y/* + pageProperties.IndexStaffLinePositions[3]*/);
 
-            double characterSize = pageProperties.StaffHeight.MMToWPFUnit() * smallFactor; 
+            double characterSize = pageProperties.StaffHeight.MMToWPFUnit() * smallFactor;
 
             using (DrawingContext dc = visual.RenderOpen())
             {

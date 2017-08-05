@@ -42,7 +42,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
         private bool customPitch = false;
         private string customOctave = "4";
         private StepMusicXML customStep = StepMusicXML.B;
-        
+
         public bool MeasureRest
         {
             get
@@ -68,7 +68,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
                 itemWidthMin = value;
             }
         }
-        
+
         public int ItemDuration
         {
             get
@@ -185,7 +185,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
         private bool CheckIfCustomPitchSet()
         {
             RestMusicXML restElement = noteItem.Items.OfType<RestMusicXML>().FirstOrDefault();
-            if (restElement != null && restElement.DisplayOctave != null)
+            if (restElement?.DisplayOctave != null)
             {
                 customStep = restElement.DisplayStep;
                 customOctave = restElement.DisplayOctave;
@@ -198,16 +198,16 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
         {
             if (noteItem.Items.OfType<RestMusicXML>().FirstOrDefault().MeasureSpecified)
             {
-                return noteItem.Items.OfType<RestMusicXML>().FirstOrDefault().Measure == YesNoMusicXML.yes ? true : false;
+                return noteItem.Items.OfType<RestMusicXML>().FirstOrDefault().Measure == YesNoMusicXML.yes;
             }
-            return false; 
+            return false;
         }
 
         private void Draw(bool measure)
         {
             staffLines = ViewModel.ViewModelLocator.Instance.Main.CurrentPageLayout.AvaliableIndexLinePositions;
             DrawingVisualHost rest = new DrawingVisualHost();
-            
+
             Brush color = ViewModel.ViewModelLocator.Instance.Main.CurrentLayout.LayoutStyle.Colors[int.Parse(noteItem.Voice)];
             double positionY = 0.0;
             if (measure)
@@ -233,7 +233,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
             }
             ItemCanvas.Children.Add(rest);
         }
-        
+
         private double SetPosition(int customPosition)
         {
             return staffLines[customPosition];
@@ -248,6 +248,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
             itemWidthMin = leftFreeSpace + restWidth + (dotWidth + dotSpaces) * dotCount;
             itemWidth = itemWidthMin;
         }
+
         private void CalculateOptWidth()
         {
             double restWidth = DrawingMethods.GetTextWidth(symbol, TypeFaces.GetMusicFont());
@@ -255,6 +256,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
             double leftFreeSpace = restWidth * 0.1;
             double dotSpaces = dotWidth * 0.5;
         }
+
         private void GetSymbol()
         {
             itemDuration = int.Parse(noteItem.Items.OfType<decimal>().FirstOrDefault().ToString());
@@ -267,12 +269,13 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
             }
             symbol = MusicSymbols.GetRestSymbolNoteType(restType);
         }
+
         private int CalculateRestPositionY()
         {
             if (customPitch)
             {
                 var clef = ViewModel.ViewModelLocator.Instance.Main.CurrentScoreProperties.GetClef(measureId, partId, int.Parse(itemStaff), itemIndex);
-                return CalculationHelpers.GetPitchIndexStaffLine(new PitchMusicXML() { Step = customStep, Octave = customOctave }, clef);
+                return new PitchMusicXML() { Step = customStep, Octave = customOctave }.GetPitchIndexStaffLine(clef);
             }
             else
             {

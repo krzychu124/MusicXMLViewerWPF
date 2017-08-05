@@ -16,7 +16,6 @@ namespace MusicXMLScore.Helpers
         {
             ConstructVisualPreview();
         }
-        
 
         private void ConstructVisualPreview()
         {
@@ -27,7 +26,7 @@ namespace MusicXMLScore.Helpers
             }
             this.AddVisual(vis);
         }
-        
+
         public void StaffLine()
         {
             string s = "\ue01a";
@@ -45,6 +44,7 @@ namespace MusicXMLScore.Helpers
             }
             AddVisual(staffline);
         }
+
         public void AddVis()
         {
             DrawingVisual vis = new DrawingVisual();

@@ -37,6 +37,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems
                 cautionary = value;
             }
         }
+
         [XmlIgnore]
         public bool CautionarySpecified
         {
@@ -50,6 +51,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems
                 cautionarySpecified = value;
             }
         }
+
         [XmlAttribute("editorial")]
         public YesNoMusicXML Editorial
         {
@@ -63,6 +65,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems
                 editorial = value;
             }
         }
+
         [XmlIgnore]
         public bool EditorialSpecified
         {
@@ -76,6 +79,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems
                 editorialSpecified = value;
             }
         }
+
         [XmlAttribute("parentheses")]
         public YesNoMusicXML Parentheses
         {
@@ -89,6 +93,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems
                 parentheses = value;
             }
         }
+
         [XmlIgnore]
         public bool ParenthesesSpecified
         {
@@ -102,6 +107,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems
                 parenthesesSpecified = value;
             }
         }
+
         [XmlAttribute("bracket")]
         public YesNoMusicXML Bracket
         {
@@ -115,6 +121,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems
                 bracket = value;
             }
         }
+
         [XmlIgnore]
         public bool BracketSpecified
         {
@@ -128,6 +135,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems
                 bracketSpecified = value;
             }
         }
+
         [XmlAttribute("size")]
         public SymbolSizeMusicXML Size
         {
@@ -141,6 +149,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems
                 size = value;
             }
         }
+
         [XmlIgnore]
         public bool SizeSpecified
         {
@@ -154,6 +163,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems
                 sizeSpecified = value;
             }
         }
+
         [XmlText]
         public AccidentalValueMusicXML Value
         {

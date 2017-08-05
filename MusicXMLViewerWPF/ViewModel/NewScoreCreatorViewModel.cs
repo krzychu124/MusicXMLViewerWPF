@@ -34,6 +34,7 @@ namespace MusicXMLScore.ViewModel
         regularclef,
         tablature
     }
+
     enum ClefType
     {
         GClef,
@@ -41,7 +42,7 @@ namespace MusicXMLScore.ViewModel
         CClef
     }
 
-    class NewScoreCreatorViewModel : ViewModelBase 
+    class NewScoreCreatorViewModel : ViewModelBase
     {
         #region fields
         private bool customsetting;
@@ -57,7 +58,7 @@ namespace MusicXMLScore.ViewModel
         private static List<string> cleftype_ = new List<string> { MusicSymbols.CClef, MusicSymbols.GClef, MusicSymbols.FClef};
         private Dictionary<string, ClefType> cleftype = new Dictionary<string, ClefType> { [MusicSymbols.GClef] = ViewModel.ClefType.GClef, [MusicSymbols.FClef] = ViewModel.ClefType.FClef, [MusicSymbols.CClef] = ViewModel.ClefType.CClef };
         private static ObservableCollection<string> keysymbollist = new ObservableCollection<string>();
-        private string selclef = cleftype_.ElementAt(1);
+        private string selclef = cleftype_[1];
         private string selectedkeymode = "Major";
         private string selectedkeysymbol;
         private string selectedkeytype = "Flat";
@@ -89,7 +90,7 @@ namespace MusicXMLScore.ViewModel
         public string SelectedKeyType { get { return selectedkeytype; } set { if (selectedkeytype != value) { Set(nameof(SelectedKeyType),ref selectedkeytype, value); } } }
         public string TimeSigTimeSource { get; set; }
         public TimeSigSettingOptions CurrentTimeSigOption { get { return currenttimesig; } set { if (value != currenttimesig) { Set(nameof(CurrentTimeSigOption), ref currenttimesig, value); } } }
-        
+
         #endregion
 
         public NewScoreCreatorViewModel()
@@ -100,7 +101,6 @@ namespace MusicXMLScore.ViewModel
             CanvasClick = new RelayCommand(OnCanvasClick);
             InitPreview();
             SetKeySymbolList();
-            
         }
 
         private void InitPreview()
@@ -143,11 +143,11 @@ namespace MusicXMLScore.ViewModel
             }
         }
 
-        private void UpdatePreview() 
+        private void UpdatePreview()
         {
             //TODO refactor
         }
-        
+
         public DrawingVisual AddVis()
         {
             DrawingVisual vis = new DrawingVisual();

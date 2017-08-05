@@ -34,6 +34,7 @@ namespace MusicXMLScore.Model.Helpers
                 this.items = value;
             }
         }
+
         [XmlAttribute("print-object")]
         public YesNoMusicXML PrintObject
         {
@@ -47,6 +48,7 @@ namespace MusicXMLScore.Model.Helpers
                 printObject = value;
             }
         }
+
         [XmlIgnore]
         public bool PrintObjectSpecified
         {

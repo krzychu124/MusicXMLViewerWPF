@@ -27,6 +27,7 @@ namespace MusicXMLScore.Model.Identification
                 name = value;
             }
         }
+
         [XmlText()]
         public string Value
         {
@@ -40,6 +41,7 @@ namespace MusicXMLScore.Model.Identification
                 this.value = value;
             }
         }
+
         public XmlMiscellaneousField()
         {
 

@@ -159,6 +159,7 @@ namespace MusicXMLScore.LayoutStyle
             oddMargins = new PageMargins();
             EvenMargins = new PageMargins();
         }
+
         public PageMargins GetPageMargins(int pageNumber)
         {
             if (TwoSided)
@@ -176,9 +177,9 @@ namespace MusicXMLScore.LayoutStyle
             {
                 return oddMargins;
             }
-            
         }
     }
+
     [Serializable]
     public class PageMargins
     {
@@ -239,6 +240,7 @@ namespace MusicXMLScore.LayoutStyle
             }
         }
     }
+
     public enum PageMarginType
     {
         both,

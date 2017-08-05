@@ -29,6 +29,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems.Notations
                 placement = value;
             }
         }
+
         [XmlIgnore]
         public bool PlacementSpecified
         {
@@ -42,6 +43,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems.Notations
                 placementSpecified = value;
             }
         }
+
         [XmlText]
         public AccidentalValueMusicXML Value
         {

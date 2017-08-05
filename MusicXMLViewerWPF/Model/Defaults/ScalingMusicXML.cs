@@ -26,6 +26,7 @@ namespace MusicXMLScore.Model.Defaults
                 millimeters = value;
             }
         }
+
         [XmlElement("tenths")]
         public double Tenths
         {

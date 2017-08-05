@@ -15,7 +15,7 @@ namespace MusicXMLScore.Model.Defaults
     public class SystemLayoutMusicXML
     {
         private SystemMarginsMusicXML systemMargins = new SystemMarginsMusicXML();
-        private bool systemMarginsSpecified = false;
+        private bool systemMarginsSpecified;
         private double systemDistance;
         private bool systemDistanceSpecified;
         private double topSystemDistance;
@@ -50,6 +50,7 @@ namespace MusicXMLScore.Model.Defaults
                 systemDistanceSpecified = true;
             }
         }
+
         [XmlIgnore]
         public bool SystemDistanceSpecified
         {
@@ -63,6 +64,7 @@ namespace MusicXMLScore.Model.Defaults
                 systemDistanceSpecified = value;
             }
         }
+
         [XmlElement("top-system-distance")]
         public double TopSystemDistance
         {
@@ -77,6 +79,7 @@ namespace MusicXMLScore.Model.Defaults
                 topSystemDistanceSpecified = true;
             }
         }
+
         [XmlIgnore]
         public bool TopSystemDistanceSpecified
         {
@@ -90,6 +93,7 @@ namespace MusicXMLScore.Model.Defaults
                 topSystemDistanceSpecified = value;
             }
         }
+
         [XmlElement("system-dividers")]
         public SystemDividersMusicXML SystemDividers
         {
@@ -125,6 +129,7 @@ namespace MusicXMLScore.Model.Defaults
                 leftMargin = value;
             }
         }
+
         [XmlElement("right-margin")]
         public double RightMargin
         {
@@ -160,6 +165,7 @@ namespace MusicXMLScore.Model.Defaults
                 leftDivider = value;
             }
         }
+
         [XmlElement("right-divider")]
         public EmptyPrintObjectStyleAlignMusicXML RightDivider
         {

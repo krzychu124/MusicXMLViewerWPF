@@ -38,6 +38,7 @@ namespace MusicXMLScore.Model.MeasureItems.Directions
                 type = value;
             }
         }
+
         [XmlAttribute("number", DataType ="positiveInteger")]
         public string Number
         {
@@ -51,6 +52,7 @@ namespace MusicXMLScore.Model.MeasureItems.Directions
                 number = value;
             }
         }
+
         [XmlAttribute("size", DataType ="positiveInteger")]
         [System.ComponentModel.DefaultValue("8")]
         public string Size
@@ -65,6 +67,7 @@ namespace MusicXMLScore.Model.MeasureItems.Directions
                 size = value;
             }
         }
+
         [XmlAttribute("dash-length")]
         public double DashLength
         {
@@ -78,6 +81,7 @@ namespace MusicXMLScore.Model.MeasureItems.Directions
                 dashLength = value;
             }
         }
+
         [XmlIgnore]
         public bool DashLengthSpecified
         {
@@ -91,6 +95,7 @@ namespace MusicXMLScore.Model.MeasureItems.Directions
                 dashLengthSpecified = value;
             }
         }
+
         [XmlAttribute("space-length")]
         public double SpaceLength
         {
@@ -104,6 +109,7 @@ namespace MusicXMLScore.Model.MeasureItems.Directions
                 spaceLength = value;
             }
         }
+
         [XmlIgnore]
         public bool SpaceLengthSpecified
         {

@@ -11,12 +11,6 @@ namespace MusicXMLScore.Model
     [XmlType(TypeName ="part-list")]
     public class PartListMusicXML
     {
-        //private List<> partGroup = new List<string>(); //partgroup[]
-
-        //private XmlScorePart scorePart; //scorepart
-
-        private List<ScorePartMusicXML> scoreParts = new List<ScorePartMusicXML>();
-
         //[XmlIgnore]
         //[XmlElement("part-group", Order = 0)]
         //public List<string> partgroup
@@ -48,16 +42,6 @@ namespace MusicXMLScore.Model
         //[XmlIgnore]
         //[XmlElement("part-group", Order = 2)]
         [XmlElement("score-part")]
-        public List<ScorePartMusicXML> ScoreParts
-        {
-            get
-            {
-                return this.scoreParts;
-            }
-            set
-            {
-                this.scoreParts = value;
-            }
-        }
+        public List<ScorePartMusicXML> ScoreParts { get; set; } = new List<ScorePartMusicXML>();
     }
 }

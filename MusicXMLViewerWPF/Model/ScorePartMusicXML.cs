@@ -29,6 +29,7 @@ namespace MusicXMLScore.Model
                 partId = value;
             }
         }
+
         [XmlElement("part-name")]
         public string PartName
         {
@@ -42,6 +43,7 @@ namespace MusicXMLScore.Model
                 partName = value;
             }
         }
+
         [XmlElement("part-abbreviation")]
         public string PartNameAbbreviation
         {

@@ -34,6 +34,7 @@ namespace MusicXMLScore.Model
                 number = value;
             }
         }
+
         [XmlAttribute("implicit")]
         public YesNoMusicXML ImplicitField
         {
@@ -47,6 +48,7 @@ namespace MusicXMLScore.Model
                 implicitField = value;
             }
         }
+
         [XmlIgnore]
         public bool ImplicitFieldSpecified
         {
@@ -60,6 +62,7 @@ namespace MusicXMLScore.Model
                 implicitFieldSpecified = value;
             }
         }
+
         [XmlAttribute("non-controlling")]
         public YesNoMusicXML NonControlling
         {
@@ -73,6 +76,7 @@ namespace MusicXMLScore.Model
                 nonControlling = value;
             }
         }
+
         [XmlIgnore]
         public bool NonControllingSpecified
         {
@@ -86,6 +90,7 @@ namespace MusicXMLScore.Model
                 nonControllingSpecified = value;
             }
         }
+
         [XmlAttribute("width")]
         public double Width
         {
@@ -99,6 +104,7 @@ namespace MusicXMLScore.Model
                 width = value;
             }
         }
+
         [XmlIgnore]
         public bool WidthSpecified
         {
@@ -112,6 +118,7 @@ namespace MusicXMLScore.Model
                 widthSpecified = value;
             }
         }
+
         [XmlElement("attributes", typeof(AttributesMusicXML))]
         [XmlElement("backup", typeof(BackupMusicXML))]
         [XmlElement("barline", typeof(BarlineMusicXML))]
@@ -135,6 +142,7 @@ namespace MusicXMLScore.Model
                 items = value;
             }
         }
+
         [XmlIgnore]
         public double CalculatedWidth
         {
@@ -154,6 +162,7 @@ namespace MusicXMLScore.Model
         {
             //PropertyChanged += OnPropertyChanged;
         }
+
         private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)

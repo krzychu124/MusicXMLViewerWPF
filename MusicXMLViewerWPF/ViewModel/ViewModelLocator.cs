@@ -52,7 +52,7 @@ namespace MusicXMLScore.ViewModel
                 return Application.Current.Resources["Locator"] as ViewModelLocator;
             }
         }
-        
+
         public MainWindowViewModel Main
         {
             get
@@ -60,7 +60,7 @@ namespace MusicXMLScore.ViewModel
                 return ServiceLocator.Current.GetInstance<MainWindowViewModel>();
             }
         }
-        
+
         public static void Cleanup()
         {
             // TODO Clear the ViewModels

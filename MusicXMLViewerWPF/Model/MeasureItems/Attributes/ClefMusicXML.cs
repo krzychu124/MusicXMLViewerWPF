@@ -42,6 +42,7 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
                 sign = value;
             }
         }
+
         [XmlElement("line", DataType ="integer")]
         public string Line
         {
@@ -55,6 +56,7 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
                 line = value;
             }
         }
+
         [XmlElement("clef-octave-change", DataType ="positiveInteger")]
         public string ClefOctaveChange
         {
@@ -68,6 +70,7 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
                 clefOctaveChange = value;
             }
         }
+
         [XmlAttribute("number", DataType ="positiveInteger")]
         public string Number
         {
@@ -81,6 +84,7 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
                 number = value;
             }
         }
+
         [XmlAttribute("additional")]
         public YesNoMusicXML Additional
         {
@@ -94,6 +98,7 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
                 additional = value;
             }
         }
+
         [XmlIgnore]
         public bool AdditionalSpecified
         {
@@ -107,6 +112,7 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
                 additionalSpecified = value;
             }
         }
+
         [XmlAttribute("size")]
         public SymbolSizeMusicXML Size
         {
@@ -120,6 +126,7 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
                 size = value;
             }
         }
+
         [XmlIgnore]
         public bool SizeSpecified
         {
@@ -133,6 +140,7 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
                 sizeSpecified = value;
             }
         }
+
         [XmlAttribute("after-barline")]
         public YesNoMusicXML AfterBarline
         {
@@ -146,6 +154,7 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
                 afterBarline = value;
             }
         }
+
         [XmlIgnore]
         public bool AfterBarlineSpecified
         {
@@ -159,6 +168,7 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
                 afterBarlineSpecified = value;
             }
         }
+
         [XmlAttribute("print-object")]
         public YesNoMusicXML PrintObject
         {
@@ -172,6 +182,7 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
                 printObject = value;
             }
         }
+
         [XmlIgnore]
         public bool PrintObjectSpecified
         {
@@ -185,6 +196,7 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
                 printObjectSpecified = value;
             }
         }
+
         public ClefMusicXML Clone()
         {
             ClefMusicXML new_clef = new ClefMusicXML()
@@ -205,6 +217,7 @@ namespace MusicXMLScore.Model.MeasureItems.Attributes
             return new_clef;
         }
     }
+
     [Serializable]
     [XmlType(TypeName ="clef-sign")]
     public enum ClefSignMusicXML

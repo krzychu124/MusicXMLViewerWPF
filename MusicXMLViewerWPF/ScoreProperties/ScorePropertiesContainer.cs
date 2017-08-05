@@ -21,7 +21,7 @@ namespace MusicXMLScore.ScoreProperties
             _scoreLayoutContainer = new Dictionary<string, LayoutGeneral>();
             CurrentLayoutProperties = new LayoutGeneral();
             _scoreLayoutContainer.Add("default", CurrentLayoutProperties);
-            _scorePropertiesContainer = new Dictionary<string, ScoreProperties> {{"default", new ScoreProperties(new ScorePartwiseMusicXML())}};
+            _scorePropertiesContainer = new Dictionary<string, ScoreProperties> {["default"] = new ScoreProperties(new ScorePartwiseMusicXML()) };
             SelectScore("default");
         }
 
@@ -68,5 +68,4 @@ namespace MusicXMLScore.ScoreProperties
             }
         }
     }
-
 }

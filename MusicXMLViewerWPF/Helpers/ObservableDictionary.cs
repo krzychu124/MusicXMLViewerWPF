@@ -778,6 +778,7 @@ namespace MusicXMLScore.Helpers
                     return new DictionaryEntry(_current.Key, _current.Value);
                 }
             }
+
             object IDictionaryEnumerator.Key
             {
                 get
@@ -786,6 +787,7 @@ namespace MusicXMLScore.Helpers
                     return _current.Key;
                 }
             }
+
             object IDictionaryEnumerator.Value
             {
                 get

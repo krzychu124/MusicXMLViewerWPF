@@ -37,6 +37,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Attributes
         {
 
         }
+
         public TimeSignatureContainerItem(double width)
         {
             ItemCanvas.Width = width;
@@ -116,7 +117,6 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Attributes
             }
             if (!isSymbol || symbolValue == TimeSymbolMusicXML.normal)
             {
-                
                 beatValue = timeSignature.Items[timeSignature.ItemsElementName.GetValueIndexFromObjectArray(TimeChoiceTypeMusicXML.beats)].ToString();
                 beatTimeValue = timeSignature.Items[timeSignature.ItemsElementName.GetValueIndexFromObjectArray(TimeChoiceTypeMusicXML.beattype)].ToString();
             }
@@ -162,6 +162,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Attributes
             ItemLeftMargin = left;
             ItemRightMargin = right;
         }
+
         public Rect ItemRectBounds
         {
             get
@@ -174,6 +175,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Attributes
                 itemRectBounds = value;
             }
         }
+
         public double ItemWidth
         {
             get

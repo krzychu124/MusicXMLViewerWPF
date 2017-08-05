@@ -17,7 +17,7 @@ namespace MusicXMLScore.LayoutControl
         private double _pageContentHeight; //! height available for content (page height - margins)
         //private bool keepEqualMeasureCount = true; //!todo implementation
         private int _lastSystemIndex; //! index of last added system 
-        
+
         private double _defaultSystemDistance;
         private double _defaultTopSystemDistance;
         private Dictionary<int, double> _systemDistances;
@@ -43,7 +43,7 @@ namespace MusicXMLScore.LayoutControl
         public int SystemsCount => _systemDimensionsInfo?.Count ?? 0;
 
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
-        
+
         /// <summary>
         /// Page width without margins (L+R)
         /// </summary>
@@ -129,7 +129,7 @@ namespace MusicXMLScore.LayoutControl
                     break;
             }
         }
-        
+
         /// <summary>
         /// Returns true if All Systems should be stretched to fill page content width
         /// </summary>
@@ -147,7 +147,7 @@ namespace MusicXMLScore.LayoutControl
         {
             return _pageLayoutStyle.StretchLastSystemOnPage;
         }
-        
+
         /// <summary>
         /// Adds Complete Collection of LayoutSystemInfo to LayoutPageContent
         /// </summary>

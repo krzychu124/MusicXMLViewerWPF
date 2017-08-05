@@ -10,7 +10,6 @@ using MusicXMLViewerWPF;
 
 namespace MusicXMLScore.ViewModel
 {
-
     /// <summary>
     /// Controlls loaded content and divide it into parts("Pages") if it won't fit inside one "Page"
     /// Highly dependent to choosen View-style eg. Normal, OneLine, Paginated, OneInstrument etc.
@@ -36,9 +35,8 @@ namespace MusicXMLScore.ViewModel
     ///                 --- Page.n
     class PagesControllerViewModel : ViewModelBase
     {
-
         #region Fields
-        
+
         private string header;
         private string id;
 
@@ -54,7 +52,7 @@ namespace MusicXMLScore.ViewModel
         public PagesControllerViewModel()
         {
         }
-        
+
         public PagesControllerViewModel(int numberOfPages)
         {
             IsBlank = false;
@@ -91,7 +89,6 @@ namespace MusicXMLScore.ViewModel
         #endregion Properties
 
         #region Methods
-        
 
         public void AddScorePartwise(ScorePartwiseMusicXML scorePartXML)
         {
@@ -102,7 +99,7 @@ namespace MusicXMLScore.ViewModel
             IsBlank = false;
             partwise = scorePartXML;
             PagesCollection = new ObservableCollection<UIElement>();
-            PartProperties pp = ViewModelLocator.Instance.Main.PartsProperties[scorePartXML.Part.ElementAt(0).Id];
+            PartProperties pp = ViewModelLocator.Instance.Main.PartsProperties[scorePartXML.Part[0].Id];
             bool autoLayoutSupport = ViewModelLocator.Instance.Main.CurrentScoreProperties.AutoLayoutSupportByScore;
             //autoLayoutSupport = false;
             if (autoLayoutSupport)
@@ -124,7 +121,6 @@ namespace MusicXMLScore.ViewModel
             PageViewModel pvm = new PageViewModel();
             PagesCollection.Add(new PageView { DataContext = pvm });
         }
-        
 
         private void AddPageToCollection(ScorePartwiseMusicXML sp) //default page
         {
@@ -133,10 +129,10 @@ namespace MusicXMLScore.ViewModel
             PageViewModel pvm = new PageViewModel(sp, index);
             PagesCollection.Add(new PageView { DataContext = pvm });
         }
-        
+
         private void PagesControllerViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            
+
         }
         #endregion Methods
     }

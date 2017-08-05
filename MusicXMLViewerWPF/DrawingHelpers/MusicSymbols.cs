@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace MusicXMLScore.DrawingHelpers
 {
-    class MusicSymbols          ///add ornaments unicode symbols
+    class MusicSymbols          //add ornaments unicode symbols
     {
         private static string to_utf8(string s)
         {
@@ -70,11 +70,11 @@ namespace MusicXMLScore.DrawingHelpers
         #region oneLine
         public readonly string shortStaffOneSymbol = "\uE01C";
         public readonly string mediumStaffOneSymbol = "\uE010";
-        public static readonly string longStaffOneSymbol = "\uE016";
+        public const string longStaffOneSymbol = "\uE016";
         #endregion
         #region fiveLine
         public readonly string shortStaffFiveSymbol = "\uE020";
-        public static readonly string mediumStaffFiveSymbol = "\uE01A";
+        public const string mediumStaffFiveSymbol = "\uE01A";
         public readonly string longStaffFiveSymbol = "uE014";
         #endregion
         #region sixLine
@@ -160,7 +160,7 @@ namespace MusicXMLScore.DrawingHelpers
         public const string Item256thRest = "\uE4EB";
         public const string Item512thRest = "\uE4EC";
         public const string Item1024thRest = "\uE4ED";
-        
+
         #endregion          
         #region primitives
         public const string WholeDot = "\uE0A2";
@@ -357,7 +357,7 @@ namespace MusicXMLScore.DrawingHelpers
         public static string GetNoteSymbol(string s,bool d)
         {
             string x = "n?";
-            if (d==true)
+            if (d)
             {
                 if (DurationSymbol_Note_S.ContainsKey(s))
                 {
@@ -374,25 +374,28 @@ namespace MusicXMLScore.DrawingHelpers
             }
             return x;
         }
-        public static Dictionary<string, string> DurationSymbol_Note_S = new Dictionary<string, string>() {
-            { "whole", WholeDot},
-            { "half", Half},
-            { "quarter", Quarter},
-            { "eighth", Eight},
-            { "16th", Sixteen},
-            { "32nd", ThirtyTwo},
-            { "64th", SixstyFour},
-            { "", "n?" }
+
+        public static Dictionary<string, string> DurationSymbol_Note_S = new Dictionary<string, string>()
+        {
+            ["whole"] = WholeDot,
+            ["half"] = Half,
+            ["quarter"] = Quarter,
+            ["eighth"] = Eight,
+            ["16th"] = Sixteen,
+            ["32nd"] = ThirtyTwo,
+            ["64th"] = SixstyFour,
+            [""] = "n?"
         };
-        public static Dictionary<string, string> DurationSymbol_Note_S_R = new Dictionary<string, string>() {
-            { "whole", Whole},
-            { "half", HalfU},
-            { "quarter", QuarterU},
-            { "eighth", EightU},
-            { "16th", SixteenU},
-            { "32nd", ThirtyTwoU},
-            { "64th", SixstyFourU},
-            { "", "n?" }
+        public static Dictionary<string, string> DurationSymbol_Note_S_R = new Dictionary<string, string>()
+        {
+            ["whole"] = Whole,
+            ["half"] = HalfU,
+            ["quarter"] = QuarterU,
+            ["eighth"] = EightU,
+            ["16th"] = SixteenU,
+            ["32nd"] = ThirtyTwoU,
+            ["64th"] = SixstyFourU,
+            [""] = "n?"
         };
         public static string GetCustomTimeNumber(string number)
         {
@@ -411,79 +414,84 @@ namespace MusicXMLScore.DrawingHelpers
             }
             return result;
         }
+
         private static Dictionary<int, string> customTimeNumbers = new Dictionary<int, string>()
         {
-            {0,TZero },
-            {1,TOne },
-            {2,TTwo },
-            {3,TThree },
-            {4,TFour },
-            {5,TFive },
-            {6,TSix },
-            {7,TSeven },
-            {8,TEight },
-            {9,TNine },
+            [0] = TZero,
+            [1] = TOne,
+            [2] = TTwo,
+            [3] = TThree,
+            [4] = TFour,
+            [5] = TFive,
+            [6] = TSix,
+            [7] = TSeven,
+            [8] = TEight,
+            [9] = TNine,
         };
 
         public static string GetNoteHeadSymbolNoteType(NoteTypeValueMusicXML noteTypeValue)
         {
             return StandardNoteHeadSymbols[noteTypeValue];
         }
+
         public static string GetRestSymbolNoteType(NoteTypeValueMusicXML noteTypeValue)
         {
             return RestNoteTypeSymbols[noteTypeValue];
         }
+
         private static Dictionary<NoteTypeValueMusicXML, string> RestNoteTypeSymbols = new Dictionary<NoteTypeValueMusicXML, string>()
         {
-            {NoteTypeValueMusicXML.breve, BreveRest },
-            {NoteTypeValueMusicXML.@long, LongRest },
-            {NoteTypeValueMusicXML.whole, WholeRest},
-            {NoteTypeValueMusicXML.half, HalfRest },
-            {NoteTypeValueMusicXML.quarter, QuarterRest },
-            {NoteTypeValueMusicXML.eighth, EightRest },
-            {NoteTypeValueMusicXML.Item16th, Item16thRest },
-            {NoteTypeValueMusicXML.Item32nd, Item32ndRest },
-            {NoteTypeValueMusicXML.Item64th, Item64thRest },
-            {NoteTypeValueMusicXML.Item128th, Item128thRest },
-            {NoteTypeValueMusicXML.Item256th, Item256thRest },
-            {NoteTypeValueMusicXML.Item512th, Item512thRest },
-            {NoteTypeValueMusicXML.Item1024th,Item1024thRest },
+            [NoteTypeValueMusicXML.breve] = BreveRest,
+            [NoteTypeValueMusicXML.@long] = LongRest,
+            [NoteTypeValueMusicXML.whole] = WholeRest,
+            [NoteTypeValueMusicXML.half] = HalfRest,
+            [NoteTypeValueMusicXML.quarter] = QuarterRest,
+            [NoteTypeValueMusicXML.eighth] = EightRest,
+            [NoteTypeValueMusicXML.Item16th] = Item16thRest,
+            [NoteTypeValueMusicXML.Item32nd] = Item32ndRest,
+            [NoteTypeValueMusicXML.Item64th] = Item64thRest,
+            [NoteTypeValueMusicXML.Item128th] = Item128thRest,
+            [NoteTypeValueMusicXML.Item256th] = Item256thRest,
+            [NoteTypeValueMusicXML.Item512th] = Item512thRest,
+            [NoteTypeValueMusicXML.Item1024th] = Item1024thRest,
         };
         private static Dictionary<NoteTypeValueMusicXML, string> StandardNoteHeadSymbols = new Dictionary<NoteTypeValueMusicXML, string>()
         {
-            {NoteTypeValueMusicXML.breve, BraveStdNoteHead },
-            {NoteTypeValueMusicXML.@long, LongStdNoteHead },
-            {NoteTypeValueMusicXML.whole, WholeStdNoteHead },
-            {NoteTypeValueMusicXML.half, HalfStdNoteHead },
-            {NoteTypeValueMusicXML.quarter, QuarterStdNoteHead },
-            {NoteTypeValueMusicXML.eighth, QuarterStdNoteHead },
-            {NoteTypeValueMusicXML.Item16th, QuarterStdNoteHead },
-            {NoteTypeValueMusicXML.Item32nd, QuarterStdNoteHead },
-            {NoteTypeValueMusicXML.Item64th, QuarterStdNoteHead },
-            {NoteTypeValueMusicXML.Item128th, QuarterStdNoteHead },
-            {NoteTypeValueMusicXML.Item256th, QuarterStdNoteHead },
-            {NoteTypeValueMusicXML.Item512th, QuarterStdNoteHead },
-            {NoteTypeValueMusicXML.Item1024th, QuarterStdNoteHead },
+            [NoteTypeValueMusicXML.breve] = BraveStdNoteHead,
+            [NoteTypeValueMusicXML.@long] = LongStdNoteHead,
+            [NoteTypeValueMusicXML.whole] = WholeStdNoteHead,
+            [NoteTypeValueMusicXML.half] = HalfStdNoteHead,
+            [NoteTypeValueMusicXML.quarter] = QuarterStdNoteHead,
+            [NoteTypeValueMusicXML.eighth] = QuarterStdNoteHead,
+            [NoteTypeValueMusicXML.Item16th] = QuarterStdNoteHead,
+            [NoteTypeValueMusicXML.Item32nd] = QuarterStdNoteHead,
+            [NoteTypeValueMusicXML.Item64th] = QuarterStdNoteHead,
+            [NoteTypeValueMusicXML.Item128th] = QuarterStdNoteHead,
+            [NoteTypeValueMusicXML.Item256th] = QuarterStdNoteHead,
+            [NoteTypeValueMusicXML.Item512th] = QuarterStdNoteHead,
+            [NoteTypeValueMusicXML.Item1024th] = QuarterStdNoteHead,
         };
-        private static Dictionary<NoteTypeValueMusicXML, string> FlagsSymbols_Upwards = new Dictionary<NoteTypeValueMusicXML, string>() {
-            {NoteTypeValueMusicXML.eighth, Flag8thU },
-            {NoteTypeValueMusicXML.Item16th, Flag16thU},
-            {NoteTypeValueMusicXML.Item32nd, Flag32ndU },
-            {NoteTypeValueMusicXML.Item64th, Flag64thU },
-            {NoteTypeValueMusicXML.Item128th, Flag128thU },
-            {NoteTypeValueMusicXML.Item256th, Flag256thU },
-            {NoteTypeValueMusicXML.Item512th, Flag512thU },
-            {NoteTypeValueMusicXML.Item1024th, Flag1024thU },
+        private static Dictionary<NoteTypeValueMusicXML, string> FlagsSymbols_Upwards = new Dictionary<NoteTypeValueMusicXML, string>()
+        {
+            [NoteTypeValueMusicXML.eighth] = Flag8thU,
+            [NoteTypeValueMusicXML.Item16th] = Flag16thU,
+            [NoteTypeValueMusicXML.Item32nd] = Flag32ndU,
+            [NoteTypeValueMusicXML.Item64th] = Flag64thU,
+            [NoteTypeValueMusicXML.Item128th] = Flag128thU,
+            [NoteTypeValueMusicXML.Item256th] = Flag256thU,
+            [NoteTypeValueMusicXML.Item512th] = Flag512thU,
+            [NoteTypeValueMusicXML.Item1024th] = Flag1024thU,
         };
-        private static Dictionary<NoteTypeValueMusicXML, string> FlagsSymbols_Downwards = new Dictionary<NoteTypeValueMusicXML, string>() {
-            {NoteTypeValueMusicXML.eighth, Flag8thD },
-            {NoteTypeValueMusicXML.Item16th, Flag16thD},
-            {NoteTypeValueMusicXML.Item32nd, Flag32ndD },
-            {NoteTypeValueMusicXML.Item64th, Flag64thD },
-            {NoteTypeValueMusicXML.Item128th, Flag128thD },
-            {NoteTypeValueMusicXML.Item256th, Flag256thD },
-            {NoteTypeValueMusicXML.Item512th, Flag512thD },
-            {NoteTypeValueMusicXML.Item1024th, Flag1024thD },
+        private static Dictionary<NoteTypeValueMusicXML, string> FlagsSymbols_Downwards = new Dictionary<NoteTypeValueMusicXML, string>()
+        {
+            [NoteTypeValueMusicXML.eighth] = Flag8thD,
+            [NoteTypeValueMusicXML.Item16th] = Flag16thD,
+            [NoteTypeValueMusicXML.Item32nd] = Flag32ndD,
+            [NoteTypeValueMusicXML.Item64th] = Flag64thD,
+            [NoteTypeValueMusicXML.Item128th] = Flag128thD,
+            [NoteTypeValueMusicXML.Item256th] = Flag256thD,
+            [NoteTypeValueMusicXML.Item512th] = Flag512thD,
+            [NoteTypeValueMusicXML.Item1024th] = Flag1024thD,
         };
     }
 }

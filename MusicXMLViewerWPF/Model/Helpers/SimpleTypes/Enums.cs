@@ -14,6 +14,7 @@ namespace MusicXMLScore.Model.Helpers.SimpleTypes
         normal,
         italic
     }
+
     [Serializable]
     [XmlType(TypeName = "font-weight")]
     public enum FontWeightMusicXML
@@ -21,6 +22,7 @@ namespace MusicXMLScore.Model.Helpers.SimpleTypes
         normal,
         bold
     }
+
     [Serializable]
     [XmlType(TypeName = "start-stop")]
     public enum StartStopMusicXML
@@ -62,6 +64,7 @@ namespace MusicXMLScore.Model.Helpers.SimpleTypes
         yes,
         no,
     }
+
     [Serializable]
     [XmlType(TypeName = "note-size-type")]
     public enum NoteSizeTypeMusicXML
@@ -83,6 +86,7 @@ namespace MusicXMLScore.Model.Helpers.SimpleTypes
         A,
         B
     }
+
     [Serializable]
     [XmlType(TypeName = "cancel-location")]
     public enum CancelLocationMusicXML
@@ -101,6 +105,7 @@ namespace MusicXMLScore.Model.Helpers.SimpleTypes
         cue,
         large
     }
+
     [Serializable()]
     [XmlType(TypeName = "note-type-value")]
     public enum NoteTypeValueMusicXML
@@ -127,6 +132,7 @@ namespace MusicXMLScore.Model.Helpers.SimpleTypes
         @long,
         maxima,
     }
+
     [Serializable()]
     [XmlType(TypeName = "backward-forward")]
     public enum BackwardForwardMusicXML
@@ -134,6 +140,7 @@ namespace MusicXMLScore.Model.Helpers.SimpleTypes
         backward,
         forward,
     }
+
     [Serializable]
     [XmlType(TypeName ="above-below")]
     public enum AboveBelowMusicXML

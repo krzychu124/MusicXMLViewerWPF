@@ -37,6 +37,7 @@ namespace MusicXMLScore.ScoreProperties
                 GenerateTimeSignaturesPerMeasure();
             }
         }
+
         private void GenerateTimeSignaturesPerMeasure() //TODO_Later refactor to no cloning, but finding first going back from measure.Number, which provide only clef changes in dictionary
         {
             var firstPart = score.Part.FirstOrDefault();
@@ -48,7 +49,7 @@ namespace MusicXMLScore.ScoreProperties
                     var attributes = measure.Items.OfType<AttributesMusicXML>().FirstOrDefault();
                     if (attributes.Time.Count != 0)
                     {
-                        var timeSig = attributes.Time.ElementAt(0);
+                        var timeSig = attributes.Time[0];
                         currentTimeSignature = timeSig;
                         currentTimeSignature.PrintObject = Model.Helpers.SimpleTypes.YesNoMusicXML.yes;
                         timeSignatures.Add(measure.Number, currentTimeSignature);
@@ -66,11 +67,10 @@ namespace MusicXMLScore.ScoreProperties
                     time.PrintObject = Model.Helpers.SimpleTypes.YesNoMusicXML.no;
                     timeSignatures.Add(measure.Number, time);
                 }
-              
             }
             //var test = timeSignatures.Select(i => i).Where(i => i.Value.PrintObject == Model.Helpers.SimpleTypes.YesNoMusicXML.yes);
         }
-        
+
         /// <summary>
         /// Gets Time Signature of selected measureId
         /// </summary>

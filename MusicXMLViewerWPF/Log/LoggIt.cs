@@ -52,6 +52,7 @@ namespace MusicXMLScore.Log
                 }
             }
         }
+
         private static ObservableCollection<Logger> infolog;
         private static ObservableCollection<Logger> warninglog;
         private static ObservableCollection<Logger> errorlog;

@@ -31,6 +31,7 @@ namespace MusicXMLScore.Model.Defaults
                 staffDistanceSpecified = true;
             }
         }
+
         [XmlIgnore]
         public bool StaffDistanceSpecified
         {
@@ -44,6 +45,7 @@ namespace MusicXMLScore.Model.Defaults
                 staffDistanceSpecified = value;
             }
         }
+
         [XmlAttribute("number", DataType ="positiveInteger")]
         public string Number
         {

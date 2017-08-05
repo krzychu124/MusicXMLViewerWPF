@@ -28,6 +28,7 @@ namespace MusicXMLScore.Model
                 measure = value;
             }
         }
+
         [XmlAttribute("id")]
         public string Id
         {
@@ -56,6 +57,7 @@ namespace MusicXMLScore.Model
                 measures = value;
             }
         }
+
         public void SetMeasuresDictionary()
         {
             measures = new Dictionary<string, ScorePartwisePartMeasureMusicXML>();

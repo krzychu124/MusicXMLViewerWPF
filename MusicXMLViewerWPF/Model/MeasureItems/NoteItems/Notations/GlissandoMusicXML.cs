@@ -10,7 +10,7 @@ namespace MusicXMLScore.Model.MeasureItems.NoteItems.Notations
 {
     [Serializable]
     [XmlType(TypeName ="glissando")]
-    public class GlissandoMusicXML 
+    public class GlissandoMusicXML
     {
         private StartStopMusicXML type;
         private string number;

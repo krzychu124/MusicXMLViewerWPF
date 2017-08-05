@@ -66,24 +66,24 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
         {
             if (note.NoteItem.Count == 1)
             {
-                var noteItem = note.NoteItem.ElementAt(0);
+                var noteItem = note.NoteItem[0];
                 var stem = noteItem.Stem;
                 if (stem != null) //! if stem is set for current Note
                 {
                     GetDirection(stem);
-                    bool hasBeam = note.NoteItem.FirstOrDefault().Beam.Count != 0 ? true : false;
+                    bool hasBeam = note.NoteItem.FirstOrDefault().Beam.Count != 0;
                     CalculatePosition(note.PitchedPosition.FirstOrDefault().Value, hasBeam);
                 }
                 else
                 {
                     CalculateDirection();
-                    bool hasBeam = note.NoteItem.FirstOrDefault().Beam.Count != 0 ? true : false;
+                    bool hasBeam = note.NoteItem.FirstOrDefault().Beam.Count != 0;
                     CalculatePosition(note.PitchedPosition.FirstOrDefault().Value, hasBeam);
                 }
             }
             else
             {
-                var notes = note.NoteItem.Where(noteItem => noteItem.IsGrace() == false);
+                var notes = note.NoteItem.Where(noteItem => !noteItem.IsGrace());
                 //! check for stem element to get direction
                 if (notes.FirstOrDefault().Stem != null)
                 {
@@ -96,7 +96,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
 
                 foreach (var noteItem in notes)
                 {
-                    bool hasBeam = note.NoteItem.FirstOrDefault().Beam.Count != 0 ? true : false;
+                    bool hasBeam = note.NoteItem.FirstOrDefault().Beam.Count != 0;
                     int pitchedPosition = 0;
                     if (isDown)
                     {
@@ -118,7 +118,6 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
             double length = 35.0.TenthsToWPFUnit() * sizeFactor;
             double yShift = 1.68.TenthsToWPFUnit();
 
-
             if (direction == StemValueMusicXML.up)
             {
                 int highestPitch = note.PitchedPosition.Max(x => x.Value);
@@ -138,12 +137,12 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
                         if (hasBeam)
                         {
                             //! beam thickness added to length
-                            shortestLength = 30.0.TenthsToWPFUnit() * sizeFactor; 
+                            shortestLength = 30.0.TenthsToWPFUnit() * sizeFactor;
                         }
                         if (notePitchedPosition < -2)
                         {
                             //! set shortest length
-                            endPoint = new Point(noteWidth * sizeFactor, y - shortestLength); 
+                            endPoint = new Point(noteWidth * sizeFactor, y - shortestLength);
                         }
                         else
                         {
@@ -200,6 +199,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
             }
             CalculateStemLength();
         }
+
         private void CalculateStemLength()
         {
             if (IsDirectionDown())
@@ -264,6 +264,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
         {
             direction = stem.Value;
         }
+
         private void CalculateDirection(bool isChord = false)
         {
             if (!isChord)
@@ -275,7 +276,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
             else
             {
                 //! gets indexes of notes excudes grace notes
-                var indexes = note.NoteItem.Select((x, i) => new { note = x, index = i }).Where(x => x.note.IsGrace() == false).Select(x=>x.index).ToList();
+                var indexes = note.NoteItem.Select((x, i) => new { note = x, index = i }).Where(x => !x.note.IsGrace()).Select(x=>x.index).ToList();
                 //! select pitches using indexes
                 var pitches = indexes.Select(x => note.PitchedPosition[x]);
                 //? var pitches = note.PitchedPosition.Select(x => x.Value); Previous version (grace notes not excluded)
@@ -303,7 +304,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
                 {
                     distanceToMid[i] = Math.Abs(pitches.ElementAt(i) - 4);
                 }
-                var maxDistCount = distanceToMid.Select(x => x).Where(x => x == distanceToMid.Max()).Count();
+                var maxDistCount = distanceToMid.Select(x => x).Count(x => x == distanceToMid.Max());
                 if (maxDistCount == 0)
                 {
                     Log.LoggIt.Log("Chorded notes stem direction calculation exception! Max distance to middle line equals 0", Log.LogType.Exception);
@@ -313,8 +314,8 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
                 if (maxDistCount == 2)
                 {
                     //! sum up notehead above and below
-                    var aboveMiddle = pitches.Select(x => x).Where(x => x > 4).Count();
-                    var belowMiddle = pitches.Select(x => x).Where(x => x < 4).Count();
+                    var aboveMiddle = pitches.Select(x => x).Count(x => x > 4);
+                    var belowMiddle = pitches.Select(x => x).Count(x => x < 4);
                     //! find which direction has more noteheads 
 
                     if (aboveMiddle > belowMiddle)

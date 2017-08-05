@@ -31,6 +31,7 @@ namespace MusicXMLScore.Model.Helpers
                 fontFamily = value;
             }
         }
+
         [XmlAttribute("font-style")]
         public FontStyleMusicXML FontStyle
         {
@@ -44,6 +45,7 @@ namespace MusicXMLScore.Model.Helpers
                 fontStyle = value;
             }
         }
+
         [XmlIgnore]
         public bool FontStyleSpecified
         {
@@ -57,6 +59,7 @@ namespace MusicXMLScore.Model.Helpers
                 fontStyleSpecified = value;
             }
         }
+
         [XmlAttribute("font-size")]
         public string FontSize
         {
@@ -70,6 +73,7 @@ namespace MusicXMLScore.Model.Helpers
                 fontSize = value;
             }
         }
+
         [XmlAttribute("font-weight")]
         public FontWeightMusicXML FontWeight
         {
@@ -83,6 +87,7 @@ namespace MusicXMLScore.Model.Helpers
                 fontWeight = value;
             }
         }
+
         [XmlIgnore]
         public bool FontWeightSpecified
         {
@@ -101,6 +106,5 @@ namespace MusicXMLScore.Model.Helpers
         {
 
         }
-
     }
 }

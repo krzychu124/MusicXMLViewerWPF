@@ -40,6 +40,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <UseVSHostingProcess>true</UseVSHostingProcess>
+    <CodeAnalysisRuleSet>MusicXMLViewerWPF.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -49,6 +50,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>MusicXMLViewerWPF.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="GalaSoft.MvvmLight, Version=5.3.0.19026, Culture=neutral, PublicKeyToken=e7570ab207bcb616, processorArchitecture=MSIL">
@@ -130,6 +132,7 @@
     <Compile Include="LayoutControl\SegmentPanelContainers\Notes\NoteContainerItem.cs" />
     <Compile Include="LayoutControl\SegmentPanelContainers\Notes\RestContainterItem.cs" />
     <Compile Include="LayoutControl\SegmentPanelContainers\Notes\StemItem.cs" />
+    <Compile Include="VisualObject\VisualObjectBase.cs" />
     <Compile Include="LayoutStyle\Styles\BarlineLayoutStyle.cs" />
     <Compile Include="LayoutStyle\Styles\BeamLayoutStyle.cs" />
     <Compile Include="LayoutStyle\Layout.cs" />
@@ -278,6 +281,7 @@
     <Compile Include="ViewModel\ViewModelLocator.cs" />
     <Compile Include="VisualObjectController\StaffLineVisualController.cs" />
     <Compile Include="VisualObject\StaffLineVisual.cs" />
+    <Compile Include="VisualObject\VisualObjectWithOffset.cs" />
     <Page Include="View\ConfigurationView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -339,6 +343,7 @@
     <Content Include="Fonts\Bravura.ttf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <None Include="MusicXMLViewerWPF.ruleset" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

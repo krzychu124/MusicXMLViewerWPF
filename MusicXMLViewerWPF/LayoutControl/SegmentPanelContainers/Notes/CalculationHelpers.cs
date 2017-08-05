@@ -102,6 +102,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
             int caclulatedStaffLineShift = (clefOctave -(pitchStep +2)) - (-7 * (4 - pitchOctave));
             return caclulatedStaffLineShift;
         }
+
         public static int GetMiddleCIndexFromClef(this Model.MeasureItems.Attributes.ClefMusicXML clef)
         {
             int index = 6; // G L=2

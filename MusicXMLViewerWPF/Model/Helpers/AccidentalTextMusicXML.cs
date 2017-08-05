@@ -29,6 +29,7 @@ namespace MusicXMLScore.Model.Helpers
                 lang = value;
             }
         }
+
         [XmlAttribute(Form = System.Xml.Schema.XmlSchemaForm.Qualified, Namespace = "http://www.w3.org/XML/1998/namespace")]
         public string Space
         {
@@ -42,6 +43,7 @@ namespace MusicXMLScore.Model.Helpers
                 space = value;
             }
         }
+
         [XmlText]
         public AccidentalValueMusicXML Value
         {

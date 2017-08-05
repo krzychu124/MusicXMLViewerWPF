@@ -82,7 +82,6 @@ namespace MusicXMLScore.LayoutControl
             return durationOfPosition;
         }
 
-
         /// <summary>
         /// Gets max width of all beginning attributes from measure segment of all parts
         /// </summary>

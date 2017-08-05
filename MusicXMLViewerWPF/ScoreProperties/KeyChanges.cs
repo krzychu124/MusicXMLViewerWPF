@@ -22,7 +22,6 @@ namespace MusicXMLScore.ScoreProperties
         {
         }
     }
-    
 
     public class KeyChangesDictionary : AttributeChangesDictionary<KeyChanges, KeyMusicXML>
     {

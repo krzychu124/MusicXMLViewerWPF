@@ -18,6 +18,7 @@ namespace MusicXMLScore.Helpers
         {
             return BravuraMusicFont;
         }
+
         public static Typeface GetTextFont()
         {
             return TextFont;

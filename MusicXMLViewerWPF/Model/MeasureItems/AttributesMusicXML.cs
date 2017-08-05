@@ -43,6 +43,7 @@ namespace MusicXMLScore.Model.MeasureItems
                 divisions = value;
             }
         }
+
         [XmlIgnore]
         public bool DivisionsSpecified
         {
@@ -56,6 +57,7 @@ namespace MusicXMLScore.Model.MeasureItems
                 divisionsSpecified = value;
             }
         }
+
         [XmlElement("key")]
         public List<KeyMusicXML> Key
         {
@@ -69,6 +71,7 @@ namespace MusicXMLScore.Model.MeasureItems
                 key = value;
             }
         }
+
         [XmlElement("time")]
         public List<TimeMusicXML> Time
         {
@@ -82,6 +85,7 @@ namespace MusicXMLScore.Model.MeasureItems
                 time = value;
             }
         }
+
         [XmlElement("staves", DataType ="nonNegativeInteger")]
         public string Staves
         {
@@ -95,6 +99,7 @@ namespace MusicXMLScore.Model.MeasureItems
                 staves = value;
             }
         }
+
         [XmlElement("part-symbol")]
         public PartSymbolMusicXML PartSymbol
         {
@@ -108,6 +113,7 @@ namespace MusicXMLScore.Model.MeasureItems
                 partSymbol = value;
             }
         }
+
         [XmlElement(DataType = "nonNegativeInteger")]
         public string Instruments
         {
@@ -121,6 +127,7 @@ namespace MusicXMLScore.Model.MeasureItems
                 instruments = value;
             }
         }
+
         [XmlElement("clef")]
         public List<ClefMusicXML> Clef
         {
@@ -134,6 +141,7 @@ namespace MusicXMLScore.Model.MeasureItems
                 clef = value;
             }
         }
+
         [XmlElement("staff-details")]
         public List<StaffDetailsMusicXML> StaffDetails
         {
@@ -147,6 +155,7 @@ namespace MusicXMLScore.Model.MeasureItems
                 staffDetails = value;
             }
         }
+
         [XmlElement("transpose")]
         public List<TransposeMusicXML> Transpose
         {
@@ -160,6 +169,7 @@ namespace MusicXMLScore.Model.MeasureItems
                 transpose = value;
             }
         }
+
         [XmlElement("attributes-directive")]
         public List<AttributesDirectiveMusicXML> AttributesDirective
         {
@@ -173,6 +183,7 @@ namespace MusicXMLScore.Model.MeasureItems
                 attributesDirective = value;
             }
         }
+
         [XmlElement("measure-style")]
         public List<MeasureStyleMusicXML> MeasureStyle
         {

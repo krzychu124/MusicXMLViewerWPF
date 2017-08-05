@@ -72,6 +72,7 @@ namespace MusicXMLScore.Model.MeasureItems
                 items = value;
             }
         }
+
         [XmlElement("ItemsElementName")]
         [XmlIgnore]
         public NoteChoiceTypeMusicXML[] ItemsElementName
@@ -86,6 +87,7 @@ namespace MusicXMLScore.Model.MeasureItems
                 itemsElementName = value;
             }
         }
+
         [XmlElement("instrument")]
         public InstrumentMusicXML Instrument
         {
@@ -99,6 +101,7 @@ namespace MusicXMLScore.Model.MeasureItems
                 instrument = value;
             }
         }
+
         [XmlElement("footnote")]
         public FormattedTextMusicXML Footnote
         {
@@ -126,6 +129,7 @@ namespace MusicXMLScore.Model.MeasureItems
                 level = value;
             }
         }
+
         [XmlElement("voice")]
         public string Voice
         {
@@ -139,6 +143,7 @@ namespace MusicXMLScore.Model.MeasureItems
                 voice = value;
             }
         }
+
         [XmlElement("type")]
         public NoteTypeMusicXML Type
         {
@@ -152,6 +157,7 @@ namespace MusicXMLScore.Model.MeasureItems
                 type = value;
             }
         }
+
         [XmlElement("dot")]
         public List<EmptyPlacementMusicXML> Dot
         {
@@ -165,6 +171,7 @@ namespace MusicXMLScore.Model.MeasureItems
                 dot = value;
             }
         }
+
         [XmlElement("accidental")]
         public AccidentalMusicXML Accidental
         {
@@ -178,6 +185,7 @@ namespace MusicXMLScore.Model.MeasureItems
                 accidental = value;
             }
         }
+
         [XmlElement("time-modification")]
         public TimeModificationMusicXML TimeModification
         {
@@ -191,6 +199,7 @@ namespace MusicXMLScore.Model.MeasureItems
                 timeModification = value;
             }
         }
+
         [XmlElement("stem")]
         public StemMusicXML Stem
         {
@@ -204,6 +213,7 @@ namespace MusicXMLScore.Model.MeasureItems
                 stem = value;
             }
         }
+
         [XmlElement("notehead")]
         public NoteHeadMusicXML NoteHead
         {
@@ -217,6 +227,7 @@ namespace MusicXMLScore.Model.MeasureItems
                 noteHead = value;
             }
         }
+
         [XmlElement("notehead-text")]
         public NoteHeadTextMusicXML NoteHeadText
         {
@@ -230,6 +241,7 @@ namespace MusicXMLScore.Model.MeasureItems
                 noteHeadText = value;
             }
         }
+
         [XmlElement("staff")]
         public string Staff
         {
@@ -243,6 +255,7 @@ namespace MusicXMLScore.Model.MeasureItems
                 staff = value;
             }
         }
+
         [XmlElement("beam")]
         public List<BeamMusicXML> Beam
         {
@@ -256,6 +269,7 @@ namespace MusicXMLScore.Model.MeasureItems
                 beam = value;
             }
         }
+
         [XmlElement("notations")]
         public List<NotationsMusicXML> Notations
         {
@@ -269,6 +283,7 @@ namespace MusicXMLScore.Model.MeasureItems
                 notations = value;
             }
         }
+
         [XmlElement("lyric")]
         public  List<LyricMusicXML> Lyric
         {
@@ -282,6 +297,7 @@ namespace MusicXMLScore.Model.MeasureItems
                 lyric = value;
             }
         }
+
         [XmlAttribute("default-x")]
         public double DefaultX
         {
@@ -295,6 +311,7 @@ namespace MusicXMLScore.Model.MeasureItems
                 defaultX = value;
             }
         }
+
         [XmlIgnore]
         public bool DefaultXSpecified
         {
@@ -308,6 +325,7 @@ namespace MusicXMLScore.Model.MeasureItems
                 defaultXSpecified = value;
             }
         }
+
         [XmlAttribute("default-y")]
         public double DefaultY
         {
@@ -321,6 +339,7 @@ namespace MusicXMLScore.Model.MeasureItems
                 defaultY = value;
             }
         }
+
         [XmlIgnore]
         public bool DefaultYSpecified
         {
@@ -334,6 +353,7 @@ namespace MusicXMLScore.Model.MeasureItems
                 defaultYSpecified = value;
             }
         }
+
         [XmlAttribute("relative-x")]
         public double RelativeX
         {
@@ -347,6 +367,7 @@ namespace MusicXMLScore.Model.MeasureItems
                 relativeX = value;
             }
         }
+
         [XmlIgnore]
         public bool RelativeXSpecified
         {
@@ -360,6 +381,7 @@ namespace MusicXMLScore.Model.MeasureItems
                 relativeXSpecified = value;
             }
         }
+
         [XmlAttribute("relative-y")]
         public double RelativeY
         {
@@ -373,6 +395,7 @@ namespace MusicXMLScore.Model.MeasureItems
                 relativeY = value;
             }
         }
+
         [XmlIgnore]
         public bool RelativeYSpecified
         {
@@ -386,6 +409,7 @@ namespace MusicXMLScore.Model.MeasureItems
                 relativeYSpecified = value;
             }
         }
+
         [XmlAttribute("font-family")]
         public string FontFamily
         {
@@ -399,6 +423,7 @@ namespace MusicXMLScore.Model.MeasureItems
                 fontFamily = value;
             }
         }
+
         [XmlAttribute("font-style")]
         public FontStyleMusicXML FontStyle
         {
@@ -412,6 +437,7 @@ namespace MusicXMLScore.Model.MeasureItems
                 fontStyle = value;
             }
         }
+
         [XmlIgnore]
         public bool FontStyleSpecified
         {
@@ -425,6 +451,7 @@ namespace MusicXMLScore.Model.MeasureItems
                 fontStyleSpecified = value;
             }
         }
+
         [XmlAttribute("font-size")]
         public string FontSize
         {
@@ -438,6 +465,7 @@ namespace MusicXMLScore.Model.MeasureItems
                 fontSize = value;
             }
         }
+
         [XmlAttribute("font-weight")]
         public FontWeightMusicXML FontWeight
         {
@@ -451,6 +479,7 @@ namespace MusicXMLScore.Model.MeasureItems
                 fontWeight = value;
             }
         }
+
         [XmlIgnore]
         public bool FontWeightSpecified
         {
@@ -464,6 +493,7 @@ namespace MusicXMLScore.Model.MeasureItems
                 fontWeightSpecified = value;
             }
         }
+
         [XmlAttribute("color")]
         public string Color
         {
@@ -477,6 +507,7 @@ namespace MusicXMLScore.Model.MeasureItems
                 color = value;
             }
         }
+
         [XmlAttribute("print-dot")]
         public YesNoMusicXML PrintDot
         {
@@ -490,6 +521,7 @@ namespace MusicXMLScore.Model.MeasureItems
                 printDot = value;
             }
         }
+
         [XmlIgnore]
         public bool PrintDotSpecified
         {
@@ -503,6 +535,7 @@ namespace MusicXMLScore.Model.MeasureItems
                 printDotSpecified = value;
             }
         }
+
         [XmlAttribute("print-lyric")]
         public YesNoMusicXML PrintLyric
         {
@@ -516,6 +549,7 @@ namespace MusicXMLScore.Model.MeasureItems
                 printLyric = value;
             }
         }
+
         [XmlIgnore]
         public bool PrintLyricSpecified
         {
@@ -549,6 +583,7 @@ namespace MusicXMLScore.Model.MeasureItems
             //Add additional attribute info
            return GetAdditionalType(result);
         }
+
         public int GetDuration()
         {
             int result =0;
@@ -559,6 +594,7 @@ namespace MusicXMLScore.Model.MeasureItems
             }
             return result;
         }
+
         public List<TieMusicXML> GetTies()
         {
             List<TieMusicXML> ties = new List<TieMusicXML>();
@@ -571,6 +607,7 @@ namespace MusicXMLScore.Model.MeasureItems
             }
             return ties;
         }
+
         public NoteChoiceTypeMusicXML GetAdditionalType(NoteChoiceTypeMusicXML type)
         {
             if (ItemsElementName.Contains(NoteChoiceTypeMusicXML.rest))
@@ -587,23 +624,28 @@ namespace MusicXMLScore.Model.MeasureItems
             }
             return type;
         }
+
         public int GetIndexOfType(NoteChoiceTypeMusicXML attributeType)
         {
             return Array.IndexOf(ItemsElementName, attributeType);
         }
+
         public bool IsRest()
         {
             return Items.OfType<RestMusicXML>().Any();
         }
+
         public bool IsChord()
         {
             return ItemsElementName.Contains(NoteChoiceTypeMusicXML.chord);
         }
+
         public bool IsGrace()
         {
             return ItemsElementName.Contains(NoteChoiceTypeMusicXML.grace);
         }
     }
+
     [Serializable]
     public class UnpitchedMusicXML
     {
@@ -628,6 +670,7 @@ namespace MusicXMLScore.Model.MeasureItems
                 displayStep = value;
             }
         }
+
         [XmlElement("display-octave", DataType ="integer")]
         public string DisplayOctave
         {
@@ -706,6 +749,7 @@ namespace MusicXMLScore.Model.MeasureItems
                 displayStep = value;
             }
         }
+
         [XmlElement("display-octave")]
         public string DisplayOctave
         {
@@ -719,6 +763,7 @@ namespace MusicXMLScore.Model.MeasureItems
                 displayOctave = value;
             }
         }
+
         [XmlAttribute("measure")]
         public YesNoMusicXML Measure
         {
@@ -732,6 +777,7 @@ namespace MusicXMLScore.Model.MeasureItems
                 measure = value;
             }
         }
+
         [XmlIgnore]
         public bool MeasureSpecified
         {
@@ -774,6 +820,7 @@ namespace MusicXMLScore.Model.MeasureItems
                 step = value;
             }
         }
+
         [XmlElement("alter")]
         public double Alter
         {
@@ -787,6 +834,7 @@ namespace MusicXMLScore.Model.MeasureItems
                 alter = value;
             }
         }
+
         [XmlIgnore]
         public bool AlterSpecified
         {
@@ -800,6 +848,7 @@ namespace MusicXMLScore.Model.MeasureItems
                 alterSpecified = value;
             }
         }
+
         [XmlElement("octave")]
         public string Octave
         {
@@ -846,6 +895,7 @@ namespace MusicXMLScore.Model.MeasureItems
                 stealTimePrevious = value;
             }
         }
+
         [XmlIgnore]
         public bool StealTimePreviousSpecified
         {
@@ -873,6 +923,7 @@ namespace MusicXMLScore.Model.MeasureItems
                 stealTimeFollowing = value;
             }
         }
+
         [XmlIgnore]
         public bool StealTimeFollowingSpecified
         {
@@ -886,6 +937,7 @@ namespace MusicXMLScore.Model.MeasureItems
                 stealTimeFollowingSpecified = value;
             }
         }
+
         [XmlAttribute("make-time")]
         public double MakeTime
         {
@@ -899,6 +951,7 @@ namespace MusicXMLScore.Model.MeasureItems
                 makeTime = value;
             }
         }
+
         [XmlIgnore]
         public bool MakeTimeSpecified
         {
@@ -912,6 +965,7 @@ namespace MusicXMLScore.Model.MeasureItems
                 makeTimeSpecified = value;
             }
         }
+
         [XmlAttribute("slash")]
         public YesNoMusicXML Slash
         {
@@ -925,6 +979,7 @@ namespace MusicXMLScore.Model.MeasureItems
                 slash = value;
             }
         }
+
         [XmlIgnore]
         public bool SlashSpecified
         {
