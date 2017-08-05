@@ -8,18 +8,33 @@ using System.Windows.Controls;
 
 namespace MusicXMLScore.VisualObjectController
 {
-    class StaffLineVisualController : INotifyPropertyChanged
+    internal class StaffLineVisualController : INotifyPropertyChanged
     {
-        private int _staffCount;
-        private double _width;
-        private Dictionary<int, double> _staffY;
-        private Canvas _staffLineCanvas;
-        private double _staffDistance;
         private int _numberOfLines;
+        private int _staffCount;
+        private double _staffDistance;
+        private Dictionary<int, double> _staffsVerticalPositions;
+        private double _width;
+
+        public StaffLineVisualController(int staffCount, double width, int numberOfLines, Model.ScorePartwisePartMeasureMusicXML measure, double staffDistance = 0.0)
+        {
+            _staffCount = staffCount;
+            _width = width;
+            _staffDistance = staffDistance;
+            _numberOfLines = numberOfLines;
+
+            StaffVisuals = new ObservableDictionary<int, StaffLineVisual>();
+            _staffsVerticalPositions = new Dictionary<int, double>();
+            GenerateStaffLines();
+
+            CollectStaffs();
+            WeakEventManager<Model.ScorePartwisePartMeasureMusicXML, PropertyChangedEventArgs>.AddHandler(measure, "PropertyChanged", MeasureMusicXML_PropertyChanged);
+            PropertyChanged += StaffLineVisualController_PropertyChanged;
+        }
 
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
 
-        internal ObservableDictionary<int, StaffLineVisual> StaffVisuals { get; }
+        public Canvas StaffLineCanvas { get; set; }
 
         public double Width
         {
@@ -27,27 +42,52 @@ namespace MusicXMLScore.VisualObjectController
 
             set
             {
-                _width = value;
-                PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(Width)));
-            }
-        }
-
-        public Canvas StaffLineCanvas
-        {
-            get { return _staffLineCanvas; }
-
-            set { _staffLineCanvas = value; }
-        }
-
-        private void StaffLineVisualController_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == nameof(Width))
-            {
-                foreach (var staff in StaffVisuals.Values)
-                {
-                    staff.Width = Width;
+                if (!_width.Equals4DigitPrecision(value)) {
+                    _width = value;
+                    PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(Width)));
                 }
             }
+        }
+
+        internal ObservableDictionary<int, StaffLineVisual> StaffVisuals { get; }
+
+        private void AddStaff(StaffLineVisual staff, int staffNumber = 1)
+        {
+            if (StaffVisuals.ContainsKey(staffNumber))
+            {
+                //! log staffLine is overwritten
+                //! all references of previous staffLine has to be removes
+                StaffVisuals[staffNumber] = staff;
+            }
+            else
+            {
+                StaffVisuals.Add(staffNumber, staff);
+            }
+        }
+
+        private void CollectStaffs()
+        {
+            StaffLineCanvas = new Canvas();
+            foreach (var staff in StaffVisuals.Values)
+            {
+                StaffLineCanvas.Children.Add(staff.CanvasVisual);
+            }
+        }
+
+        private void GenerateStaffLines()
+        {
+            double currentY = 0.0;
+            for (int i = 1; i <= _staffCount; i++)
+            {
+                var staff = new StaffLineVisual(_width, _numberOfLines) { StaffNumber = i };
+                if (i != 1)
+                {
+                    staff.HorizontalOffset = currentY + _staffDistance;
+                }
+                currentY += staff.Height;
+                AddStaff(staff, i);
+            }
+            UpdatePositions();
         }
 
         private void MeasureMusicXML_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -62,81 +102,23 @@ namespace MusicXMLScore.VisualObjectController
             }
         }
 
-        public StaffLineVisualController(int staffCount, double width, int numberOfLines, Model.ScorePartwisePartMeasureMusicXML measure = null,
-            double staffDistance = 0.0)
+        private void StaffLineVisualController_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            _staffCount = staffCount;
-            _width = width;
-            _staffDistance = staffDistance;
-            _numberOfLines = numberOfLines;
-
-            StaffVisuals = new ObservableDictionary<int, StaffLineVisual>();
-            _staffY = new Dictionary<int, double>();
-            Draw();
-
-            CollectStaffs();
-            WeakEventManager<Model.ScorePartwisePartMeasureMusicXML, PropertyChangedEventArgs>.AddHandler(measure, "PropertyChanged",
-                MeasureMusicXML_PropertyChanged);
-            PropertyChanged += StaffLineVisualController_PropertyChanged;
-        }
-
-        public void AddStaff(StaffLineVisual staff, int staffNumber = 1)
-        {
-            if (StaffVisuals.ContainsKey(staffNumber))
+            if (e.PropertyName == nameof(Width))
             {
-                //! log staffLine is overwritten
-                //! all references of previous staffLine has to be removes
-                StaffVisuals[staffNumber] = staff;
-            }
-            else
-            {
-                StaffVisuals.Add(staffNumber, staff);
-            }
-        }
-
-        public void Draw(bool update = false)
-        {
-            if (update)
-            {
-                //todo
-            }
-            else
-            {
-                GenerateStaffLines();
+                foreach (var staff in StaffVisuals.Values)
+                {
+                    staff.Width = Width;
+                }
             }
         }
 
         private void UpdatePositions()
         {
-            _staffY.Clear();
+            _staffsVerticalPositions.Clear();
             for (int i = 1; i <= _staffCount; i++)
             {
-                _staffY.Add(i, StaffVisuals[i].YPosition);
-            }
-        }
-
-        private void GenerateStaffLines()
-        {
-            double currentY = 0.0;
-            for (int i = 1; i <= _staffCount; i++)
-            {
-                var staff = new StaffLineVisual(_width, _numberOfLines) {StaffNumber = i};
-                if (i != 1)
-                {
-                    staff.YPosition = currentY + _staffDistance;
-                }
-                currentY += staff.Height;
-                AddStaff(staff, i);
-            }
-            UpdatePositions();
-        }
-
-        private void CollectStaffs()
-        {
-            _staffLineCanvas = new Canvas();
-            foreach (var staff in StaffVisuals.Values)
-            {
-                _staffLineCanvas.Children.Add(staff.CanvasVisual);
+                _staffsVerticalPositions.Add(i, StaffVisuals[i].HorizontalOffset);
             }
         }
     }
