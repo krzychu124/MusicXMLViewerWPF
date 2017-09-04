@@ -38,17 +38,17 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Attributes
                 _isAdditional = true;
             }
             Update();
-            //---------temp-------------------
+            //---------temp--test-----------------
             ItemCanvas.MouseDown += _itemCanvas_MouseDown;
-            ContextMenu context = new ContextMenu();
-            MenuItem menuItem = new MenuItem
+            var context = new ContextMenu();
+            var menuItem = new MenuItem
             {
                 Header = "Change Clef"
             };
             menuItem.Click += MenuItem_Click;
             context.Items.Add(menuItem);
             ItemCanvas.ContextMenu = context;
-            //---------------------------------
+            //-------------------------------------
         }
 
         private void MenuItem_Click(object sender, RoutedEventArgs e)
