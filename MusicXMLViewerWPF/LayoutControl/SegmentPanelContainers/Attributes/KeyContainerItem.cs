@@ -12,16 +12,13 @@ using MusicXMLScore.Helpers;
 
 namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Attributes
 {
-    class KeyContainerItem : IAttributeItemVisual
+    class KeyContainerItem : MeasureAttributeBase, IAttributeItemVisual
     {
         private string itemStaff;
-        private Canvas itemCanvas;
         private readonly int attributeIndex = 1;
         private bool empty = false;
         private bool visible = true;
         private double itemWidth;
-        private double itemLeftMargin;
-        private double itemRightMargin;
         private Rect itemRectBounds;
         private int[] keyIndexes;
         private int fifts;
@@ -29,19 +26,18 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Attributes
         private ClefMusicXML currentClef;
         private string partId;
         
-        public KeyContainerItem(KeyMusicXML key, int fractionPosition, string measureId, string partId, string staffNumber)
+        public KeyContainerItem(KeyMusicXML key, int fractionPosition, string measureId, string partId, string staffNumber):
+            base(AttributeType.key, int.Parse(staffNumber), fractionPosition)
         {
-            itemCanvas = new Canvas();
             this.partId = partId;
             currentClef = ViewModel.ViewModelLocator.Instance.Main.CurrentScoreProperties.GetClef(measureId, partId, int.Parse(staffNumber), fractionPosition);
             fifts = int.Parse(key.Items[key.ItemsElementName.GetValueIndexFromObjectArray(KeyChoiceTypes.fifths)].ToString());
-            SetStandardKeySigMargins();
             GenerateKeyIndexes();
             GetSymbol();
-            Draw();
+            Update();
         }
 
-        private void Draw()
+        protected override void Update()
         {
             var staffLineCoords = ViewModel.ViewModelLocator.Instance.Main.CurrentPageLayout.AvaliableIndexLinePositions;
             DrawingVisualHost cl = new DrawingVisualHost();
@@ -101,18 +97,6 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Attributes
                 //lower == flats
                 keyIndexes = KeyMusicXML.DefaultGFlatKeys.Select(i => i + clefKeyOffset).ToArray();
             }
-        }
-
-        private void SetStandardKeySigMargins()
-        {
-            LayoutStyle.Layout layout = ViewModel.ViewModelLocator.Instance.Main.CurrentLayout.LayoutStyle;
-            SetItemMargins(layout.MeasureStyle.KeySigLeftOffset.TenthsToWPFUnit(), layout.MeasureStyle.KeySigRightOffset.TenthsToWPFUnit());
-        }
-
-        public void SetItemMargins(double left, double right)
-        {
-            ItemLeftMargin = left;
-            ItemRightMargin = right;
         }
 
         public Rect ItemRectBounds
@@ -183,19 +167,6 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Attributes
             }
         }
 
-        public Canvas ItemCanvas
-        {
-            get
-            {
-                return itemCanvas;
-            }
-
-            set
-            {
-                itemCanvas = value;
-            }
-        }
-
         public string ItemStaff
         {
             get
@@ -206,32 +177,6 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Attributes
             set
             {
                 itemStaff = value;
-            }
-        }
-
-        public double ItemLeftMargin
-        {
-            get
-            {
-                return itemLeftMargin;
-            }
-
-            private set
-            {
-                itemLeftMargin = value;
-            }
-        }
-
-        public double ItemRightMargin
-        {
-            get
-            {
-                return itemRightMargin;
-            }
-
-            private set
-            {
-                itemRightMargin = value;
             }
         }
     }

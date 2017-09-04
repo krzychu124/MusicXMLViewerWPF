@@ -11,10 +11,9 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
     {
         string ItemStaff { get; set; }
         Canvas ItemCanvas { get; set; }
-        double ItemLeftMargin { get; }
-        double ItemRightMargin { get; }
         double ItemWidth { get; }
         double ItemWidthMin { get; set; }
-        void SetItemMargins(double left, double right);
+        double ItemLeftMargin { get; }
+        double ItemRightMargin { get; }
     }
 }

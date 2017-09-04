@@ -14,6 +14,7 @@ using System.Windows;
 using System.Windows.Media;
 using MusicXMLScore.Helpers;
 using MusicXMLScore.VisualObjectController;
+using MusicXMLScore.LayoutStyle;
 
 namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
 {
@@ -288,26 +289,28 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
             double width = currentPosition;
             LayoutStyle.MeasureLayoutStyle attributesLayout = ViewModel.ViewModelLocator.Instance.Main.CurrentLayout.LayoutStyle.MeasureStyle;
 
-            switch (attributeVisual.AttributeIndex)
+            switch (attributeVisual.AttributeType)
             {
-                case 0:
+                case AttributeType.clef:
                     ClefContainerItem clef = attributeVisual as ClefContainerItem;
                     width += clef.ItemLeftMargin;
                     SetLeft(clef.ItemCanvas, width);
                     width += clef.ItemWidth + clef.ItemRightMargin;
                     break;
-                case 1:
+                case AttributeType.key:
                     KeyContainerItem key = attributeVisual as KeyContainerItem;
                     width += key.ItemLeftMargin;
                     SetLeft(key.ItemCanvas, width);
                     width += key.ItemWidth + (key.ItemWidth != 0 ? key.ItemRightMargin: 0);
                     break;
-                case 2:
+                case AttributeType.time:
                     TimeSignatureContainerItem timeSig = attributeVisual as TimeSignatureContainerItem;
                     width += timeSig.ItemLeftMargin;
                     SetLeft(timeSig.ItemCanvas, width);
                     width += timeSig.ItemWidth + timeSig.ItemRightMargin;
                     break;
+                default:
+                    throw new ArgumentException("invalid argument value ", attributeVisual.AttributeType.ToString());
             }
 
             return width;

@@ -1,4 +1,5 @@
-﻿using MusicXMLViewerWPF;
+﻿using MusicXMLScore.LayoutStyle.Styles;
+using MusicXMLViewerWPF;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +17,7 @@ namespace MusicXMLScore.LayoutStyle
         private MeasureLayoutStyle measureStyle;
         private NotesLayoutStyle notesStyle;
         private PageLayoutStyle pageStyle;
+        private ItemsColorsStyle _itemsColorsStyle;
         private Dictionary<int, Brush> colors;
         public Layout()
         {
@@ -23,6 +25,7 @@ namespace MusicXMLScore.LayoutStyle
             beamStyle = new BeamLayoutStyle();
             measureStyle = new MeasureLayoutStyle();
             notesStyle = new NotesLayoutStyle();
+            _itemsColorsStyle = new ItemsColorsStyle();
             pageStyle = new PageLayoutStyle();
             colors = new Dictionary<int, Brush>()
             {
@@ -119,5 +122,7 @@ namespace MusicXMLScore.LayoutStyle
                 colors = value;
             }
         }
+
+        public ItemsColorsStyle ItemsColorsStyle { get => _itemsColorsStyle; set => _itemsColorsStyle = value; }
     }
 }

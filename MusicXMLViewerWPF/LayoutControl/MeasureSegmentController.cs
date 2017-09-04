@@ -350,7 +350,7 @@ namespace MusicXMLScore.LayoutControl
                         {
                             string staffNumber = time.StaffNumber ?? i.ToString();
                             TimeSignatureContainerItem timeContainer =
-                                new TimeSignatureContainerItem(time.StaffNumber, time.TimeFraction, time.AttributeEntity);
+                                new TimeSignatureContainerItem(/*time.StaffNumber, time.TimeFraction,*/ time.AttributeEntity);
                             _measureItemsContainer.AppendAttributeWithStaffNumber(timeContainer, time.TimeFraction, staffNumber);
                         }
                     }

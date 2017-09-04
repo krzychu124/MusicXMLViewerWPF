@@ -40,7 +40,8 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <UseVSHostingProcess>true</UseVSHostingProcess>
-    <CodeAnalysisRuleSet>MusicXMLViewerWPF.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>ManagedMinimumRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisIgnoreGeneratedCode>false</CodeAnalysisIgnoreGeneratedCode>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -105,6 +106,7 @@
     <Compile Include="DrawingHelpers\PartProperties.cs" />
     <Compile Include="DrawingHelpers\PartSegmentDrawing.cs" />
     <Compile Include="DrawingHelpers\PartsSystemDrawing.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Helpers\ComparisonHelpers.cs" />
     <Compile Include="Helpers\CustomPartsSegmentPanel.cs" />
     <Compile Include="Helpers\ObservableDictionary.cs" />
@@ -116,7 +118,9 @@
     <Compile Include="LayoutControl\AdvancedLayoutHelpers\AntiCollisionHelper.cs" />
     <Compile Include="LayoutControl\AdvancedLayoutHelpers\LayoutHelpers.cs" />
     <Compile Include="LayoutControl\AdvancedLayoutHelpers\SharedMeasureProperties.cs" />
+    <Compile Include="LayoutControl\ISelectable.cs" />
     <Compile Include="LayoutControl\MeasureSegmentContainer.cs" />
+    <Compile Include="LayoutControl\SegmentPanelContainers\Attributes\MeasureAttributeBase.cs" />
     <Compile Include="LayoutControl\SegmentPanelContainers\BeamItemsController.cs" />
     <Compile Include="LayoutControl\LayoutGeneral.cs" />
     <Compile Include="LayoutControl\MeasureSegmentController.cs" />
@@ -132,6 +136,7 @@
     <Compile Include="LayoutControl\SegmentPanelContainers\Notes\NoteContainerItem.cs" />
     <Compile Include="LayoutControl\SegmentPanelContainers\Notes\RestContainterItem.cs" />
     <Compile Include="LayoutControl\SegmentPanelContainers\Notes\StemItem.cs" />
+    <Compile Include="LayoutStyle\Styles\ItemsColorsStyle.cs" />
     <Compile Include="VisualObject\VisualObjectBase.cs" />
     <Compile Include="LayoutStyle\Styles\BarlineLayoutStyle.cs" />
     <Compile Include="LayoutStyle\Styles\BeamLayoutStyle.cs" />

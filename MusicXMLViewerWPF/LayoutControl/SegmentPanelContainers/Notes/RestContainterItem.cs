@@ -20,26 +20,26 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
         private static Random r = new Random();
         private NoteMusicXML noteItem;
         private int itemIndex;
-        private int itemDuration =0;
-        private double itemWidth = 0.0;
-        private double itemWidthMin = 0.0;
+        private int itemDuration;
+        private double itemWidth;
+        private double itemWidthMin;
         private double itemLeftMargin;
         private double itemRightMargin;
 
-        private double horizontalOffset = 0.0;
-        private double verticalOffset = 0.0;
+        private double horizontalOffset;
+        private double verticalOffset;
 
-        private bool measureRest = false;//! todo
+        private bool measureRest;//! todo
         private string symbol;
         private string partId;
         private string measureId;
         private string itemStaff;
-        private int dotCount = 0;
+        private int dotCount;
 
         private Dictionary<int, double> staffLines = new Dictionary<int, double>();
         private NoteTypeValueMusicXML restType = NoteTypeValueMusicXML.whole;
 
-        private bool customPitch = false;
+        private bool customPitch;
         private string customOctave = "4";
         private StepMusicXML customStep = StepMusicXML.B;
 
