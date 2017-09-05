@@ -274,13 +274,13 @@ namespace MusicXMLScore.LayoutControl
             if (a.DivisionsSpecified)
             {
             }
-            if (a.MeasureStyle.Count != 0)
+            if (a.MeasureStyle?.Count != 0)
             {
             }
             if (a.PartSymbol != null)
             {
             }
-            if (a.StaffDetails.Count != 0)
+            if (a.StaffDetails != null && a.StaffDetails.Count != 0)
             {
                 if (a.StaffDetails.Count > 1)
                 {
@@ -303,7 +303,7 @@ namespace MusicXMLScore.LayoutControl
                     }
                 }
             }
-            if (a.Transpose.Count != 0)
+            if (a.Transpose?.Count != 0)
             {
             }
             return false;
