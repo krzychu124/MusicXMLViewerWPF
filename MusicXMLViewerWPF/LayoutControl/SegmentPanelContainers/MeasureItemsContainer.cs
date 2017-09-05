@@ -20,9 +20,13 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
 {
     class MeasureItemsContainer : Canvas
     {
-        private List<IMeasureItemVisual> measureItemsVisuals;
-        private List<NoteMusicXML> notesList;
-        private List<Tuple<int, IMeasureItemVisual>> itemsWithPosition;
+        //---
+        //TODO more tests
+        //---
+
+        private LinkedList<IMeasureItemVisual> measureItemsVisuals;
+        private LinkedList<NoteMusicXML> notesList;
+        private LinkedList<Tuple<int, IMeasureItemVisual>> itemsWithPosition;
         private Dictionary<string, List<Tuple<int, IMeasureItemVisual>>> itemsPositionsPerStaff;
         private ScorePartwisePartMeasureMusicXML measure; //! Todo refactor/remove
         private string measureId = "";
@@ -31,7 +35,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
         private int staffsNumber;
         private Canvas temporaryBarline;
         private Canvas temporaryStartBarline;
-        //! temp test ---------------------
+        // temp test ---------------------
         private List<DrawingVisualHost> beams;
 
         public List<DrawingVisualHost> Beams
@@ -46,8 +50,8 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
                 beams = value;
             }
         }
-        //! -----------------------------------------
-        internal List<Tuple<int, IMeasureItemVisual>> ItemsWithPostition
+        //---
+        internal LinkedList<Tuple<int, IMeasureItemVisual>> ItemsWithPostition
         {
             get
             {
@@ -95,9 +99,9 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
 
         public MeasureItemsContainer(string measureId, string partId, int numberOfStave, string staffs)
         {
-            measureItemsVisuals = new List<IMeasureItemVisual>();
-            notesList = new List<NoteMusicXML>();
-            itemsWithPosition = new List<Tuple<int, IMeasureItemVisual>>();
+            measureItemsVisuals = new LinkedList<IMeasureItemVisual>();
+            notesList = new LinkedList<NoteMusicXML>();
+            itemsWithPosition = new LinkedList<Tuple<int, IMeasureItemVisual>>();
             InitPositionsPerStaff(staffs);
             this.measureId = measureId;
             this.partId = partId;
@@ -326,7 +330,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
         {
             Tuple<int, IMeasureItemVisual> noteVisual = new Tuple<int, IMeasureItemVisual>(cursorPosition, note);
             AddNote(note);
-            itemsWithPosition.Add(noteVisual);
+            itemsWithPosition.AddLast(noteVisual);
             itemsPositionsPerStaff[staffNumber].Add(noteVisual);
         }
 
@@ -334,7 +338,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
         {
             Tuple<int, IMeasureItemVisual> restVisual = new Tuple<int, IMeasureItemVisual>(cursorPosition, rest);
             AddRest(rest);
-            itemsWithPosition.Add(restVisual);
+            itemsWithPosition.AddLast(restVisual);
             itemsPositionsPerStaff[staffNumber].Add(restVisual);
         }
 
@@ -342,25 +346,25 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
         {
             Tuple<int, IMeasureItemVisual> attributesVisual = new Tuple<int, IMeasureItemVisual>(cursorPosition, attributeItem);
             AddAttribute(attributeItem);
-            itemsWithPosition.Add(attributesVisual);
+            itemsWithPosition.AddLast(attributesVisual);
             itemsPositionsPerStaff[staffNumber].Add(attributesVisual);
         }
 
         public void AddNote(NoteContainerItem noteVisual)
         {
-            measureItemsVisuals.Add(noteVisual);
+            measureItemsVisuals.AddLast(noteVisual);
             Children.Add(noteVisual.ItemCanvas);
         }
 
         public void AddRest(RestContainterItem restVisual)
         {
-            measureItemsVisuals.Add(restVisual);
+            measureItemsVisuals.AddLast(restVisual);
             Children.Add(restVisual.ItemCanvas);
         }
 
         public void AddAttribute(IAttributeItemVisual attributeVisual)//temp
         {
-            measureItemsVisuals.Add(attributeVisual);
+            measureItemsVisuals.AddLast(attributeVisual);
             Children.Add(attributeVisual.ItemCanvas as Canvas);
         }
 
