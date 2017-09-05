@@ -137,6 +137,10 @@
     <Compile Include="LayoutControl\SegmentPanelContainers\Notes\RestContainterItem.cs" />
     <Compile Include="LayoutControl\SegmentPanelContainers\Notes\StemItem.cs" />
     <Compile Include="LayoutStyle\Styles\ItemsColorsStyle.cs" />
+    <Compile Include="Model\Factories\BasicScoreFactory.cs" />
+    <Compile Include="Model\Builders\ScorePartwiseBuilder.cs" />
+    <Compile Include="Model\Builders\ScorePartwisePartBuilder.cs" />
+    <Compile Include="Model\Builders\ScorePartwisePartMeasureBuilder.cs" />
     <Compile Include="VisualObject\VisualObjectBase.cs" />
     <Compile Include="LayoutStyle\Styles\BarlineLayoutStyle.cs" />
     <Compile Include="LayoutStyle\Styles\BeamLayoutStyle.cs" />
