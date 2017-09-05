@@ -208,24 +208,35 @@ namespace MusicXMLScore.ViewModel
         {
             string header = "New Default Score";
             var vm = SelectedTabItem.DataContext as PagesControllerViewModel;
+            ScorePartwiseMusicXML score = Model.Factories.BasicScoreFactory.GetScorePartwise();
+            score.InitPartsDictionaries();
+            score.SetLargestMeasureWidth();
+            GenerateLayout(score);
             //! if currently selected tab is empty
             if (vm?.IsBlank == true)
             {
+                vm.AddScorePartwise(score);
+                SelectedTabItem.Tag = score.ID;
                 SelectedTabItem.Header = header;
-                SelectedTabItem.DataContext = new PagesControllerViewModel(1);
+                SelectedTabItem.Content = new PagesControllerView();
+                SelectedTabItem.DataContext = vm;
                 Console.WriteLine("Default Score blank document");
             }
             else
             {
+                PagesControllerViewModel pcvm = new PagesControllerViewModel();
+                pcvm.AddScorePartwise(score);
                 TabItem tab = new TabItem
                 {
                     Header = header,
+                    Tag = score.ID,
                     Content = new PagesControllerView(),
-                    DataContext = new PagesControllerViewModel(1)
+                    DataContext = pcvm
                 };
                 TabsCreated.Add(tab);
                 SelectedTabItem = tab;
             }
+            AllTabsClosed = false;
         }
 
         [STAThread]
