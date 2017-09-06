@@ -105,9 +105,14 @@ namespace MusicXMLScore.Model.Builders
 
         private void AppendItem(NoteChoiceTypeMusicXML noteType, object value)
         {
-            if (note.ItemsElementName.Any(item => item == noteType))
+            if (note.ItemsElementName == null)
             {
-                Console.WriteLine("NoteBuilder::Note Items Array already contains this type of item, item of found noteType will be overwritten");
+                note.ItemsElementName = new NoteChoiceTypeMusicXML[] { noteType };
+                note.Items = new object[] { value };
+            }
+            else if (note.ItemsElementName.Any(item => item == noteType))
+            {
+                Console.WriteLine($"NoteBuilder::Note Items Array already contains this type of item ({noteType.ToString()}), item of found noteType will be overwritten");
                 note.Items[Array.IndexOf(note.ItemsElementName, noteType)] = value;
             }
             else
@@ -115,9 +120,11 @@ namespace MusicXMLScore.Model.Builders
                 object[] temp = note.Items;
                 Array.Resize(ref temp, temp.Length + 1);
                 temp[temp.Length - 1] = value;
+                note.Items = temp;
                 var tempElementName = note.ItemsElementName;
-                Array.Resize(ref tempElementName, tempElementName.Length);
+                Array.Resize(ref tempElementName, tempElementName.Length +1);
                 tempElementName[tempElementName.Length - 1] = noteType;
+                note.ItemsElementName = tempElementName;
             }
         }
     }
