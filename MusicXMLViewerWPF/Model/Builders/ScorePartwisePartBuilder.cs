@@ -46,7 +46,7 @@ namespace MusicXMLScore.Model.Builders
                 if (int.TryParse(part.Measure.LastOrDefault().Number, out int number))
                 {
                     // set next number
-                    measure.Number = number++ + "";
+                    measure.Number = ++number + "";
                 }
                 else
                 {
