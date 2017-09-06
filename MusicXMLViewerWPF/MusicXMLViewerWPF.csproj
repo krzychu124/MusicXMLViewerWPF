@@ -137,6 +137,7 @@
     <Compile Include="LayoutControl\SegmentPanelContainers\Notes\RestContainterItem.cs" />
     <Compile Include="LayoutControl\SegmentPanelContainers\Notes\StemItem.cs" />
     <Compile Include="LayoutStyle\Styles\ItemsColorsStyle.cs" />
+    <Compile Include="Model\Builders\NoteBuilder.cs" />
     <Compile Include="Model\Factories\BasicScoreFactory.cs" />
     <Compile Include="Model\Builders\ScorePartwiseBuilder.cs" />
     <Compile Include="Model\Builders\ScorePartwisePartBuilder.cs" />
