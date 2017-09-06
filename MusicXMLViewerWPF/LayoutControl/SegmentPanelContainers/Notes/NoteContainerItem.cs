@@ -138,7 +138,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
                 //! if note type/duration is quarter/crotchet or shorter
                 if ((int)noteType < 9)
                 {
-                    hasBeams = noteItem.Any(x => x.Beam.Count != 0);
+                    hasBeams = noteItem.Any(x => x.Beam != null);
                 }
             }
         }

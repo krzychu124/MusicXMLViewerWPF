@@ -26,7 +26,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Attributes
         private bool _isEmpty;
         private bool _isSelected;
 
-        public ClefContainerItem(string staff, int fractionPosition, ClefMusicXML clef) : 
+        public ClefContainerItem(string staff, int fractionPosition, ClefMusicXML clef) :
             base(AttributeType.clef, int.Parse(staff), fractionPosition)
         {
             _sign = clef.Sign;
@@ -88,7 +88,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Attributes
                     _itemWidth = DrawingMethods.GetTextWidth(_symbol, TypeFaces.GetMusicFont(), _isAdditional);
                 }
                 DrawingVisualHost clefVisualsHost = new DrawingVisualHost();
-                clefVisualsHost.AddCharacterGlyph(new Point(0, tempLine), tempSymbol, _isAdditional ,Color);
+                clefVisualsHost.AddCharacterGlyph(new Point(0, tempLine), tempSymbol, _isAdditional, Color);
                 ItemCanvas.Children.Clear();
                 ItemCanvas.Children.Add(clefVisualsHost);
             }
@@ -200,7 +200,6 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Attributes
                     break;
             }
         }
-        
 
         public void Select()
         {

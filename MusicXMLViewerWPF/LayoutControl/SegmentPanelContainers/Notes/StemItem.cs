@@ -71,7 +71,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
                 if (stem != null) //! if stem is set for current Note
                 {
                     GetDirection(stem);
-                    bool hasBeam = note.NoteItem.FirstOrDefault().Beam.Count != 0;
+                    bool hasBeam = note.NoteItem.FirstOrDefault().Beam?.Count != 0;
                     CalculatePosition(note.PitchedPosition.FirstOrDefault().Value, hasBeam);
                 }
                 else
