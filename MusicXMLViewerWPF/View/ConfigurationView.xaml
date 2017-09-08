@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MusicXMLScore.ViewModel"
         mc:Ignorable="d"
-        Title="ConfigurationView - Test" Height="498.974" Width="500.653" MinHeight="500" MinWidth="510">
+        Title="ConfigurationView - Test" Height="498.974" Width="500.653" MinHeight="500" MinWidth="510" x:Name="ConfigWindow">
     <Grid>
         <!--<local:PageSettingsView HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="258" Height="243"/>-->
         <Grid.RowDefinitions>
@@ -23,8 +23,8 @@
             </TabItem>
         </TabControl>
         <Grid Grid.Row="1" Margin="10">
-            <Button x:Name="confirmButton" Content="Ok" Width="60" Height="25" Margin="325,0,87,0" />
-            <Button x:Name="cancelButton" Content="Cancel" Width="60" Height="25" Margin="402,0,10,0" />
+            <Button x:Name="confirmButton" Content="Ok" Width="60" Height="25" Margin="325,0,87,0" Command="{Binding OKCommand}" CommandParameter="{Binding ElementName=ConfigWindow}" />
+            <Button x:Name="cancelButton" Content="Cancel" Width="60" Height="25" Margin="402,0,10,0" Command="{Binding CancelCommand}" CommandParameter="{Binding ElementName=ConfigWindow}" />
 
         </Grid>
     </Grid>
