@@ -595,6 +595,31 @@ namespace MusicXMLScore.Model.MeasureItems
             return result;
         }
 
+        public void SetDuration(int durationValue)
+        {
+            if (!GetNoteType().HasFlag(NoteChoiceTypeMusicXML.grace))
+            {
+                if (durationValue < 1)
+                {
+                    throw new Exception("Note::SetDuration Note duration can not be lower or equal zero");
+                }
+                int index = GetIndexOfType(NoteChoiceTypeMusicXML.duration);
+                if (index == -1)
+                {
+                    Array.Resize(ref itemsElementName, itemsElementName.Length + 1);
+                    itemsElementName[itemsElementName.Length - 1] = NoteChoiceTypeMusicXML.duration;
+                    Array.Resize(ref items, items.Length + 1);
+                    items[items.Length - 1] = durationValue;
+                } else
+                {
+                    items[index] = durationValue;
+                }
+            } else
+            {
+                throw new Exception("Note::SetDuration Note of type Grace can not have duration specified");
+            }
+        }
+
         public List<TieMusicXML> GetTies()
         {
             List<TieMusicXML> ties = new List<TieMusicXML>();
