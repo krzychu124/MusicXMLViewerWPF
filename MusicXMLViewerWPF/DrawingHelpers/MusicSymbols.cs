@@ -568,5 +568,38 @@ namespace MusicXMLScore.DrawingHelpers
             }
             return true;
         }
+
+        public static int GetClefDefaulLine(ClefSignMusicXML sign)
+        {
+            var line = 0;
+            if (line == 0)
+            {
+                if (sign == ClefSignMusicXML.G)
+                {
+                    line = 2;
+                }
+                if (sign == ClefSignMusicXML.C)
+                {
+                    line = 3;
+                }
+                if (sign == ClefSignMusicXML.F)
+                {
+                    line = 4;
+                }
+                if (sign == ClefSignMusicXML.TAB)
+                {
+                    line = 3;
+                }
+            }
+            if (sign == ClefSignMusicXML.percussion)
+            {
+                line = 3;
+            }
+            if (sign == ClefSignMusicXML.TAB)
+            {
+                line = 3;
+            }
+            return line;
+        }
     }
 }
