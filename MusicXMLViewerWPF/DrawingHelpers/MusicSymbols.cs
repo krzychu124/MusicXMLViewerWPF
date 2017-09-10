@@ -1,4 +1,5 @@
 ﻿using MusicXMLScore.Model.Helpers.SimpleTypes;
+using MusicXMLScore.Model.MeasureItems.Attributes;
 using MusicXMLViewerWPF;
 using System;
 using System.Collections.Generic;
@@ -493,5 +494,79 @@ namespace MusicXMLScore.DrawingHelpers
             [NoteTypeValueMusicXML.Item512th] = Flag512thD,
             [NoteTypeValueMusicXML.Item1024th] = Flag1024thD,
         };
+
+        public static bool TryGetClefSymbol(ClefSignMusicXML sign, int octaveChange, out string symbol)
+        {
+            switch (sign)
+            {
+                case ClefSignMusicXML.G:
+                    switch (octaveChange)
+                    {
+                        case -2:
+                            symbol = MusicSymbols.GClef15Down;
+                            break;
+                        case -1:
+                            symbol = MusicSymbols.GClef8Down;
+                            break;
+                        case 1:
+                            symbol = MusicSymbols.GClef8Up;
+                            break;
+                        case 2:
+                            symbol = MusicSymbols.GClef15Up;
+                            break;
+                        default:
+                            symbol = MusicSymbols.GClef;
+                            break;
+                    }
+                    break;
+                case ClefSignMusicXML.F:
+                    switch (octaveChange)
+                    {
+                        case -2:
+                            symbol = MusicSymbols.FClef15Down;
+                            break;
+                        case -1:
+                            symbol = MusicSymbols.FClef8Down;
+                            break;
+                        case 1:
+                            symbol = MusicSymbols.FClef8Up;
+                            break;
+                        case 2:
+                            symbol = MusicSymbols.FClef15Up;
+                            break;
+                        default:
+                            symbol = MusicSymbols.FClef;
+                            break;
+                    }
+                    break;
+                case ClefSignMusicXML.C:
+                    switch (octaveChange)
+                    {
+                        case -1:
+                            symbol = MusicSymbols.CClef8Down;
+                            break;
+                        default:
+                            symbol = MusicSymbols.CClef;
+                            break;
+                    }
+                    break;
+                case ClefSignMusicXML.percussion:
+                    symbol = MusicSymbols.Percussion;
+                    break;
+                case ClefSignMusicXML.TAB:
+                    symbol = MusicSymbols.TAB;
+                    break;
+                case ClefSignMusicXML.jianpu:
+                    symbol = string.Empty;
+                    break;
+                case ClefSignMusicXML.none:
+                    symbol = string.Empty;
+                    break;
+                default:
+                    symbol = null;
+                    return false;
+            }
+            return true;
+        }
     }
 }
