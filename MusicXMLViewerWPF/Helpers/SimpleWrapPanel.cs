@@ -10,6 +10,8 @@ namespace MusicXMLScore.Helpers
 {
     public class SimpleWrapPanel : Panel
     {
+        // todo dependency properties
+        // for spacing + for layout
         double panelWidth = 0.0;
         double panelHeight = 0.0;
         double horizontalSpacing = 20;

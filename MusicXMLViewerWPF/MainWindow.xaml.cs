@@ -54,6 +54,7 @@ namespace MusicXMLScore
         private void MenuItem_Click(object sender, RoutedEventArgs e)
         {
             checkdpi();
+            GC.Collect();
         }
 
         [DllImport("gdi32.dll")]

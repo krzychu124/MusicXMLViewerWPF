@@ -270,8 +270,8 @@ namespace MusicXMLScore.ViewModel
                 GenerateLayout(xml);
                 pagesControllerVM.AddScorePartwise(xml);
 
-                SelectedTabItem.Template =
-                    null; //bugfix - if last tab removed, binding error: "cannot find source for binding..."
+                SelectedTabItem.Template = null; 
+                //bugfix - if last tab removed, binding error: "cannot find source for binding..."
                 TabsCreated.Remove(SelectedTabItem);
                 TabItem newTab = new TabItem
                 {

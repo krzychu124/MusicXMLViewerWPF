@@ -241,7 +241,6 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Attributes
 
             set { }
         }
-       
 
         public string ItemStaff
         {

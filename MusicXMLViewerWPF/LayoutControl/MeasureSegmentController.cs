@@ -114,10 +114,10 @@ namespace MusicXMLScore.LayoutControl
             int durationCursor = 0;
             var measureItems = measure.Items;
 
-            //!----------- beams --------------------------
+            //! ----------- beams --------------------------
             List<BeamItem> beam = new List<BeamItem>();
             _measureItemsContainer = new MeasureItemsContainer(measure.Number, partID, stavesCount, stavesCount.ToString());
-            //!-------------------------------------------
+            //! -------------------------------------------
 
             //!----------- staff lines --------------------
             _staffLineController = new StaffLineVisualController(stavesCount, _width, _partProperties.NumberOfLines, measure, _minStavesDistance);

@@ -43,8 +43,12 @@ namespace MusicXMLScore.DrawingHelpers
             _pageLayout = ViewModelLocator.Instance.Main.CurrentLayout;
 
             _pageDimensions = _pageLayout.PageProperties.PageDimensions.Dimensions;
-            PageCanvas = new Canvas {Width = _pageDimensions.Width, Height = _pageDimensions.Height};
+            PageCanvas = new Canvas { Width = _pageDimensions.Width, Height = _pageDimensions.Height };
+            GenerateAndDraw();
+        }
 
+        private void GenerateAndDraw()
+        {
             GenerateMeasuresRangePerSystem();
             GetFirstMeasureDistancesPerSystem();
             AddAllPartsToDrawing();

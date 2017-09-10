@@ -79,7 +79,7 @@
             </Menu>
         </DockPanel>
         
-        <TabControl Margin="0,5,0,0" Grid.Row="2" ItemsSource="{Binding TabsCreated}" SelectedItem="{Binding SelectedTabItem}" />
+        <TabControl Margin="5" Grid.Row="2" ItemsSource="{Binding TabsCreated}" SelectedItem="{Binding SelectedTabItem}" />
         
         <!--<GridSplitter Grid.Row="3" Height="5" HorizontalAlignment="Stretch"></GridSplitter>-->
         <Log:LogView Grid.Row="4" MinHeight="105" MaxHeight="250" Visibility="Collapsed"/>
