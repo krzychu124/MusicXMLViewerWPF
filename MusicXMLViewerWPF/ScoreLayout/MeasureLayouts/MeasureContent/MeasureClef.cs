@@ -25,7 +25,7 @@ namespace MusicXMLScore.ScoreLayout.MeasureLayouts.MeasureContent
             _visualsHost = new DrawingVisualHost();
             _lineOfStaff = lineOfStaff;
             _clefSign = clefSign;
-            MusicSymbols.TryGetSymbol(clefSign, octaveChange, out _symbol);
+            MusicSymbols.TryGetClefSymbol(clefSign, octaveChange, out _symbol);
             this.staff = staff;
         }
 
@@ -36,7 +36,7 @@ namespace MusicXMLScore.ScoreLayout.MeasureLayouts.MeasureContent
             {
                 octaveChange = int.Parse(clef.ClefOctaveChange);
             }
-            if (MusicSymbols.TryGetSymbol(clef.Sign, octaveChange, out string symbol))
+            if (MusicSymbols.TryGetClefSymbol(clef.Sign, octaveChange, out string symbol))
             {
                 _clefSign = clef.Sign;
                 _symbol = symbol;
