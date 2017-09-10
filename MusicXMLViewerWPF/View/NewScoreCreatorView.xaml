@@ -95,7 +95,7 @@
                             <Canvas.InputBindings>
                                 <MouseBinding Gesture="LeftClick" Command="{Binding CanvasClick}" CommandParameter="{Binding RelativeSource={RelativeSource Self}}"/>
                             </Canvas.InputBindings>
-                            <ContentPresenter Content="{Binding ConfigurationPreview}"/>
+                            <ContentPresenter Margin="20,25" Content="{Binding ConfigurationPreview}"/>
                         </Canvas>
                     </Grid>
 

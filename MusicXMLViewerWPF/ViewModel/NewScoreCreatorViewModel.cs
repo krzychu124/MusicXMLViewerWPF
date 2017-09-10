@@ -7,6 +7,10 @@ using GalaSoft.MvvmLight;
 using MusicXMLScore.DrawingHelpers;
 using MusicXMLScore.Helpers;
 using MusicXMLScore.Log;
+using System.Windows.Controls;
+using MusicXMLScore.ScoreLayout.MeasureLayouts;
+using MusicXMLScore.Converters;
+using MusicXMLScore.ScoreLayout.MeasureLayouts.MeasureContent;
 
 namespace MusicXMLScore.ViewModel
 {
@@ -48,7 +52,7 @@ namespace MusicXMLScore.ViewModel
         private bool customsetting;
         private ClefTypeOptions currentclefoption = ClefTypeOptions.regularclef;
         private Dictionary<int, TimeSigBeatTime> timebeatlist = new Dictionary<int, TimeSigBeatTime> { [1] = TimeSigBeatTime.one, [2] = TimeSigBeatTime.two, [4] = TimeSigBeatTime.four, [8] = TimeSigBeatTime.eight, [16] = TimeSigBeatTime.sixteen, [24] = TimeSigBeatTime.twentyfour, [32] = TimeSigBeatTime.thirtytwo, [64] = TimeSigBeatTime.sixtyfour };
-        private PreviewCanvas canvaslist = new PreviewCanvas();
+        private Canvas canvaslist = new Canvas();
         private PreviewCanvas keypreview = new PreviewCanvas();
         private int measurescount = 32;
         private uint timesigtimeval = 4;
@@ -70,7 +74,7 @@ namespace MusicXMLScore.ViewModel
         public ClefTypeOptions CurrentClefOption { get { return currentclefoption; } set { if (value != currentclefoption) { currentclefoption = value; } } }
         public Dictionary<ImageSource, ClefType> ClefTypeList { get; set; }
         public Dictionary<int, TimeSigBeatTime> TimeBeatList { get { return timebeatlist; } }
-        public PreviewCanvas ConfigurationPreview { get { return canvaslist; } }
+        public Canvas ConfigurationPreview { get { return canvaslist; } }
         public PreviewCanvas KeyPreview { get { return keypreview; } }
         public PreviewCanvas PreviewCanvas { get { return previewcanvas; } set { previewcanvas = value; } }
         public int MeasuresCount { get { return measurescount; } set { measurescount = value; } }
@@ -105,6 +109,7 @@ namespace MusicXMLScore.ViewModel
 
         private void InitPreview()
         {
+            TestPrototype();
             //MusicScore.Defaults.Scale.Set(40);
         }
 
@@ -150,12 +155,32 @@ namespace MusicXMLScore.ViewModel
 
         public DrawingVisual AddVis()
         {
-            DrawingVisual vis = new DrawingVisual();
-            using (DrawingContext dc = vis.RenderOpen())
+            var visual = new DrawingVisual();
+            using (DrawingContext dc = visual.RenderOpen())
             {
                 Helpers.DrawingHelpers.DrawString(dc, "test2", TypeFaces.TextFont, Brushes.Black, 35f, 45f, 20f);
             }
-            return vis;
+            return visual;
+        }
+
+        private void TestPrototype()
+        {
+            var staff = new RegularStaff(5, 60.0.TenthsToWPFUnit(), 180.0.TenthsToWPFUnit());
+            staff.Update();
+            var attributes = new MeasureAttributes(
+                true, 
+                new MeasureClef(Model.MeasureItems.Attributes.ClefSignMusicXML.G, 2, 0, staff),
+                new MeasureKey(),
+                new MeasureTime()
+                );
+            attributes.Update();
+            var measureContent = new StandardMeasureContent(
+                attributes,
+                new MeasureRest(staff.DesiredWidth- attributes.GetVisualWidth(), staff)
+                );
+            measureContent.Update();
+            var measure = new StandardMeasure("0", "0", staff, staff.DesiredWidth, measureContent);
+            canvaslist.Children.Add(measure.GetVisualControl());
         }
 
         private static void OnOpionsWindow()
@@ -167,7 +192,6 @@ namespace MusicXMLScore.ViewModel
         private void OnAddVisual()
         {
             //PreviewCanvas.AddVisual(AddVis());
-            canvaslist.AddVisual(AddVis());
             keypreview.StaffLine();
         }
 
