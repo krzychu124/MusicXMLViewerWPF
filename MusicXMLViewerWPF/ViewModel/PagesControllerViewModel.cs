@@ -35,19 +35,14 @@ namespace MusicXMLScore.ViewModel
     ///                 --- Page.n
     class PagesControllerViewModel : ViewModelBase
     {
-        #region Fields
-
         private string header;
         private string id;
-
+    
         private bool isBlank = true;
         private ObservableCollection<UIElement> pageCollection;
         private ScorePartwiseMusicXML partwise;
         private string title = "";
         private AdvancedMeasureLayout advancedLayout;
-        #endregion Fields
-
-        #region Constructors
 
         public PagesControllerViewModel()
         {
@@ -62,10 +57,6 @@ namespace MusicXMLScore.ViewModel
                 AddPageToCollection(); //! may add current nuber to generated page
             }
         }
-
-        #endregion Constructors
-
-        #region Properties
 
         public string Header { get { return header; } private set { header = value; } }
         public string ID { get { return Partwise?.ID; } }
@@ -86,9 +77,6 @@ namespace MusicXMLScore.ViewModel
 
         public string Title { get { return title; } set { Set(nameof(Title), ref title, value); } }
 
-        #endregion Properties
-
-        #region Methods
 
         public void AddScorePartwise(ScorePartwiseMusicXML scorePartXML)
         {
@@ -129,11 +117,5 @@ namespace MusicXMLScore.ViewModel
             PageViewModel pvm = new PageViewModel(sp, index);
             PagesCollection.Add(new PageView { DataContext = pvm });
         }
-
-        private void PagesControllerViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-
-        }
-        #endregion Methods
     }
 }
