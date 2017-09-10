@@ -96,7 +96,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
 
                 foreach (var noteItem in notes)
                 {
-                    bool hasBeam = note.NoteItem.FirstOrDefault().Beam.Count != 0;
+                    bool hasBeam = note.NoteItem.FirstOrDefault().Beam?.Count != 0;
                     int pitchedPosition = 0;
                     if (isDown)
                     {

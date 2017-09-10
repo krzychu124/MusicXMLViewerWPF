@@ -148,7 +148,34 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
             isSmall = noteVisualType == NoteChoiceTypeMusicXML.cue || noteVisualType == NoteChoiceTypeMusicXML.grace;
             DrawingVisualHost noteVisualHost = new DrawingVisualHost();
             int index = 0;
-            foreach (var note in noteItem)
+            for (int i = 0; i < noteItem.Count; i++)
+			{
+                double noteHeadOffset = 0;
+                if (i > 0) {
+                    int maxPitch = pitchedPosition.Values.Max();
+                    int stemDir = maxPitch < 5 ?  -1 : 1;
+                    if (Math.Abs(pitchedPosition[index-1]-pitchedPosition[index]) == 1){
+                        noteHeadOffset = DrawingHelpers.DrawingMethods.GetTextWidth(symbol, TypeFaces.GetMusicFont()) * stemDir;
+                    }
+                }
+                if (noteItem[i].Voice == null)
+                {
+                    Log.LoggIt.Log($"Missing note voice element, setting to default", Log.LogType.Warning);
+                    noteItem[i].Voice = "1"; //! voice set to "1" if null- bugfix
+                }
+                color = ViewModel.ViewModelLocator.Instance.Main.CurrentLayout.LayoutStyle.Colors[int.Parse(noteItem[i].Voice)];
+                noteVisualHost.AddCharacterGlyph(new Point(noteHeadOffset, pitchedValue[index]), symbol, isSmall, color);
+                if (noteItem[i].Accidental != null)
+                {
+                    DrawAccidental(noteItem[i], noteItem.IndexOf(noteItem[i]), noteVisualHost);
+                }
+                if (hasDots)
+                {
+                    DrawDots(noteVisualHost, index);
+                }
+                index++;
+			}
+            /*foreach (var note in noteItem)
             {
                 if (note.Voice == null)
                 {
@@ -167,6 +194,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
                 }
                 index++;
             }
+            */
             itemWidthMin = DrawingMethods.GetTextWidth(symbol, TypeFaces.GetMusicFont(), isSmall);
             itemWidth = itemWidthMin;
             CheckForLedgerLines();
