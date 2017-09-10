@@ -60,13 +60,13 @@ namespace MusicXMLScore.Model.Factories
                 });
             var note1 = new NoteMusicXML
             {
-                Items = new object[] { 128, new PitchMusicXML
+                Items = new object[] { new PitchMusicXML
                     {
                         Octave = "4",
                         Step = Helpers.SimpleTypes.StepMusicXML.C
-                    }
+                    }, 128
                 },
-                ItemsElementName = new NoteChoiceTypeMusicXML[] { NoteChoiceTypeMusicXML.duration, NoteChoiceTypeMusicXML.pitch },
+                ItemsElementName = new NoteChoiceTypeMusicXML[] { NoteChoiceTypeMusicXML.pitch, NoteChoiceTypeMusicXML.duration},
                 Voice = "1",
                 Stem = new MeasureItems.NoteItems.StemMusicXML
                 {
@@ -82,16 +82,22 @@ namespace MusicXMLScore.Model.Factories
                 var measureBuilder2 = new ScorePartwisePartMeasureBuilder();
                 for (int j = 0; j < 8; j++)
                 {
-                    var randOctave = 3 + j %( r.Next(4) +1);
-                    var builder = new NoteBuilder();
-                    var step = (Helpers.SimpleTypes.StepMusicXML) r.Next(7); //random step
-                    var noteX = builder
-                        .SetPitch(step, randOctave)
-                        .SetStem(randOctave >4 ?MeasureItems.NoteItems.StemValueMusicXML.down : MeasureItems.NoteItems.StemValueMusicXML.up)
-                        .SetDuration(16)
-                        .SetVoice(1)
-                        .Build();
-                    measureBuilder2.AddNote(noteX);
+                    int randChord = r.Next(5) + 2;
+                    ChordBuilder chordBuilder = new ChordBuilder();
+                    for (int k = 0; k < randChord; k++)
+                    {
+                        var randOctave = 3 + j % (r.Next(3) + 1);
+                        var builder = new NoteBuilder();
+                        var step = (Helpers.SimpleTypes.StepMusicXML)r.Next(7); //random step
+                        var noteX = builder
+                            .SetStem(randOctave > 4 ? MeasureItems.NoteItems.StemValueMusicXML.down : MeasureItems.NoteItems.StemValueMusicXML.up)
+                            .SetVoice(1)
+                            .SetPitch(step, randOctave)
+                            .SetDuration(16)
+                            .Build();
+                        chordBuilder.AddNote(noteX);
+                    }
+                    measureBuilder2.AddChord(chordBuilder.Build());
                 }
                 partBuilder.AddMeasure(measureBuilder2.Build());
             }

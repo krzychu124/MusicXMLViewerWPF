@@ -37,6 +37,12 @@ namespace MusicXMLScore.Model.Builders
             return this;
         }
 
+        public ScorePartwisePartMeasureBuilder AddChord(List<NoteMusicXML> notesChord)
+        {
+            notesChord.ForEach(item => measure.AppendNewItem(item));
+            return this;
+        }
+
         public ScorePartwisePartMeasureMusicXML Build()
         {
             CheckItemsOrder();
@@ -48,7 +54,7 @@ namespace MusicXMLScore.Model.Builders
         //TODO set barline
         //TODO add backup, forward
         //TODO add print info (layout manager information - measure on new page/new line etc.)
-
+        
         private void CheckItemsOrder()
         {
             bool containsAttributes = measure.Items.Any(item => item.GetType() == typeof(AttributesMusicXML));

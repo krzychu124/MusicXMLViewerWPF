@@ -126,6 +126,10 @@ namespace MusicXMLScore.Model.Builders
                 tempElementName[tempElementName.Length - 1] = noteType;
                 note.ItemsElementName = tempElementName;
             }
+            if (note.Items.Length != note.ItemsElementName.Length)
+            {
+                throw new Exception("Something went wrong! .Items and .ItemsElementName arrays lengths should be equal!");
+            }
         }
     }
 }
