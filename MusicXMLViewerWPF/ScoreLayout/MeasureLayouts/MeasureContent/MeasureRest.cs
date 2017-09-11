@@ -27,9 +27,11 @@ namespace MusicXMLScore.ScoreLayout.MeasureLayouts.MeasureContent
         //todo if width changed update visual
         private void Draw()
         {
-            VisualHost.ClearVisuals();
+            GetVisualControl().Children.Clear();
             var symbolWidth = DrawingHelpers.DrawingMethods.GetTextWidth(restSymbol, TypeFaces.GetMusicFont());
-            VisualHost.AddCharacterGlyph(new Point(Width / 2 - (symbolWidth / 2), Staff[4,1]), restSymbol);
+            var visualHost = new DrawingVisualHost();
+            visualHost.AddCharacterGlyph(new Point(Width / 2 - (symbolWidth / 2), Staff[4, 1]), restSymbol);
+            GetVisualControl().Children.Add(visualHost);
         }
     }
 }

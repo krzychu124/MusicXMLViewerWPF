@@ -3,30 +3,30 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 using MusicXMLScore.Helpers;
 
 namespace MusicXMLScore.ScoreLayout.MeasureLayouts.MeasureContent.AbstractClasses
 {
-    abstract class AbstractContent : IVisualHost
+    abstract class AbstractContent : IVisualHostControl
     {
         private readonly AbstractStaff staff;
 
-        private readonly DrawingVisualHost visualHost;
+        //private readonly DrawingVisualHost visualHost;
+        private readonly Canvas visualHost;
         private double width;
 
         protected AbstractContent(AbstractStaff staff)
         {
-            visualHost = new DrawingVisualHost();
+            visualHost = new Canvas();
             this.staff = staff;
         }
-
-        public DrawingVisualHost VisualHost => visualHost;
 
         public double Width { get => width; set => width = value; }
 
         internal AbstractStaff Staff => staff;
 
-        public DrawingVisualHost GetVisualsContainer()
+        public Canvas GetVisualControl()
         {
             return visualHost;
         }

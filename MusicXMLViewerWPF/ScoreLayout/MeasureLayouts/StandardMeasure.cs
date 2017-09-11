@@ -19,9 +19,9 @@ namespace MusicXMLScore.ScoreLayout.MeasureLayouts
             width = staff.DesiredWidth;
             height = staff.DesiredHeight;
             GetVisualControl().Children.Add(staff.GetVisualsContainer());
-            foreach (var item in content.GetVisualContainers())
+            foreach (var item in content.GetVisualHostContainers())
             {
-                GetVisualControl().Children.Add(item.GetVisualsContainer());
+                GetVisualControl().Children.Add(item.GetVisualControl());
             }
         }
 

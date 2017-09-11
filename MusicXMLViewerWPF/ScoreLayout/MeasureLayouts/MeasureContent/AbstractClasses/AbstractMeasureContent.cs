@@ -15,12 +15,12 @@ namespace MusicXMLScore.ScoreLayout.MeasureLayouts.MeasureContent.AbstractClasse
         {
             this.attributes = attributes;
             this.content = content;
-            System.Windows.Controls.Canvas.SetLeft(content.GetVisualsContainer(), attributes.GetVisualWidth());
+            System.Windows.Controls.Canvas.SetLeft(content.GetVisualControl(), attributes.GetVisualWidth());
         }
 
-        public IList<IVisualHost> GetVisualContainers()
+        public IList<IVisualHostControl> GetVisualHostContainers()
         {
-            return new List<IVisualHost> { attributes, content };
+            return new List<IVisualHostControl> { attributes, content };
         }
 
         public void SetAttributes(AbstractAttributes attributes)

@@ -8,6 +8,6 @@ namespace MusicXMLScore.ScoreLayout
 {
     interface IVisualContainerCollection
     {
-        IList<IVisualHost> GetVisualContainers();
+        IList<IVisualHostControl> GetVisualHostContainers();
     }
 }

@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 using MusicXMLScore.Helpers;
 
 namespace MusicXMLScore.ScoreLayout.MeasureLayouts.MeasureContent.AbstractClasses
 {
-    abstract class AbstractAttributes : IVisualHost
+    abstract class AbstractAttributes : IVisualHostControl
     {
         private AbstractClef clef;
         private bool isVisible;
@@ -27,9 +28,14 @@ namespace MusicXMLScore.ScoreLayout.MeasureLayouts.MeasureContent.AbstractClasse
         internal AbstractKey Key { get => key; set => key = value; }
         internal AbstractTime Time { get => time; set => time = value; }
 
-        public DrawingVisualHost GetVisualsContainer()
+        public Canvas GetVisualControl()
         {
-            return clef.GetVisualsContainer();
+            var canvas = new Canvas();
+            canvas.Children.Add(Clef.GetVisualsContainer());
+            Canvas.SetLeft(Time.GetVisualsContainer(), Clef.GetVisualWidth());
+            canvas.Children.Add(Time.GetVisualsContainer());
+            return canvas;
+
         }
 
         public abstract double GetVisualWidth();
