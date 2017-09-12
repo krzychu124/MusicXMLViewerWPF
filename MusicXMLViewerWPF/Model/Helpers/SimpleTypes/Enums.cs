@@ -252,6 +252,7 @@ namespace MusicXMLScore.Model.Helpers.SimpleTypes
         flat4,
         sori,
         koron,
+        none,
     }
 
     [Serializable]
