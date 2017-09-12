@@ -12,10 +12,12 @@ namespace MusicXMLScore.ScoreLayout.MeasureLayouts
     {
         //todo add customizable staff lines (differens line spacing, style, color etc.)
         private readonly Dictionary<int, double> _staffLinesCoords;
+        private readonly Dictionary<int, double> _staffSpaceIndexCoords;
 
         public RegularStaff(int linesCount, double desiredHeight, double desiredWidth) : base(linesCount, desiredHeight, desiredWidth)
         {
             _staffLinesCoords = new Dictionary<int, double>();
+            _staffSpaceIndexCoords = new Dictionary<int, double>();
         }
 
         public override IList<double> GetStaffLines()
@@ -31,6 +33,11 @@ namespace MusicXMLScore.ScoreLayout.MeasureLayouts
         internal override double GetYOfLine(int index, int staffIndex)
         {
             return _staffLinesCoords[index];
+        }
+
+        internal override double GetYStaffSpace(int index)
+        {
+            return _staffSpaceIndexCoords[index];
         }
 
         private void Draw()
@@ -54,6 +61,14 @@ namespace MusicXMLScore.ScoreLayout.MeasureLayouts
             for (int i = 1; i <= LinesCount; i++)
             {
                 _staffLinesCoords.Add(i, DesiredHeight -(i * tempGap));
+            }
+            tempGap = DesiredHeight / LinesCount/2;
+            _staffSpaceIndexCoords.Clear();
+            var temp = tempGap;
+            _staffSpaceIndexCoords.Add(0, -tempGap);
+            for (int i = 0; i < 10; i++)
+            {
+                _staffSpaceIndexCoords.Add(i+1, temp*i);
             }
         }
 
