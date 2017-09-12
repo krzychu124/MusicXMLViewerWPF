@@ -200,10 +200,13 @@ namespace MusicXMLScore.ViewModel
             var staff = new RegularStaff(5, 50.0.TenthsToWPFUnit(), 480.0.TenthsToWPFUnit());
             staff.Update();
             var currentTime = GetSelectedTime();
+            var measureClef = new MeasureClef(SelectedClefS.Value, MusicSymbols.GetClefDefaulLine(SelectedClefS.Value), 0, staff);
+            var measureKey = new MeasureKey(SelectedClefS.Value, MusicSymbols.GetClefDefaulLine(SelectedClefS.Value), true);
+            measureKey.SetStaff(staff);
             var attributes = new MeasureAttributes(
                 true,
-                new MeasureClef(SelectedClefS.Value, MusicSymbols.GetClefDefaulLine(SelectedClefS.Value), 0, staff),
-                new MeasureKey(),
+                measureClef,
+                measureKey,
                 new MeasureTime(currentTime.Item1.ToString(), currentTime.Item2.ToString(), currentTime.Item3, staff)
                 );
             attributes.Update();
