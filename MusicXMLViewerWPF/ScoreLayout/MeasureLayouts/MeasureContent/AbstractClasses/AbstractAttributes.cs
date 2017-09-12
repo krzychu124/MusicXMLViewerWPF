@@ -32,7 +32,9 @@ namespace MusicXMLScore.ScoreLayout.MeasureLayouts.MeasureContent.AbstractClasse
         {
             var canvas = new Canvas();
             canvas.Children.Add(Clef.GetVisualsContainer());
-            Canvas.SetLeft(Time.GetVisualsContainer(), Clef.GetVisualWidth());
+            Canvas.SetLeft(Key.GetVisualsContainer(), Clef.GetVisualWidth());
+            canvas.Children.Add(Key.GetVisualsContainer());
+            Canvas.SetLeft(Time.GetVisualsContainer(), Clef.GetVisualWidth() + Key.GetVisualWidth());
             canvas.Children.Add(Time.GetVisualsContainer());
             return canvas;
 
