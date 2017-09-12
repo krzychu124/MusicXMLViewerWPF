@@ -50,5 +50,6 @@ namespace MusicXMLScore.ScoreLayout.MeasureLayouts
         /// <param name="staffIndex">Staff line of search index line(when multiStaff)</param>
         /// <returns></returns>
         internal abstract double GetYOfLine(int index, int staffIndex = 1);
+        internal abstract double GetYStaffSpace(int index);
     }
 }
