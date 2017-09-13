@@ -12,30 +12,39 @@ namespace MusicXMLScore.ScoreLayout.MeasureLayouts.MeasureContent.AbstractClasse
 {
     abstract class AbstractKey : IVisualHost
     {
+        protected int keyFifths;
         protected readonly DrawingVisualHost drawingVisualHost;
         protected AccidentalValueMusicXML[] keyAccidentals;
         protected int[] keyStaffSpaceIndex;
         protected AbstractStaff staff;
 
-        protected AbstractKey(ClefSignMusicXML clefSign, int line, bool isFlat)
+        protected AbstractKey(ClefSignMusicXML clefSign, int line, int keyFifths)
         {
             drawingVisualHost = new DrawingVisualHost();
-            keyAccidentals = new AccidentalValueMusicXML[] 
-            {
-                AccidentalValueMusicXML.flat,
-                AccidentalValueMusicXML.flat,
-                AccidentalValueMusicXML.flat,
-                AccidentalValueMusicXML.flat,
-                AccidentalValueMusicXML.natural,
-                AccidentalValueMusicXML.natural,
-                AccidentalValueMusicXML.natural,
-            };
-            keyStaffSpaceIndex = GetKeyStaffSpaceIndex(clefSign, line, isFlat);
+            keyAccidentals = GetKeyAccidentals(keyFifths);
+            keyStaffSpaceIndex = GetKeyStaffSpaceIndex(clefSign, line, keyFifths >0 ? false:true);
+            this.keyFifths = keyFifths;
         }
 
         public void SetStaff(AbstractStaff staff)
         {
             this.staff = staff;
+        }
+
+        protected AccidentalValueMusicXML[] GetKeyAccidentals(int keyFifths)
+        {
+            var result = new AccidentalValueMusicXML[] { AccidentalValueMusicXML.none };
+            if (keyFifths > -8 && keyFifths < 8 && keyFifths !=0)
+            {
+                var symbol = keyFifths > 0 ? AccidentalValueMusicXML.sharp : AccidentalValueMusicXML.flat;
+                var count = Math.Abs(keyFifths);
+                result = new AccidentalValueMusicXML[count];
+                for (int i = 0; i < count; i++)
+                {
+                    result[i] = symbol;
+                }
+            }
+            return result;
         }
 
         public int[] GetKeyStaffSpaceIndex(ClefSignMusicXML clefSign, int line, bool isFlat)
