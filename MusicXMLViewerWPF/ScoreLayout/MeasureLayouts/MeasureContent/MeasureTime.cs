@@ -21,6 +21,7 @@ namespace MusicXMLScore.ScoreLayout.MeasureLayouts.MeasureContent
         private string[] beatTypeSymbols;
         private string symbol;
         private double width;
+        private bool isVisible =true;
 
         public MeasureTime(string beatTime, string beatType, AbstractStaff staff) : base(beatTime, beatType, staff)
         {
@@ -43,6 +44,8 @@ namespace MusicXMLScore.ScoreLayout.MeasureLayouts.MeasureContent
             GenerateTimeSymbol();
         }
 
+        public bool IsVisible { get => isVisible; set => isVisible = value; }
+
         public override double GetVisualWidth()
         {
             return width;
@@ -56,40 +59,43 @@ namespace MusicXMLScore.ScoreLayout.MeasureLayouts.MeasureContent
 
         private void Draw()
         {
-            if (TimeSymbol != TimeSymbolMusicXML.normal)
+            if (IsVisible)
             {
-                GetVisualsContainer().AddCharacterGlyph(new Point(0, Staff[Staff.LinesCount / 2 + 1, 1]), symbol);
-                width = DrawingMethods.GetTextWidth(symbol, TypeFaces.GetMusicFont());
-            }
-            else
-            {
-                // digit separator width (scaling independent)
-                var digitSeparator = 2.0.TenthsToWPFUnit();
-                var timeWidths = GetSymbolWidths(beatTimeSymbols);
-                var timeTypeWidths = GetSymbolWidths(beatTypeSymbols);
-                var lengthTime = timeWidths.Sum() + digitSeparator * (timeWidths.Length - 1);
-                var lengthTimeType = timeTypeWidths.Sum() + digitSeparator * (timeTypeWidths.Length - 1);
-                double tempTimeTypeOffset = 0;
-                double tempTimeOffset = 0;
-                if (lengthTime > lengthTimeType)
+                if (TimeSymbol != TimeSymbolMusicXML.normal)
                 {
-                    tempTimeTypeOffset = (Math.Max(lengthTimeType, lengthTime) - Math.Min(lengthTimeType, lengthTime)) / 2;
+                    GetVisualsContainer().AddCharacterGlyph(new Point(0, Staff[Staff.LinesCount / 2 + 1, 1]), symbol);
+                    width = DrawingMethods.GetTextWidth(symbol, TypeFaces.GetMusicFont());
                 }
                 else
                 {
-                    tempTimeOffset = (Math.Max(lengthTimeType, lengthTime) - Math.Min(lengthTimeType, lengthTime)) / 2;
+                    // digit separator width (scaling independent)
+                    var digitSeparator = 2.0.TenthsToWPFUnit();
+                    var timeWidths = GetSymbolWidths(beatTimeSymbols);
+                    var timeTypeWidths = GetSymbolWidths(beatTypeSymbols);
+                    var lengthTime = timeWidths.Sum() + digitSeparator * (timeWidths.Length - 1);
+                    var lengthTimeType = timeTypeWidths.Sum() + digitSeparator * (timeTypeWidths.Length - 1);
+                    double tempTimeTypeOffset = 0;
+                    double tempTimeOffset = 0;
+                    if (lengthTime > lengthTimeType)
+                    {
+                        tempTimeTypeOffset = (Math.Max(lengthTimeType, lengthTime) - Math.Min(lengthTimeType, lengthTime)) / 2;
+                    }
+                    else
+                    {
+                        tempTimeOffset = (Math.Max(lengthTimeType, lengthTime) - Math.Min(lengthTimeType, lengthTime)) / 2;
+                    }
+                    for (int i = 0; i < beatTimeSymbols.Length; i++)
+                    {
+                        GetVisualsContainer().AddCharacterGlyph(new Point(tempTimeOffset, Staff[4, 1]), beatTimeSymbols[i]);
+                        tempTimeOffset += timeWidths[i];
+                    }
+                    for (int j = 0; j < beatTypeSymbols.Length; j++)
+                    {
+                        GetVisualsContainer().AddCharacterGlyph(new Point(tempTimeTypeOffset, Staff[2, 1]), beatTypeSymbols[j]);
+                        tempTimeTypeOffset += timeTypeWidths[j];
+                    }
+                    width = lengthTime > lengthTimeType ? lengthTime : lengthTimeType;
                 }
-                for (int i = 0; i < beatTimeSymbols.Length; i++)
-                {
-                    GetVisualsContainer().AddCharacterGlyph(new Point(tempTimeOffset, Staff[4, 1]), beatTimeSymbols[i]);
-                    tempTimeOffset += timeWidths[i];
-                }
-                for (int j = 0; j < beatTypeSymbols.Length; j++)
-                {
-                    GetVisualsContainer().AddCharacterGlyph(new Point(tempTimeTypeOffset, Staff[2, 1]), beatTypeSymbols[j]);
-                    tempTimeTypeOffset += timeTypeWidths[j];
-                }
-                width = lengthTime > lengthTimeType ? lengthTime : lengthTimeType;
             }
         }
 
