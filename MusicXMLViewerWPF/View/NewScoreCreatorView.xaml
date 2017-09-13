@@ -46,23 +46,20 @@
                     <RowDefinition Height="86*"/>
                     <RowDefinition Height="59*"/>
                 </Grid.RowDefinitions>
-                <GroupBox Header="Clef" HorizontalAlignment="Left" Height="100" VerticalAlignment="Top" Width="223">
+                <GroupBox Header="Clef" HorizontalAlignment="Left" Height="172" VerticalAlignment="Top" Width="226">
 
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition/>
                         </Grid.RowDefinitions>
-                        <Grid Grid.Row="0">
-                            <RadioButton x:Name="radioButtonClef" GroupName="GroupClef" HorizontalAlignment="Left" Margin="0,32,0,0" VerticalAlignment="Top" IsChecked="{Binding CurrentClefOption, ConverterParameter=regularclef, Converter={StaticResource enumConverter}}"/>
-                            <ComboBox x:Name="comboBoxClef" ItemsSource="{Binding ClefTypeListS}" SelectedValue="{Binding SelectedClefS}" FontFamily="{StaticResource BravuraText}" FontSize="35" IsEnabled="{Binding ElementName=radioButtonClef, Path=IsChecked}" HorizontalAlignment="Left" Margin="19,10,0,0" VerticalAlignment="Top" Width="71" Height="61"/>
-                            <RadioButton x:Name="radioButtonGuitar" GroupName="GroupClef" HorizontalAlignment="Left" Margin="116,32,0,0" VerticalAlignment="Top" IsChecked="{Binding CurrentClefOption, ConverterParameter=tablature, Converter={StaticResource enumConverter}}"/>
-                            <Border BorderThickness="0.5" BorderBrush="Gray" Margin="138,10,10,10">
-                                <TextBlock Text="&#xe06d;" FontFamily="{StaticResource BravuraText}" FontSize="26" Margin="26,0,0,0"/>
-                            </Border>
+                        <Grid Grid.Row="0" >
+                            <Canvas  VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                            <ContentPresenter Margin="20,35" VerticalAlignment="Center" Content="{Binding ClefConfigurationPreview}"/>
+                        </Canvas>
                         </Grid>
                     </Grid>
                 </GroupBox>
-                <GroupBox Grid.Column="1" Header="Key" Margin="159,3,25,0">
+                <GroupBox Grid.Column="1" Header="Key" Margin="159,0,25,0">
                     <Grid HorizontalAlignment="Center" Width="Auto" Margin="0,0,0,0">
                         <ComboBox x:Name="comboBoxKeyType" HorizontalAlignment="Left" FontSize="16" Margin="0,18,0,0" SelectedValuePath="Content" SelectedValue="{Binding SelectedKeyMode}" VerticalAlignment="Top" Width="100">
                             <ComboBoxItem Name="Minor" >Minor</ComboBoxItem>
@@ -71,7 +68,7 @@
                         <ComboBox x:Name="comboBoxKeySharpFlat" HorizontalAlignment="Left" FontSize="16" Margin="0,112,0,0" SelectedValuePath="Content" SelectedValue="{Binding SelectedKeyType}" VerticalAlignment="Top" Width="100">
                             <ComboBoxItem Name="Sharp">Sharp</ComboBoxItem>
                             <ComboBoxItem Name="Flat">Flat</ComboBoxItem>
-                            <ComboBoxItem Name="None">None</ComboBoxItem>
+                            <ComboBoxItem Name="Any">Any</ComboBoxItem>
                         </ComboBox>
                         <ComboBox x:Name="comboBoxKeySymbol" HorizontalAlignment="Left" Margin="0,64,0,0" FontSize="16" ItemsSource="{Binding KeySymbolList, Mode=OneWay}" SelectedValue="{Binding SelectedKeySymbol}"  VerticalAlignment="Top" Width="100"/>
                     </Grid>
@@ -84,7 +81,7 @@
                     </Grid>
 
                 </GroupBox>
-                <GroupBox x:Name="groupBox2" Header="Time Signature" HorizontalAlignment="Left" Margin="238,3,0,0" Width="223" Grid.ColumnSpan="2">
+                <GroupBox x:Name="groupBox2" Header="Time Signature" HorizontalAlignment="Left" Margin="238,0,0,0" Width="223" Grid.ColumnSpan="2">
                     <Grid HorizontalAlignment="Left" Width="213" Margin="0,0,-2,3">
                         <Label FontFamily="{StaticResource BravuraText}" Margin="-10,74,143,5" VerticalContentAlignment="Top" HorizontalContentAlignment="Center" FontSize="36" Width="40" Content="&#xE08B;"/>
                         <Label FontFamily="{StaticResource BravuraText}" Margin="0,37,155,38" VerticalAlignment="Stretch" VerticalContentAlignment="Top" HorizontalContentAlignment="Center" HorizontalAlignment="Center" FontSize="36" Width="40" Content="&#xE08A;"/>
