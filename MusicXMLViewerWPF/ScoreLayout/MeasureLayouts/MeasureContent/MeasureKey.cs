@@ -17,11 +17,10 @@ namespace MusicXMLScore.ScoreLayout.MeasureLayouts.MeasureContent
         private int currentClefLine;
         private bool currentIsFlatKey;
         private double visualWidth;
-        public MeasureKey(ClefSignMusicXML clefSign, int clefLine, bool isFlat) : base(clefSign, clefLine, isFlat)
+        public MeasureKey(ClefSignMusicXML clefSign, int clefLine, int keyFifths) : base(clefSign, clefLine, keyFifths)
         {
             currentClefSign = clefSign;
             currentClefLine = clefLine;
-            currentIsFlatKey = isFlat;
         }
 
         public override double GetVisualWidth()
@@ -36,10 +35,16 @@ namespace MusicXMLScore.ScoreLayout.MeasureLayouts.MeasureContent
 
         private void Draw()
         {
+            visualWidth = 0;
             if (staff != null) {
                 double separator = 1.5.TenthsToWPFUnit();
                 double tempWidth = 0;
                 drawingVisualHost.ClearVisuals();
+                if (keyAccidentals.Length ==1 && keyAccidentals[0] == AccidentalValueMusicXML.none)
+                {
+                    //skip drawing...
+                    return;
+                }
                 for (int i = 0; i < keyAccidentals.Length; i++)
                 {
                     var symbol = keyAccidentals[i] == AccidentalValueMusicXML.flat ? MusicSymbols.Flat :
@@ -51,7 +56,6 @@ namespace MusicXMLScore.ScoreLayout.MeasureLayouts.MeasureContent
                 visualWidth = separator;
             } else
             {
-                visualWidth = 0;
                 Console.WriteLine("Staff not set!");
             }
         }
