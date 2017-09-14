@@ -2,4 +2,5 @@ stages:
     - build
 job:
     stage: build
-    script: cmd.exe /C " "MSBuild.exe" MusicXMLViewerWPF.sln " && exit %%ERRORLEVEL%%
+    script: 
+    - cmd.exe /C " "MSBuild.exe" MusicXMLViewerWPF.sln " && exit %%ERRORLEVEL%%
