@@ -1,6 +1,2 @@
-stages:
-    - build
 job:
-    stage: build
-      script:
-	  - .\git_ci.ps1
+   script: .\git_ci.ps1
