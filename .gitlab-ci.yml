@@ -2,4 +2,4 @@ stages:
     - build
 job:
     stage: build
-    script: '"C:\Windows\Microsoft.NET\Framework64\v4.0.30319\MSbuild.exe" /consoleloggerparameters:ErrorsOnly /maxcpucount /nologo /property:Configuration=Release /verbosity:quiet "MusicXMLViewerWPF.sln"'
+    script: '"C:\Windows\Microsoft.NET\Framework64\v4.0.30319\MSBuild.exe" /consoleloggerparameters:ErrorsOnly /maxcpucount /nologo /property:Configuration=Release /verbosity:quiet "MusicXMLViewerWPF.sln"'
