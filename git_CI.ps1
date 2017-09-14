@@ -1,1 +1,1 @@
-﻿msbuild MusicXMLViewerWPF.sln
+msbuild
