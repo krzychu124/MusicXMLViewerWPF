@@ -1,3 +1,2 @@
-$msbuild = (Get-ItemProperty hklm:\software\Microsoft\MSBuild\ToolsVersions\4.0).MSBuildToolsPath
-$MyDir = [System.IO.Path]::GetDirectoryName($myInvocation.MyCommand.Definition) 
-. "$msbuild\msbuild.exe"
+$msbuild = "C:\Windows\Microsoft.NET\Framework\v4.0.30319\msbuild.exe"
+Invoke-Expression "$msbuild\msbuild.exe" MusicXMLViewerWPF.sln
