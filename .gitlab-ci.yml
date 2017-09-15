@@ -1,3 +1,7 @@
-image: philippheuer/docker-gitlab-powershell
-job:
-   script: powershell & "C:\Program Files (x86)\Microsoft Visual Studio\2017\BuildTools\MSBuild\15.0\bin\MSBuild.exe"
+image : microsoft/dotnet:latest
+stages:
+  - build
+  build:
+  stage: build
+    script:
+    - 'dotnet build'
