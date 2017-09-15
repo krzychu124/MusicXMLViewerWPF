@@ -1,7 +1,7 @@
 image : microsoft/dotnet:latest
 stages:
   - build
-  build:
+build:
   stage: build
     script:
     - 'dotnet build'
