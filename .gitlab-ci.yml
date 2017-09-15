@@ -1,3 +1,4 @@
+image: didstopia/msbuild
 stages:
     - build
 before_script:
