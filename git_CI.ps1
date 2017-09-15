@@ -1,6 +1,6 @@
 # $msbuild = "C:\Windows\Microsoft.NET\Framework\v4.0.30319\msbuild.exe"
 function Resolve-MsBuild {
-	$msb2017 = Resolve-Path "${env:ProgramFiles(x86)}\Microsoft Visual Studio\*\*\MSBuild\*\bin\msbuild.exe" -ErrorAction SilentlyContinue
+	$msb2017 = Resolve-Path "${env:ProgramFiles(x86)}\Microsoft Visual Studio\*\*\MSBuild\*\bin\MSBuild.exe" -ErrorAction SilentlyContinue
 	if($msb2017) {
 		Write-Host "Found MSBuild 2017 (or later)."
 		Write-Host $msb2017
