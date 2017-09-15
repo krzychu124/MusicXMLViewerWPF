@@ -1,4 +1,4 @@
-image: nugardt/msbuild:15.0
+image: alexellisio/msbuild
 stages:
     - build
 job:
