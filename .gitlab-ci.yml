@@ -1,7 +1,7 @@
-image : microsoft/dotnet:latest
 stages:
-  - build
-build:
- stage: build
- script:
-  - 'dotnet build'
+    - build
+before_script:
+  - 'C:\Nuget\nuget.exe restore MusicXMLViewerWPF.sln'
+job:
+    stage: build
+    script: '"C:\Program Files (x86)\Microsoft Visual Studio\2017\BuildTools\MSBuild\15.0\bin\MSBuild.exe" "MusicXMLViewerWPF.sln"'
