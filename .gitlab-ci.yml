@@ -1,4 +1,4 @@
-image: alexellisio/msbuild
+image: dmirmilshteyn/dotnet-msbuild-mono
 stages:
     - build
 job:
