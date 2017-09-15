@@ -1,4 +1,4 @@
-image: didstopia/msbuild
+image: nugardt/msbuild:15.0
 stages:
     - build
 job:
