@@ -250,3 +250,6 @@ ModelManifest.xml
 .editorconfig
 /MusicXMLViewerWPF/MusicXMLViewerWPF.ruleset
 /MusicXMLViewerWPF/GlobalSuppressions.cs
+/AI Project
+#Advanced Installer
+/MusicXMLViewerSetup
