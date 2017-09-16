@@ -4,6 +4,10 @@
 ## Main goal of this project: 
 ## MusicXML Files: Read + Display + Edit + Save/Print
 ---
+
+## Latest build release:
+[MusicXMLScoreSetup.zip](/uploads/0dc298ec73617a1c5d07e0c1d8d71a4f/MusicXMLScoreSetup.zip) _**v0.3.7.6_experimental**_ 
+
 ---
 
 ### **Currently under developement:**
@@ -13,7 +17,7 @@
       - [x] **Basic Measures Layout Arrange System** _(files **with** new-page, new-system elements support)_
       - [ ] **Advanced Measures Layout Arrange System** _(files **without** new-page, new system elements)_ **WiP**
       
-      #### Currently suspended due to necessary improvements in arrangement of measures:
+      ### Currently suspended due to necessary improvements in arrangement of measures:
       - [ ] **Notes drawing:**
         - [x] NoteHeads - other than standard skipped for now
         - [x] NoteChords
