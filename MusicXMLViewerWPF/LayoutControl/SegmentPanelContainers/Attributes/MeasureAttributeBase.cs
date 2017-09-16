@@ -56,7 +56,12 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Attributes
             }
         }
 
-        public Canvas ItemCanvas { get => itemCanvas; set => itemCanvas = value; }
+        public Canvas ItemCanvas { get { return itemCanvas; }
+            set
+            {
+                itemCanvas = value;
+            }
+        }
         public int StaffNumber { get => staffNumber; set => staffNumber = value; }
         public int FractionPosition { get => fractionPosition; set => fractionPosition = value; }
         public Brush Color { get => color; set => color = value; }
