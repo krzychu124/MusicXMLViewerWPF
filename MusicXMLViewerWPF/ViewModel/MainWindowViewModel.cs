@@ -132,7 +132,8 @@ namespace MusicXMLScore.ViewModel
             }
             catch (Exception exception)
             {
-                LoggIt.Log(exception.InnerException?.Message, LogType.Exception);
+                LoggIt.Log(exception.Message, LogType.Exception);
+                MessageBox.Show(exception.Message + " \n " + exception.StackTrace);
                 return default(T);
             }
             finally
@@ -245,7 +246,8 @@ namespace MusicXMLScore.ViewModel
             string filedestination;
             if (parameter != null)
             {
-                filedestination = parameter as string;
+                filedestination = System.AppDomain.CurrentDomain.BaseDirectory + parameter as string;
+
             }
             else
             {

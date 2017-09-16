@@ -29,8 +29,8 @@
                     <Separator/>
                     <MenuItem Header="Open File" Command="{Binding OpenFileCommand}"/>
                     <MenuItem Header="Open Last">
-                        <MenuItem Header="Echigo-Jishi.xml" Command="{Binding OpenFileCommand}" CommandParameter="Model\TestXMLFiles\Echigo-Jishi.xml"/>
-                        <MenuItem Header="Saltarello.xml" Command="{Binding OpenFileCommand}" CommandParameter="Model\TestXMLFiles\Saltarello.xml"/>
+                        <MenuItem Header="Echigo-Jishi.xml" Command="{Binding OpenFileCommand}" CommandParameter="\Model\TestXMLFiles\Echigo-Jishi.xml"/>
+                        <MenuItem Header="Saltarello.xml" Command="{Binding OpenFileCommand}" CommandParameter="\Model\TestXMLFiles\Saltarello.xml"/>
                     </MenuItem>
                     <Separator/>
                     <MenuItem Header="Close File" Command="{Binding CloseFileCommand}"/>
