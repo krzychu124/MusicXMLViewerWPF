@@ -1,22 +1,36 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26730.15
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MusicXMLViewerWPF", "MusicXMLViewerWPF\MusicXMLViewerWPF.csproj", "{B2D7CB68-DDB2-41B3-8F62-3A6D99ACE747}"
+EndProject
+Project("{840C416C-B8F3-42BC-B0DD-F6BB14C9F8CB}") = "MusicXMLViewerSetup", "AI Project\MusicXMLViewerSetup.aiproj", "{AACE5E0A-6C34-4468-BE9E-952CB2FB16A1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		DefaultBuild|Any CPU = DefaultBuild|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{B2D7CB68-DDB2-41B3-8F62-3A6D99ACE747}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B2D7CB68-DDB2-41B3-8F62-3A6D99ACE747}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B2D7CB68-DDB2-41B3-8F62-3A6D99ACE747}.DefaultBuild|Any CPU.ActiveCfg = Debug|Any CPU
+		{B2D7CB68-DDB2-41B3-8F62-3A6D99ACE747}.DefaultBuild|Any CPU.Build.0 = Debug|Any CPU
 		{B2D7CB68-DDB2-41B3-8F62-3A6D99ACE747}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B2D7CB68-DDB2-41B3-8F62-3A6D99ACE747}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AACE5E0A-6C34-4468-BE9E-952CB2FB16A1}.Debug|Any CPU.ActiveCfg = DefaultBuild
+		{AACE5E0A-6C34-4468-BE9E-952CB2FB16A1}.Debug|Any CPU.Build.0 = DefaultBuild
+		{AACE5E0A-6C34-4468-BE9E-952CB2FB16A1}.DefaultBuild|Any CPU.ActiveCfg = DefaultBuild
+		{AACE5E0A-6C34-4468-BE9E-952CB2FB16A1}.DefaultBuild|Any CPU.Build.0 = DefaultBuild
+		{AACE5E0A-6C34-4468-BE9E-952CB2FB16A1}.Release|Any CPU.ActiveCfg = DefaultBuild
+		{AACE5E0A-6C34-4468-BE9E-952CB2FB16A1}.Release|Any CPU.Build.0 = DefaultBuild
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {620E58ED-9E48-4E1A-B34C-E1033BFB0CFB}
 	EndGlobalSection
 EndGlobal

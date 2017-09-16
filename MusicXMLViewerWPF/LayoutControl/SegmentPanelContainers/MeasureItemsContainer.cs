@@ -5,16 +5,12 @@ using MusicXMLScore.Model.MeasureItems;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Controls;
 using MusicXMLScore.Converters;
 using MusicXMLScore.LayoutControl.SegmentPanelContainers.Attributes;
 using System.Windows;
 using System.Windows.Media;
 using MusicXMLScore.Helpers;
-using MusicXMLScore.VisualObjectController;
-using MusicXMLScore.LayoutStyle;
 
 namespace MusicXMLScore.LayoutControl.SegmentPanelContainers
 {

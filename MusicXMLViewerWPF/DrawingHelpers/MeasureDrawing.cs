@@ -1,17 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Media;
 using MusicXMLScore.Helpers;
 using System.Windows;
-using System.Windows.Controls;
 using MusicXMLScore.ViewModel;
 using MusicXMLScore.Model;
 using MusicXMLScore.Converters;
-using MusicXMLScore.Model.MeasureItems;
-using MusicXMLScore.Model.MeasureItems.Attributes;
 using System.ComponentModel;
 
 namespace MusicXMLScore.DrawingHelpers

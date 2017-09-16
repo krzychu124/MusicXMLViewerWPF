@@ -1,11 +1,8 @@
 ﻿using MusicXMLScore.Model.Helpers.SimpleTypes;
 using MusicXMLScore.Model.MeasureItems.Attributes;
-using MusicXMLViewerWPF;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace MusicXMLScore.DrawingHelpers
 {

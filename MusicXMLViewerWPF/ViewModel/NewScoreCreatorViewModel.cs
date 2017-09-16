@@ -2,11 +2,9 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
-using System.Windows.Media;
 using GalaSoft.MvvmLight;
 using MusicXMLScore.DrawingHelpers;
 using MusicXMLScore.Helpers;
-using MusicXMLScore.Log;
 using System.Windows.Controls;
 using MusicXMLScore.ScoreLayout.MeasureLayouts;
 using MusicXMLScore.Converters;

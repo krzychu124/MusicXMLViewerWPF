@@ -1,6 +1,4 @@
-﻿using MusicXMLScore.Converters;
-
-namespace MusicXMLScore.VisualObject
+﻿namespace MusicXMLScore.VisualObject
 {
     internal class VisualObjectWithOffset : VisualObjectBase
     {

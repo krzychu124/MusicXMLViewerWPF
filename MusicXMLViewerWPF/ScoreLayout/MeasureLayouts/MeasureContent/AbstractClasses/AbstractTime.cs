@@ -1,10 +1,5 @@
 ﻿using MusicXMLScore.Model.MeasureItems.Attributes;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Media;
 using MusicXMLScore.Helpers;
 
 namespace MusicXMLScore.ScoreLayout.MeasureLayouts.MeasureContent.AbstractClasses

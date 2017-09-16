@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace MusicXMLScore.ScoreProperties
+﻿namespace MusicXMLScore.ScoreProperties
 {
     /// <summary>
     /// Interface used in generic classes to limit class range of parameter T

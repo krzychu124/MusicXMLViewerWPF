@@ -1,12 +1,8 @@
 ﻿using MusicXMLScore.ScoreLayout.MeasureLayouts.MeasureContent.AbstractClasses;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using MusicXMLScore.Model.MeasureItems.Attributes;
 using MusicXMLScore.DrawingHelpers;
-using System.Windows.Media;
 using System.Windows;
 using MusicXMLScore.Helpers;
 using MusicXMLScore.Converters;

@@ -1,15 +1,10 @@
 ﻿using MusicXMLScore.Model.MeasureItems.Attributes;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using MusicXMLScore.Converters;
 using MusicXMLScore.DrawingHelpers;
 using MusicXMLScore.Helpers;
-using System.Windows.Media;
 
 namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Attributes
 {
