@@ -11,6 +11,7 @@ using MusicXMLScore.Converters;
 using MusicXMLScore.ScoreLayout.MeasureLayouts.MeasureContent;
 using MusicXMLScore.Model.MeasureItems.Attributes;
 using System;
+using System.Windows;
 
 namespace MusicXMLScore.ViewModel
 {
@@ -109,13 +110,13 @@ namespace MusicXMLScore.ViewModel
             };
             GenerateClefPreview(selectedPreviewClef);
             OptionsWindowCommand = new RelayCommand(OnOpionsWindow, () => CustomSettings);
-            FinishCommand = new RelayCommand(OnFinish);
-            CancelCommand = new RelayCommand(OnCancel);
+            FinishCommand = new RelayCommand<object>(OnFinish);
+            CancelCommand = new RelayCommand<object>(OnCancel);
             InitPreview();
             SetKeySymbolList();
         }
 
-        public RelayCommand CancelCommand { get; set; }
+        public RelayCommand<object> CancelCommand { get; set; }
         public Canvas ClefConfigurationPreview { get { return clefConfigurationPreview; } }
         public List<string> ClefType { get { return clefTypes; } }
         public Dictionary<string, ClefSignMusicXML> ClefTypeListS { get { return cleftype; } }
@@ -124,7 +125,7 @@ namespace MusicXMLScore.ViewModel
         public TimeSymbolMusicXML CurrentTimeSigOption { get { return currenttimesig; } set { Set(nameof(CurrentTimeSigOption), ref currenttimesig, value); } }
         public bool CustomSettings { get { return customsetting; } set { if (value != customsetting) { customsetting = value; OptionsWindowCommand.RiseCanExecuteChanged(); } } }
         public bool FillPage { get => fillPage; set => Set(nameof(FillPage), ref fillPage, value); }
-        public RelayCommand FinishCommand { get; set; }
+        public RelayCommand<object> FinishCommand { get; set; }
         public ObservableCollection<string> KeySymbolList { get { return keysymbollist; } set { Set(nameof(KeySymbolList), ref keysymbollist, value); } }
         public int MeasuresCount { get { return measurescount; } set { measurescount = value; } }
         public RelayCommand OptionsWindowCommand { get; set; }
@@ -290,9 +291,13 @@ namespace MusicXMLScore.ViewModel
             }
         }
 
-        private void OnCancel()
+        private void OnCancel(object window)
         {
             Console.WriteLine("Cancel clicked");
+            if (window is Window w) //! C# 7
+            {
+                w.Close();
+            }
         }
 
         private void OnFillPage()
@@ -300,9 +305,14 @@ namespace MusicXMLScore.ViewModel
             Console.WriteLine($"Fill Page clicked, current value {fillPage}");
         }
 
-        private void OnFinish()
+        private void OnFinish(object window)
         {
             Console.WriteLine("Finish Clicked");
+            if (window is Window w) //! C# 7
+            {
+                w.Close();
+            }
+
         }
 
         private void SetKeySymbolList()
