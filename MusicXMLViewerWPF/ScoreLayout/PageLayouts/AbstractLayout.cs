@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using MusicXMLScore.ScoreLayout.PageLayouts.PageElements;
+using System.Collections.Generic;
+using System.Windows.Controls;
 
 namespace MusicXMLScore.ScoreLayout.PageLayouts
 {
@@ -11,7 +13,9 @@ namespace MusicXMLScore.ScoreLayout.PageLayouts
             this.pageElements = pageElements;
         }
 
-        public abstract void DoLayout();
+        internal IList<AbstractPageElement> PageElements => pageElements;
+
+        public abstract void DoLayout(Canvas canvas);
         public abstract void UpdateLayout();
     }
 }

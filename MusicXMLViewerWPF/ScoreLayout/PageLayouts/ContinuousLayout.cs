@@ -1,5 +1,7 @@
-﻿using System;
+﻿using MusicXMLScore.ScoreLayout.PageLayouts.PageElements;
+using System;
 using System.Collections.Generic;
+using System.Windows.Controls;
 
 namespace MusicXMLScore.ScoreLayout.PageLayouts
 {
@@ -9,7 +11,7 @@ namespace MusicXMLScore.ScoreLayout.PageLayouts
         {
         }
 
-        public override void DoLayout()
+        public override void DoLayout(Canvas canvas)
         {
             throw new NotImplementedException();
         }

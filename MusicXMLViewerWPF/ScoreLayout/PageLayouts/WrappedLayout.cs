@@ -1,17 +1,23 @@
-﻿using System;
+﻿using MusicXMLScore.ScoreLayout.PageLayouts.PageElements;
+using System;
 using System.Collections.Generic;
+using System.Windows.Controls;
 
 namespace MusicXMLScore.ScoreLayout.PageLayouts
 {
     class WrappedLayout : AbstractLayout
     {
-        protected WrappedLayout(IList<AbstractPageElement> pageElements) : base(pageElements)
+        public WrappedLayout(IList<AbstractPageElement> pageElements) : base(pageElements)
         {
         }
 
-        public override void DoLayout()
+        public override void DoLayout(Canvas canvas)
         {
-            throw new NotImplementedException();
+            canvas.Children.Clear();
+            foreach(var item in PageElements)
+            {
+                canvas.Children.Add(item.VisualsContainer);
+            }
         }
 
         public override void UpdateLayout()
