@@ -10,7 +10,7 @@ namespace MusicXMLScore.ScoreLayout
         private readonly string scoreId;
         private Canvas scorePage;
 
-        public StandardScorePage(string scoreId, IPageLayout pageLayout)
+        public StandardScorePage(string scoreId, IPageLayout pageLayout) : base(scoreId)
         {
             this.scoreId = scoreId;
             this.pageLayout = pageLayout;
@@ -29,7 +29,7 @@ namespace MusicXMLScore.ScoreLayout
 
         private void Update()
         {
-            throw new NotImplementedException();
+            pageLayout.DoLayout(scorePage);
         }
     }
 }

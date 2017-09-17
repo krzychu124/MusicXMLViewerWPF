@@ -1,8 +1,10 @@
-﻿namespace MusicXMLScore.ScoreLayout
+﻿using System.Windows.Controls;
+
+namespace MusicXMLScore.ScoreLayout
 {
     interface IPageLayout
     {
-        void DoLayout();
         void UpdateLayout();
+        void DoLayout(Canvas scorePage);
     }
 }
