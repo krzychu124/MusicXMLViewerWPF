@@ -44,6 +44,7 @@ namespace MusicXMLScore.ViewModel
 
         public PagesControllerViewModel()
         {
+            PagesCollection = new ObservableCollection<UIElement>();
         }
 
         public PagesControllerViewModel(int numberOfPages)
@@ -114,6 +115,13 @@ namespace MusicXMLScore.ViewModel
             int index = pageCollection.Count;
             PageViewModel pvm = new PageViewModel(sp, index);
             PagesCollection.Add(new PageView { DataContext = pvm });
+        }
+
+        public void AddScorePage(ScoreLayout.AbstractScorePage scorePage)
+        {
+            IsBlank = false;
+            id = scorePage.Id;
+            PagesCollection.Add(scorePage.GetContent());
         }
     }
 }
