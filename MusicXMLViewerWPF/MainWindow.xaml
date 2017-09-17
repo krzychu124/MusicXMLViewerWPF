@@ -26,7 +26,9 @@
                 <MenuItem Header="File" >
                     <MenuItem Header="Create Default Score" IsEnabled="true" Command="{Binding NewDefaultScoreCreatorCommand}"/>
                     <MenuItem Header="Create Custom Score" IsEnabled="true" Command="{Binding NewCustomScoreCreatorCommand}"/>
-                    <Separator/>
+                    <Separator Background="Red"/>
+                    <MenuItem Header="Improved Advanced Layout Manager" IsEnabled="true" Background="Orange" Command="{Binding AdvancedLayoutScoreCreatorTest}"/>
+                    <Separator Background="Red"/>
                     <MenuItem Header="Open File" Command="{Binding OpenFileCommand}"/>
                     <MenuItem Header="Open Last">
                         <MenuItem Header="Echigo-Jishi.xml" Command="{Binding OpenFileCommand}" CommandParameter="\Model\TestXMLFiles\Echigo-Jishi.xml"/>
