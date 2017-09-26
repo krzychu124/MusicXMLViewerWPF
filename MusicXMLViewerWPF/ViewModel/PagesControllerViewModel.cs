@@ -35,7 +35,7 @@ namespace MusicXMLScore.ViewModel
     {
         private string header;
         private string id;
-    
+
         private bool isBlank = true;
         private ObservableCollection<UIElement> pageCollection;
         private ScorePartwiseMusicXML partwise;
@@ -121,7 +121,9 @@ namespace MusicXMLScore.ViewModel
         {
             IsBlank = false;
             id = scorePage.Id;
-            PagesCollection.Add(scorePage.GetContent());
+            var number = PagesCollection.Count + 1;
+            var pvm = new PageViewModel(scorePage) { PageNumber = number + "", PageNumberAlignment = number % 2 == 0 ? TextAlignment.Right : TextAlignment.Left };
+            PagesCollection.Add(new PageView { DataContext = pvm });
         }
     }
 }
