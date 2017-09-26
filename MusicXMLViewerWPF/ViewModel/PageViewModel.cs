@@ -8,6 +8,7 @@ using GalaSoft.MvvmLight;
 using MusicXMLScore.DrawingHelpers;
 using MusicXMLScore.Helpers;
 using MusicXMLViewerWPF;
+using System.ComponentModel;
 
 namespace MusicXMLScore.ViewModel
 {
@@ -21,6 +22,11 @@ namespace MusicXMLScore.ViewModel
         private DrawingVisualHost page = new DrawingVisualHost();
         private double pageHeight;
         private double pageWidth;
+        public AdvancedPageViewModel AdvancedPageViewContent { get; set; }
+
+        public string PageNumber { get; set; }
+        public TextAlignment PageNumberAlignment { get; set; }
+        private ScoreLayout.AbstractScorePage scorePage;
         #endregion
         #region NewConcept
         PageDrawingSystem newPage;
@@ -53,6 +59,41 @@ namespace MusicXMLScore.ViewModel
             PageCanvas.Add(page);
         }
 
+        public PageViewModel(ScoreLayout.AbstractScorePage page)
+        {
+            AdvancedPageViewContent = new AdvancedPageViewModel();
+            TestCommand = new RelayCommand(OnTestCommand);
+            PageWidth = page.Width;
+            PageHeight = page.Height;
+            scorePage = page;
+            var sPage = page as ScoreLayout.StandardScorePage;
+            if (sPage != null)
+            {
+                sPage.AddListener(ScorePagePropertyChanged);
+            }
+            var canvas = page.GetContent() as Canvas;
+            if (canvas != null)
+            {
+                canvas.Background = Brushes.WhiteSmoke;
+            }
+            PageCanvas.Add(canvas);
+        }
+
+        public void ScorePagePropertyChanged(object o, PropertyChangedEventArgs a)
+        {
+            switch (a.PropertyName)
+            {
+                case nameof(scorePage.Width):
+                    PageWidth = scorePage.Width;
+                    break;
+                case nameof(scorePage.Height):
+                    PageHeight = scorePage.Height;
+                    break;
+                default:
+                    break;
+            }
+        }
+
         public PageViewModel(ScorePartwiseMusicXML scorePartwise, int index)
         {
             pageIndex = index;
@@ -83,7 +124,13 @@ namespace MusicXMLScore.ViewModel
         #region Commands, Action<>, Func<>
         private void OnTestCommand()
         {
-            Console.WriteLine("test command invoked");
+            if (PageHeight > 300)
+            {
+                scorePage.Height = scorePage.Height - 30;
+                PageHeight = scorePage.Height;
+                scorePage.Width = scorePage.Width - 30;
+                PageWidth = scorePage.Width;
+            }
         }
         #endregion
     }

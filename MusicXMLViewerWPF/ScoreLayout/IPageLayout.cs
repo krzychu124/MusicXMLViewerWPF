@@ -4,7 +4,8 @@ namespace MusicXMLScore.ScoreLayout
 {
     interface IPageLayout
     {
+        void SetRootPage(AbstractScorePage scorePage);
         void UpdateLayout();
-        void DoLayout(Canvas scorePage);
+        void DoLayout(AbstractScorePage page, Canvas scorePage);
     }
 }

@@ -11,7 +11,7 @@ namespace MusicXMLScore.ScoreLayout.PageLayouts
         {
         }
 
-        public override void DoLayout(Canvas canvas)
+        public override void DoLayout(AbstractScorePage page, Canvas canvas)
         {
             throw new NotImplementedException();
         }

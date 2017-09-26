@@ -6,7 +6,7 @@ namespace MusicXMLScore.ScoreLayout.PageLayouts.PageElements
 {
     abstract class AbstractPageElement
     {
-
+        private AbstractLayout layoutRoot;
         private double width;
         private double height;
         private double x;
@@ -16,10 +16,21 @@ namespace MusicXMLScore.ScoreLayout.PageLayouts.PageElements
         protected readonly List<IPageElementItem> items;
 
         public Canvas VisualsContainer { get => visualsContainer; }
-        public double Width { get => width; set => width = value; }
+        public double Width
+        {
+            get => width; set
+            {
+                width = value;
+                VisualsContainer.Width = value;
+            }
+        }
         public double Height
         {
-            get => height; set => height = value;
+            get => height; set
+            {
+                height = value;
+                VisualsContainer.Height = value;
+            }
         }
         public double X
         {
@@ -40,6 +51,8 @@ namespace MusicXMLScore.ScoreLayout.PageLayouts.PageElements
             }
         }
 
+        internal AbstractLayout LayoutRoot { get => layoutRoot; set => layoutRoot = value; }
+
         protected AbstractPageElement(double width, double height)
         {
             this.width = width;
@@ -58,14 +71,15 @@ namespace MusicXMLScore.ScoreLayout.PageLayouts.PageElements
         }
 
         public abstract void Update();
+        public abstract void UpdateDimensions(double width, double height);
 
-        protected void AddVisual(UIElement uIElement, double x = 0, double y = 0)
+        protected void AddVisual(FrameworkElement frameworkElement, double x = 0, double y = 0)
         {
-            if (uIElement != null)
+            if (frameworkElement != null)
             {
-                Canvas.SetTop(uIElement, y);
-                Canvas.SetLeft(uIElement, x);
-                visualsContainer.Children.Add(uIElement);
+                Canvas.SetTop(frameworkElement, y);
+                Canvas.SetLeft(frameworkElement, x);
+                visualsContainer.Children.Add(frameworkElement);
             }
         }
     }

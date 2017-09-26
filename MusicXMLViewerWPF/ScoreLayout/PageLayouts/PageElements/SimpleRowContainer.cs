@@ -7,12 +7,11 @@ using System.Windows;
 
 namespace MusicXMLScore.ScoreLayout.PageLayouts.PageElements
 {
-    interface IPageElementItem
+    class SimpleRowContainer : AbstractRowContainer
     {
-        FrameworkElement GetUIElement();
-        void SetWidth(double width);
-        double GetWidth();
-        double GetMinWidth();
-        void DrawNumber(int count);//helper
+        public SimpleRowContainer(Rect bounds) : base(bounds)
+        {
+            X = 30;
+        }
     }
 }

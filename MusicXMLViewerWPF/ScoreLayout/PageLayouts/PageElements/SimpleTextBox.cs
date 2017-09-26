@@ -17,9 +17,24 @@ namespace MusicXMLScore.ScoreLayout.PageLayouts.PageElements
             Text = text;
         }
 
-        public UIElement GetUIElement()
+        public void DrawNumber(int count)
+        {
+            //todo
+        }
+
+        public double GetMinWidth()
+        {
+            return 150;
+        }
+
+        public FrameworkElement GetUIElement()
         {
             return this;
+        }
+
+        public double GetWidth()
+        {
+            return Width;
         }
 
         public void SetWidth(double width)

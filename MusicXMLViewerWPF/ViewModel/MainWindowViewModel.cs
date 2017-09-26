@@ -21,6 +21,7 @@ using MusicXMLViewerWPF;
 using MusicXMLScore.ScoreLayout;
 using MusicXMLScore.ScoreLayout.PageLayouts;
 using MusicXMLScore.ScoreLayout.PageLayouts.PageElements;
+using MusicXMLScore.Model.Factories;
 
 namespace MusicXMLScore.ViewModel
 {
@@ -216,11 +217,17 @@ namespace MusicXMLScore.ViewModel
             string header = "ADVANCED_LAYOUT_TEST_ID";
             var vm = SelectedTabItem.DataContext as PagesControllerViewModel;
             var pageLayout = new WrappedLayout(new List<AbstractPageElement>());
-            var scorePage = new StandardScorePage("ADVANCED_LAYOUT_TEST_ID", pageLayout);
-            scorePage.UpdateContent();
+            var scorePage = AdvancedLayoutTestFactory.GetScorePage();
+            var scorePage2 = AdvancedLayoutTestFactory.GetScorePage2();
+            scorePage.NextPage = scorePage2;
+            scorePage2.PreviousPage = scorePage;
+            //var scorePage = new StandardScorePage("ADVANCED_LAYOUT_TEST_ID", pageLayout);
+            //scorePage.UpdateContent();
             if (vm?.IsBlank == true)
             {
                 vm.AddScorePage(scorePage);
+                
+                vm.AddScorePage(scorePage2);
                 SelectedTabItem.Tag = scorePage.Id;
                 SelectedTabItem.Header = header;
                 //bug-fix: binding error PagesCollection property not found
@@ -232,6 +239,7 @@ namespace MusicXMLScore.ViewModel
             {
                 var pcvm = new PagesControllerViewModel();
                 pcvm.AddScorePage(scorePage);
+                pcvm.AddScorePage(scorePage2);
                 var tab = new TabItem
                 {
                     Header = header,
