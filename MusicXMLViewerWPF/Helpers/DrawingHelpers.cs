@@ -27,15 +27,13 @@ namespace MusicXMLScore.Helpers
         {
             Brush result = Brushes.Transparent;
 
-            Random rnd = new Random();
-
             Type brushesType = typeof(Brushes);
 
-            PropertyInfo[] properties = brushesType.GetProperties().Select(i=> i).Where(i => i.Name[0].ToString() == "D").ToArray();
+            PropertyInfo[] properties = brushesType.GetProperties().Select(i => i).Where(i => i.Name.StartsWith("Dark") || i.Name.StartsWith("Medium")).ToArray();
             //! colors with first letter "D"
             int random = rndom.Next(properties.Length);
             result = (Brush)properties[random].GetValue(null, null);
-
+            result.Freeze();
             return result;
         }
     }
