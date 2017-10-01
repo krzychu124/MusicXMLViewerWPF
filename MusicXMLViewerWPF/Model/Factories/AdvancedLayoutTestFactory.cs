@@ -1,4 +1,5 @@
-﻿using MusicXMLScore.ScoreLayout;
+﻿using MusicXMLScore.Prototypes;
+using MusicXMLScore.ScoreLayout;
 using MusicXMLScore.ScoreLayout.PageLayouts;
 using MusicXMLScore.ScoreLayout.PageLayouts.PageElements;
 using System;
@@ -6,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace MusicXMLScore.Model.Factories
 {
@@ -66,6 +68,27 @@ namespace MusicXMLScore.Model.Factories
             var scorePage = new StandardScorePage("ADVANCED_LAYOUT_TEST2", pageLayout);
             scorePage.UpdateContent();
             return scorePage;
+        }
+
+        internal static AbstractLayout GetEmptyLayout(Size dimensions)
+        {
+            return new WrappedLayout(new List<AbstractPageElement>()) { Width = dimensions.Width, Height = dimensions.Height };
+        }
+
+        public static List<UIElement> GetLayout()
+        {
+            var list = new List<UIElement>();
+            list.Add(new MeasurePrototype() { MinWidth = 210 });
+            list.Add(new MeasurePrototype() { MinWidth = 310 });
+            list.Add(new MeasurePrototype() { MinWidth = 280 });
+            list.Add(new MeasurePrototype() { MinWidth = 250 });
+            list.Add(new MeasurePrototype() { MinWidth = 280 });
+            list.Add(new MeasurePrototype() { MinWidth = 190 });
+            list.Add(new MeasurePrototype() { MinWidth = 410 });
+            list.Add(new MeasurePrototype() { MinWidth = 330 });
+
+
+            return list;
         }
     }
 }
