@@ -33,7 +33,6 @@ namespace MusicXMLScore.Helpers
             //! colors with first letter "D"
             int random = rndom.Next(properties.Length);
             result = (Brush)properties[random].GetValue(null, null);
-            result.Freeze();
             return result;
         }
     }

@@ -7,7 +7,7 @@ namespace MusicXMLScore.ScoreLayout.PageLayouts
 {
     class ContinuousLayout : AbstractLayout
     {
-        protected ContinuousLayout(IList<AbstractPageElement> pageElements) : base(pageElements)
+        public ContinuousLayout(IList<AbstractPageElement> pageElements) : base(pageElements)
         {
         }
 

@@ -32,6 +32,8 @@
                     <Separator Background="Red"/>
                     <MenuItem Header="Improved Advanced Layout Manager" IsEnabled="true" Background="Orange" Command="{Binding AdvancedLayoutScoreCreatorTest}"/>
                     <Separator Background="Red"/>
+                    <MenuItem Header="Improved Advanced Layout Manager" IsEnabled="true" Foreground="White" Background="Green" Command="{Binding AdvancedLayoutScoreCreatorTest2}"/>
+                    <Separator Background="Red"/>
                     <MenuItem Header="Open File" Command="{Binding OpenFileCommand}"/>
                     <MenuItem Header="Open Last">
                         <MenuItem Header="Echigo-Jishi.xml" Command="{Binding OpenFileCommand}" CommandParameter="\Model\TestXMLFiles\Echigo-Jishi.xml"/>
@@ -65,7 +67,7 @@
                 <MenuItem Header="Test">
                     <MenuItem Header="Test Stretch All Systems"  Command="{Binding TestButton2Command}"/>
                     <MenuItem Header="Test Stretch Last System" Command="{Binding TestButtonCommand}"/>
-                    <MenuItem Header="None" IsEnabled="False"/>
+                    <MenuItem Header="Add new page" IsEnabled="true" Command="{Binding AddNewPageCommand}"/>
                     <MenuItem Header="None" IsEnabled="False"/>
                 </MenuItem>
                 <MenuItem Header="Layout" IsEnabled="False">

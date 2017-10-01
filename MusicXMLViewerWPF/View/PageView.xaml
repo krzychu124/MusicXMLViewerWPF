@@ -3,18 +3,13 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:MusicXMLScore.ViewModel"
-             xmlns:Prototypes ="clr-namespace:MusicXMLScore.Prototypes"
-             xmlns:helpers="clr-namespace:MusicXMLScore.Helpers"
-             xmlns:credit ="clr-namespace:MusicXMLViewerWPF"
-             xmlns:Configuration="clr-namespace:MusicXMLScore.ViewModel"
              x:Class="MusicXMLScore.ViewModel.PageView"
              mc:Ignorable="d" Height="{Binding PageHeight}" Width="{Binding PageWidth}" x:Name="PageUserControl" d:DesignWidth="1201.847" d:DesignHeight="600.113">
     <UserControl.Resources>
         <DropShadowEffect x:Key="z-depth3" BlurRadius="14" ShadowDepth="4.5" Direction="270" Color="#BBBBBB"/>
         <DropShadowEffect x:Key="z-depth4" BlurRadius="25" ShadowDepth="8" Direction="270" Color="#BBBBBB"/>
     </UserControl.Resources>
-    <Grid>
+    <Grid Effect="{StaticResource z-depth3}">
         <Border>
             <!--Effect="{StaticResource z-depth3}"-->
 
@@ -22,44 +17,12 @@
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
 
-                        <!--<Canvas Effect="{StaticResource z-depth4}"/>-->
+                        <Canvas />
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
             </ItemsControl>
         </Border>
         <Button Content="Lower dimensions about 30px" HorizontalAlignment="Left" Margin="5,5,0,0" VerticalAlignment="Top" Width="Auto" Command="{Binding TestCommand}"/>
-        <!--<View:AdvancedPageView DataContext="{Binding AdvancedPageViewContent}"  Width="500" Height="500"/>-->
-        <Prototypes:ScoreContentPanel StretchLastRow="true" Margin="30,30,30,30">
-            <Prototypes:ScoreContentPanel.RowTopMargins>
-                <Prototypes:RowTopMargin TopMargin="50"/>
-                <Prototypes:RowTopMargin TopMargin="40"/>
-                <Prototypes:RowTopMargin TopMargin="30"/>
-                <Prototypes:RowTopMargin TopMargin="30"/>
-                <Prototypes:RowTopMargin TopMargin="30"/>
-                <Prototypes:RowTopMargin TopMargin="30"/>
-                <Prototypes:RowTopMargin TopMargin="30"/>
-                <Prototypes:RowTopMargin TopMargin="30"/>
-            </Prototypes:ScoreContentPanel.RowTopMargins>
-            <TextBlock Prototypes:ScoreContentPanel.FullWidthItem="True" Text="TestTitle" TextAlignment="Center" FontWeight="Bold" FontSize="40" Height="50"/>
-            <Prototypes:MeasurePrototype MinWidth="210"/>
-            <Canvas Background="blue" MinWidth="350" MinHeight="50"/>
-            <Prototypes:MeasurePrototype  MinWidth="350"/>
-            <Prototypes:MeasurePrototype MinWidth="200"/>
-            <Prototypes:MeasurePrototype MinWidth="200"/>
-            <Prototypes:MeasurePrototype MinWidth="210"/>
-            <Prototypes:MeasurePrototype MinWidth="210"/>
-            <Prototypes:MeasurePrototype MinWidth="250"/>
-            <Prototypes:MeasurePrototype MinWidth="200"/>
-            <Prototypes:MeasurePrototype MinWidth="200"/>
-            <Prototypes:MeasurePrototype MinWidth="310" />
-            <Prototypes:MeasurePrototype MinWidth="210"/>
-            <TextBlock Prototypes:ScoreContentPanel.Bottom ="true" Text="CopyRights" TextAlignment="Center" FontWeight="Bold" FontSize="20" Height="30"/>
-            <TextBlock Prototypes:ScoreContentPanel.Bottom ="true" Text="{Binding PageNumber}" TextAlignment="{Binding PageNumberAlignment}" FontWeight="Bold" FontSize="20" Height="30"/>
-            <Prototypes:MeasurePrototype MinWidth="350"/>
-            <Prototypes:MeasurePrototype MinWidth="200"/>
-            <Prototypes:MeasurePrototype MinWidth="300"/>
-            <Prototypes:MeasurePrototype MinWidth="210"/>
-            <Prototypes:MeasurePrototype MinWidth="310"/>
-        </Prototypes:ScoreContentPanel>
+        
     </Grid>
 </UserControl>
