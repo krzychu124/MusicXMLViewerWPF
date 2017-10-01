@@ -32,6 +32,7 @@ namespace MusicXMLScore.ViewModel
         private ScorePropertiesContainer _scoreProperties = new ScorePropertiesContainer();
         private TabItem _selectedTabItem;
         private ObservableCollection<TabItem> _tabscreated = new ObservableCollection<TabItem>();
+        private RelayCommand addNewPageCommand;
 
         public MainWindowViewModel()
         {
@@ -43,11 +44,38 @@ namespace MusicXMLScore.ViewModel
             NewCustomScoreCreatorCommand = new RelayCommand(OnNewCustomScoreCreator);
             NewDefaultScoreCreatorCommand = new RelayCommand(OnNewDefaultScoreCreator);
             AdvancedLayoutScoreCreatorTest = new RelayCommand(OnAdvancedLayoutScoreCreatorTest);
+            AdvancedLayoutScoreCreatorTest2 = new RelayCommand(OnAdvancedLayoutScoreCreatorTest2);
             OpenFileCommand = new RelayCommand<string>(OnOpenFileCommand);
             OpenOptionsWindowCommand = new RelayCommand(OnOpenOptionWindow);
 
             CreateBlankTab();
             CacheXMLSerializer();
+        }
+
+        private void OnAdvancedLayoutScoreCreatorTest2()
+        {
+
+            string header = "ADVANCED_LAYOUT_TEST_PANEL";
+            var vm = SelectedTabItem.DataContext as PagesControllerViewModel;
+            //var scorePage = new StandardScorePage("ADVANCED_LAYOUT_TEST_ID", pageLayout);
+            //scorePage.UpdateContent();
+            if (vm?.IsBlank == true)
+            {
+                SelectedTabItem.Template = null;
+                TabsCreated.Remove(SelectedTabItem);
+            }
+            var pcvm = new PagesControllerViewModel("Test");
+            var tab = new TabItem
+            {
+                Header = header,
+                Tag = header,
+                Content = new PagesControllerView(),
+                DataContext = pcvm
+            };
+            pcvm.IsBlank = false;
+            TabsCreated.Add(tab);
+            SelectedTabItem = tab;
+            AllTabsClosed = false;
         }
 
         public RelayCommand AddMeasureCommand { get; set; }
@@ -74,6 +102,8 @@ namespace MusicXMLScore.ViewModel
         public RelayCommand<string> OpenFileCommand { get; set; }
         public RelayCommand OpenOptionsWindowCommand { get; set; }
         public RelayCommand AdvancedLayoutScoreCreatorTest { get; set; }
+        public RelayCommand AdvancedLayoutScoreCreatorTest2 { get; set; }
+        public RelayCommand AddNewPageCommand { get => addNewPageCommand; set => Set(nameof(AddNewPageCommand), ref addNewPageCommand, value); }
 
         public TabItem SelectedTabItem
         {
@@ -87,6 +117,7 @@ namespace MusicXMLScore.ViewModel
                     {
                         PagesControllerViewModel pcvm = (PagesControllerViewModel)value.DataContext;
                         ScoreProperties.SelectScore(pcvm.ID);
+                        AddNewPageCommand = pcvm.AddPageCommand;
                     }
                 }
                 Set(() => SelectedTabItem, ref _selectedTabItem, value);
@@ -226,7 +257,7 @@ namespace MusicXMLScore.ViewModel
             if (vm?.IsBlank == true)
             {
                 vm.AddScorePage(scorePage);
-                
+
                 vm.AddScorePage(scorePage2);
                 SelectedTabItem.Tag = scorePage.Id;
                 SelectedTabItem.Header = header;
