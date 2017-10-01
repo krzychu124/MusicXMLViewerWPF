@@ -5,12 +5,14 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:MusicXMLScore.View"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
-    <ItemsControl x:Name="PageContent" ItemsSource="{Binding PageContent}" Background="WhiteSmoke">
-        <ItemsControl.ItemsPanel>
-            <ItemsPanelTemplate>
-                <DockPanel Margin="{Binding Margin}"/>
-            </ItemsPanelTemplate>
-        </ItemsControl.ItemsPanel>
-    </ItemsControl>
+             d:DesignHeight="300" d:DesignWidth="800"  Width="{Binding PageWidth}">
+    <UserControl.Resources>
+        <DropShadowEffect x:Key="z-depth3" BlurRadius="14" ShadowDepth="4.5" Direction="270" Color="#BBBBBB"/>
+        <DropShadowEffect x:Key="z-depth4" BlurRadius="25" ShadowDepth="8" Direction="270" Color="#BBBBBB"/>
+    </UserControl.Resources>
+    <Grid ContextMenu="{Binding ContextMenu}" Margin="0,0,0,0" Background="White" Effect="{StaticResource z-depth3}">
+        <ContentPresenter Content="{Binding CurrentPanel}" Margin="20,20,20,30"/>
+        <Button Content="Lower dimensions about 30px" HorizontalAlignment="Left" Margin="5,5,0,0" VerticalAlignment="Top" Width="Auto" Command="{Binding TestCommand}"/>
+        
+    </Grid>
 </UserControl>
