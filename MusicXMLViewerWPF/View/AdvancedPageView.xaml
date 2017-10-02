@@ -13,6 +13,6 @@
     <Grid ContextMenu="{Binding ContextMenu}" Margin="0,0,0,0" Background="White" Effect="{StaticResource z-depth3}">
         <ContentPresenter Content="{Binding CurrentPanel}" Margin="20,20,20,30"/>
         <Button Content="Lower dimensions about 30px" HorizontalAlignment="Left" Margin="5,5,0,0" VerticalAlignment="Top" Width="Auto" Command="{Binding TestCommand}"/>
-        
+        <Button Content="Refresh page" HorizontalAlignment="Right" Margin="0,5,5,0" VerticalAlignment="Top" Width="Auto" Command="{Binding RefreshPageCommand}"/>
     </Grid>
 </UserControl>
