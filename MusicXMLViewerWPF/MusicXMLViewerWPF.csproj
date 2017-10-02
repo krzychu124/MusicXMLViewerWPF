@@ -146,6 +146,8 @@
     <Compile Include="Model\Builders\ScorePartwisePartBuilder.cs" />
     <Compile Include="Model\Builders\ScorePartwisePartMeasureBuilder.cs" />
     <Compile Include="Prototypes\MeasurePrototype.cs" />
+    <Compile Include="Prototypes\MeasureVisualPrototype.cs" />
+    <Compile Include="Prototypes\MeasureVisualTest.cs" />
     <Compile Include="Prototypes\RowTopMargin.cs" />
     <Compile Include="Prototypes\RowTopMargins.cs" />
     <Compile Include="Prototypes\ScoreContentPanel.cs" />
