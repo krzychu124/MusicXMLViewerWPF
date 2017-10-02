@@ -75,6 +75,7 @@ namespace MusicXMLScore.ViewModel
         }
         public PagesControllerViewModel(ScorePartwiseMusicXML score)
         {
+            partwise = score;
             PagesCollection = new ObservableCollection<UIElement>();
             AddPageCommand = new RelayCommand(AddAdvancedEmptyPage);
             var cMenu = new ContextMenu();
