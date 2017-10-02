@@ -90,6 +90,8 @@ namespace MusicXMLScore.LayoutControl
             set { _partId = value; }
         }
 
+        public int StavesCount { get => _stavesCount; private set => _stavesCount = value; }
+
         /// <summary>
         /// Measure Segment Controller Contructor
         /// </summary>
