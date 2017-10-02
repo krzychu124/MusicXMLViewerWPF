@@ -131,8 +131,8 @@ namespace MusicXMLScore.LayoutControl
 
         private void FindOptimalMeasureWidths()
         {
-            double pageContentWidth = ViewModelLocator.Instance.Main.CurrentPageLayout.GetContentWidth();
-            List<MeasureSegmentController> testList = new List<MeasureSegmentController>();
+            //double pageContentWidth = ViewModelLocator.Instance.Main.CurrentPageLayout.GetContentWidth();
+            //List<MeasureSegmentController> testList = new List<MeasureSegmentController>();
             _sharedMeasuresProps = new List<SharedMeasureProperties>();
 
             for (int i = 0; i < _scoreFile.Part.FirstOrDefault().Measure.Count; i++)
