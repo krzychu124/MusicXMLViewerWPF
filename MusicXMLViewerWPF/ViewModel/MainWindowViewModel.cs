@@ -54,13 +54,13 @@ namespace MusicXMLScore.ViewModel
 
         private void OnAdvancedLayoutScoreCreatorTest2()
         {
-
-            string header = "ADVANCED_LAYOUT_TEST_PANEL";
+            const string header = "ADVANCED_LAYOUT_TEST_PANEL";
             var vm = SelectedTabItem.DataContext as PagesControllerViewModel;
-            ScorePartwiseMusicXML score = DeserializeFile<ScorePartwiseMusicXML>(@"C: \Users\krzychu\Desktop\C# MusicXML\testScores\GoldbergFirstPageTest.xml");
-            score.InitPartsDictionaries();
-            score.SetLargestMeasureWidth();
-            GenerateLayout(score);
+            var score = OnOpenFileAdvancedTestCommand(null);
+            if(score == null)
+            {
+                return;
+            }
             if (vm?.IsBlank == true)
             {
                 SelectedTabItem.Template = null;
@@ -70,7 +70,7 @@ namespace MusicXMLScore.ViewModel
             var tab = new TabItem
             {
                 Header = header,
-                Tag = header,
+                Tag = score.ID,
                 Content = new PagesControllerView(),
                 DataContext = pcvm
             };
@@ -321,6 +321,37 @@ namespace MusicXMLScore.ViewModel
                 SelectedTabItem = tab;
             }
             AllTabsClosed = false;
+        }
+
+        private ScorePartwiseMusicXML OnOpenFileAdvancedTestCommand(object parameter)
+        {
+            string filedestination;
+            if (parameter != null)
+            {
+                filedestination = System.AppDomain.CurrentDomain.BaseDirectory + parameter as string;
+
+            }
+            else
+            {
+                var dialog = new OpenFileDialog { Filter = "MusicXML files|*.xml" };
+                if (dialog.ShowDialog() == true)
+                {
+                    filedestination = dialog.FileName;
+                    Console.WriteLine("Loaded for custom advanced layout -> " + filedestination);
+                }
+                else
+                {
+                    return null; //! return with no action, eg. OpenFileDialog Cancel/Close button clicked
+                }
+            }
+
+            LoggIt.Log($"File {filedestination} been loaded");
+
+            ScorePartwiseMusicXML xml = DeserializeFile<ScorePartwiseMusicXML>(filedestination);
+            xml.InitPartsDictionaries();
+            xml.SetLargestMeasureWidth();
+            GenerateLayout(xml);
+            return xml;
         }
 
         [STAThread]
