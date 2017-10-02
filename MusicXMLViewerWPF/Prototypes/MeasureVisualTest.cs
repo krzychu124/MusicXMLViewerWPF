@@ -67,7 +67,8 @@ namespace MusicXMLScore.Prototypes
         private void SetProperties()
         {
             GenerateMeasureProperties();
-            Height = 120;
+
+            Height = measureSegment.StavesCount ==1 ? 60 : 120;
             MinWidth = sharedProperties.MinimalSharedWidth;
             measureSegment.MinimalWidth = MinWidth;
             UpdateMeasureLayout();
