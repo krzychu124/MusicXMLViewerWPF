@@ -87,6 +87,8 @@ namespace MusicXMLScore.Prototypes
 
         protected override Size ArrangeOverride(Size finalSize)
         {
+            var margins = (Thickness)VisualParent.GetValue(MarginProperty);
+            finalSize = new Size(finalSize.Width - (margins.Left + margins.Right), finalSize.Height);
             double cursorX = 0;
             double cursorY = GetMargin(0);
             childsRow.Clear();
@@ -147,6 +149,11 @@ namespace MusicXMLScore.Prototypes
 
         protected override Size MeasureOverride(Size availableSize)
         {
+            if (!(double.IsInfinity(availableSize.Width) && double.IsInfinity(availableSize.Height)))
+            {
+                var margins = (Thickness)VisualParent.GetValue(MarginProperty);
+                availableSize = new Size(availableSize.Width - (margins.Left + margins.Right), availableSize.Height -( margins.Bottom));
+            }
             Size size = base.MeasureOverride(availableSize);
             bool hasNextPanel = HasNextPanel();
             double cursorX = 0;
