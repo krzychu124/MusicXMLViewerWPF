@@ -6,7 +6,7 @@
 ---
 
 ## Latest build release:
-[MusicXMLScoreSetup.zip](/uploads/0dc298ec73617a1c5d07e0c1d8d71a4f/MusicXMLScoreSetup.zip) _**v0.3.7.6_experimental**_ 
+[MusicXMLScoreSetup.zip](/uploads/461da8dea912729fd4ae36218c6f5bb9/MusicXMLScoreSetup.zip) _**v0.3.8.1_experimental**_ 
 
 ---
 
