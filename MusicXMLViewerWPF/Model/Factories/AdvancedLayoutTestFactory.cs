@@ -78,15 +78,21 @@ namespace MusicXMLScore.Model.Factories
         public static List<UIElement> GetLayout()
         {
             var list = new List<UIElement>();
-            list.Add(new MeasurePrototype() { MinWidth = 210 });
-            list.Add(new MeasurePrototype() { MinWidth = 310 });
-            list.Add(new MeasurePrototype() { MinWidth = 280 });
-            list.Add(new MeasurePrototype() { MinWidth = 250 });
-            list.Add(new MeasurePrototype() { MinWidth = 280 });
-            list.Add(new MeasurePrototype() { MinWidth = 190 });
-            list.Add(new MeasurePrototype() { MinWidth = 410 });
-            list.Add(new MeasurePrototype() { MinWidth = 330 });
-
+            list.Add(new MeasureVisualPrototype { MinWidth = 210 });
+            list.Add(new MeasureVisualPrototype { MinWidth = 310 });
+            list.Add(new MeasureVisualPrototype { MinWidth = 280 });
+            list.Add(new MeasureVisualPrototype { MinWidth = 250 });
+            list.Add(new MeasureVisualPrototype { MinWidth = 280 });
+            list.Add(new MeasureVisualPrototype { MinWidth = 190 });
+            list.Add(new MeasureVisualPrototype { MinWidth = 410 });
+            list.Add(new MeasureVisualPrototype { MinWidth = 330 });
+            list.Add(new MeasureVisualPrototype { MinWidth = 310 });
+            list.Add(new MeasureVisualPrototype { MinWidth = 280 });
+            list.Add(new MeasureVisualPrototype { MinWidth = 250 });
+            list.Add(new MeasureVisualPrototype { MinWidth = 280 });
+            list.Add(new MeasureVisualPrototype { MinWidth = 190 });
+            list.Add(new MeasureVisualPrototype { MinWidth = 410 });
+            list.Add(new MeasureVisualPrototype { MinWidth = 330 });
 
             return list;
         }
