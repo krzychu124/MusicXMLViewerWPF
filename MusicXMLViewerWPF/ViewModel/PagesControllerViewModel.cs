@@ -9,6 +9,9 @@ using MusicXMLScore.Helpers;
 using MusicXMLScore.Model.Factories;
 using System.Windows.Controls;
 using MusicXMLScore.View;
+using System.Collections.Generic;
+using System.Windows.Input;
+using System.Linq;
 
 namespace MusicXMLScore.ViewModel
 {
@@ -48,6 +51,9 @@ namespace MusicXMLScore.ViewModel
         public RelayCommand AddPageCommand { get; set; }
         public ContextMenu ContextMenu { get; set; }
 
+        private readonly List<AdvancedPageViewModel> pagesVM = new List<AdvancedPageViewModel>();
+        private int currentMeasureNumber = 0;
+        private MeasureSegmentContainer measureSegmentContainer;
         public PagesControllerViewModel()
         {
             PagesCollection = new ObservableCollection<UIElement>();
@@ -67,6 +73,18 @@ namespace MusicXMLScore.ViewModel
             cMenu.Items.Add(item);
             ContextMenu = cMenu;
         }
+        public PagesControllerViewModel(ScorePartwiseMusicXML score)
+        {
+            PagesCollection = new ObservableCollection<UIElement>();
+            AddPageCommand = new RelayCommand(AddAdvancedEmptyPage);
+            var cMenu = new ContextMenu();
+            var item = new MenuItem() { Header = "Add New Page", Command = AddPageCommand };
+            cMenu.Items.Add(item);
+            ContextMenu = cMenu;
+            measureSegmentContainer = new MeasureSegmentContainer();
+            measureSegmentContainer.GenerateMeasureSegments(score);
+
+        }
 
         public void OnAddPageCommand()
         {
@@ -79,16 +97,65 @@ namespace MusicXMLScore.ViewModel
             AddEmptyPage();
         }
 
+        private void OnAddNextMeasure()
+        {
+            if(currentMeasureNumber < measureSegmentContainer["P1"].Count - 1)
+            {
+                pagesVM[0].AddNextMeasure(measureSegmentContainer["P1"][currentMeasureNumber++]);
+            }
+        }
+
+        private void AddAdvancedEmptyPage()
+        {
+            if (pageCollection.Count > 0)
+            {
+                var pageVM = new AdvancedPageViewModel(1);
+                pagesVM.Add(pageVM);
+                var page = pageCollection[pageCollection.Count - 1] as AdvancedPageView;
+                if (page != null)
+                {
+                    var previousPageVM = page.DataContext as AdvancedPageViewModel;
+                    if (previousPageVM != null)
+                    {
+                        previousPageVM.CurrentPanel.NextPanel = pageVM.CurrentPanel;
+                    }
+                }
+                pageCollection.Add(new AdvancedPageView { DataContext = pageVM });
+            }
+            else
+            {
+                var pageVM = new AdvancedPageViewModel(0);
+                pagesVM.Add(pageVM);
+                var cMenu = new ContextMenu();
+                var item = new MenuItem() { Header = "Add Next Measure", Command = new RelayCommand(OnAddNextMeasure) };
+                var item2 = new MenuItem() { Header = "Add All Measures", Command = new RelayCommand(OnAddAllMeasures) };
+                cMenu.Items.Add(item);
+                cMenu.Items.Add(item2);
+                pageVM.ContextMenu = cMenu;
+                pageCollection.Add(new AdvancedPageView { DataContext = pageVM });
+            }
+        }
+
+        private void OnAddAllMeasures()
+        {
+            if (currentMeasureNumber < measureSegmentContainer["P1"].Count - 1)
+            {
+                var list = measureSegmentContainer["P1"].Skip(currentMeasureNumber).ToList();
+                pagesVM[0].AddAllNextMeasures(list);
+                currentMeasureNumber = measureSegmentContainer["P1"].Count;
+            }
+        }
+
         private void AddEmptyPage()
         {
             if (pageCollection.Count > 0)
             {
                 var pageVM = new AdvancedPageViewModel("empty");
                 var page = pageCollection[pageCollection.Count - 1] as AdvancedPageView;
-                if(page != null)
+                if (page != null)
                 {
                     var previousPageVM = page.DataContext as AdvancedPageViewModel;
-                    if(previousPageVM != null)
+                    if (previousPageVM != null)
                     {
                         previousPageVM.CurrentPanel.NextPanel = pageVM.CurrentPanel;
                     }
@@ -102,7 +169,7 @@ namespace MusicXMLScore.ViewModel
             }
         }
 
-        public PagesControllerViewModel(int numberOfPages)
+        public PagesControllerViewModel(int numberOfPages,int asd)
         {
             IsBlank = false;
             PagesCollection = new ObservableCollection<UIElement>();
