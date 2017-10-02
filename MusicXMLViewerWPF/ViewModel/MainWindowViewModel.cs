@@ -57,14 +57,16 @@ namespace MusicXMLScore.ViewModel
 
             string header = "ADVANCED_LAYOUT_TEST_PANEL";
             var vm = SelectedTabItem.DataContext as PagesControllerViewModel;
-            //var scorePage = new StandardScorePage("ADVANCED_LAYOUT_TEST_ID", pageLayout);
-            //scorePage.UpdateContent();
+            ScorePartwiseMusicXML score = DeserializeFile<ScorePartwiseMusicXML>(@"C: \Users\krzychu\Desktop\C# MusicXML\testScores\GoldbergFirstPageTest.xml");
+            score.InitPartsDictionaries();
+            score.SetLargestMeasureWidth();
+            GenerateLayout(score);
             if (vm?.IsBlank == true)
             {
                 SelectedTabItem.Template = null;
                 TabsCreated.Remove(SelectedTabItem);
             }
-            var pcvm = new PagesControllerViewModel("Test");
+            var pcvm = new PagesControllerViewModel(score);
             var tab = new TabItem
             {
                 Header = header,
@@ -336,6 +338,7 @@ namespace MusicXMLScore.ViewModel
                 if (dialog.ShowDialog() == true)
                 {
                     filedestination = dialog.FileName;
+                    Console.WriteLine("Loaded -> " + filedestination);
                 }
                 else
                 {
