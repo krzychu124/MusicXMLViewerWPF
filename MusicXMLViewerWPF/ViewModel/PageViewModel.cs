@@ -8,6 +8,9 @@ using GalaSoft.MvvmLight;
 using MusicXMLScore.DrawingHelpers;
 using MusicXMLScore.Helpers;
 using MusicXMLViewerWPF;
+using System.ComponentModel;
+using MusicXMLScore.Prototypes;
+using System.Collections.Generic;
 
 namespace MusicXMLScore.ViewModel
 {
@@ -16,18 +19,15 @@ namespace MusicXMLScore.ViewModel
     /// </summary>
     class PageViewModel : ViewModelBase
     {
-        #region Private Fiels
-        private ObservableCollection<UIElement> pageCanvas = new ObservableCollection<UIElement>();
-        private DrawingVisualHost page = new DrawingVisualHost();
-        private double pageHeight;
-        private double pageWidth;
-        #endregion
-        #region NewConcept
         PageDrawingSystem newPage;
+        private DrawingVisualHost page = new DrawingVisualHost();
+        private ObservableCollection<UIElement> pageCanvas = new ObservableCollection<UIElement>();
+        private double pageHeight;
         int pageIndex;
-        #endregion
+        private double pageWidth;
+        Random random = new Random();
+        private ScoreLayout.AbstractScorePage scorePage;
 
-        #region Contructors
         public PageViewModel()
         {
             TestCommand = new RelayCommand(OnTestCommand);
@@ -39,11 +39,11 @@ namespace MusicXMLScore.ViewModel
             AddPartSegment();
         }
 
-        public PageViewModel(int pageIndex):this()
+        public PageViewModel(int pageIndex) : this()
         {
             this.pageIndex = pageIndex;
         }
-        //! test
+
         public PageViewModel(Canvas page)
         {
             Point dimensions = ViewModelLocator.Instance.Main.CurrentPageLayout.PageDimensions.GetPageDimensionsInPx();
@@ -51,6 +51,26 @@ namespace MusicXMLScore.ViewModel
             PageHeight = dimensions.Y;
             page.Background = Brushes.WhiteSmoke;
             PageCanvas.Add(page);
+        }
+
+        public PageViewModel(ScoreLayout.AbstractScorePage page)
+        {
+            AdvancedPageViewContent = new AdvancedPageViewModel("asd");
+            TestCommand = new RelayCommand(OnTestCommand);
+            PageWidth = page.Width;
+            PageHeight = page.Height;
+            scorePage = page;
+            var sPage = page as ScoreLayout.StandardScorePage;
+            if (sPage != null)
+            {
+                sPage.AddListener(ScorePagePropertyChanged);
+            }
+            var canvas = page.GetContent() as Canvas;
+            if (canvas != null)
+            {
+                canvas.Background = Brushes.WhiteSmoke;
+            }
+            PageCanvas.Add(canvas);
         }
 
         public PageViewModel(ScorePartwiseMusicXML scorePartwise, int index)
@@ -62,29 +82,49 @@ namespace MusicXMLScore.ViewModel
             PageHeight = dimensions.Y;
             PageCanvas.Add(newPage.PageCanvas);
         }
-        #endregion
 
-        #region Properties
-        public ObservableCollection<UIElement> PageCanvas { get { return pageCanvas; } set { pageCanvas = value; } }
+        public AdvancedPageViewModel AdvancedPageViewContent { get; set; }
+        public ContextMenu ContextMenu { get; set; }
         public DrawingVisualHost Page { get { return page; } set { Set(nameof(Page), ref page, value); } }
-        public RelayCommand TestCommand { get; set; }
+        public ObservableCollection<UIElement> PageCanvas { get { return pageCanvas; } set { pageCanvas = value; } }
         public double PageHeight { get { return pageHeight; } set { Set(nameof(PageHeight), ref pageHeight, value); } }
+        public string PageNumber { get; set; } = "0";
+        public TextAlignment PageNumberAlignment { get; set; } = TextAlignment.Left;
         public double PageWidth { get { return pageWidth; } set { Set(nameof(PageWidth), ref pageWidth, value); } }
-        #endregion
+        public RelayCommand TestCommand { get; set; }
 
-        #region Methods
+        public void ScorePagePropertyChanged(object o, PropertyChangedEventArgs a)
+        {
+            switch (a.PropertyName)
+            {
+                case nameof(scorePage.Width):
+                    PageWidth = scorePage.Width;
+                    break;
+                case nameof(scorePage.Height):
+                    PageHeight = scorePage.Height;
+                    break;
+                default:
+                    break;
+            }
+        }
+
         private void AddPartSegment()
         {
             PageCanvas.Add(page);
         }
 
-        #endregion
-
-        #region Commands, Action<>, Func<>
         private void OnTestCommand()
         {
-            Console.WriteLine("test command invoked");
+            if (PageHeight > 300)
+            {
+                if (scorePage != null)
+                {
+                    scorePage.Height = scorePage.Height - 30;
+                    PageHeight = scorePage.Height;
+                    scorePage.Width = scorePage.Width - 30;
+                    PageWidth = scorePage.Width;
+                }
+            }
         }
-        #endregion
     }
 }

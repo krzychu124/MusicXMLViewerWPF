@@ -7,16 +7,22 @@
              xmlns:helpers="clr-namespace:MusicXMLScore.Helpers"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
-    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
-        <ItemsControl x:Name="PagesCollection" Margin="0,5,0,5" ItemsSource="{Binding PagesCollection}">
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" ContextMenu="{Binding ContextMenu}">
+        <ItemsControl x:Name="PagesCollection" ItemsSource="{Binding PagesCollection}" ClipToBounds="True">
             <!--<ItemsControl.Effect>
                 <DropShadowEffect Color="Gray" BlurRadius="5" ShadowDepth="5"/>
             </ItemsControl.Effect>-->
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <helpers:SimpleWrapPanel Margin="10"></helpers:SimpleWrapPanel>
+                    <VirtualizingStackPanel />
+                    <!--<helpers:SimpleWrapPanel Margin="10"></helpers:SimpleWrapPanel>-->
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemContainerStyle>
+        <Style TargetType="Control">
+            <Setter Property="Margin" Value="0 5 0 5"></Setter>
+        </Style>
+    </ItemsControl.ItemContainerStyle>
         </ItemsControl>
     </ScrollViewer>
 </UserControl>

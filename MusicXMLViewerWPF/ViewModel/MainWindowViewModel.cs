@@ -18,6 +18,10 @@ using MusicXMLScore.LayoutControl;
 using MusicXMLScore.Log;
 using MusicXMLScore.ScoreProperties;
 using MusicXMLViewerWPF;
+using MusicXMLScore.ScoreLayout;
+using MusicXMLScore.ScoreLayout.PageLayouts;
+using MusicXMLScore.ScoreLayout.PageLayouts.PageElements;
+using MusicXMLScore.Model.Factories;
 
 namespace MusicXMLScore.ViewModel
 {
@@ -28,6 +32,7 @@ namespace MusicXMLScore.ViewModel
         private ScorePropertiesContainer _scoreProperties = new ScorePropertiesContainer();
         private TabItem _selectedTabItem;
         private ObservableCollection<TabItem> _tabscreated = new ObservableCollection<TabItem>();
+        private RelayCommand addNewPageCommand;
 
         public MainWindowViewModel()
         {
@@ -38,11 +43,41 @@ namespace MusicXMLScore.ViewModel
             ExitCommand = new RelayCommand(OnExitApp);
             NewCustomScoreCreatorCommand = new RelayCommand(OnNewCustomScoreCreator);
             NewDefaultScoreCreatorCommand = new RelayCommand(OnNewDefaultScoreCreator);
+            AdvancedLayoutScoreCreatorTest = new RelayCommand(OnAdvancedLayoutScoreCreatorTest);
+            AdvancedLayoutScoreCreatorTest2 = new RelayCommand(OnAdvancedLayoutScoreCreatorTest2);
             OpenFileCommand = new RelayCommand<string>(OnOpenFileCommand);
             OpenOptionsWindowCommand = new RelayCommand(OnOpenOptionWindow);
 
             CreateBlankTab();
             CacheXMLSerializer();
+        }
+
+        private void OnAdvancedLayoutScoreCreatorTest2()
+        {
+            const string header = "ADVANCED_LAYOUT_TEST_PANEL";
+            var vm = SelectedTabItem.DataContext as PagesControllerViewModel;
+            var score = OnOpenFileAdvancedTestCommand(null);
+            if(score == null)
+            {
+                return;
+            }
+            if (vm?.IsBlank == true)
+            {
+                SelectedTabItem.Template = null;
+                TabsCreated.Remove(SelectedTabItem);
+            }
+            var pcvm = new PagesControllerViewModel(score);
+            var tab = new TabItem
+            {
+                Header = header,
+                Tag = score.ID,
+                Content = new PagesControllerView(),
+                DataContext = pcvm
+            };
+            pcvm.IsBlank = false;
+            TabsCreated.Add(tab);
+            SelectedTabItem = tab;
+            AllTabsClosed = false;
         }
 
         public RelayCommand AddMeasureCommand { get; set; }
@@ -68,6 +103,9 @@ namespace MusicXMLScore.ViewModel
         public RelayCommand OldViewCommand { get; set; }
         public RelayCommand<string> OpenFileCommand { get; set; }
         public RelayCommand OpenOptionsWindowCommand { get; set; }
+        public RelayCommand AdvancedLayoutScoreCreatorTest { get; set; }
+        public RelayCommand AdvancedLayoutScoreCreatorTest2 { get; set; }
+        public RelayCommand AddNewPageCommand { get => addNewPageCommand; set => Set(nameof(AddNewPageCommand), ref addNewPageCommand, value); }
 
         public TabItem SelectedTabItem
         {
@@ -79,8 +117,9 @@ namespace MusicXMLScore.ViewModel
                     //! switch current selected score to score of SelectedTab
                     if (value != null)
                     {
-                        PagesControllerViewModel pcvm = (PagesControllerViewModel) value.DataContext;
+                        PagesControllerViewModel pcvm = (PagesControllerViewModel)value.DataContext;
                         ScoreProperties.SelectScore(pcvm.ID);
+                        AddNewPageCommand = pcvm.AddPageCommand;
                     }
                 }
                 Set(() => SelectedTabItem, ref _selectedTabItem, value);
@@ -118,9 +157,9 @@ namespace MusicXMLScore.ViewModel
             TextReader reader = null;
             try
             {
-                XmlSerializer serializer = (XmlSerializer) Serializers[typeof(T)] ?? new XmlSerializer(typeof(T));
+                XmlSerializer serializer = (XmlSerializer)Serializers[typeof(T)] ?? new XmlSerializer(typeof(T));
                 reader = new StreamReader(parameter);
-                var result = (T) serializer.Deserialize(reader);
+                var result = (T)serializer.Deserialize(reader);
                 if (result is ScorePartwiseMusicXML)
                 {
                     ScorePartwiseMusicXML score = result as ScorePartwiseMusicXML;
@@ -132,7 +171,8 @@ namespace MusicXMLScore.ViewModel
             }
             catch (Exception exception)
             {
-                LoggIt.Log(exception.InnerException?.Message, LogType.Exception);
+                LoggIt.Log(exception.Message, LogType.Exception);
+                MessageBox.Show(exception.Message + " \n " + exception.StackTrace);
                 return default(T);
             }
             finally
@@ -204,28 +244,114 @@ namespace MusicXMLScore.ViewModel
             ndefaultscreatorwindow.ShowDialog();
         }
 
-        private void OnNewDefaultScoreCreator()
+        private void OnAdvancedLayoutScoreCreatorTest()
         {
-            string header = "New Default Score";
+
+            string header = "ADVANCED_LAYOUT_TEST_ID";
             var vm = SelectedTabItem.DataContext as PagesControllerViewModel;
-            //! if currently selected tab is empty
+            var pageLayout = new WrappedLayout(new List<AbstractPageElement>());
+            var scorePage = AdvancedLayoutTestFactory.GetScorePage();
+            var scorePage2 = AdvancedLayoutTestFactory.GetScorePage2();
+            scorePage.NextPage = scorePage2;
+            scorePage2.PreviousPage = scorePage;
+            //var scorePage = new StandardScorePage("ADVANCED_LAYOUT_TEST_ID", pageLayout);
+            //scorePage.UpdateContent();
             if (vm?.IsBlank == true)
             {
+                vm.AddScorePage(scorePage);
+
+                vm.AddScorePage(scorePage2);
+                SelectedTabItem.Tag = scorePage.Id;
                 SelectedTabItem.Header = header;
-                SelectedTabItem.DataContext = new PagesControllerViewModel(1);
-                Console.WriteLine("Default Score blank document");
+                //bug-fix: binding error PagesCollection property not found
+                // SelectedTabItem.Content = new PagesControllerView() { DataContext = vm };
+                SelectedTabItem.DataContext = vm;
+                Console.WriteLine("ADVANCED_LAYOUT_TEST Loaded");
             }
             else
             {
-                TabItem tab = new TabItem
+                var pcvm = new PagesControllerViewModel();
+                pcvm.AddScorePage(scorePage);
+                pcvm.AddScorePage(scorePage2);
+                var tab = new TabItem
                 {
                     Header = header,
+                    Tag = scorePage.Id,
                     Content = new PagesControllerView(),
-                    DataContext = new PagesControllerViewModel(1)
+                    DataContext = pcvm
                 };
                 TabsCreated.Add(tab);
                 SelectedTabItem = tab;
             }
+            AllTabsClosed = false;
+
+        }
+
+        private void OnNewDefaultScoreCreator()
+        {
+            string header = "New Default Score";
+            var vm = SelectedTabItem.DataContext as PagesControllerViewModel;
+            ScorePartwiseMusicXML score = Model.Factories.BasicScoreFactory.GetScorePartwise();
+            score.InitPartsDictionaries();
+            score.SetLargestMeasureWidth();
+            GenerateLayout(score);
+            //! if currently selected tab is empty
+            if (vm?.IsBlank == true)
+            {
+                vm.AddScorePartwise(score);
+                SelectedTabItem.Tag = score.ID;
+                SelectedTabItem.Header = header;
+                //bug-fix: binding error PagesCollection property not found
+                //SelectedTabItem.Content = new PagesControllerView(); 
+                SelectedTabItem.DataContext = vm;
+                Console.WriteLine("Default Score blank document");
+            }
+            else
+            {
+                PagesControllerViewModel pcvm = new PagesControllerViewModel();
+                pcvm.AddScorePartwise(score);
+                TabItem tab = new TabItem
+                {
+                    Header = header,
+                    Tag = score.ID,
+                    Content = new PagesControllerView(),
+                    DataContext = pcvm
+                };
+                TabsCreated.Add(tab);
+                SelectedTabItem = tab;
+            }
+            AllTabsClosed = false;
+        }
+
+        private ScorePartwiseMusicXML OnOpenFileAdvancedTestCommand(object parameter)
+        {
+            string filedestination;
+            if (parameter != null)
+            {
+                filedestination = System.AppDomain.CurrentDomain.BaseDirectory + parameter as string;
+
+            }
+            else
+            {
+                var dialog = new OpenFileDialog { Filter = "MusicXML files|*.xml" };
+                if (dialog.ShowDialog() == true)
+                {
+                    filedestination = dialog.FileName;
+                    Console.WriteLine("Loaded for custom advanced layout -> " + filedestination);
+                }
+                else
+                {
+                    return null; //! return with no action, eg. OpenFileDialog Cancel/Close button clicked
+                }
+            }
+
+            LoggIt.Log($"File {filedestination} been loaded");
+
+            ScorePartwiseMusicXML xml = DeserializeFile<ScorePartwiseMusicXML>(filedestination);
+            xml.InitPartsDictionaries();
+            xml.SetLargestMeasureWidth();
+            GenerateLayout(xml);
+            return xml;
         }
 
         [STAThread]
@@ -234,14 +360,16 @@ namespace MusicXMLScore.ViewModel
             string filedestination;
             if (parameter != null)
             {
-                filedestination = parameter as string;
+                filedestination = System.AppDomain.CurrentDomain.BaseDirectory + parameter as string;
+
             }
             else
             {
-                var dialog = new OpenFileDialog {Filter = "MusicXML files|*.xml"};
+                var dialog = new OpenFileDialog { Filter = "MusicXML files|*.xml" };
                 if (dialog.ShowDialog() == true)
                 {
                     filedestination = dialog.FileName;
+                    Console.WriteLine("Loaded -> " + filedestination);
                 }
                 else
                 {
@@ -253,14 +381,14 @@ namespace MusicXMLScore.ViewModel
 
             ScorePartwiseMusicXML xml = DeserializeFile<ScorePartwiseMusicXML>(filedestination);
 
-            var pagesControllerVM = (PagesControllerViewModel) SelectedTabItem.DataContext;
+            var pagesControllerVM = (PagesControllerViewModel)SelectedTabItem.DataContext;
             if (pagesControllerVM.IsBlank) //! check if currently selected tab is blank/empty then add loaded file to it
             {
                 GenerateLayout(xml);
                 pagesControllerVM.AddScorePartwise(xml);
 
-                SelectedTabItem.Template =
-                    null; //bugfix - if last tab removed, binding error: "cannot find source for binding..."
+                SelectedTabItem.Template = null;
+                //bugfix - if last tab removed, binding error: "cannot find source for binding..."
                 TabsCreated.Remove(SelectedTabItem);
                 TabItem newTab = new TabItem
                 {

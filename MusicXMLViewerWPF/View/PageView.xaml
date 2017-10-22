@@ -1,27 +1,28 @@
-﻿<UserControl
+﻿<UserControl xmlns:View="clr-namespace:MusicXMLScore.View" 
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:MusicXMLScore.ViewModel"
-             xmlns:helpers="clr-namespace:MusicXMLScore.Helpers"
-             xmlns:credit ="clr-namespace:MusicXMLViewerWPF"
-             xmlns:Configuration="clr-namespace:MusicXMLScore.ViewModel"
              x:Class="MusicXMLScore.ViewModel.PageView"
-             mc:Ignorable="d" Height="{Binding PageHeight}" Width="{Binding PageWidth}" x:Name="PageUserControl" d:DesignWidth="500" d:DesignHeight="250.333">
-    <Grid>
-        <Border Background="White">
-            <Border.Effect>
-                <DropShadowEffect Color="LightGray" BlurRadius="10" ShadowDepth="5"></DropShadowEffect>
-            </Border.Effect>
-        </Border>
+             mc:Ignorable="d" Height="{Binding PageHeight}" Width="{Binding PageWidth}" x:Name="PageUserControl" d:DesignWidth="1201.847" d:DesignHeight="600.113">
+    <UserControl.Resources>
+        <DropShadowEffect x:Key="z-depth3" BlurRadius="14" ShadowDepth="4.5" Direction="270" Color="#BBBBBB"/>
+        <DropShadowEffect x:Key="z-depth4" BlurRadius="25" ShadowDepth="8" Direction="270" Color="#BBBBBB"/>
+    </UserControl.Resources>
+    <Grid Effect="{StaticResource z-depth3}">
+        <Border>
+            <!--Effect="{StaticResource z-depth3}"-->
 
-        <ItemsControl x:Name="PageCanvas" ItemsSource="{Binding PageCanvas}" Background="WhiteSmoke">
-            <ItemsControl.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <Canvas></Canvas>
-                </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-        </ItemsControl>
+            <ItemsControl x:Name="PageCanvas" ItemsSource="{Binding PageCanvas}" Background="WhiteSmoke">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+
+                        <Canvas />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+            </ItemsControl>
+        </Border>
+        <Button Content="Lower dimensions about 30px" HorizontalAlignment="Left" Margin="5,5,0,0" VerticalAlignment="Top" Width="Auto" Command="{Binding TestCommand}"/>
+        
     </Grid>
 </UserControl>

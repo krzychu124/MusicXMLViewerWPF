@@ -40,7 +40,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <UseVSHostingProcess>true</UseVSHostingProcess>
-    <CodeAnalysisRuleSet>MusicXMLViewerWPF.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>
+    </CodeAnalysisRuleSet>
+    <CodeAnalysisIgnoreGeneratedCode>false</CodeAnalysisIgnoreGeneratedCode>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -50,7 +52,8 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <CodeAnalysisRuleSet>MusicXMLViewerWPF.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>
+    </CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="GalaSoft.MvvmLight, Version=5.3.0.19026, Culture=neutral, PublicKeyToken=e7570ab207bcb616, processorArchitecture=MSIL">
@@ -116,7 +119,9 @@
     <Compile Include="LayoutControl\AdvancedLayoutHelpers\AntiCollisionHelper.cs" />
     <Compile Include="LayoutControl\AdvancedLayoutHelpers\LayoutHelpers.cs" />
     <Compile Include="LayoutControl\AdvancedLayoutHelpers\SharedMeasureProperties.cs" />
+    <Compile Include="LayoutControl\ISelectable.cs" />
     <Compile Include="LayoutControl\MeasureSegmentContainer.cs" />
+    <Compile Include="LayoutControl\SegmentPanelContainers\Attributes\MeasureAttributeBase.cs" />
     <Compile Include="LayoutControl\SegmentPanelContainers\BeamItemsController.cs" />
     <Compile Include="LayoutControl\LayoutGeneral.cs" />
     <Compile Include="LayoutControl\MeasureSegmentController.cs" />
@@ -132,6 +137,65 @@
     <Compile Include="LayoutControl\SegmentPanelContainers\Notes\NoteContainerItem.cs" />
     <Compile Include="LayoutControl\SegmentPanelContainers\Notes\RestContainterItem.cs" />
     <Compile Include="LayoutControl\SegmentPanelContainers\Notes\StemItem.cs" />
+    <Compile Include="LayoutStyle\Styles\ItemsColorsStyle.cs" />
+    <Compile Include="Model\Builders\ChordBuilder.cs" />
+    <Compile Include="Model\Builders\NoteBuilder.cs" />
+    <Compile Include="Model\Factories\AdvancedLayoutTestFactory.cs" />
+    <Compile Include="Model\Factories\BasicScoreFactory.cs" />
+    <Compile Include="Model\Builders\ScorePartwiseBuilder.cs" />
+    <Compile Include="Model\Builders\ScorePartwisePartBuilder.cs" />
+    <Compile Include="Model\Builders\ScorePartwisePartMeasureBuilder.cs" />
+    <Compile Include="Prototypes\MeasurePrototype.cs" />
+    <Compile Include="Prototypes\MeasureVisualPrototype.cs" />
+    <Compile Include="Prototypes\MeasureVisualTest.cs" />
+    <Compile Include="Prototypes\RowTopMargin.cs" />
+    <Compile Include="Prototypes\RowTopMargins.cs" />
+    <Compile Include="Prototypes\ScoreContentPanel.cs" />
+    <Compile Include="ScoreLayout\PageLayouts\WrapPartLayout.cs" />
+    <Compile Include="ScoreLayout\PageLayouts\PageElements\AbstractPageElement.cs" />
+    <Compile Include="ScoreLayout\AbstractScorePage.cs" />
+    <Compile Include="ScoreLayout\IPageElement.cs" />
+    <Compile Include="ScoreLayout\IPageLayout.cs" />
+    <Compile Include="ScoreLayout\IScorePage.cs" />
+    <Compile Include="ScoreLayout\IVisual.cs" />
+    <Compile Include="ScoreLayout\IVisualHost.cs" />
+    <Compile Include="ScoreLayout\IVisualContainerCollection.cs" />
+    <Compile Include="ScoreLayout\IVisualHostControl.cs" />
+    <Compile Include="ScoreLayout\MeasureLayouts\AbstractMeasure.cs" />
+    <Compile Include="ScoreLayout\MeasureLayouts\MeasureContent\AbstractClasses\AbstractAttributes.cs" />
+    <Compile Include="ScoreLayout\MeasureLayouts\MeasureContent\AbstractClasses\AbstractClef.cs" />
+    <Compile Include="ScoreLayout\MeasureLayouts\MeasureContent\AbstractClasses\AbstractContent.cs" />
+    <Compile Include="ScoreLayout\MeasureLayouts\MeasureContent\AbstractClasses\AbstractKey.cs" />
+    <Compile Include="ScoreLayout\MeasureLayouts\MeasureContent\AbstractClasses\AbstractMeasureContent.cs" />
+    <Compile Include="ScoreLayout\MeasureLayouts\AbstractStaff.cs" />
+    <Compile Include="ScoreLayout\MeasureLayouts\IMeasureElement.cs" />
+    <Compile Include="ScoreLayout\MeasureLayouts\IStaff.cs" />
+    <Compile Include="ScoreLayout\MeasureLayouts\MeasureContent\AbstractClasses\AbstractTime.cs" />
+    <Compile Include="ScoreLayout\MeasureLayouts\MeasureContent\MeasureAttributes.cs" />
+    <Compile Include="ScoreLayout\MeasureLayouts\MeasureContent\MeasureClef.cs" />
+    <Compile Include="ScoreLayout\MeasureLayouts\MeasureContent\MeasureKey.cs" />
+    <Compile Include="ScoreLayout\MeasureLayouts\MeasureContent\MeasureRest.cs" />
+    <Compile Include="ScoreLayout\MeasureLayouts\MeasureContent\MeasureTime.cs" />
+    <Compile Include="ScoreLayout\MeasureLayouts\MeasureContent\StandardMeasureContent.cs" />
+    <Compile Include="ScoreLayout\MeasureLayouts\MultiStaffMeasure.cs" />
+    <Compile Include="ScoreLayout\MeasureLayouts\RegularStaff.cs" />
+    <Compile Include="ScoreLayout\MeasureLayouts\StandardMeasure.cs" />
+    <Compile Include="ScoreLayout\PageLayouts\AbstractLayout.cs" />
+    <Compile Include="ScoreLayout\PageLayouts\ContinuousLayout.cs" />
+    <Compile Include="ScoreLayout\PageLayouts\PageElements\AbstractRowContainer.cs" />
+    <Compile Include="ScoreLayout\PageLayouts\PageElements\ContentContainer.cs" />
+    <Compile Include="ScoreLayout\PageLayouts\PageElements\IPageElementItem.cs" />
+    <Compile Include="ScoreLayout\PageLayouts\PageElements\FooterContainer.cs" />
+    <Compile Include="ScoreLayout\PageLayouts\PageElements\HeaderContainer.cs" />
+    <Compile Include="ScoreLayout\PageLayouts\PageElements\MeasurePrototypeItem.cs" />
+    <Compile Include="ScoreLayout\PageLayouts\PageElements\SimpleRowContainer.cs" />
+    <Compile Include="ScoreLayout\PageLayouts\PageElements\SimpleTextBox.cs" />
+    <Compile Include="ScoreLayout\PageLayouts\WrappedLayout.cs" />
+    <Compile Include="ScoreLayout\StandardScorePage.cs" />
+    <Compile Include="ViewModel\AdvancedPageViewModel.cs" />
+    <Compile Include="View\AdvancedPageView.xaml.cs">
+      <DependentUpon>AdvancedPageView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="VisualObject\VisualObjectBase.cs" />
     <Compile Include="LayoutStyle\Styles\BarlineLayoutStyle.cs" />
     <Compile Include="LayoutStyle\Styles\BeamLayoutStyle.cs" />
@@ -282,6 +346,10 @@
     <Compile Include="VisualObjectController\StaffLineVisualController.cs" />
     <Compile Include="VisualObject\StaffLineVisual.cs" />
     <Compile Include="VisualObject\VisualObjectWithOffset.cs" />
+    <Page Include="View\AdvancedPageView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\ConfigurationView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -343,7 +411,6 @@
     <Content Include="Fonts\Bravura.ttf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <None Include="MusicXMLViewerWPF.ruleset" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

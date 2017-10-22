@@ -2,10 +2,6 @@
 using MusicXMLScore.Model.Helpers.SimpleTypes;
 using MusicXMLScore.Model.MeasureItems.NoteItems.Notations;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml.Serialization;
 
 namespace MusicXMLScore.Model.MeasureItems.NoteItems

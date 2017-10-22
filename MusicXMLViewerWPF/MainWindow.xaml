@@ -11,6 +11,9 @@
         mc:Ignorable="d"
         DataContext="{Binding Main, Source={StaticResource Locator}}"
         Title="MainWindow" Height="768" Width="1440" x:Name="MainW">
+    <Window.Resources>
+        <SolidColorBrush x:Key="BgColor" Color="Transparent"></SolidColorBrush>
+    </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="20"/>
@@ -22,15 +25,19 @@
         </Grid.RowDefinitions>
 
         <DockPanel Grid.Row="0">
-            <Menu IsMainMenu="True" Height="20" VerticalAlignment="Top" DockPanel.Dock="Top" Width="Auto" >
-                <MenuItem Header="File" >
-                    <MenuItem Header="Create Default Score" IsEnabled="False" Command="{Binding NewDefaultScoreCreatorCommand}"/>
+            <Menu  Background="{StaticResource BgColor}" IsMainMenu="True" Height="20" VerticalAlignment="Top" DockPanel.Dock="Top" Width="Auto" >
+                <MenuItem Header="File" Background="{StaticResource BgColor}">
+                    <MenuItem  Header="Create Default Score" IsEnabled="true" Command="{Binding NewDefaultScoreCreatorCommand}"/>
                     <MenuItem Header="Create Custom Score" IsEnabled="true" Command="{Binding NewCustomScoreCreatorCommand}"/>
-                    <Separator/>
+                    <Separator Background="Red"/>
+                    <MenuItem Header="Improved Advanced Layout Manager" IsEnabled="true" Background="Orange" Command="{Binding AdvancedLayoutScoreCreatorTest}"/>
+                    <Separator Background="Red"/>
+                    <MenuItem Header="Improved Advanced Layout Manager" IsEnabled="true" Foreground="White" Background="Green" Command="{Binding AdvancedLayoutScoreCreatorTest2}"/>
+                    <Separator Background="Red"/>
                     <MenuItem Header="Open File" Command="{Binding OpenFileCommand}"/>
                     <MenuItem Header="Open Last">
-                        <MenuItem Header="Echigo-Jishi.xml" Command="{Binding OpenFileCommand}" CommandParameter="Model\TestXMLFiles\Echigo-Jishi.xml"/>
-                        <MenuItem Header="Saltarello.xml" Command="{Binding OpenFileCommand}" CommandParameter="Model\TestXMLFiles\Saltarello.xml"/>
+                        <MenuItem Header="Echigo-Jishi.xml" Command="{Binding OpenFileCommand}" CommandParameter="\Model\TestXMLFiles\Echigo-Jishi.xml"/>
+                        <MenuItem Header="Saltarello.xml" Command="{Binding OpenFileCommand}" CommandParameter="\Model\TestXMLFiles\Saltarello.xml"/>
                     </MenuItem>
                     <Separator/>
                     <MenuItem Header="Close File" Command="{Binding CloseFileCommand}"/>
@@ -60,7 +67,7 @@
                 <MenuItem Header="Test">
                     <MenuItem Header="Test Stretch All Systems"  Command="{Binding TestButton2Command}"/>
                     <MenuItem Header="Test Stretch Last System" Command="{Binding TestButtonCommand}"/>
-                    <MenuItem Header="None" IsEnabled="False"/>
+                    <MenuItem Header="Add new page" IsEnabled="true" Command="{Binding AddNewPageCommand}"/>
                     <MenuItem Header="None" IsEnabled="False"/>
                 </MenuItem>
                 <MenuItem Header="Layout" IsEnabled="False">
@@ -78,9 +85,9 @@
                 </MenuItem>
             </Menu>
         </DockPanel>
-        
-        <TabControl Margin="0,5,0,0" Grid.Row="2" ItemsSource="{Binding TabsCreated}" SelectedItem="{Binding SelectedTabItem}" />
-        
+
+        <TabControl Margin="5" Grid.Row="2" ItemsSource="{Binding TabsCreated}" SelectedItem="{Binding SelectedTabItem}" />
+
         <!--<GridSplitter Grid.Row="3" Height="5" HorizontalAlignment="Stretch"></GridSplitter>-->
         <Log:LogView Grid.Row="4" MinHeight="105" MaxHeight="250" Visibility="Collapsed"/>
         <!--<StatusBar Grid.Row="5" Height="20">Status Bar...</StatusBar>-->

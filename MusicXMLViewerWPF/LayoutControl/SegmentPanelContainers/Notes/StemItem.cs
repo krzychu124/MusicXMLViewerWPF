@@ -1,12 +1,9 @@
 ﻿using MusicXMLScore.Converters;
 using MusicXMLScore.Helpers;
-using MusicXMLScore.Model.Helpers.SimpleTypes;
 using MusicXMLScore.Model.MeasureItems.NoteItems;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 
@@ -71,7 +68,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
                 if (stem != null) //! if stem is set for current Note
                 {
                     GetDirection(stem);
-                    bool hasBeam = note.NoteItem.FirstOrDefault().Beam.Count != 0;
+                    bool hasBeam = note.NoteItem.FirstOrDefault().Beam?.Count != 0;
                     CalculatePosition(note.PitchedPosition.FirstOrDefault().Value, hasBeam);
                 }
                 else
@@ -96,7 +93,7 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Notes
 
                 foreach (var noteItem in notes)
                 {
-                    bool hasBeam = note.NoteItem.FirstOrDefault().Beam.Count != 0;
+                    bool hasBeam = note.NoteItem.FirstOrDefault().Beam?.Count != 0;
                     int pitchedPosition = 0;
                     if (isDown)
                     {

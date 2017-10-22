@@ -1,26 +1,17 @@
 ﻿using MusicXMLScore.Model.MeasureItems.Attributes;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using MusicXMLScore.Converters;
 using MusicXMLScore.DrawingHelpers;
 using MusicXMLScore.Helpers;
-using System.Windows.Media;
 
 namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Attributes
 {
-    class TimeSignatureContainerItem : IAttributeItemVisual
+    class TimeSignatureContainerItem : MeasureAttributeBase, IAttributeItemVisual
     {
         private string itemStaff;
-        private Canvas itemCanvas;
-        private readonly int attributeIndex = 2;
         private double itemWidth;
-        private double itemLeftMargin;
-        private double itemRightMargin;
         private Rect itemRectBounds;
         private string beatSymbol;
         private string beatValue;
@@ -33,29 +24,28 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Attributes
         private bool empty = false;
         private double[] staffLine;
 
-        public TimeSignatureContainerItem(string staff, int fractionPosition, TimeMusicXML timeSignature):this(timeSignature)
-        {
+        //public TimeSignatureContainerItem(string staff, int fractionPosition, TimeMusicXML timeSignature)
+           
+        //{
+        //}
 
-        }
-
-        public TimeSignatureContainerItem(double width)
-        {
-            ItemCanvas.Width = width;
-            itemWidth = width;
-        }
+        //public TimeSignatureContainerItem(double width)
+        //{
+        //    ItemCanvas.Width = width;
+        //    itemWidth = width;
+        //}
 
         public TimeSignatureContainerItem(TimeMusicXML timeSignature)
+            : base(AttributeType.time, 1, 0)
         {
-            itemCanvas = new Canvas();
             isSymbol = timeSignature.TimeSymbolSpecified;
-            SetStandardTimeSigMargins();
             GetTime(timeSignature);
             GetStaffLineCoords();
             GetSymbol();
-            Draw();
+            Update();
         }
 
-        private void Draw()
+        protected override void Update()
         {
             if (isSymbol)
             {
@@ -151,18 +141,6 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Attributes
             staffLine = ViewModel.ViewModelLocator.Instance.Main.CurrentPageLayout.StaffLineCoords.Values.ToArray();
         }
 
-        private void SetStandardTimeSigMargins()
-        {
-            LayoutStyle.Layout layout = ViewModel.ViewModelLocator.Instance.Main.CurrentLayout.LayoutStyle;
-            SetItemMargins(layout.MeasureStyle.TimeSigLeftOffset.TenthsToWPFUnit(), layout.MeasureStyle.TimeSigRightOffset.TenthsToWPFUnit());
-        }
-
-        public void SetItemMargins(double left, double right)
-        {
-            ItemLeftMargin = left;
-            ItemRightMargin = right;
-        }
-
         public Rect ItemRectBounds
         {
             get
@@ -222,27 +200,6 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Attributes
             }
         }
 
-        public int AttributeIndex
-        {
-            get
-            {
-                return attributeIndex;
-            }
-        }
-
-        public Canvas ItemCanvas
-        {
-            get
-            {
-                return itemCanvas;
-            }
-
-            set
-            {
-                itemCanvas = value;
-            }
-        }
-
         public string ItemStaff
         {
             get
@@ -255,31 +212,6 @@ namespace MusicXMLScore.LayoutControl.SegmentPanelContainers.Attributes
                 itemStaff = value;
             }
         }
-
-        public double ItemRightMargin
-        {
-            get
-            {
-                return itemRightMargin;
-            }
-
-            private set
-            {
-                itemRightMargin = value;
-            }
-        }
-
-        public double ItemLeftMargin
-        {
-            get
-            {
-                return itemLeftMargin;
-            }
-
-            private set
-            {
-                itemLeftMargin = value;
-            }
-        }
+        
     }
 }

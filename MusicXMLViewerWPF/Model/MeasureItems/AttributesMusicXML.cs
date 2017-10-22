@@ -1,5 +1,4 @@
-﻿using MusicXMLScore.Model.Helpers;
-using MusicXMLScore.Model.MeasureItems.Attributes;
+﻿using MusicXMLScore.Model.MeasureItems.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Xml.Serialization;

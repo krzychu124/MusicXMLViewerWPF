@@ -1,6 +1,5 @@
 ﻿using MusicXMLScore.Converters;
 using MusicXMLScore.Helpers;
-using MusicXMLScore.Model.MeasureItems.Attributes;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows;

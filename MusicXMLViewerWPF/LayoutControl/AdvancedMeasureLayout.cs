@@ -1,5 +1,4 @@
-﻿using MusicXMLScore.Converters;
-using MusicXMLScore.DrawingHelpers;
+﻿using MusicXMLScore.DrawingHelpers;
 using MusicXMLScore.Helpers;
 using MusicXMLScore.ViewModel;
 using MusicXMLViewerWPF;
@@ -8,10 +7,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -135,8 +131,8 @@ namespace MusicXMLScore.LayoutControl
 
         private void FindOptimalMeasureWidths()
         {
-            double pageContentWidth = ViewModelLocator.Instance.Main.CurrentPageLayout.GetContentWidth();
-            List<MeasureSegmentController> testList = new List<MeasureSegmentController>();
+            //double pageContentWidth = ViewModelLocator.Instance.Main.CurrentPageLayout.GetContentWidth();
+            //List<MeasureSegmentController> testList = new List<MeasureSegmentController>();
             _sharedMeasuresProps = new List<SharedMeasureProperties>();
 
             for (int i = 0; i < _scoreFile.Part.FirstOrDefault().Measure.Count; i++)

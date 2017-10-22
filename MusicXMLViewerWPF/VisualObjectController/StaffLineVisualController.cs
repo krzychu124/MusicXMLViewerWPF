@@ -28,7 +28,7 @@ namespace MusicXMLScore.VisualObjectController
             GenerateStaffLines();
 
             CollectStaffs();
-            WeakEventManager<Model.ScorePartwisePartMeasureMusicXML, PropertyChangedEventArgs>.AddHandler(measure, "PropertyChanged", MeasureMusicXML_PropertyChanged);
+            WeakEventManager<Model.ScorePartwisePartMeasureMusicXML, PropertyChangedEventArgs>.AddHandler(measure, nameof(PropertyChanged), MeasureMusicXML_PropertyChanged);
             PropertyChanged += StaffLineVisualController_PropertyChanged;
         }
 

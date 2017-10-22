@@ -90,6 +90,8 @@ namespace MusicXMLScore.LayoutControl
             set { _partId = value; }
         }
 
+        public int StavesCount { get => _stavesCount; private set => _stavesCount = value; }
+
         /// <summary>
         /// Measure Segment Controller Contructor
         /// </summary>
@@ -114,10 +116,10 @@ namespace MusicXMLScore.LayoutControl
             int durationCursor = 0;
             var measureItems = measure.Items;
 
-            //!----------- beams --------------------------
+            //! ----------- beams --------------------------
             List<BeamItem> beam = new List<BeamItem>();
             _measureItemsContainer = new MeasureItemsContainer(measure.Number, partID, stavesCount, stavesCount.ToString());
-            //!-------------------------------------------
+            //! -------------------------------------------
 
             //!----------- staff lines --------------------
             _staffLineController = new StaffLineVisualController(stavesCount, _width, _partProperties.NumberOfLines, measure, _minStavesDistance);
@@ -274,13 +276,13 @@ namespace MusicXMLScore.LayoutControl
             if (a.DivisionsSpecified)
             {
             }
-            if (a.MeasureStyle.Count != 0)
+            if (a.MeasureStyle?.Count != 0)
             {
             }
             if (a.PartSymbol != null)
             {
             }
-            if (a.StaffDetails.Count != 0)
+            if (a.StaffDetails != null && a.StaffDetails.Count != 0)
             {
                 if (a.StaffDetails.Count > 1)
                 {
@@ -303,7 +305,7 @@ namespace MusicXMLScore.LayoutControl
                     }
                 }
             }
-            if (a.Transpose.Count != 0)
+            if (a.Transpose?.Count != 0)
             {
             }
             return false;
@@ -350,7 +352,7 @@ namespace MusicXMLScore.LayoutControl
                         {
                             string staffNumber = time.StaffNumber ?? i.ToString();
                             TimeSignatureContainerItem timeContainer =
-                                new TimeSignatureContainerItem(time.StaffNumber, time.TimeFraction, time.AttributeEntity);
+                                new TimeSignatureContainerItem(/*time.StaffNumber, time.TimeFraction,*/ time.AttributeEntity);
                             _measureItemsContainer.AppendAttributeWithStaffNumber(timeContainer, time.TimeFraction, staffNumber);
                         }
                     }

@@ -5,15 +5,14 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MusicXMLScore.ViewModel"
         xmlns:converters="clr-namespace:MusicXMLScore.Converters"
-        xmlns:helpers="clr-namespace:MusicXMLScore.Helpers"
         xmlns:System="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
-        Title="NewScoreCreator" Height="491" Width="497" ResizeMode="NoResize">
+        x:Name="Window"
+        Title="NewScoreCreator" Height="446.269" Width="668" ResizeMode="NoResize">
     <Window.Resources>
         <ResourceDictionary>
             <converters:BoolInverterConverter x:Key="BoolInverterConverter"/>
             <converters:EnumMatchToBooleanConverter x:Key="enumConverter"/>
-            <!--<converters:ToTypeEqualityConverter x:Key="toTypeEqualityWrapper" />-->
             <ObjectDataProvider x:Key="enumValues" MethodName="GetValues" ObjectType="{x:Type System:Enum}">
                 <ObjectDataProvider.MethodParameters>
                     <x:Type TypeName="local:TimeSigBeatTime"/>
@@ -24,102 +23,85 @@
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="22*"/>
-            <RowDefinition Height="93*"/>
+            <RowDefinition Height="90"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="246*"/>
-            <ColumnDefinition Width="243*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <GroupBox x:Name="grBox" Header="Page Settings" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" Height="75" Margin="5,6,0,0" VerticalAlignment="Top" Width="227">
+        <GroupBox x:Name="grBox" Header="Page Settings" Grid.Row="0" Grid.Column="0" Margin="5,6,10,9">
             <Grid Margin="2,0,-2,0">
                 <RadioButton x:Name="radioButtonDefault" Content="Default" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" IsChecked="{Binding CustomSettings, Converter={StaticResource BoolInverterConverter}}"/>
                 <RadioButton x:Name="radioButtonCust" Content="Custom" HorizontalAlignment="Left" Margin="10,30,0,0" VerticalAlignment="Top" IsChecked="{Binding CustomSettings}"/>
-                <Button x:Name="buttonSettings" Content="Settings" Command="{Binding OptionsWindowCommand}" HorizontalAlignment="Left" Margin="129,25,0,0" VerticalAlignment="Top" Width="75"/>
+                <Button x:Name="buttonSettings" Content="Settings" Command="{Binding OptionsWindowCommand}" HorizontalAlignment="Right" Margin="0,0,10,5" VerticalAlignment="Bottom" Width="70"/>
             </Grid>
         </GroupBox>
-        <GroupBox x:Name="groupBox1" Header="Additional settings" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Left" Margin="5,5,0,0" VerticalAlignment="Top" Height="357" Width="479">
-            <Grid Margin="0,-2,0,2">
+        <GroupBox x:Name="groupBox1" Header="Additional settings" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Margin="5,0,10,10" Padding="0,5,0,0">
+            <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="86*"/>
+                    <RowDefinition Height="59*"/>
                 </Grid.RowDefinitions>
-                <GroupBox Header="Clef" HorizontalAlignment="Left" Height="165" VerticalAlignment="Top" Width="223">
+                <GroupBox Header="Clef" HorizontalAlignment="Left" Height="172" VerticalAlignment="Top" Width="226">
 
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition/>
-                            <RowDefinition/>
                         </Grid.RowDefinitions>
-                        <Grid Grid.Row="0">
-                            <RadioButton x:Name="radioButtonClef" GroupName="GroupClef" HorizontalAlignment="Left" Margin="0,32,0,0" VerticalAlignment="Top" IsChecked="{Binding CurrentClefOption, ConverterParameter=regularclef, Converter={StaticResource enumConverter}}"/>
-                            <ComboBox x:Name="comboBoxClef" ItemsSource="{Binding ClefTypeListS}" SelectedValue="{Binding SelectedClefS}" FontFamily="{StaticResource BravuraText}" FontSize="35" IsEnabled="{Binding ElementName=radioButtonClef, Path=IsChecked}" HorizontalAlignment="Left" Margin="19,10,0,0" VerticalAlignment="Top" Width="71" Height="61"/>
-                            <RadioButton x:Name="radioButtonGuitar" GroupName="GroupClef" HorizontalAlignment="Left" Margin="116,32,0,0" VerticalAlignment="Top" IsChecked="{Binding CurrentClefOption, ConverterParameter=tablature, Converter={StaticResource enumConverter}}"/>
-                            <!--<Canvas HorizontalAlignment="Left" Height="61" Margin="135,10,0,0" VerticalAlignment="Top" Width="60" Background="Gray"/>-->
-                            <Border BorderThickness="0.5" BorderBrush="Gray" Margin="136,10,10,0">
-                                <TextBlock Text="&#xe06d;" FontFamily="{StaticResource BravuraText}" FontSize="28" HorizontalAlignment="Center" Margin="28,0,28,-1"></TextBlock>
-                            </Border>
-                        </Grid>
-                        <Grid Grid.Row="1">
+                        <Grid Grid.Row="0" >
+                            <Canvas  VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                            <ContentPresenter Margin="20,35" VerticalAlignment="Center" Content="{Binding ClefConfigurationPreview}"/>
+                        </Canvas>
                         </Grid>
                     </Grid>
                 </GroupBox>
-                <GroupBox Grid.Column="1" Header="Key" Margin="5,119,0,46" Grid.RowSpan="2">
-                    <Grid HorizontalAlignment="Left" Width="212" Margin="0,0,0,1">
-                        <ComboBox x:Name="comboBoxKeyType" HorizontalAlignment="Left" Margin="10,18,0,0" SelectedValuePath="Content" SelectedValue="{Binding SelectedKeyMode}" VerticalAlignment="Top" Width="76">
+                <GroupBox Grid.Column="1" Header="Key" Margin="159,0,25,0">
+                    <Grid HorizontalAlignment="Center" Width="Auto" Margin="0,0,0,0">
+                        <ComboBox x:Name="comboBoxKeyType" HorizontalAlignment="Left" FontSize="16" Margin="0,18,0,0" SelectedValuePath="Content" SelectedValue="{Binding SelectedKeyMode}" VerticalAlignment="Top" Width="100">
                             <ComboBoxItem Name="Minor" >Minor</ComboBoxItem>
                             <ComboBoxItem Name="Major">Major</ComboBoxItem>
                         </ComboBox>
-                        <ComboBox x:Name="comboBoxKeySharpFlat" HorizontalAlignment="Left" Margin="10,112,0,0" SelectedValuePath="Content" SelectedValue="{Binding SelectedKeyType}" VerticalAlignment="Top" Width="76">
+                        <ComboBox x:Name="comboBoxKeySharpFlat" HorizontalAlignment="Left" FontSize="16" Margin="0,112,0,0" SelectedValuePath="Content" SelectedValue="{Binding SelectedKeyType}" VerticalAlignment="Top" Width="100">
                             <ComboBoxItem Name="Sharp">Sharp</ComboBoxItem>
                             <ComboBoxItem Name="Flat">Flat</ComboBoxItem>
-                            <ComboBoxItem Name="None">None</ComboBoxItem>
+                            <ComboBoxItem Name="Any">Any</ComboBoxItem>
                         </ComboBox>
-                        <ComboBox x:Name="comboBoxKeySymbol" HorizontalAlignment="Left" Margin="10,64,0,0" ItemsSource="{Binding KeySymbolList, Mode=OneWay}" SelectedValue="{Binding SelectedKeySymbol}"  VerticalAlignment="Top" Width="76"/>
-                        <Border x:Name="CanvasBorder" BorderBrush="Gray" BorderThickness="0.5" Margin="91,10,10,10">
-                            <Canvas HorizontalAlignment="Left"  VerticalAlignment="Top" Height="104" Margin="10,10,0,0" Width="91">
-                                <ContentPresenter Content="{Binding KeyPreview}"/>
-                            </Canvas>
-                        </Border>
+                        <ComboBox x:Name="comboBoxKeySymbol" HorizontalAlignment="Left" Margin="0,64,0,0" FontSize="16" ItemsSource="{Binding KeySymbolList, Mode=OneWay}" SelectedValue="{Binding SelectedKeySymbol}"  VerticalAlignment="Top" Width="100"/>
                     </Grid>
                 </GroupBox>
-                <GroupBox Grid.Column="1" x:Name="groupBox" Header="Preview" HorizontalAlignment="Left" VerticalAlignment="Top" Height="114" Width="224" Margin="5,0,0,0">
+                <GroupBox x:Name="groupBox" Header="Preview" HorizontalAlignment="Left" Width="527" Margin="10,10,0,0" Grid.Row="1" Grid.ColumnSpan="2">
                     <Grid>
-                        <!--<helpers:PreviewCanvas x:Name="canvasTest" Width="220" Height="40" VerticalAlignment="Top"></helpers:PreviewCanvas>-->
-                        <!--<helpers:PreviewCanvas x:Name="canvasTest2" Width="220" Height="70" VerticalAlignment="Bottom"></helpers:PreviewCanvas>-->
                         <Canvas  VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-                            <Canvas.InputBindings>
-                                <MouseBinding Gesture="LeftClick" Command="{Binding CanvasClick}" CommandParameter="{Binding RelativeSource={RelativeSource Self}}"/>
-                            </Canvas.InputBindings>
-                            <ContentPresenter Content="{Binding ConfigurationPreview}"/>
+                            <ContentPresenter Margin="20,25" VerticalAlignment="Center" Content="{Binding ConfigurationPreview}"/>
                         </Canvas>
                     </Grid>
 
                 </GroupBox>
-                <GroupBox x:Name="groupBox2" Header="Time Signature" Grid.Row="1" HorizontalAlignment="Left" Margin="0,1,0,0" VerticalAlignment="Top" Height="164" Width="223">
-                    <Grid HorizontalAlignment="Left" Height="140" VerticalAlignment="Top" Width="213" Margin="0,0,-2,0">
-                        <Label FontFamily="{StaticResource BravuraText}" Margin="0,74,143,5" RenderTransformOrigin="0.5,0.5" VerticalContentAlignment="Top" HorizontalContentAlignment="Center" FontSize="36" Width="70" Content="&#xE08B;"/>
-                        <Label FontFamily="{StaticResource BravuraText}" Margin="10,37,155,38" VerticalAlignment="Stretch" VerticalContentAlignment="Top" HorizontalContentAlignment="Center" HorizontalAlignment="Center" FontSize="36" Width="48" Content="&#xE08A;"/>
-                        <TextBox Text="{Binding TimeSigTime}"  HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="30" IsEnabled="{Binding IsChecked, ElementName=radioButtonStdType}"/>
-                        <RadioButton x:Name="radioButtonStdType" GroupName="GroupTS" Content="Standard" HorizontalAlignment="Left" Margin="82,25,0,0" VerticalAlignment="Top" IsChecked="{Binding CurrentTimeSigOption, ConverterParameter=standard, Converter={StaticResource enumConverter}}"/>
+                <GroupBox x:Name="groupBox2" Header="Time Signature" HorizontalAlignment="Left" Margin="238,0,0,0" Width="223" Grid.ColumnSpan="2">
+                    <Grid HorizontalAlignment="Left" Width="213" Margin="0,0,-2,3">
+                        <Label FontFamily="{StaticResource BravuraText}" Margin="-10,74,143,5" VerticalContentAlignment="Top" HorizontalContentAlignment="Center" FontSize="36" Width="40" Content="&#xE08B;"/>
+                        <Label FontFamily="{StaticResource BravuraText}" Margin="0,37,155,38" VerticalAlignment="Stretch" VerticalContentAlignment="Top" HorizontalContentAlignment="Center" HorizontalAlignment="Center" FontSize="36" Width="40" Content="&#xE08A;"/>
+                        <TextBox Text="{Binding TimeSigTime}"  HorizontalAlignment="Left" HorizontalContentAlignment="Center" Margin="10,10,0,0" VerticalAlignment="Top" Width="45" IsEnabled="{Binding IsChecked, ElementName=radioButtonStdType}" FontSize="16" BorderThickness="0"/>
+                        <RadioButton x:Name="radioButtonStdType" GroupName="GroupTS" Content="Standard" HorizontalAlignment="Left" Margin="82,45,0,0" VerticalAlignment="Top" IsChecked="{Binding CurrentTimeSigOption, ConverterParameter=normal, Converter={StaticResource enumConverter}}"/>
                         <RadioButton x:Name="radioButtonCommType" GroupName="GroupTS" Content="Common" HorizontalAlignment="Left" Margin="82,78,0,0" VerticalAlignment="Top" IsChecked="{Binding CurrentTimeSigOption, ConverterParameter=common, Converter={StaticResource enumConverter}}"/>
                         <RadioButton x:Name="radioButtonCutType" GroupName="GroupTS" Content="Cut" HorizontalAlignment="Left" Margin="82,113,0,0" VerticalAlignment="Top" IsChecked="{Binding CurrentTimeSigOption, ConverterParameter=cut, Converter={StaticResource enumConverter}}"/>
-                        <ComboBox x:Name="comboBoxBeatType" ItemsSource="{Binding TimeBeatList}" DisplayMemberPath="Key" SelectedValue="{Binding SelectedTimeBeats}" IsEnabled="{Binding IsChecked, ElementName=radioButtonStdType}"  HorizontalAlignment="Left" Margin="10,37,0,0" VerticalAlignment="Top" Width="60"/>
+                        <ComboBox x:Name="comboBoxBeatType" ItemsSource="{Binding TimeBeatList}" DisplayMemberPath="Key" SelectedValue="{Binding SelectedTimeBeats}" IsEnabled="{Binding IsChecked, ElementName=radioButtonStdType}"  HorizontalAlignment="Left" HorizontalContentAlignment="Center" Margin="10,37,0,0" FontSize="16" VerticalAlignment="Top" Width="60"/>
                     </Grid>
                 </GroupBox>
-                <Button x:Name="button" Content="Button" Command="{Binding AddVisualCommand}" HorizontalAlignment="Left" Margin="149,137,0,0" VerticalAlignment="Top" Width="74" Grid.Column="1" Grid.Row="1"/>
-                <!--<helpers:CanvasList/>-->
+                <Button x:Name="button" Content="Finish" Command="{Binding FinishCommand}" CommandParameter="{Binding ElementName=Window}" Margin="233,30,10,0" Grid.Column="1" Grid.Row="1" Height="25" VerticalAlignment="Top"/>
+                <Button x:Name="button2" Content="Cancel" Command="{Binding CancelCommand}" CommandParameter="{Binding ElementName=Window}" Margin="233,80,10,0" Grid.Column="1" Grid.Row="1" Height="25" VerticalAlignment="Top"/>
             </Grid>
         </GroupBox>
-        <GroupBox x:Name="groupBox3" Header="Measures" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Left" Margin="5,6,0,0" VerticalAlignment="Top" Height="75" Width="233">
+        <GroupBox x:Name="groupBox3" Header="Measures" Grid.Row="0" Grid.Column="1" Margin="5,6,10,9">
             <Grid>
-                <TextBox x:Name="textBoxMeasuresCount" HorizontalAlignment="Left" HorizontalContentAlignment="Right" Height="23" Margin="141,2,0,0" TextWrapping="Wrap" Text="{Binding MeasuresCount}" IsEnabled="{Binding ElementName=checkBoxFillPage, Path=IsChecked , Converter={StaticResource BoolInverterConverter}}" VerticalAlignment="Top" Width="50" />
-                <CheckBox x:Name="checkBoxFillPage" Content="Fill whole page" HorizontalAlignment="Left" HorizontalContentAlignment="Center" Margin="88,31,0,0" VerticalAlignment="Top" Width="103" Command="{Binding FillWithMeasuresCommand}"/>
-                <Label x:Name="label" Content="Measures Count:" HorizontalAlignment="Left" Margin="10,2,0,0" VerticalAlignment="Top" Width="114" Height="24"/>
+                <TextBox x:Name="textBoxMeasuresCount" HorizontalAlignment="Right" HorizontalContentAlignment="Right" Height="24" Margin="0,0,10,0" TextWrapping="Wrap" Text="{Binding MeasuresCount}" IsEnabled="{Binding ElementName=checkBoxFillPage, Path=IsChecked , Converter={StaticResource BoolInverterConverter}}" VerticalAlignment="Top" Width="70" />
+                <CheckBox x:Name="checkBoxFillPage" Content="Fill whole page" HorizontalAlignment="Left" HorizontalContentAlignment="Left" Margin="10,30,0,0" VerticalAlignment="Top" Width="103" IsChecked="{Binding FillPage}"/>
+                <Label x:Name="label" Content="Measures Count:" HorizontalAlignment="Left" Margin="5,0,0,0" VerticalAlignment="Top" Width="114" Height="24"/>
             </Grid>
         </GroupBox>
     </Grid>

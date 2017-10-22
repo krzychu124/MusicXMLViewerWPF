@@ -174,5 +174,18 @@ namespace MusicXMLScore.Model
                     break;
             }
         }
+
+        internal void AppendNewItem(object item)
+        {
+            if (item != null)
+            {
+                if (items == null)
+                {
+                    items = new object[0];
+                }
+                Array.Resize(ref items, items.Length + 1);
+                items[items.Length - 1] = item;
+            }
+        }
     }
 }

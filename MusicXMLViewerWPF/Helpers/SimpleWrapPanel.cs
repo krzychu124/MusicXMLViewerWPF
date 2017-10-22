@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 
 namespace MusicXMLScore.Helpers
 {
     public class SimpleWrapPanel : Panel
     {
+        // todo dependency properties
+        // for spacing + for layout
         double panelWidth = 0.0;
         double panelHeight = 0.0;
         double horizontalSpacing = 20;
